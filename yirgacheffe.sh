@@ -1,3 +1,8 @@
 #! /usr/bin/env bash
 
-java -jar target/Yirgacheffe.jar cat $1 > MyClass.class
+SOURCE_FILE=$1
+SOURCE_CODE=$(cat $SOURCE_FILE)
+CLASS_NAME=$(echo $SOURCE_FILE | cut -f 1 -d '.')
+OUTPUT_FILE=$CLASS_NAME".class"
+
+java -jar target/Yirgacheffe.jar "$SOURCE_CODE" > $OUTPUT_FILE
