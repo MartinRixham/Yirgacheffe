@@ -3,8 +3,6 @@ package yirgacheffe;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 
-import java.util.Arrays;
-
 public final class Yirgacheffe
 {
 	private String source;
@@ -29,10 +27,10 @@ public final class Yirgacheffe
 		return cw.toByteArray();
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 		byte[] bytecode = new Yirgacheffe(args[0]).compile();
 
-		System.out.println(Arrays.toString(bytecode));
+		System.out.write(bytecode);
 	}
 }
