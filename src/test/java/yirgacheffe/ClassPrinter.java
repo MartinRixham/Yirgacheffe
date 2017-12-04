@@ -93,7 +93,7 @@ public class ClassPrinter extends ClassVisitor
 		String superName,
 		String[] interfaces)
 	{
-		this.printedClass += name + " extends " + superName + " {\n";
+		this.printedClass += name + " extends " + superName + " \n{\n";
 	}
 
 	@Override

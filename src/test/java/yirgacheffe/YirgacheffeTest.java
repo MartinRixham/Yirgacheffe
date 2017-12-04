@@ -20,7 +20,7 @@ public class YirgacheffeTest
 
 		System.setOut(printStream);
 
-		Yirgacheffe.main(new String[] {""});
+		Yirgacheffe.main(new String[] {"class MyClass {}"});
 
 		assertTrue(spyOut.toString().length() > 0);
 
@@ -37,6 +37,21 @@ public class YirgacheffeTest
 		ClassPrinter classPrinter = new ClassPrinter(bytecode);
 		String printedClass = classPrinter.print();
 
-		assertEquals("MyClass extends java/lang/Object {\n}\n", printedClass);
+		assertEquals("MyClass extends java/lang/Object \n{\n}\n", printedClass);
+	}
+
+	@Test
+	public void testNamedEmptyInterface()
+	{
+		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");
+
+		byte[] bytecode = yirgacheffe.compile();
+
+		ClassPrinter classPrinter = new ClassPrinter(bytecode);
+		String printedClass = classPrinter.print();
+
+		assertEquals(
+			"MyInterface extends java/lang/Object \n{\n}\n",
+			printedClass);
 	}
 }

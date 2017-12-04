@@ -5,11 +5,11 @@ import org.objectweb.asm.Opcodes;
 
 public final class Yirgacheffe
 {
-	private String source;
+	private String[] sourceTokens;
 
 	public Yirgacheffe(String source)
 	{
-		this.source = source;
+		this.sourceTokens = source.split(" ");
 	}
 
 	public byte[] compile()
@@ -19,7 +19,7 @@ public final class Yirgacheffe
 		cw.visit(
 			Opcodes.V1_5,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			"MyClass",
+			this.sourceTokens[1],
 			null,
 			"java/lang/Object",
 			new String[0]);
