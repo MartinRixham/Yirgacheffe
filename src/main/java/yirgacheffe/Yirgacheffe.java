@@ -1,13 +1,38 @@
 package yirgacheffe;
 
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+
+import java.util.Arrays;
+
 public final class Yirgacheffe
 {
-	private Yirgacheffe()
+	private String source;
+
+	public Yirgacheffe(String source)
 	{
+		this.source = source;
+	}
+
+	public byte[] compile()
+	{
+		ClassWriter cw = new ClassWriter(0);
+
+		cw.visit(
+			Opcodes.V1_5,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
+			"MyClass",
+			null,
+			"java/lang/Object",
+			new String[0]);
+
+		return cw.toByteArray();
 	}
 
 	public static void main(String[] args)
 	{
-		System.out.println("I did a thing!");
+		byte[] bytecode = new Yirgacheffe(args[0]).compile();
+
+		System.out.println(Arrays.toString(bytecode));
 	}
 }

@@ -1,23 +1,42 @@
 package yirgacheffe;
 
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class YirgacheffeTest
 {
 	@Test
-	public void testYirgacheffe()
+	public void testMainMethod() throws Exception
 	{
-		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outContent));
+		PrintStream originalOut = System.out;
 
-		Yirgacheffe.main(new String[0]);
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream printStream = new PrintStream(spyOut);
 
-		assertTrue(outContent.toString().length() > 0);
+		System.setOut(printStream);
 
-		System.setOut(null);
+		Yirgacheffe.main(new String[] {""});
+
+		assertTrue(spyOut.toString().length() > 0);
+
+		System.setOut(originalOut);
+	}
+
+	@Test
+	public void testNamedEmptyClass()
+	{
+		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
+
+		byte[] bytecode = yirgacheffe.compile();
+
+		ClassPrinter classPrinter = new ClassPrinter(bytecode);
+		String printedClass = classPrinter.print();
+
+		assertEquals("MyClass extends java/lang/Object {\n}\n", printedClass);
 	}
 }
