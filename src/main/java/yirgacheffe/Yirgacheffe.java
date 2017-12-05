@@ -9,7 +9,7 @@ public final class Yirgacheffe
 
 	public Yirgacheffe(String source)
 	{
-		this.sourceTokens = source.split(" ");
+		this.sourceTokens = source.split("\\s+");
 	}
 
 	public byte[] compile()
@@ -30,6 +30,11 @@ public final class Yirgacheffe
 			null,
 			"java/lang/Object",
 			null);
+
+		if (sourceTokens.length > 4)
+		{
+			new Block("").compile(writer);
+		}
 
 		return writer.toByteArray();
 	}
