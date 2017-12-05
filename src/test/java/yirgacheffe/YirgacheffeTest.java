@@ -1,5 +1,7 @@
 package yirgacheffe;
 
+import jdk.internal.org.objectweb.asm.ClassReader;
+import jdk.internal.org.objectweb.asm.tree.ClassNode;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -34,10 +36,12 @@ public class YirgacheffeTest
 
 		byte[] bytecode = yirgacheffe.compile();
 
-		ClassPrinter classPrinter = new ClassPrinter(bytecode);
-		String printedClass = classPrinter.print();
+		ClassReader reader = new ClassReader(bytecode);
+		ClassNode classNode = new ClassNode();
 
-		assertEquals("MyClass extends java/lang/Object \n{\n}\n", printedClass);
+		reader.accept(classNode, 0);
+
+		assertEquals("MyClass", classNode.name);
 	}
 
 	@Test
@@ -47,11 +51,11 @@ public class YirgacheffeTest
 
 		byte[] bytecode = yirgacheffe.compile();
 
-		ClassPrinter classPrinter = new ClassPrinter(bytecode);
-		String printedClass = classPrinter.print();
+		ClassReader reader = new ClassReader(bytecode);
+		ClassNode classNode = new ClassNode();
 
-		assertEquals(
-			"MyInterface extends java/lang/Object \n{\n}\n",
-			printedClass);
+		reader.accept(classNode, 0);
+
+		assertEquals("MyInterface", classNode.name);
 	}
 }
