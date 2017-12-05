@@ -1,17 +1,19 @@
-package yirgacheffe;
+package yirgacheffe.compiler;
+
+import java.util.List;
 
 public class CompilationResult
 {
 	private byte[] bytecode;
 
-	private String[] errors;
+	private List<String> errors;
 
 	public CompilationResult(byte[] bytecode)
 	{
 		this.bytecode = bytecode;
 	}
 
-	public CompilationResult(String[] errors)
+	public CompilationResult(List<String> errors)
 	{
 		this.errors = errors;
 	}

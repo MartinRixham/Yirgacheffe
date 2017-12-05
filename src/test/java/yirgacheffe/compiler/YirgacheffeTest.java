@@ -1,4 +1,4 @@
-package yirgacheffe;
+package yirgacheffe.compiler;
 
 import org.junit.Test;
 
@@ -59,14 +59,16 @@ public class YirgacheffeTest
 		Yirgacheffe.main(new String[] {"thingy MyClass {}"});
 
 		assertTrue(spyOut.toString().length() == 0);
-		assertTrue(spyError.toString().length() > 0);
+		assertEquals(
+			"Declaration should be of class or interface.\n",
+			spyError.toString());
 
 		System.setOut(originalOut);
 		System.setErr(originalError);
 	}
 
 	@Test
-	public void testNamedEmptyInterface()
+	public void testNamedEmptyInterface() throws Exception
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");
 
@@ -85,7 +87,7 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testFailToDeclareClassOrInterface()
+	public void testFailToDeclareClassOrInterface() throws Exception
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("thingy MyInterface {}");
 
@@ -96,7 +98,7 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testNamedEmptyClass()
+	public void testNamedEmptyClass() throws Exception
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
 
@@ -114,7 +116,7 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testClassWithIntegerField()
+	public void testClassWithIntegerField() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
@@ -146,7 +148,7 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testClassWithStringField()
+	public void testClassWithStringField() throws Exception
 	{
 		String source =
 			"class MyClass\n" +

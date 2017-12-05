@@ -1,4 +1,4 @@
-package yirgacheffe;
+package yirgacheffe.compiler;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package yirgacheffe;
+package yirgacheffe.compiler;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -27,7 +27,7 @@ public class ClassPrinter extends ClassVisitor
 		ClassWriter cw = new ClassWriter(0);
 
 		cw.visit(
-			Opcodes.V1_5,
+			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
 			"pkg/Comparable",
 			null,
@@ -71,7 +71,7 @@ public class ClassPrinter extends ClassVisitor
 
 	public ClassPrinter(byte[] cl)
 	{
-		super(Opcodes.ASM4);
+		super(Opcodes.ASM5);
 
 		this.cl = cl;
 	}
