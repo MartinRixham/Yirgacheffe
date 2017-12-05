@@ -12,25 +12,57 @@ import java.io.PrintStream;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class YirgacheffeTest
 {
 	@Test
-	public void testMainMethod() throws Exception
+	public void testMainMethodOnSuccess() throws Exception
 	{
 		PrintStream originalOut = System.out;
+		PrintStream originalError = System.err;
 
 		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
-		PrintStream printStream = new PrintStream(spyOut);
+		PrintStream out = new PrintStream(spyOut);
 
-		System.setOut(printStream);
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setOut(out);
+		System.setErr(error);
 
 		Yirgacheffe.main(new String[] {"class MyClass {}"});
 
 		assertTrue(spyOut.toString().length() > 0);
+		assertTrue(spyError.toString().length() == 0);
 
 		System.setOut(originalOut);
+		System.setErr(originalError);
+	}
+
+	@Test
+	public void testMainMethodOnError() throws Exception
+	{
+		PrintStream originalOut = System.out;
+		PrintStream originalError = System.err;
+
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setOut(out);
+		System.setErr(error);
+
+		Yirgacheffe.main(new String[] {"thingy MyClass {}"});
+
+		assertTrue(spyOut.toString().length() == 0);
+		assertTrue(spyError.toString().length() > 0);
+
+		System.setOut(originalOut);
+		System.setErr(originalError);
 	}
 
 	@Test
@@ -38,9 +70,9 @@ public class YirgacheffeTest
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");
 
-		byte[] bytecode = yirgacheffe.compile();
+		CompilationResult result = yirgacheffe.compile();
 
-		ClassReader reader = new ClassReader(bytecode);
+		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
 		reader.accept(classNode, 0);
@@ -53,17 +85,29 @@ public class YirgacheffeTest
 	}
 
 	@Test
+	public void testFailToDeclareClassOrInterface()
+	{
+		Yirgacheffe yirgacheffe = new Yirgacheffe("thingy MyInterface {}");
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals("Declaration should be of class or interface.", result.getErrors());
+	}
+
+	@Test
 	public void testNamedEmptyClass()
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
 
-		byte[] bytecode = yirgacheffe.compile();
+		CompilationResult result = yirgacheffe.compile();
 
-		ClassReader reader = new ClassReader(bytecode);
+		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
 		reader.accept(classNode, 0);
 
+		assertTrue(result.isSuccessful());
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());
@@ -80,13 +124,14 @@ public class YirgacheffeTest
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
 
-		byte[] bytecode = yirgacheffe.compile();
+		CompilationResult result = yirgacheffe.compile();
 
-		ClassReader reader = new ClassReader(bytecode);
+		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
 		reader.accept(classNode, 0);
 
+		assertTrue(result.isSuccessful());
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 
@@ -111,13 +156,14 @@ public class YirgacheffeTest
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
 
-		byte[] bytecode = yirgacheffe.compile();
+		CompilationResult result = yirgacheffe.compile();
 
-		ClassReader reader = new ClassReader(bytecode);
+		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
 		reader.accept(classNode, 0);
 
+		assertTrue(result.isSuccessful());
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 

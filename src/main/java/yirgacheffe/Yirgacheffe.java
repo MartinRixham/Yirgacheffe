@@ -10,19 +10,34 @@ public final class Yirgacheffe
 {
 	private String[] sourceTokens;
 
+	private static final int LENGTH_OF_NON_EMPTY_BLOCK = 3;
+
 	public Yirgacheffe(String source)
 	{
 		this.sourceTokens = source.split("\\s+");
 	}
 
-	public byte[] compile()
+	public CompilationResult compile()
 	{
 		ClassWriter writer = new ClassWriter(0);
 
-		int access =
-			this.sourceTokens[0].equals("class") ?
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER :
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
+		int access;
+		String classType = this.sourceTokens[0];
+
+		if (classType.equals("class"))
+		{
+			access = Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER;
+		}
+		else if (classType.equals("interface"))
+		{
+			access = Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
+		}
+		else
+		{
+			String error = "Declaration should be of class or interface.";
+
+			return new CompilationResult(new String[] {error});
+		}
 
 		String className = this.sourceTokens[1];
 
@@ -34,12 +49,12 @@ public final class Yirgacheffe
 			"java/lang/Object",
 			null);
 
-		if (sourceTokens.length > 4)
+		if (this.sourceTokens.length > LENGTH_OF_NON_EMPTY_BLOCK)
 		{
 			new Block(this.getBlockSource()).compile(writer);
 		}
 
-		return writer.toByteArray();
+		return new CompilationResult(writer.toByteArray());
 	}
 
 	private String getBlockSource()
@@ -70,8 +85,15 @@ public final class Yirgacheffe
 
 	public static void main(String[] args) throws Exception
 	{
-		byte[] bytecode = new Yirgacheffe(args[0]).compile();
+		CompilationResult result = new Yirgacheffe(args[0]).compile();
 
-		System.out.write(bytecode);
+		if (result.isSuccessful())
+		{
+			System.out.write(result.getBytecode());
+		}
+		else
+		{
+			System.err.println(result.getErrors());
+		}
 	}
 }
