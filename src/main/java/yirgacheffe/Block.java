@@ -9,11 +9,11 @@ public class Block
 
 	public Block(String source)
 	{
-		this.sourceTokens = source.split("\\s+");
+		this.sourceTokens = source.split(";|\\s+");
 	}
 
 	public void compile(ClassWriter writer)
 	{
-		writer.visitField(Opcodes.ACC_PRIVATE, "myField", "I", null, null);
+		writer.visitField(Opcodes.ACC_PRIVATE, this.sourceTokens[1], "I", null, null);
 	}
 }

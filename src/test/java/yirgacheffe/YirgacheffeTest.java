@@ -99,4 +99,35 @@ public class YirgacheffeTest
 		assertEquals("myField", firstField.name);
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
 	}
+
+	@Test
+	public void testClassWithStringField()
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+					"String myStringField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		byte[] bytecode = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(bytecode);
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals("MyClass", classNode.name);
+		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
+
+		List<FieldNode> fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		FieldNode firstField = fields.get(0);
+
+		assertEquals("myStringField", firstField.name);
+		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+	}
 }

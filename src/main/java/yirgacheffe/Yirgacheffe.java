@@ -3,6 +3,9 @@ package yirgacheffe;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Yirgacheffe
 {
 	private String[] sourceTokens;
@@ -33,10 +36,36 @@ public final class Yirgacheffe
 
 		if (sourceTokens.length > 4)
 		{
-			new Block("").compile(writer);
+			new Block(this.getBlockSource()).compile(writer);
 		}
 
 		return writer.toByteArray();
+	}
+
+	private String getBlockSource()
+	{
+		List<String> source = new ArrayList<>();
+		boolean flag = false;
+
+		for (String token: this.sourceTokens)
+		{
+			if (token.equals("}"))
+			{
+				flag = false;
+			}
+
+			if (flag)
+			{
+				source.add(token);
+			}
+
+			if (token.equals("{"))
+			{
+				flag = true;
+			}
+		}
+
+		return String.join(" ", source);
 	}
 
 	public static void main(String[] args) throws Exception
