@@ -14,17 +14,24 @@ public final class Yirgacheffe
 
 	public byte[] compile()
 	{
-		ClassWriter cw = new ClassWriter(0);
+		ClassWriter writer = new ClassWriter(0);
 
-		cw.visit(
+		int access =
+			this.sourceTokens[0].equals("class") ?
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER :
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
+
+		String className = this.sourceTokens[1];
+
+		writer.visit(
 			Opcodes.V1_5,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			this.sourceTokens[1],
+			access,
+			className,
 			null,
 			"java/lang/Object",
-			new String[0]);
+			null);
 
-		return cw.toByteArray();
+		return writer.toByteArray();
 	}
 
 	public static void main(String[] args) throws Exception

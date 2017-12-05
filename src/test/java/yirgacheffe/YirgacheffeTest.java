@@ -1,8 +1,10 @@
 package yirgacheffe;
 
-import jdk.internal.org.objectweb.asm.ClassReader;
-import jdk.internal.org.objectweb.asm.tree.ClassNode;
 import org.junit.Test;
+
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -30,21 +32,6 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testNamedEmptyClass()
-	{
-		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
-
-		byte[] bytecode = yirgacheffe.compile();
-
-		ClassReader reader = new ClassReader(bytecode);
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		assertEquals("MyClass", classNode.name);
-	}
-
-	@Test
 	public void testNamedEmptyInterface()
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");
@@ -57,5 +44,25 @@ public class YirgacheffeTest
 		reader.accept(classNode, 0);
 
 		assertEquals("MyInterface", classNode.name);
+
+		int access = Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
+
+		assertEquals(access, classNode.access);
+	}
+
+	@Test
+	public void testNamedEmptyClass()
+	{
+		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
+
+		byte[] bytecode = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(bytecode);
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals("MyClass", classNode.name);
+		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 	}
 }
