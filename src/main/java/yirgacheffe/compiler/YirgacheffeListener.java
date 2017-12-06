@@ -111,12 +111,24 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	public void enterInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		this.writer.visitMethod(
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-			"myMethod",
-			"()I",
-			null,
-			null);
+		if (context.Modifier() == null)
+		{
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
+				"myMethod",
+				"()I",
+				null,
+				null);
+		}
+		else
+		{
+			Error error =
+				new Error(
+					context,
+					"Access modifier is not required for interface method declaration.");
+
+			this.errors.add(error);
+		}
 	}
 
 	public CompilationResult getCompilationResult()

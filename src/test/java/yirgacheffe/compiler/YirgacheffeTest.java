@@ -318,4 +318,24 @@ public class YirgacheffeTest
 		assertEquals("()I", firstMethod.desc);
 		assertEquals("myMethod", firstMethod.name);
 	}
+
+	@Test
+	public void testInterfaceMethodWithModifier() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"public int myInterfaceMethod();\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Access modifier is not required for " +
+				"interface method declaration.\n",
+			result.getErrors());
+	}
 }

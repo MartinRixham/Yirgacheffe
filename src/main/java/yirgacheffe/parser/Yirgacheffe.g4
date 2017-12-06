@@ -17,15 +17,16 @@ interfaceDeclaration:
 
 interfaceFieldDeclaration: Type Identifier ';';
 
-interfaceMethodDeclaration: Type Identifier '(' Argument? (',' Argument)* ')' ';';
+interfaceMethodDeclaration:
+    Modifier? Type Identifier '(' ')' ';';
 
 Type: 'int' | 'String';
-
-Identifier: Letter LetterOrDigit*;
 
 Modifier: 'public' | 'private';
 
 Argument: Type Identifier;
+
+Identifier: Letter LetterOrDigit*;
 
 fragment
 Letter: [a-zA-Z$_];
