@@ -25,7 +25,7 @@ public final class Yirgacheffe
 	{
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
-		YirgacheffeListener listener = new YirgacheffeListener(writer, errorListener);
+		YirgacheffeListener listener = new MethodListener(errorListener, writer);
 		InputStream stream = new ByteArrayInputStream(this.source.getBytes());
 		CharStream input = new ANTLRInputStream(stream);
 		YirgacheffeLexer lexer = new YirgacheffeLexer(input);
