@@ -1,8 +1,15 @@
 grammar Yirgacheffe;
 
-compilationUnit: typeDeclaration EOF;
+compilationUnit:
+    (malformedDeclaration | classDeclaration | interfaceDeclaration) EOF;
 
-typeDeclaration: classDeclaration |	interfaceDeclaration;
+malformedDeclaration:
+    Identifier Identifier?
+    '{'
+        fieldDeclaration*
+        classMethodDeclaration*
+        interfaceMethodDeclaration*
+    '}';
 
 classDeclaration:
     'class' Identifier?

@@ -31,7 +31,6 @@ public final class Yirgacheffe
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
 		YirgacheffeParser parser = new YirgacheffeParser(tokens);
-		parser.removeErrorListeners();
 
 		ParseTree tree = parser.compilationUnit();
 

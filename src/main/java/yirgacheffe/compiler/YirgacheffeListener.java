@@ -20,15 +20,11 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterTypeDeclaration(
-		YirgacheffeParser.TypeDeclarationContext context)
+	public void enterMalformedDeclaration(
+		YirgacheffeParser.MalformedDeclarationContext context)
 	{
-		if (context.classDeclaration() == null &&
-			context.interfaceDeclaration() == null)
-		{
-			this.errors.add(
-				new Error(context, "Expected declaration of class or interface."));
-		}
+		this.errors.add(
+			new Error(context, "Expected declaration of class or interface."));
 	}
 
 	@Override
