@@ -20,6 +20,17 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
+	public void enterTypeDeclaration(
+		YirgacheffeParser.TypeDeclarationContext context)
+	{
+		if (context.classDeclaration() == null &&
+			context.interfaceDeclaration() == null)
+		{
+			this.errors.add("Declaration should be of class or interface.");
+		}
+	}
+
+	@Override
 	public void enterClassDeclaration(
 		YirgacheffeParser.ClassDeclarationContext context)
 	{
@@ -50,13 +61,19 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterTypeDeclaration(
-		YirgacheffeParser.TypeDeclarationContext context)
+	public void enterBody(YirgacheffeParser.BodyContext context)
 	{
-		if (context.classDeclaration() == null &&
-			context.interfaceDeclaration() == null)
+		String identifier = context.Identifier().getSymbol().getText();
+
+		if (identifier.equals("int"))
 		{
-			this.errors.add("Declaration should be of class or interface.");
+			this.writer
+				.visitField(Opcodes.ACC_PRIVATE, "myField", "I", null, null);
+		}
+		else if (identifier.equals("String"))
+		{
+			this.writer
+				.visitField(Opcodes.ACC_PRIVATE, "myStringField", "I", null, null);
 		}
 	}
 

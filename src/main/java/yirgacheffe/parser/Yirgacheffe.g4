@@ -8,15 +8,15 @@ classDeclaration: 'class' Identifier body;
 
 interfaceDeclaration: 'interface' Identifier body;
 
-body: '{' '}';
+body: '{' Identifier '}';
 
-Identifier: JavaLetter JavaLetterOrDigit*;
-
-fragment
-JavaLetter: [a-zA-Z$_];
+Identifier: Letter LetterOrDigit*;
 
 fragment
-JavaLetterOrDigit: [a-zA-Z0-9$_];
+Letter: [a-zA-Z$_];
+
+fragment
+LetterOrDigit: [a-zA-Z0-9$_];
 
 WS: [ \t\r\n\u000C]+ -> skip;
 
