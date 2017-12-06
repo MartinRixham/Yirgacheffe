@@ -114,7 +114,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		if (context.Modifier() == null)
 		{
 			MethodDescriptor descriptor =
-				new MethodDescriptor(context.argument(), context.Type());
+				new MethodDescriptor(context.parameter(), context.Type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
@@ -129,6 +129,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 				new Error(
 					context,
 					"Access modifier is not required for interface method declaration.");
+
+			this.errors.add(error);
+		}
+	}
+
+	@Override
+	public void enterParameter(YirgacheffeParser.ParameterContext context)
+	{
+		if (context.Type() == null)
+		{
+			Error error =
+				new Error(context, "Expected type before argument identifier");
 
 			this.errors.add(error);
 		}

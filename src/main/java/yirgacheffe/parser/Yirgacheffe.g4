@@ -18,9 +18,9 @@ interfaceDeclaration:
 interfaceFieldDeclaration: Type Identifier ';';
 
 interfaceMethodDeclaration:
-    Modifier? Type Identifier '(' argument? (',' argument)* ')' ';';
+    Modifier? Type Identifier '(' parameter? (',' parameter)* ')' ';';
 
-argument: Type Identifier;
+parameter: Type? Identifier;
 
 Type: 'int' | 'String';
 

@@ -7,15 +7,15 @@ import java.util.List;
 
 public class MethodDescriptor
 {
-	private List<YirgacheffeParser.ArgumentContext> arguments;
+	private List<YirgacheffeParser.ParameterContext> parameters;
 
 	private TerminalNode returnType;
 
 	public MethodDescriptor(
-		List<YirgacheffeParser.ArgumentContext> arguments,
+		List<YirgacheffeParser.ParameterContext> arguments,
 		TerminalNode returnType)
 	{
-		this.arguments = arguments;
+		this.parameters = arguments;
 		this.returnType = returnType;
 	}
 
@@ -24,11 +24,14 @@ public class MethodDescriptor
 	{
 		StringBuilder descriptor = new StringBuilder("(");
 
-		for (YirgacheffeParser.ArgumentContext argument: this.arguments)
+		for (YirgacheffeParser.ParameterContext parameter : this.parameters)
 		{
-			TerminalNode type = argument.Type();
+			TerminalNode type = parameter.Type();
 
-			descriptor.append(Type.parse(type.getText()).getJVMType());
+			if (type != null)
+			{
+				descriptor.append(Type.parse(type.getText()).getJVMType());
+			}
 		}
 
 		descriptor.append(")");

@@ -364,4 +364,23 @@ public class YirgacheffeTest
 		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
 		assertEquals("myParameterisedMethod", firstMethod.name);
 	}
+
+	@Test
+	public void testParameterWithMissingType() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"int myMethod(param1, int param2);\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:13 Expected type before argument identifier\n",
+			result.getErrors());
+	}
 }
