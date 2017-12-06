@@ -18,13 +18,13 @@ interfaceDeclaration:
 interfaceFieldDeclaration: Type Identifier ';';
 
 interfaceMethodDeclaration:
-    Modifier? Type Identifier '(' ')' ';';
+    Modifier? Type Identifier '(' argument? (',' argument)* ')' ';';
+
+argument: Type Identifier;
 
 Type: 'int' | 'String';
 
 Modifier: 'public' | 'private';
-
-Argument: Type Identifier;
 
 Identifier: Letter LetterOrDigit*;
 

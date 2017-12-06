@@ -338,4 +338,30 @@ public class YirgacheffeTest
 				"interface method declaration.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testInterfaceMethodWithParameters() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"int myParameterisedMethod(String param1, int param2);\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertTrue(result.isSuccessful());
+		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
+		assertEquals("myParameterisedMethod", firstMethod.name);
+	}
 }

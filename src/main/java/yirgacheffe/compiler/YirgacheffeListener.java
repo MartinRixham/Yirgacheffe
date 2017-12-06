@@ -113,10 +113,13 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.Modifier() == null)
 		{
+			MethodDescriptor descriptor =
+				new MethodDescriptor(context.argument(), context.Type());
+
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				"myMethod",
-				"()I",
+				context.Identifier().getText(),
+				descriptor.toString(),
 				null,
 				null);
 		}
