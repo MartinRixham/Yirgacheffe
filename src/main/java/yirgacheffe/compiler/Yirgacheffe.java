@@ -24,13 +24,16 @@ public final class Yirgacheffe
 	public CompilationResult compile() throws Exception
 	{
 		ClassWriter writer = new ClassWriter(0);
-		YirgacheffeListener listener = new YirgacheffeListener(writer);
+		ParseErrorListener errorListener = new ParseErrorListener();
+		YirgacheffeListener listener = new YirgacheffeListener(writer, errorListener);
 		InputStream stream = new ByteArrayInputStream(this.source.getBytes());
 		CharStream input = new ANTLRInputStream(stream);
 		YirgacheffeLexer lexer = new YirgacheffeLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
 		YirgacheffeParser parser = new YirgacheffeParser(tokens);
+		parser.removeErrorListeners();
+		parser.addErrorListener(errorListener);
 
 		ParseTree tree = parser.compilationUnit();
 

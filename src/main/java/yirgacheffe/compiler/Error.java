@@ -14,10 +14,12 @@ public class Error
 
 	public Error(Token token, String message)
 	{
-		int line = token.getLine();
-		int index = token.getCharPositionInLine();
+		this(token.getLine(), token.getCharPositionInLine(), message);
+	}
 
-		this.error = "line " + line + ":" + index + " " + message;
+	public Error(int line, int charPosition, String message)
+	{
+		this.error = "line " + line + ":" + charPosition + " " + message;
 	}
 
 	@Override

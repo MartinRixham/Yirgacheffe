@@ -69,6 +69,45 @@ public class YirgacheffeTest
 	}
 
 	@Test
+	public void testMainMethodOnParseError() throws Exception
+	{
+		PrintStream originalOut = System.out;
+		PrintStream originalError = System.err;
+
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setOut(out);
+		System.setErr(error);
+
+		Yirgacheffe.main(new String[] {"interface MyInterface {"});
+
+		assertTrue(spyOut.toString().length() == 0);
+		assertEquals(
+			"line 1:23 mismatched input '<EOF>' expecting {'}', Type, Modifier}\n",
+			spyError.toString());
+
+		System.setOut(originalOut);
+		System.setErr(originalError);
+	}
+
+	@Test
+	public void testParseError() throws Exception
+	{
+		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {");
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:23 mismatched input '<EOF>' expecting {'}', Type, Modifier}\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testNamedEmptyInterface() throws Exception
 	{
 		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");

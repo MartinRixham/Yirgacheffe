@@ -12,11 +12,16 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	private ClassWriter writer;
 
+	private ParseErrorListener errorListener;
+
 	private List<Error> errors = new ArrayList<>();
 
-	public YirgacheffeListener(ClassWriter writer)
+	public YirgacheffeListener(
+		ClassWriter writer,
+		ParseErrorListener errorListener)
 	{
 		this.writer = writer;
+		this.errorListener = errorListener;
 	}
 
 	@Override
@@ -144,7 +149,11 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	public CompilationResult getCompilationResult()
 	{
-		if (this.errors.size() > 0)
+		if (this.errorListener.hasError())
+		{
+			return new CompilationResult(this.errorListener.getErrors());
+		}
+		else if (this.errors.size() > 0)
 		{
 			return new CompilationResult(this.errors);
 		}
