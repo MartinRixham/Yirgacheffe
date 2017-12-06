@@ -60,7 +60,7 @@ public class YirgacheffeTest
 
 		assertTrue(spyOut.toString().length() == 0);
 		assertEquals(
-			"Declaration should be of class or interface.\n",
+			"line 1:0 Declaration should be of class or interface.\n",
 			spyError.toString());
 
 		System.setOut(originalOut);
@@ -95,7 +95,9 @@ public class YirgacheffeTest
 		CompilationResult result = yirgacheffe.compile();
 
 		assertFalse(result.isSuccessful());
-		assertEquals("Declaration should be of class or interface.", result.getErrors());
+		assertEquals(
+			"line 1:0 Declaration should be of class or interface.",
+			result.getErrors());
 	}
 
 	@Test

@@ -6,9 +6,9 @@ typeDeclaration: classDeclaration |	interfaceDeclaration;
 
 classDeclaration: 'class' Identifier '{' fieldDeclaration* '}';
 
-interfaceDeclaration: 'interface' Identifier '{' '}';
-
 fieldDeclaration: Type Identifier ';';
+
+interfaceDeclaration: 'interface' Identifier '{' '}';
 
 Type: 'int' | 'String';
 

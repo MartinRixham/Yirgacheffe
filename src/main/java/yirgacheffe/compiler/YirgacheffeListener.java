@@ -1,5 +1,6 @@
 package yirgacheffe.compiler;
 
+import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeBaseListener;
@@ -26,7 +27,13 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		if (context.classDeclaration() == null &&
 			context.interfaceDeclaration() == null)
 		{
-			this.errors.add("Declaration should be of class or interface.");
+			Token start = context.getStart();
+			int line = start.getLine();
+			int index = start.getStartIndex();
+
+			this.errors.add(
+				"line " + line + ":" + index +
+				" Declaration should be of class or interface.");
 		}
 	}
 
