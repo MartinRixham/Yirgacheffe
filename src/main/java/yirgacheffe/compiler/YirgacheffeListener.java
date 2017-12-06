@@ -57,15 +57,22 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	public void enterInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
-		String className = context.Identifier().getText();
+		if (context.Identifier() == null)
+		{
+			this.errors.add(new Error(context, "Interface identifier expected."));
+		}
+		else
+		{
+			String className = context.Identifier().getText();
 
-		this.writer.visit(
-			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			className,
-			null,
-			"java/lang/Object",
-			null);
+			this.writer.visit(
+				Opcodes.V1_8,
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
+				className,
+				null,
+				"java/lang/Object",
+				null);
+		}
 	}
 
 	@Override

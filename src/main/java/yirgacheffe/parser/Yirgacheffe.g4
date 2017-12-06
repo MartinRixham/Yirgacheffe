@@ -8,7 +8,7 @@ classDeclaration: 'class' Identifier? '{' fieldDeclaration* '}';
 
 fieldDeclaration: Type? Identifier ';';
 
-interfaceDeclaration: 'interface' Identifier '{' interfaceFieldDeclaration* '}';
+interfaceDeclaration: 'interface' Identifier? '{' interfaceFieldDeclaration* '}';
 
 interfaceFieldDeclaration: Type Identifier ';';
 
@@ -22,7 +22,7 @@ Letter: [a-zA-Z$_];
 fragment
 LetterOrDigit: [a-zA-Z0-9$_];
 
-WS: [ \t\r\n\u000C]+ -> skip;
+WHITE_SPACE: [ \t\r\n\u000C]+ -> skip;
 
 COMMENT: '/*' .*? '*/' -> skip;
 

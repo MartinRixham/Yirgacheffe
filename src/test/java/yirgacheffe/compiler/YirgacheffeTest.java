@@ -252,6 +252,24 @@ public class YirgacheffeTest
 	}
 
 	@Test
+	public void testInterfaceWithMissingIdentifier() throws Exception
+	{
+		String source =
+			"interface\n" +
+				"{\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Interface identifier expected.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testClassWithMissingIdentifier() throws Exception
 	{
 		String source =
