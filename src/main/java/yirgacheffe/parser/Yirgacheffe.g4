@@ -4,11 +4,9 @@ compilationUnit: typeDeclaration EOF;
 
 typeDeclaration: classDeclaration |	interfaceDeclaration;
 
-classDeclaration: 'class' Identifier body;
+classDeclaration: 'class' Identifier '{' fieldDeclaration* '}';
 
-interfaceDeclaration: 'interface' Identifier body;
-
-body: '{' fieldDeclaration? '}';
+interfaceDeclaration: 'interface' Identifier '{' '}';
 
 fieldDeclaration: Type Identifier ';';
 

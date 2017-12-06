@@ -81,6 +81,7 @@ public class YirgacheffeTest
 
 		int access = Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
 
+		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface", classNode.name);
 		assertEquals(access, classNode.access);
 		assertEquals(0, classNode.fields.size());
@@ -133,12 +134,9 @@ public class YirgacheffeTest
 
 		reader.accept(classNode, 0);
 
-		assertTrue(result.isSuccessful());
-		assertEquals("MyClass", classNode.name);
-		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
-
 		List<FieldNode> fields = classNode.fields;
 
+		assertTrue(result.isSuccessful());
 		assertEquals(1, fields.size());
 
 		FieldNode firstField = fields.get(0);
@@ -166,12 +164,9 @@ public class YirgacheffeTest
 
 		reader.accept(classNode, 0);
 
-		assertTrue(result.isSuccessful());
-		assertEquals("MyClass", classNode.name);
-		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
-
 		List<FieldNode> fields = classNode.fields;
 
+		assertTrue(result.isSuccessful());
 		assertEquals(1, fields.size());
 
 		FieldNode firstField = fields.get(0);
@@ -179,5 +174,40 @@ public class YirgacheffeTest
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
 		assertEquals("Ljava/lang/String;", firstField.desc);
 		assertEquals("myStringField", firstField.name);
+	}
+
+	@Test
+	public void testClassWithIntegerAndStringFields() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"int myIntegerField;\n" +
+				"String myStringField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+
+		assertTrue(result.isSuccessful());
+		assertEquals(2, fields.size());
+
+		FieldNode firstField = fields.get(0);
+
+		assertEquals("I", firstField.desc);
+		assertEquals("myIntegerField", firstField.name);
+
+		FieldNode secondField = fields.get(1);
+
+		assertEquals("Ljava/lang/String;", secondField.desc);
+		assertEquals("myStringField", secondField.name);
 	}
 }
