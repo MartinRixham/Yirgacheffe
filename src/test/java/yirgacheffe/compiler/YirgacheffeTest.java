@@ -383,4 +383,34 @@ public class YirgacheffeTest
 			"line 3:13 Expected type before argument identifier\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testClassWithMethod() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"int myMethod(String param1, int param2) {}\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertTrue(result.isSuccessful());
+		assertEquals(1, methods.size());
+
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
+		assertEquals("myMethod", firstMethod.name);
+		assertEquals("myMethod", firstMethod.name);
+	}
 }

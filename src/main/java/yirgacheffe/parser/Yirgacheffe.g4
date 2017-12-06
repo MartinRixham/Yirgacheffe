@@ -4,7 +4,15 @@ compilationUnit: typeDeclaration EOF;
 
 typeDeclaration: classDeclaration |	interfaceDeclaration;
 
-classDeclaration: 'class' Identifier? '{' fieldDeclaration* '}';
+classDeclaration:
+    'class' Identifier?
+    '{'
+        fieldDeclaration*
+        classMethodDeclaration*
+    '}';
+
+classMethodDeclaration:
+    methodDeclaration '{' '}';
 
 fieldDeclaration: Type? Identifier ';';
 
@@ -18,7 +26,10 @@ interfaceDeclaration:
 interfaceFieldDeclaration: Type Identifier ';';
 
 interfaceMethodDeclaration:
-    Modifier? Type Identifier '(' parameter? (',' parameter)* ')' ';';
+     methodDeclaration ';';
+
+methodDeclaration:
+    Modifier? Type Identifier '(' parameter? (',' parameter)* ')';
 
 parameter: Type? Identifier;
 

@@ -108,8 +108,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterInterfaceMethodDeclaration(
-		YirgacheffeParser.InterfaceMethodDeclarationContext context)
+	public void enterMethodDeclaration(
+		YirgacheffeParser.MethodDeclarationContext context)
 	{
 		if (context.Modifier() == null)
 		{
