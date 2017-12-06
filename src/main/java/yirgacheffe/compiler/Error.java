@@ -9,9 +9,13 @@ public class Error
 
 	public Error(ParserRuleContext context, String message)
 	{
-		Token start = context.getStart();
-		int line = start.getLine();
-		int index = start.getCharPositionInLine();
+		this(context.getStart(), message);
+	}
+
+	public Error(Token token, String message)
+	{
+		int line = token.getLine();
+		int index = token.getCharPositionInLine();
 
 		this.error = "line " + line + ":" + index + " " + message;
 	}

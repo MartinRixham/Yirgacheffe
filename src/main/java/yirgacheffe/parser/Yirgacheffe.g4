@@ -4,7 +4,7 @@ compilationUnit: typeDeclaration EOF;
 
 typeDeclaration: classDeclaration |	interfaceDeclaration;
 
-classDeclaration: 'class' Identifier '{' fieldDeclaration* '}';
+classDeclaration: 'class' Identifier? '{' fieldDeclaration* '}';
 
 fieldDeclaration: Type? Identifier ';';
 

@@ -250,4 +250,23 @@ public class YirgacheffeTest
 			"line 3:1 Field declaration should start with type.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testClassWithMissingIdentifier() throws Exception
+	{
+		String source =
+			"class\n" +
+				"{\n" +
+				" int myField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Class identifier expected.\n",
+			result.getErrors());
+	}
 }

@@ -35,15 +35,22 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	public void enterClassDeclaration(
 		YirgacheffeParser.ClassDeclarationContext context)
 	{
-		String className = context.Identifier().getText();
+		if (context.Identifier() == null)
+		{
+			this.errors.add(new Error(context, "Class identifier expected."));
+		}
+		else
+		{
+			String className = context.Identifier().getText();
 
-		this.writer.visit(
-			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-			className,
-			null,
-			"java/lang/Object",
-			null);
+			this.writer.visit(
+				Opcodes.V1_8,
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+				className,
+				null,
+				"java/lang/Object",
+				null);
+		}
 	}
 
 	@Override
@@ -66,8 +73,10 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.Type() == null)
 		{
-			this.errors.add(
-				new Error(context, "Field declaration should start with type."));
+			Error error =
+				new Error(context, "Field declaration should start with type.");
+
+			this.errors.add(error);
 		}
 		else
 		{
