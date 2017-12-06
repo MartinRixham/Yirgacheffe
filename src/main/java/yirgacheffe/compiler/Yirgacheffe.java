@@ -54,7 +54,7 @@ public final class Yirgacheffe
 		}
 		else
 		{
-			System.err.println(result.getErrors());
+			System.err.print(result.getErrors());
 		}
 	}
 }

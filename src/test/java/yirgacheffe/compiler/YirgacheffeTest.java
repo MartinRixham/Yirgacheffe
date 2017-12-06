@@ -96,7 +96,7 @@ public class YirgacheffeTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 1:0 Declaration should be of class or interface.",
+			"line 1:0 Declaration should be of class or interface.\n",
 			result.getErrors());
 	}
 
@@ -227,6 +227,8 @@ public class YirgacheffeTest
 		CompilationResult result = yirgacheffe.compile();
 
 		assertFalse(result.isSuccessful());
-		assertEquals("line 3:3 Interface cannot contain field.", result.getErrors());
+		assertEquals(
+			"line 3:2 Interface cannot contain field.\n",
+			result.getErrors());
 	}
 }

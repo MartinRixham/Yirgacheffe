@@ -6,14 +6,14 @@ public class CompilationResult
 {
 	private byte[] bytecode;
 
-	private List<String> errors;
+	private List<Error> errors;
 
 	public CompilationResult(byte[] bytecode)
 	{
 		this.bytecode = bytecode;
 	}
 
-	public CompilationResult(List<String> errors)
+	public CompilationResult(List<Error> errors)
 	{
 		this.errors = errors;
 	}
@@ -30,6 +30,13 @@ public class CompilationResult
 
 	public String getErrors()
 	{
-		return String.join(" ", this.errors);
+		String errors = "";
+
+		for (Error error: this.errors)
+		{
+			errors += error.toString() + "\n";
+		}
+
+		return errors;
 	}
 }

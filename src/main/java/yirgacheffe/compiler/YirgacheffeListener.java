@@ -1,6 +1,5 @@
 package yirgacheffe.compiler;
 
-import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeBaseListener;
@@ -13,7 +12,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	private ClassWriter writer;
 
-	private List<String> errors = new ArrayList<>();
+	private List<Error> errors = new ArrayList<>();
 
 	public YirgacheffeListener(ClassWriter writer)
 	{
@@ -27,13 +26,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		if (context.classDeclaration() == null &&
 			context.interfaceDeclaration() == null)
 		{
-			Token start = context.getStart();
-			int line = start.getLine();
-			int index = start.getTokenIndex();
-
 			this.errors.add(
-				"line " + line + ":" + index +
-				" Declaration should be of class or interface.");
+				new Error(context, "Declaration should be of class or interface."));
 		}
 	}
 
@@ -81,13 +75,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	public void enterInterfaceFieldDeclaration(
 		YirgacheffeParser.InterfaceFieldDeclarationContext context)
 	{
-		Token start = context.getStart();
-		int line = start.getLine();
-		int index = start.getTokenIndex();
-
-		this.errors.add(
-			"line " + line + ":" + index +
-				" Interface cannot contain field.");
+		this.errors.add(new Error(context, "Interface cannot contain field."));
 	}
 
 	public CompilationResult getCompilationResult()
