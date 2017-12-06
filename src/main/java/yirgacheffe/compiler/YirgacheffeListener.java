@@ -27,7 +27,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			context.interfaceDeclaration() == null)
 		{
 			this.errors.add(
-				new Error(context, "Declaration should be of class or interface."));
+				new Error(context, "Expected declaration of class or interface."));
 		}
 	}
 
@@ -105,6 +105,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		YirgacheffeParser.InterfaceFieldDeclarationContext context)
 	{
 		this.errors.add(new Error(context, "Interface cannot contain field."));
+	}
+
+	@Override
+	public void enterInterfaceMethodDeclaration(
+		YirgacheffeParser.InterfaceMethodDeclarationContext context)
+	{
+		this.writer.visitMethod(
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
+			"myMethod",
+			"()I",
+			null,
+			null);
 	}
 
 	public CompilationResult getCompilationResult()

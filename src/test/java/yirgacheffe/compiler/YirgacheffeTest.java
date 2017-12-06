@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -60,7 +61,7 @@ public class YirgacheffeTest
 
 		assertTrue(spyOut.toString().length() == 0);
 		assertEquals(
-			"line 1:0 Declaration should be of class or interface.\n",
+			"line 1:0 Expected declaration of class or interface.\n",
 			spyError.toString());
 
 		System.setOut(originalOut);
@@ -96,7 +97,7 @@ public class YirgacheffeTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 1:0 Declaration should be of class or interface.\n",
+			"line 1:0 Expected declaration of class or interface.\n",
 			result.getErrors());
 	}
 
@@ -286,5 +287,35 @@ public class YirgacheffeTest
 		assertEquals(
 			"line 1:0 Class identifier expected.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceWithMethod() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"int myMethod();\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertTrue(result.isSuccessful());
+		assertEquals(1, methods.size());
+
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT, firstMethod.access);
+		assertEquals("()I", firstMethod.desc);
+		assertEquals("myMethod", firstMethod.name);
 	}
 }
