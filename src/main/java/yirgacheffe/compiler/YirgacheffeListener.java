@@ -64,11 +64,24 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	@Override
 	public void enterFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
 	{
-		Type type = Type.parse(context.Type().getSymbol().getText());
-		String identifier = context.Identifier().getSymbol().getText();
+		if (context.Type() == null)
+		{
+			this.errors.add(
+				new Error(context, "Field declaration should start with type."));
+		}
+		else
+		{
+			Type type = Type.parse(context.Type().getSymbol().getText());
+			String identifier = context.Identifier().getSymbol().getText();
 
-		this.writer
-			.visitField(Opcodes.ACC_PRIVATE, identifier, type.getJVMType(), null, null);
+			this.writer
+				.visitField(
+					Opcodes.ACC_PRIVATE,
+					identifier,
+					type.getJVMType(),
+					null,
+					null);
+		}
 	}
 
 	@Override

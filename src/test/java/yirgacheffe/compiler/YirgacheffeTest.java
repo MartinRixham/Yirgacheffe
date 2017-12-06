@@ -231,4 +231,23 @@ public class YirgacheffeTest
 			"line 3:2 Interface cannot contain field.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testClassFieldWithMissingType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				" myField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:1 Field declaration should start with type.\n",
+			result.getErrors());
+	}
 }

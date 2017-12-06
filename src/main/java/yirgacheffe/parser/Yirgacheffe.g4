@@ -6,11 +6,11 @@ typeDeclaration: classDeclaration |	interfaceDeclaration;
 
 classDeclaration: 'class' Identifier '{' fieldDeclaration* '}';
 
-fieldDeclaration: Type Identifier ';';
+fieldDeclaration: Type? Identifier ';';
 
 interfaceDeclaration: 'interface' Identifier '{' interfaceFieldDeclaration* '}';
 
-interfaceFieldDeclaration: fieldDeclaration;
+interfaceFieldDeclaration: Type Identifier ';';
 
 Type: 'int' | 'String';
 
