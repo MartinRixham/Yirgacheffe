@@ -8,7 +8,11 @@ classDeclaration: 'class' Identifier body;
 
 interfaceDeclaration: 'interface' Identifier body;
 
-body: '{' Identifier '}';
+body: '{' fieldDeclaration? '}';
+
+fieldDeclaration: Type Identifier ';';
+
+Type: 'int' | 'String';
 
 Identifier: Letter LetterOrDigit*;
 

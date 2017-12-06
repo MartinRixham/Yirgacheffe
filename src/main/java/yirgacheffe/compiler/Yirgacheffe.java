@@ -1,6 +1,5 @@
 package yirgacheffe.compiler;
 
-
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,15 +14,10 @@ import java.io.InputStream;
 
 public final class Yirgacheffe
 {
-	private String[] sourceTokens;
-
 	private String source;
-
-	private static final int LENGTH_OF_NON_EMPTY_BLOCK = 3;
 
 	public Yirgacheffe(String source)
 	{
-		this.sourceTokens = source.split("\\s+");
 		this.source = source;
 	}
 

@@ -143,8 +143,9 @@ public class YirgacheffeTest
 
 		FieldNode firstField = fields.get(0);
 
-		assertEquals("myField", firstField.name);
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+		assertEquals("I", firstField.desc);
+		assertEquals("myField", firstField.name);
 	}
 
 	@Test
@@ -175,7 +176,8 @@ public class YirgacheffeTest
 
 		FieldNode firstField = fields.get(0);
 
-		assertEquals("myStringField", firstField.name);
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+		assertEquals("Ljava/lang/String;", firstField.desc);
+		assertEquals("myStringField", firstField.name);
 	}
 }

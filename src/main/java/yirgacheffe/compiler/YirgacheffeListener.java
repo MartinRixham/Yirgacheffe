@@ -61,20 +61,13 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterBody(YirgacheffeParser.BodyContext context)
+	public void enterFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
 	{
+		Type type = Type.parse(context.Type().getSymbol().getText());
 		String identifier = context.Identifier().getSymbol().getText();
 
-		if (identifier.equals("int"))
-		{
-			this.writer
-				.visitField(Opcodes.ACC_PRIVATE, "myField", "I", null, null);
-		}
-		else if (identifier.equals("String"))
-		{
-			this.writer
-				.visitField(Opcodes.ACC_PRIVATE, "myStringField", "I", null, null);
-		}
+		this.writer
+			.visitField(Opcodes.ACC_PRIVATE, identifier, type.getJVMType(), null, null);
 	}
 
 	public CompilationResult getCompilationResult()
