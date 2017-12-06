@@ -29,7 +29,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		{
 			Token start = context.getStart();
 			int line = start.getLine();
-			int index = start.getStartIndex();
+			int index = start.getTokenIndex();
 
 			this.errors.add(
 				"line " + line + ":" + index +
@@ -75,6 +75,19 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 		this.writer
 			.visitField(Opcodes.ACC_PRIVATE, identifier, type.getJVMType(), null, null);
+	}
+
+	@Override
+	public void enterInterfaceFieldDeclaration(
+		YirgacheffeParser.InterfaceFieldDeclarationContext context)
+	{
+		Token start = context.getStart();
+		int line = start.getLine();
+		int index = start.getTokenIndex();
+
+		this.errors.add(
+			"line " + line + ":" + index +
+				" Interface cannot contain field.");
 	}
 
 	public CompilationResult getCompilationResult()

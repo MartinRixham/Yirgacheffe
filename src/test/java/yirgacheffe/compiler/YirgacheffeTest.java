@@ -212,4 +212,21 @@ public class YirgacheffeTest
 		assertEquals("Ljava/lang/String;", secondField.desc);
 		assertEquals("myStringField", secondField.name);
 	}
+
+	@Test
+	public void testInterfaceWithField() throws Exception
+	{
+		String source =
+			"interface MyClass\n" +
+				"{\n" +
+				"  int myField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 3:3 Interface cannot contain field.", result.getErrors());
+	}
 }
