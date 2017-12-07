@@ -20,7 +20,7 @@ public class MethodTest
 		String source =
 			"interface MyInterface\n" +
 				"{\n" +
-				"int myMethod();\n" +
+				"num myMethod();\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -41,7 +41,7 @@ public class MethodTest
 		MethodNode firstMethod = methods.get(0);
 
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT, firstMethod.access);
-		assertEquals("()I", firstMethod.desc);
+		assertEquals("()D", firstMethod.desc);
 		assertEquals("myMethod", firstMethod.name);
 	}
 
@@ -51,7 +51,7 @@ public class MethodTest
 		String source =
 			"interface MyInterface\n" +
 				"{\n" +
-				"public int myInterfaceMethod();\n" +
+				"public num myInterfaceMethod();\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -71,7 +71,7 @@ public class MethodTest
 		String source =
 			"interface MyInterface\n" +
 				"{\n" +
-				"int myParameterisedMethod(String param1, int param2);\n" +
+				"num myParameterisedMethod(String param1, num param2);\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -88,7 +88,7 @@ public class MethodTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
+		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
 		assertEquals("myParameterisedMethod", firstMethod.name);
 	}
 
@@ -98,7 +98,7 @@ public class MethodTest
 		String source =
 			"interface MyInterface\n" +
 				"{\n" +
-				"int myMethod(param1, int param2);\n" +
+				"num myMethod(param1, num param2);\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -117,7 +117,7 @@ public class MethodTest
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-				"int myMethod(String param1, int param2) {}\n" +
+				"num myMethod(String param1, num param2) {}\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -137,7 +137,7 @@ public class MethodTest
 
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
+		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
 		assertEquals("myMethod", firstMethod.name);
 		assertEquals("myMethod", firstMethod.name);
 	}

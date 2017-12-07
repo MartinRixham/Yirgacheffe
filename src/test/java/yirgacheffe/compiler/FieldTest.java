@@ -15,12 +15,12 @@ import static org.junit.Assert.assertEquals;
 public class FieldTest
 {
 	@Test
-	public void testClassWithIntegerField() throws Exception
+	public void testClassWithNumberField() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-					"int myField;\n" +
+					"num myField;\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -41,7 +41,7 @@ public class FieldTest
 		FieldNode firstField = fields.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
-		assertEquals("I", firstField.desc);
+		assertEquals("D", firstField.desc);
 		assertEquals("myField", firstField.name);
 	}
 
@@ -77,12 +77,12 @@ public class FieldTest
 	}
 
 	@Test
-	public void testClassWithIntegerAndStringFields() throws Exception
+	public void testClassWithNumberAndStringFields() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-				"int myIntegerField;\n" +
+				"num myNumberField;\n" +
 				"String myStringField;\n" +
 				"}";
 
@@ -103,8 +103,8 @@ public class FieldTest
 
 		FieldNode firstField = fields.get(0);
 
-		assertEquals("I", firstField.desc);
-		assertEquals("myIntegerField", firstField.name);
+		assertEquals("D", firstField.desc);
+		assertEquals("myNumberField", firstField.name);
 
 		FieldNode secondField = fields.get(1);
 
@@ -118,7 +118,7 @@ public class FieldTest
 		String source =
 			"interface MyClass\n" +
 				"{\n" +
-				"  int myField;\n" +
+				"  num myField;\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);

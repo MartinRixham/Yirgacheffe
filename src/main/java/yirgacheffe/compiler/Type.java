@@ -2,7 +2,7 @@ package yirgacheffe.compiler;
 
 public enum Type
 {
-	INTEGER("I"),
+	INTEGER("D"),
 
 	STRING("Ljava/lang/String;");
 
@@ -10,7 +10,7 @@ public enum Type
 
 	public static Type parse(String yirgacheffeType)
 	{
-		if (yirgacheffeType.equals("int"))
+		if (yirgacheffeType.equals("num"))
 		{
 			return Type.INTEGER;
 		}

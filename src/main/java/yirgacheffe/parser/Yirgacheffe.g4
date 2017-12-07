@@ -11,7 +11,7 @@ malformedDeclaration:
     '}';
 
 classDeclaration:
-    'class' Identifier?
+    Class Identifier?
     '{'
         fieldDeclaration*
         classMethodDeclaration*
@@ -22,7 +22,7 @@ classMethodDeclaration: methodDeclaration '{' '}';
 fieldDeclaration: type? Identifier ';';
 
 interfaceDeclaration:
-    'interface' Identifier?
+    Interface Identifier?
     '{'
         interfaceFieldDeclaration*
         interfaceMethodDeclaration*
@@ -38,8 +38,10 @@ parameter: type? Identifier;
 
 type: Identifier | PrimitiveType;
 
-PrimitiveType: 'bool' | 'char' | 'int';
-
+// Keywords
+Class: 'class';
+Interface: 'interface';
+PrimitiveType: 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 
 Identifier: Letter LetterOrDigit*;
