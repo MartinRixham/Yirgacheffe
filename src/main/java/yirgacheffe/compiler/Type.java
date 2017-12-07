@@ -1,32 +1,23 @@
 package yirgacheffe.compiler;
 
-public enum Type
+public class Type
 {
-	INTEGER("D"),
+	private String name;
 
-	STRING("Ljava/lang/String;");
-
-	private String jvmType;
-
-	public static Type parse(String yirgacheffeType)
+	public Type(String name)
 	{
-		if (yirgacheffeType.equals("num"))
-		{
-			return Type.INTEGER;
-		}
-		else
-		{
-			return Type.STRING;
-		}
-	}
-
-	Type(String jvmType)
-	{
-		this.jvmType = jvmType;
+		this.name = name;
 	}
 
 	public String getJVMType()
 	{
-		return this.jvmType;
+		if (this.name.equals("num"))
+		{
+			return "D";
+		}
+		else
+		{
+			return "Ljava/lang/" + this.name + ";";
+		}
 	}
 }

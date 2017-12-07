@@ -40,7 +40,7 @@ parameter: type? Identifier;
 
 type: Identifier | PrimitiveType;
 
-// Keywords
+// keywords
 Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'bool' | 'char' | 'num';

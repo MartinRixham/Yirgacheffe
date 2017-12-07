@@ -23,7 +23,7 @@ public class FieldListener extends ClassListener
 		}
 		else
 		{
-			Type type = Type.parse(context.type().getText());
+			Type type = new Type(context.type().getText());
 			String identifier = context.Identifier().getText();
 
 			this.writer

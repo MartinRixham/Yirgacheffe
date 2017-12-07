@@ -200,4 +200,43 @@ public class MethodTest
 				"at start of method declaration.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testClassWithTwoMethods() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"public num myMethod(String param1, num param2) {}\n" +
+				"public String buildString(StringBuilder builder) {}\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(3, methods.size());
+
+		MethodNode secondMethod = methods.get(1);
+
+		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
+		assertEquals("myMethod", secondMethod.name);
+
+		MethodNode thirdMethod = methods.get(2);
+
+		assertEquals(
+			"(Ljava/lang/StringBuilder;)Ljava/lang/String;",
+			thirdMethod.desc);
+
+		assertEquals("buildString", thirdMethod.name);
+	}
 }
