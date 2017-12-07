@@ -32,7 +32,9 @@ interfaceFieldDeclaration: type Identifier ';';
 
 interfaceMethodDeclaration: methodDeclaration ';';
 
-methodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
+methodDeclaration: modifier? type Identifier '(' parameter? (',' parameter)* ')';
+
+modifier: Public | Private ;
 
 parameter: type? Identifier;
 
@@ -42,7 +44,9 @@ type: Identifier | PrimitiveType;
 Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'bool' | 'char' | 'num';
-Modifier: 'public' | 'private';
+Public: 'public';
+Private: 'private';
+
 
 Identifier: Letter LetterOrDigit*;
 

@@ -78,10 +78,10 @@ public class MainTest
 		Yirgacheffe.main(new String[] {"interface MyInterface {"});
 
 		assertTrue(spyOut.toString().length() == 0);
+		assertEquals(1, spyError.toString().split("\n").length);
 		assertEquals(
-			"line 1:23 mismatched input '<EOF>' expecting " +
-				"{'}', PrimitiveType, Modifier, Identifier}\n",
-			spyError.toString());
+			"line 1:23 mismatched input",
+			spyError.toString().substring(0, 26));
 
 		System.setOut(originalOut);
 		System.setErr(originalError);

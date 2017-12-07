@@ -112,12 +112,12 @@ public class MethodTest
 	}
 
 	@Test
-	public void testClassWithMethod() throws Exception
+	public void testClassWithPublicMethod() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-				"num myMethod(String param1, num param2) {}\n" +
+				"public num myMethod(String param1, num param2) {}\n" +
 				"}";
 
 		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
@@ -138,7 +138,38 @@ public class MethodTest
 		MethodNode firstMethod = methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, firstMethod.access);
 		assertEquals("myMethod", firstMethod.name);
+	}
+
+	@Test
+	public void testClassWithPrivateMethod() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"private num myMethod(String param1, num param2) {}\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(1, methods.size());
+
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
+		assertEquals(Opcodes.ACC_PRIVATE, firstMethod.access);
 		assertEquals("myMethod", firstMethod.name);
 	}
 }

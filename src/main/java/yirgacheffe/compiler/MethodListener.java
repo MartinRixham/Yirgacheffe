@@ -12,17 +12,20 @@ public class MethodListener extends FieldListener
 	}
 
 	@Override
-	public void enterMethodDeclaration(
-		YirgacheffeParser.MethodDeclarationContext context)
+	public void enterInterfaceMethodDeclaration(
+		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		if (context.Modifier() == null)
+		YirgacheffeParser.MethodDeclarationContext methodContext =
+			context.methodDeclaration();
+
+		if (methodContext.modifier() == null)
 		{
 			MethodDescriptor descriptor =
-				new MethodDescriptor(context.parameter(), context.type());
+				new MethodDescriptor(methodContext.parameter(), methodContext.type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				context.Identifier().getText(),
+				methodContext.Identifier().getText(),
 				descriptor.toString(),
 				null,
 				null);
@@ -36,6 +39,26 @@ public class MethodListener extends FieldListener
 
 			this.errors.add(error);
 		}
+	}
+
+	@Override
+	public void enterClassMethodDeclaration(
+		YirgacheffeParser.ClassMethodDeclarationContext context)
+	{
+		YirgacheffeParser.MethodDeclarationContext methodContext =
+			context.methodDeclaration();
+
+		YirgacheffeParser.ModifierContext modifier = methodContext.modifier();
+
+		MethodDescriptor descriptor =
+			new MethodDescriptor(methodContext.parameter(), methodContext.type());
+
+		this.writer.visitMethod(
+			modifier.Public() == null ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+			methodContext.Identifier().getText(),
+			descriptor.toString(),
+			null,
+			null);
 	}
 
 	@Override

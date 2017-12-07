@@ -19,10 +19,10 @@ public class ClassTest
 		CompilationResult result = yirgacheffe.compile();
 
 		assertFalse(result.isSuccessful());
+		assertEquals(1, result.getErrors().split("\n").length);
 		assertEquals(
-			"line 1:23 mismatched input '<EOF>' expecting " +
-				"{'}', PrimitiveType, Modifier, Identifier}\n",
-			result.getErrors());
+			"line 1:23 mismatched input",
+			result.getErrors().substring(0, 26));
 	}
 
 	@Test
@@ -76,6 +76,16 @@ public class ClassTest
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());
+
+		/*List<MethodNode> methods = classNode.methods;
+
+		assertEquals(1, methods.size());
+
+		MethodNode constructor = methods.get(0);
+
+		assertEquals("()V", constructor.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
+		assertEquals("<init>", constructor.name);*/
 	}
 
 	@Test
