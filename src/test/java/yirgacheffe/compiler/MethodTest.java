@@ -133,13 +133,17 @@ public class MethodTest
 
 		List<MethodNode> methods = classNode.methods;
 
-		assertEquals(1, methods.size());
+		assertEquals(2, methods.size());
 
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
-		assertEquals(Opcodes.ACC_PUBLIC, firstMethod.access);
-		assertEquals("myMethod", firstMethod.name);
+		assertEquals("<init>", firstMethod.name);
+
+		MethodNode secondMethod = methods.get(1);
+
+		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, secondMethod.access);
+		assertEquals("myMethod", secondMethod.name);
 	}
 
 	@Test
@@ -164,12 +168,16 @@ public class MethodTest
 
 		List<MethodNode> methods = classNode.methods;
 
-		assertEquals(1, methods.size());
+		assertEquals(2, methods.size());
 
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
-		assertEquals(Opcodes.ACC_PRIVATE, firstMethod.access);
-		assertEquals("myMethod", firstMethod.name);
+		assertEquals("<init>", firstMethod.name);
+
+		MethodNode secondMethod = methods.get(1);
+
+		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
+		assertEquals(Opcodes.ACC_PRIVATE, secondMethod.access);
+		assertEquals("myMethod", secondMethod.name);
 	}
 }

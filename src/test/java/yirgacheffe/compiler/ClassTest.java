@@ -4,6 +4,9 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -77,7 +80,7 @@ public class ClassTest
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());
 
-		/*List<MethodNode> methods = classNode.methods;
+		List<MethodNode> methods = classNode.methods;
 
 		assertEquals(1, methods.size());
 
@@ -85,7 +88,7 @@ public class ClassTest
 
 		assertEquals("()V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
-		assertEquals("<init>", constructor.name);*/
+		assertEquals("<init>", constructor.name);
 	}
 
 	@Test

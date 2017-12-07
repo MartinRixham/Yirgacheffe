@@ -38,7 +38,19 @@ public class ClassListener extends YirgacheffeListener
 				null,
 				"java/lang/Object",
 				null);
+
+			this.makeConstructor(this.writer);
 		}
+	}
+
+	private void makeConstructor(ClassWriter writer)
+	{
+		this.writer.visitMethod(
+			Opcodes.ACC_PUBLIC,
+			"<init>",
+			"()V",
+			null,
+			null);
 	}
 
 	@Override
