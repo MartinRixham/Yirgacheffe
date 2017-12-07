@@ -18,7 +18,7 @@ public class MethodListener extends FieldListener
 		if (context.Modifier() == null)
 		{
 			MethodDescriptor descriptor =
-				new MethodDescriptor(context.parameter(), context.Type());
+				new MethodDescriptor(context.parameter(), context.type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
@@ -41,7 +41,7 @@ public class MethodListener extends FieldListener
 	@Override
 	public void enterParameter(YirgacheffeParser.ParameterContext context)
 	{
-		if (context.Type() == null)
+		if (context.type() == null)
 		{
 			Error error =
 				new Error(context, "Expected type before argument identifier");

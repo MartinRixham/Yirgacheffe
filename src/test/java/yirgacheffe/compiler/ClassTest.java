@@ -20,7 +20,8 @@ public class ClassTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 1:23 mismatched input '<EOF>' expecting {'}', Type, Modifier}\n",
+			"line 1:23 mismatched input '<EOF>' expecting " +
+				"{'}', PrimitiveType, Modifier, Identifier}\n",
 			result.getErrors());
 	}
 
@@ -31,6 +32,8 @@ public class ClassTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -38,7 +41,6 @@ public class ClassTest
 
 		int access = Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
 
-		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface", classNode.name);
 		assertEquals(access, classNode.access);
 		assertEquals(0, classNode.fields.size());
@@ -64,12 +66,13 @@ public class ClassTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
 		reader.accept(classNode, 0);
 
-		assertTrue(result.isSuccessful());
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());

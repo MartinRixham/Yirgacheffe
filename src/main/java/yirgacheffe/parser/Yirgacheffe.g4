@@ -1,7 +1,6 @@
 grammar Yirgacheffe;
 
-compilationUnit:
-    (malformedDeclaration | classDeclaration | interfaceDeclaration) EOF;
+compilationUnit: (malformedDeclaration | classDeclaration | interfaceDeclaration) EOF;
 
 malformedDeclaration:
     Identifier Identifier?
@@ -18,10 +17,9 @@ classDeclaration:
         classMethodDeclaration*
     '}';
 
-classMethodDeclaration:
-    methodDeclaration '{' '}';
+classMethodDeclaration: methodDeclaration '{' '}';
 
-fieldDeclaration: Type? Identifier ';';
+fieldDeclaration: type? Identifier ';';
 
 interfaceDeclaration:
     'interface' Identifier?
@@ -30,17 +28,17 @@ interfaceDeclaration:
         interfaceMethodDeclaration*
     '}';
 
-interfaceFieldDeclaration: Type Identifier ';';
+interfaceFieldDeclaration: type Identifier ';';
 
-interfaceMethodDeclaration:
-     methodDeclaration ';';
+interfaceMethodDeclaration: methodDeclaration ';';
 
-methodDeclaration:
-    Modifier? Type Identifier '(' parameter? (',' parameter)* ')';
+methodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
 
-parameter: Type? Identifier;
+parameter: type? Identifier;
 
-Type: 'int' | 'String';
+type: Identifier | PrimitiveType;
+
+PrimitiveType: 'bool' | 'char' | 'int';
 
 Modifier: 'public' | 'private';
 

@@ -14,17 +14,9 @@ public enum Type
 		{
 			return Type.INTEGER;
 		}
-		else if (yirgacheffeType.equals("String"))
-		{
-			return Type.STRING;
-		}
 		else
 		{
-			String error =
-				"Failed to parse type: " +
-				yirgacheffeType + " is not a type.";
-
-			throw new YirgacheffeException(error);
+			return Type.STRING;
 		}
 	}
 

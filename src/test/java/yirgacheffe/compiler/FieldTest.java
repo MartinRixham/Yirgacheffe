@@ -27,6 +27,8 @@ public class FieldTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -34,7 +36,6 @@ public class FieldTest
 
 		List<FieldNode> fields = classNode.fields;
 
-		assertTrue(result.isSuccessful());
 		assertEquals(1, fields.size());
 
 		FieldNode firstField = fields.get(0);
@@ -57,6 +58,8 @@ public class FieldTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -64,7 +67,6 @@ public class FieldTest
 
 		List<FieldNode> fields = classNode.fields;
 
-		assertTrue(result.isSuccessful());
 		assertEquals(1, fields.size());
 
 		FieldNode firstField = fields.get(0);
@@ -88,6 +90,8 @@ public class FieldTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -95,7 +99,6 @@ public class FieldTest
 
 		List<FieldNode> fields = classNode.fields;
 
-		assertTrue(result.isSuccessful());
 		assertEquals(2, fields.size());
 
 		FieldNode firstField = fields.get(0);
@@ -144,6 +147,25 @@ public class FieldTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:1 Field declaration should start with type.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testFieldWithUnknownType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"Thingy myStringField;\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Unrecognised type: Thingy is not a type.\n",
 			result.getErrors());
 	}
 }

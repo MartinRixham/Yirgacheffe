@@ -14,7 +14,7 @@ public class FieldListener extends ClassListener
 	@Override
 	public void enterFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
 	{
-		if (context.Type() == null)
+		if (context.type() == null)
 		{
 			Error error =
 				new Error(context, "Field declaration should start with type.");
@@ -23,8 +23,8 @@ public class FieldListener extends ClassListener
 		}
 		else
 		{
-			Type type = Type.parse(context.Type().getSymbol().getText());
-			String identifier = context.Identifier().getSymbol().getText();
+			Type type = Type.parse(context.type().getText());
+			String identifier = context.Identifier().getText();
 
 			this.writer
 				.visitField(

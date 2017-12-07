@@ -27,6 +27,8 @@ public class MethodTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -34,7 +36,6 @@ public class MethodTest
 
 		List<MethodNode> methods = classNode.methods;
 
-		assertTrue(result.isSuccessful());
 		assertEquals(1, methods.size());
 
 		MethodNode firstMethod = methods.get(0);
@@ -77,6 +78,8 @@ public class MethodTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -85,7 +88,6 @@ public class MethodTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertTrue(result.isSuccessful());
 		assertEquals("(Ljava/lang/String;I)I", firstMethod.desc);
 		assertEquals("myParameterisedMethod", firstMethod.name);
 	}
@@ -122,6 +124,8 @@ public class MethodTest
 
 		CompilationResult result = yirgacheffe.compile();
 
+		assertTrue(result.isSuccessful());
+
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
 
@@ -129,7 +133,6 @@ public class MethodTest
 
 		List<MethodNode> methods = classNode.methods;
 
-		assertTrue(result.isSuccessful());
 		assertEquals(1, methods.size());
 
 		MethodNode firstMethod = methods.get(0);

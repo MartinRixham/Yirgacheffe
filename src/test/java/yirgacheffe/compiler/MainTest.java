@@ -79,7 +79,8 @@ public class MainTest
 
 		assertTrue(spyOut.toString().length() == 0);
 		assertEquals(
-			"line 1:23 mismatched input '<EOF>' expecting {'}', Type, Modifier}\n",
+			"line 1:23 mismatched input '<EOF>' expecting " +
+				"{'}', PrimitiveType, Modifier, Identifier}\n",
 			spyError.toString());
 
 		System.setOut(originalOut);

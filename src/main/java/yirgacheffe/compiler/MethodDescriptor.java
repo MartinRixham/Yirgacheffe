@@ -1,6 +1,5 @@
 package yirgacheffe.compiler;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.List;
@@ -9,11 +8,11 @@ public class MethodDescriptor
 {
 	private List<YirgacheffeParser.ParameterContext> parameters;
 
-	private TerminalNode returnType;
+	private YirgacheffeParser.TypeContext returnType;
 
 	public MethodDescriptor(
 		List<YirgacheffeParser.ParameterContext> arguments,
-		TerminalNode returnType)
+		YirgacheffeParser.TypeContext returnType)
 	{
 		this.parameters = arguments;
 		this.returnType = returnType;
@@ -26,7 +25,7 @@ public class MethodDescriptor
 
 		for (YirgacheffeParser.ParameterContext parameter : this.parameters)
 		{
-			TerminalNode type = parameter.Type();
+			YirgacheffeParser.TypeContext type = parameter.type();
 
 			if (type != null)
 			{
