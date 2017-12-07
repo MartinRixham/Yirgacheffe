@@ -107,7 +107,7 @@ public class MethodTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:13 Expected type before argument identifier\n",
+			"line 3:13 Expected type before argument identifier.\n",
 			result.getErrors());
 	}
 
@@ -179,5 +179,25 @@ public class MethodTest
 		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
 		assertEquals(Opcodes.ACC_PRIVATE, secondMethod.access);
 		assertEquals("myMethod", secondMethod.name);
+	}
+
+	@Test
+	public void testClassMethodWithMissingModifier() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"num myMethod(String param1, num param2) {}\n" +
+				"}";
+
+		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+
+		CompilationResult result = yirgacheffe.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Expected public or private access modifier " +
+				"at start of method declaration.\n",
+			result.getErrors());
 	}
 }

@@ -47,7 +47,6 @@ PrimitiveType: 'bool' | 'char' | 'num';
 Public: 'public';
 Private: 'private';
 
-
 Identifier: Letter LetterOrDigit*;
 
 fragment

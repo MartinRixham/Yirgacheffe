@@ -50,15 +50,26 @@ public class MethodListener extends FieldListener
 
 		YirgacheffeParser.ModifierContext modifier = methodContext.modifier();
 
-		MethodDescriptor descriptor =
-			new MethodDescriptor(methodContext.parameter(), methodContext.type());
+		if (modifier == null)
+		{
+			String message =
+				"Expected public or private access modifier " +
+				"at start of method declaration.";
 
-		this.writer.visitMethod(
-			modifier.Public() == null ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-			methodContext.Identifier().getText(),
-			descriptor.toString(),
-			null,
-			null);
+			this.errors.add(new Error(context, message));
+		}
+		else
+		{
+			MethodDescriptor descriptor =
+				new MethodDescriptor(methodContext.parameter(), methodContext.type());
+
+			this.writer.visitMethod(
+				modifier.Public() == null ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+				methodContext.Identifier().getText(),
+				descriptor.toString(),
+				null,
+				null);
+		}
 	}
 
 	@Override
@@ -67,7 +78,7 @@ public class MethodListener extends FieldListener
 		if (context.type() == null)
 		{
 			Error error =
-				new Error(context, "Expected type before argument identifier");
+				new Error(context, "Expected type before argument identifier.");
 
 			this.errors.add(error);
 		}
