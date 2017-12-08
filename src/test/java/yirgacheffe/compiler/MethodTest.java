@@ -241,4 +241,32 @@ public class MethodTest
 
 		assertEquals("buildString", thirdMethod.name);
 	}
+
+	@Test
+	public void testMethodWithImportedTypes() throws Exception
+	{
+		String source =
+			"import java.util.List;\n" +
+			"import java.util.Set;\n" +
+			"class MyClass\n" +
+				"{\n" +
+				"public Set myMethod(List param1) {}\n" +
+				"}";
+
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode method = methods.get(1);
+
+		assertEquals("(Ljava/util/List;)Ljava/util/Set;", method.desc);
+	}
 }

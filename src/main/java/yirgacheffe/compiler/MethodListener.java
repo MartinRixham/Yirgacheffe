@@ -4,6 +4,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.List;
+
 public class MethodListener extends FieldListener
 {
 	public MethodListener(
@@ -23,13 +25,13 @@ public class MethodListener extends FieldListener
 
 		if (methodContext.modifier() == null)
 		{
-			MethodDescriptor descriptor =
-				new MethodDescriptor(methodContext.parameter(), methodContext.type());
+			String descriptor =
+				this.getMethodDescriptor(methodContext.parameter(), methodContext.type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
 				methodContext.Identifier().getText(),
-				descriptor.toString(),
+				descriptor,
 				null,
 				null);
 		}
@@ -63,16 +65,58 @@ public class MethodListener extends FieldListener
 		}
 		else
 		{
-			MethodDescriptor descriptor =
-				new MethodDescriptor(methodContext.parameter(), methodContext.type());
+			String descriptor =
+				this.getMethodDescriptor(methodContext.parameter(), methodContext.type());
 
 			this.writer.visitMethod(
 				modifier.Public() == null ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				methodContext.Identifier().getText(),
-				descriptor.toString(),
+				descriptor,
 				null,
 				null);
 		}
+	}
+
+	private String getMethodDescriptor(
+		List<YirgacheffeParser.ParameterContext> parameters,
+		YirgacheffeParser.TypeContext returnType)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (YirgacheffeParser.ParameterContext parameter : parameters)
+		{
+			YirgacheffeParser.TypeContext typeContext = parameter.type();
+
+			if (typeContext != null)
+			{
+				Type type = this.getType(typeContext);
+
+				descriptor.append(type.toJVMType());
+			}
+		}
+
+		descriptor.append(")");
+		descriptor.append(this.getType(returnType).toJVMType());
+
+		return descriptor.toString();
+	}
+
+	private Type getType(YirgacheffeParser.TypeContext context)
+	{
+		String typeName = context.getText();
+		Type type;
+
+		if (context.simpleType() != null &&
+			this.importedTypes.containsKey(typeName))
+		{
+			type = this.importedTypes.get(typeName);
+		}
+		else
+		{
+			type = new Type(context);
+		}
+
+		return type;
 	}
 
 	@Override
