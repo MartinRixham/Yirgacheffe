@@ -1,1 +1,1 @@
-thingy MyInterface {}
+package example; thingy MyInterface {}

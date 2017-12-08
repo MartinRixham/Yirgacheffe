@@ -12,6 +12,13 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
+	public void enterPackageName(
+		YirgacheffeParser.PackageNameContext context)
+	{
+		this.packageName = context.getText();
+	}
+
+	@Override
 	public void enterMalformedDeclaration(
 		YirgacheffeParser.MalformedDeclarationContext context)
 	{

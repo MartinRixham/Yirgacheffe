@@ -15,6 +15,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected List<Error> errors = new ArrayList<>();
 
+	protected String packageName;
+
 	protected String className;
 
 	public YirgacheffeListener(
@@ -58,7 +60,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		}
 		else
 		{
-			String classFileName = this.className + ".class";
+			String classFileName;
+
+			if (this.packageName == null)
+			{
+				classFileName = this.className + ".class";
+			}
+			else
+			{
+				classFileName =
+					this.packageName.replace('.', '/') + "/" +
+					this.className + ".class";
+			}
 
 			return new CompilationResult(classFileName, this.writer.toByteArray());
 		}

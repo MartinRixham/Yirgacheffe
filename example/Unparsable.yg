@@ -1,1 +1,1 @@
-interface MyInterface {
+package example; interface MyInterface {

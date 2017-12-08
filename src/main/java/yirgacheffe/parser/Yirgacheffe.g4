@@ -1,6 +1,13 @@
 grammar Yirgacheffe;
 
-compilationUnit: (malformedDeclaration | classDeclaration | interfaceDeclaration) EOF;
+compilationUnit:
+    packageDeclaration?
+    (malformedDeclaration | classDeclaration | interfaceDeclaration)
+    EOF;
+
+packageDeclaration: Package packageName ';';
+
+packageName: Identifier ('.' Identifier)*;
 
 malformedDeclaration:
     Identifier Identifier?
@@ -41,6 +48,7 @@ parameter: type? Identifier;
 type: Identifier | PrimitiveType;
 
 // keywords
+Package: 'package';
 Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'bool' | 'char' | 'num';

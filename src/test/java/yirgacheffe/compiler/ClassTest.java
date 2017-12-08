@@ -134,4 +134,16 @@ public class ClassTest
 			"line 1:0 Class identifier expected.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testClassInPackage() throws Exception
+	{
+		String source = "package myPackage; class MyClass {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertTrue(result.isSuccessful());
+		assertEquals("myPackage/MyClass.class", result.getClassFileName());
+	}
 }

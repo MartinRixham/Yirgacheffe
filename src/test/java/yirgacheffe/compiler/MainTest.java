@@ -39,7 +39,7 @@ public class MainTest
 		Yirgacheffe.main(new String[] {"example/Malformed.yg"});
 
 		assertEquals(
-			"line 1:0 Expected declaration of class or interface.\n",
+			"line 1:17 Expected declaration of class or interface.\n",
 			spyError.toString());
 
 		System.setErr(originalError);
