@@ -6,6 +6,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -17,8 +19,9 @@ public class ClassTest
 	@Test
 	public void testParseError() throws Exception
 	{
-		Compiler compiler = new Compiler("interface MyInterface {");
-
+		String source = "interface MyInterface {";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -31,8 +34,9 @@ public class ClassTest
 	@Test
 	public void testNamedEmptyInterface() throws Exception
 	{
-		Compiler compiler = new Compiler("interface MyInterface {}");
-
+		String source = "interface MyInterface {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -52,8 +56,9 @@ public class ClassTest
 	@Test
 	public void testFailToDeclareClassOrInterface() throws Exception
 	{
-		Compiler compiler = new Compiler("thingy MyInterface {}");
-
+		String source = "thingy MyInterface {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -65,8 +70,9 @@ public class ClassTest
 	@Test
 	public void testNamedEmptyClass() throws Exception
 	{
-		Compiler compiler = new Compiler("class MyClass {}");
-
+		String source = "class MyClass {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -99,8 +105,8 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -117,8 +123,8 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());

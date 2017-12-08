@@ -26,7 +26,7 @@ public class MainTest
 		System.setOut(out);
 		System.setErr(error);
 
-		Yirgacheffe.main(new String[] {"class MyClass {}"});
+		Yirgacheffe.main(new String[] {"example/MyClass.yg"});
 
 		assertTrue(spyOut.toString().length() > 0);
 		assertTrue(spyError.toString().length() == 0);
@@ -50,7 +50,7 @@ public class MainTest
 		System.setOut(out);
 		System.setErr(error);
 
-		Yirgacheffe.main(new String[] {"thingy MyClass {}"});
+		Yirgacheffe.main(new String[] {"example/Malformed.yg"});
 
 		assertTrue(spyOut.toString().length() == 0);
 		assertEquals(
@@ -76,13 +76,13 @@ public class MainTest
 		System.setOut(out);
 		System.setErr(error);
 
-		Yirgacheffe.main(new String[] {"interface MyInterface {"});
+		Yirgacheffe.main(new String[] {"example/Unparsable.yg"});
 
 		assertTrue(spyOut.toString().length() == 0);
 		assertEquals(1, spyError.toString().split("\n").length);
 		assertEquals(
-			"line 1:23 mismatched input",
-			spyError.toString().substring(0, 26));
+			"line 2:0 mismatched input",
+			spyError.toString().substring(0, 25));
 
 		System.setOut(originalOut);
 		System.setErr(originalError);

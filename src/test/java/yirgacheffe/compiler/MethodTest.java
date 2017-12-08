@@ -6,6 +6,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -23,8 +25,8 @@ public class MethodTest
 				"num myMethod();\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -54,8 +56,8 @@ public class MethodTest
 				"public num myInterfaceMethod();\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -74,8 +76,8 @@ public class MethodTest
 				"num myParameterisedMethod(String param1, num param2);\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -101,8 +103,8 @@ public class MethodTest
 				"num myMethod(param1, num param2);\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -120,8 +122,8 @@ public class MethodTest
 				"public num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -155,8 +157,8 @@ public class MethodTest
 				"private num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -190,8 +192,8 @@ public class MethodTest
 				"num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -211,8 +213,8 @@ public class MethodTest
 				"public String buildString(StringBuilder builder) {}\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());

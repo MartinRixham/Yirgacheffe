@@ -6,6 +6,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -23,8 +25,8 @@ public class FieldTest
 					"num myField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -54,8 +56,8 @@ public class FieldTest
 					"String myStringField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -86,8 +88,8 @@ public class FieldTest
 				"String myStringField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -121,8 +123,8 @@ public class FieldTest
 				"  num myField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -140,8 +142,8 @@ public class FieldTest
 				" myField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -159,8 +161,8 @@ public class FieldTest
 				"Thingy myStringField;\n" +
 				"}";
 
-		Compiler compiler = new Compiler(source);
-
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler(inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());

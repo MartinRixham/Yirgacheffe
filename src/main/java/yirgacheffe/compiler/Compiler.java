@@ -9,14 +9,13 @@ import org.objectweb.asm.ClassWriter;
 import yirgacheffe.parser.YirgacheffeLexer;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public class Compiler
 {
-	private String source;
+	private InputStream source;
 
-	public Compiler(String source)
+	public Compiler(InputStream source)
 	{
 		this.source = source;
 	}
@@ -26,8 +25,7 @@ public class Compiler
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeListener listener = new MethodListener(errorListener, writer);
-		InputStream stream = new ByteArrayInputStream(this.source.getBytes());
-		CharStream input = new ANTLRInputStream(stream);
+		CharStream input = new ANTLRInputStream(this.source);
 		YirgacheffeLexer lexer = new YirgacheffeLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
