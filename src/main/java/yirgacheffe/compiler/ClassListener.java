@@ -113,7 +113,7 @@ public class ClassListener extends YirgacheffeListener
 	@Override
 	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
 	{
-		Type type = new DeclaredType(this.className, this.packageName);
+		Type type = new DeclaredType(this.packageName, this.className);
 
 		this.importedTypes.put(this.className, type);
 	}

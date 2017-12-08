@@ -163,4 +163,38 @@ public class ClassTest
 				"does not correspond to the file path anotherPackage/wibble/.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testPackagedClass() throws Exception
+	{
+		HashMap<String, Type> importedTypes = new HashMap<>();
+		String source = "package this.that; interface MyInterface {}";
+		Compiler compiler = new Compiler("this/that/", source);
+		CompilationResult result = compiler.compileClassDeclaration(importedTypes);
+
+		assertTrue(result.isSuccessful());
+
+		source =
+			"package this.that;\n" +
+			"interface AnotherInterface\n" +
+				"{\n" +
+				"MyInterface myMethod();\n" +
+				"}";
+
+		compiler = new Compiler("this/that/", source);
+		result = compiler.compile(importedTypes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode method = methods.get(0);
+
+		assertEquals("()Lthis/that/MyInterface;", method.desc);
+	}
 }

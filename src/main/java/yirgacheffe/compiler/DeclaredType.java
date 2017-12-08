@@ -14,6 +14,7 @@ public class DeclaredType implements Type
 
 	public String toJVMType()
 	{
-		return null;
+		return "L" + this.packageName.replace('.', '/') + "/" +
+			this.identifier + ";";
 	}
 }
