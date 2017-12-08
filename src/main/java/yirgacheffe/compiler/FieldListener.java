@@ -10,11 +10,11 @@ public class FieldListener extends MethodListener
 {
 	public FieldListener(
 		String directory,
-		Map<String, Type> importedTypes,
+		Map<String, DeclaredType> declaredTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, importedTypes, errorListener, writer);
+		super(directory, declaredTypes, errorListener, writer);
 	}
 
 	@Override
@@ -33,10 +33,13 @@ public class FieldListener extends MethodListener
 			String identifier = context.Identifier().getText();
 			Type type;
 
-			if (context.type().simpleType() != null &&
-				this.importedTypes.containsKey(typeName))
+			if (this.importedTypes.containsKey(typeName))
 			{
 				type = this.importedTypes.get(typeName);
+			}
+			else if (this.declaredTypes.containsKey(typeName))
+			{
+				type = this.declaredTypes.get(typeName);
 			}
 			else
 			{

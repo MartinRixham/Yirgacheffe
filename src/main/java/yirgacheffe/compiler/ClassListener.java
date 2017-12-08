@@ -12,11 +12,11 @@ public class ClassListener extends YirgacheffeListener
 
 	public ClassListener(
 		String directory,
-		Map<String, Type> importedTypes,
+		Map<String, DeclaredType> declaredTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, importedTypes, errorListener, writer);
+		super(directory, declaredTypes, errorListener, writer);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class ClassListener extends YirgacheffeListener
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
 		String identifier = context.fullyQualifiedType().Identifier().getText();
-		Type type = new ImportedType(context.fullyQualifiedType());
+		ImportedType type = new ImportedType(context.fullyQualifiedType());
 
 		this.importedTypes.put(identifier, type);
 	}
@@ -113,8 +113,8 @@ public class ClassListener extends YirgacheffeListener
 	@Override
 	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
 	{
-		Type type = new DeclaredType(this.packageName, this.className);
+		DeclaredType type = new DeclaredType(this.packageName, this.className);
 
-		this.importedTypes.put(this.className, type);
+		this.declaredTypes.put(this.className, type);
 	}
 }

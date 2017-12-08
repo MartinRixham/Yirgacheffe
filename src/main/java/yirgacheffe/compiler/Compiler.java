@@ -24,25 +24,25 @@ public class Compiler
 	}
 
 	public CompilationResult compileClassDeclaration(
-		Map<String, Type> importedTypes)
+		Map<String, DeclaredType> declaredTypes)
 		throws Exception
 	{
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeListener listener =
-			new ClassListener(this.directory, importedTypes, errorListener, writer);
+			new ClassListener(this.directory, declaredTypes, errorListener, writer);
 
 		return this.execute(listener, errorListener);
 	}
 
 	public CompilationResult compile(
-		Map<String, Type> importedTypes)
+		Map<String, DeclaredType> declaredTypes)
 		throws Exception
 	{
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeListener listener =
-			new FieldListener(this.directory, importedTypes, errorListener, writer);
+			new FieldListener(this.directory, declaredTypes, errorListener, writer);
 
 		return this.execute(listener, errorListener);
 	}

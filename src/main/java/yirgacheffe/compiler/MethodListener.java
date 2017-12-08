@@ -11,11 +11,11 @@ public class MethodListener extends ClassListener
 {
 	public MethodListener(
 		String directory,
-		Map<String, Type> importedTypes,
+		Map<String, DeclaredType> declaredTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, importedTypes, errorListener, writer);
+		super(directory, declaredTypes, errorListener, writer);
 	}
 
 	@Override
@@ -108,10 +108,13 @@ public class MethodListener extends ClassListener
 		String typeName = context.getText();
 		Type type;
 
-		if (context.simpleType() != null &&
-			this.importedTypes.containsKey(typeName))
+		if (this.importedTypes.containsKey(typeName))
 		{
 			type = this.importedTypes.get(typeName);
+		}
+		else if (this.declaredTypes.containsKey(typeName))
+		{
+			type = this.declaredTypes.get(typeName);
 		}
 		else
 		{
@@ -138,7 +141,8 @@ public class MethodListener extends ClassListener
 	{
 		if (context.Identifier() != null)
 		{
-			if (this.importedTypes.keySet().contains(context.Identifier().getText()))
+			if (this.importedTypes.containsKey(context.getText()) ||
+				this.declaredTypes.containsKey(context.getText()))
 			{
 				return;
 			}

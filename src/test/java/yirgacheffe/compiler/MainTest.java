@@ -71,23 +71,22 @@ public class MainTest
 	public void testCompilingTwoInterfaces() throws Exception
 	{
 		new File("example/MyInterface.class").delete();
-		new File("example/AnotherInterface.class").delete();
+		new File("example/AnotherClass.class").delete();
 
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
 		String[] arguments =
-			new String[] {"example/MyInterface.yg", "example/AnotherInterface.yg"};
+			new String[] {"example/MyInterface.yg", "example/AnotherClass.yg"};
 
 		System.setErr(error);
-
 
 		Yirgacheffe.main(arguments);
 
 		InputStream firstFile =
 			new FileInputStream("example/MyInterface.class");
 		InputStream secondFile =
-			new FileInputStream("example/AnotherInterface.class");
+			new FileInputStream("example/AnotherClass.class");
 
 		assertTrue(spyError.toString().length() == 0);
 		assertTrue(firstFile.read() != -1);

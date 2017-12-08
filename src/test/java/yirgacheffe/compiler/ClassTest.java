@@ -167,10 +167,10 @@ public class ClassTest
 	@Test
 	public void testPackagedClass() throws Exception
 	{
-		HashMap<String, Type> importedTypes = new HashMap<>();
+		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
 		String source = "package this.that; interface MyInterface {}";
 		Compiler compiler = new Compiler("this/that/", source);
-		CompilationResult result = compiler.compileClassDeclaration(importedTypes);
+		CompilationResult result = compiler.compileClassDeclaration(declaredTypes);
 
 		assertTrue(result.isSuccessful());
 
@@ -182,7 +182,7 @@ public class ClassTest
 				"}";
 
 		compiler = new Compiler("this/that/", source);
-		result = compiler.compile(importedTypes);
+		result = compiler.compile(declaredTypes);
 
 		assertTrue(result.isSuccessful());
 

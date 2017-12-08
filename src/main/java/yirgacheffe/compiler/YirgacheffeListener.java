@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,18 +21,20 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected String className;
 
-	protected Map<String, Type> importedTypes;
+	protected Map<String, ImportedType> importedTypes = new HashMap<>();
+
+	protected Map<String, DeclaredType> declaredTypes;
 
 	public YirgacheffeListener(
 		String directory,
-		Map<String, Type> importedTypes,
+		Map<String, DeclaredType> declaredTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
 		this.directory = directory;
+		this.declaredTypes = declaredTypes;
 		this.errorListener = errorListener;
 		this.writer = writer;
-		this.importedTypes = importedTypes;
 	}
 
 	public CompilationResult getCompilationResult()

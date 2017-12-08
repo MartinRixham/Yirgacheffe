@@ -1,6 +1,0 @@
-package example;
-
-interface AnotherInterface
-{
-    num doThing(MyInterface param);
-}

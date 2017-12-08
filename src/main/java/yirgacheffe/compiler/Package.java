@@ -11,7 +11,7 @@ public class Package
 {
 	private List<Compiler> compilers = new ArrayList<>();
 
-	private Map<String, Type> declaredTypes = new HashMap<>();
+	private Map<String, DeclaredType> declaredTypes = new HashMap<>();
 
 	public Package()
 	{
