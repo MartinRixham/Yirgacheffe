@@ -21,6 +21,22 @@ public final class Yirgacheffe
 
 	private Yirgacheffe(String[] sourceFiles) throws Exception
 	{
+		List<Compiler> compilers = this.createCompilers(sourceFiles);
+
+		Map<String, Type> importedTypes = new HashMap<>();
+
+		boolean failed = this.firstPass(compilers, importedTypes);
+
+		if (failed)
+		{
+			return;
+		}
+
+		this.secondPass(compilers, importedTypes);
+	}
+
+	private List<Compiler> createCompilers(String[] sourceFiles) throws Exception
+	{
 		List<Compiler> compilers = new ArrayList<>();
 
 		for (String sourceFile : sourceFiles)
@@ -32,9 +48,14 @@ public final class Yirgacheffe
 			compilers.add(new Compiler(directory, source));
 		}
 
-		Map<String, Type> importedTypes = new HashMap<>();
-		boolean failed = false;
+		return compilers;
+	}
 
+	private boolean firstPass(
+		List<Compiler> compilers,
+		Map<String, Type> importedTypes)
+		throws Exception
+	{
 		for (Compiler compiler : compilers)
 		{
 			CompilationResult result =
@@ -43,15 +64,19 @@ public final class Yirgacheffe
 			if (!result.isSuccessful())
 			{
 				System.err.print(result.getErrors());
-				failed = true;
+
+				return true;
 			}
 		}
 
-		if (failed)
-		{
-			return;
-		}
+		return false;
+	}
 
+	private void secondPass(
+		List<Compiler> compilers,
+		Map<String, Type> importedTypes)
+		throws Exception
+	{
 		for (Compiler compiler : compilers)
 		{
 			CompilationResult result = compiler.compile(importedTypes);
