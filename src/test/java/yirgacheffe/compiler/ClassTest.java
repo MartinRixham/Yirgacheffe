@@ -40,6 +40,7 @@ public class ClassTest
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
+		assertEquals("MyInterface.class", result.getClassFileName());
 
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();
@@ -76,6 +77,7 @@ public class ClassTest
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
 
 		ClassReader reader = new ClassReader(result.getBytecode());
 		ClassNode classNode = new ClassNode();

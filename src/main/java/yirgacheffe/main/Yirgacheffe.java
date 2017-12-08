@@ -4,7 +4,9 @@ import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.CompilationResult;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public abstract class Yirgacheffe
 {
@@ -16,7 +18,11 @@ public abstract class Yirgacheffe
 
 			if (result.isSuccessful())
 			{
-				System.out.write(result.getBytecode());
+				try (OutputStream outputStream =
+					new FileOutputStream(result.getClassFileName()))
+				{
+					outputStream.write(result.getBytecode());
+				}
 			}
 			else
 			{

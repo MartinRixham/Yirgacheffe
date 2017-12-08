@@ -4,12 +4,15 @@ import java.util.List;
 
 public class CompilationResult
 {
+	private String classFileName;
+
 	private byte[] bytecode;
 
 	private List<Error> errors;
 
-	public CompilationResult(byte[] bytecode)
+	public CompilationResult(String classFileName, byte[] bytecode)
 	{
+		this.classFileName = classFileName;
 		this.bytecode = bytecode;
 	}
 
@@ -26,6 +29,11 @@ public class CompilationResult
 	public boolean isSuccessful()
 	{
 		return this.errors == null;
+	}
+
+	public String getClassFileName()
+	{
+		return this.classFileName;
 	}
 
 	public String getErrors()

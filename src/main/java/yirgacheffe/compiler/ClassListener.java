@@ -29,12 +29,12 @@ public class ClassListener extends YirgacheffeListener
 		}
 		else
 		{
-			String className = context.Identifier().getText();
+			this.className = context.Identifier().getText();
 
 			this.writer.visit(
 				Opcodes.V1_8,
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-				className,
+				this.className,
 				null,
 				"java/lang/Object",
 				null);
@@ -63,12 +63,12 @@ public class ClassListener extends YirgacheffeListener
 		}
 		else
 		{
-			String className = context.Identifier().getText();
+			this.className = context.Identifier().getText();
 
 			this.writer.visit(
 				Opcodes.V1_8,
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-				className,
+				this.className,
 				null,
 				"java/lang/Object",
 				null);

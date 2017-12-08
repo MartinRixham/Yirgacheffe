@@ -15,6 +15,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected List<Error> errors = new ArrayList<>();
 
+	protected String className;
+
 	public YirgacheffeListener(
 		ParseErrorListener errorListener,
 		ClassWriter writer)
@@ -56,7 +58,9 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		}
 		else
 		{
-			return new CompilationResult(this.writer.toByteArray());
+			String classFileName = this.className + ".class";
+
+			return new CompilationResult(classFileName, this.writer.toByteArray());
 		}
 	}
 }
