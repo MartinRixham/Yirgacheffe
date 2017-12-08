@@ -13,10 +13,13 @@ import java.io.InputStream;
 
 public class Compiler
 {
+	private String directory;
+
 	private InputStream source;
 
-	public Compiler(InputStream source)
+	public Compiler(String directory, InputStream source)
 	{
+		this.directory = directory;
 		this.source = source;
 	}
 
@@ -24,7 +27,8 @@ public class Compiler
 	{
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
-		YirgacheffeListener listener = new MethodListener(errorListener, writer);
+		YirgacheffeListener listener =
+			new MethodListener(this.directory, errorListener, writer);
 		CharStream input = new ANTLRInputStream(this.source);
 		YirgacheffeLexer lexer = new YirgacheffeLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);

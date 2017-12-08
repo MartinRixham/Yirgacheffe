@@ -6,16 +6,30 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ClassListener extends YirgacheffeListener
 {
-	public ClassListener(ParseErrorListener errorListener, ClassWriter writer)
+	public ClassListener(
+		String directory,
+		ParseErrorListener errorListener,
+		ClassWriter writer)
 	{
-		super(errorListener, writer);
+		super(directory, errorListener, writer);
 	}
 
 	@Override
 	public void enterPackageName(
 		YirgacheffeParser.PackageNameContext context)
 	{
-		this.packageName = context.getText();
+		String packageName = context.getText();
+		String packageLocation =
+			packageName.replace('.', '/') +  "/";
+
+		if (!packageLocation.equals(this.directory))
+		{
+			String message =
+				"Package name " + packageName +
+				" does not correspond to the file path " + this.directory + ".";
+
+			this.errors.add(new Error(context, message));
+		}
 	}
 
 	@Override

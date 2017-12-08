@@ -21,7 +21,7 @@ public class ClassTest
 	{
 		String source = "interface MyInterface {";
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -36,7 +36,7 @@ public class ClassTest
 	{
 		String source = "interface MyInterface {}";
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -59,7 +59,7 @@ public class ClassTest
 	{
 		String source = "thingy MyInterface {}";
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -73,7 +73,7 @@ public class ClassTest
 	{
 		String source = "class MyClass {}";
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -108,7 +108,7 @@ public class ClassTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -126,7 +126,7 @@ public class ClassTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -140,10 +140,37 @@ public class ClassTest
 	{
 		String source = "package myPackage; class MyClass {}";
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("myPackage/", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
+	}
+
+	@Test
+	public void testClassInNestedPackage() throws Exception
+	{
+		String source = "package myPackage.thingy; class MyClass {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("myPackage/thingy/", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertTrue(result.isSuccessful());
+		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
+	}
+
+	@Test
+	public void testClassInPackageWrongPackage() throws Exception
+	{
+		String source = "package myPackage.wibble; class MyClass {}";
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("anotherPackage/wibble/", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:8 Package name myPackage.wibble " +
+				"does not correspond to the file path anotherPackage/wibble/.\n",
+			result.getErrors());
 	}
 }

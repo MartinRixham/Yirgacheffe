@@ -6,9 +6,12 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ClassListener
 {
-	public FieldListener(ParseErrorListener errorListener, ClassWriter writer)
+	public FieldListener(
+		String directory,
+		ParseErrorListener errorListener,
+		ClassWriter writer)
 	{
-		super(errorListener, writer);
+		super(directory, errorListener, writer);
 	}
 
 	@Override

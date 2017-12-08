@@ -15,14 +15,16 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected List<Error> errors = new ArrayList<>();
 
-	protected String packageName;
+	protected String directory;
 
 	protected String className;
 
 	public YirgacheffeListener(
+		String directory,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
+		this.directory = directory;
 		this.errorListener = errorListener;
 		this.writer = writer;
 	}
@@ -60,18 +62,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		}
 		else
 		{
-			String classFileName;
-
-			if (this.packageName == null)
-			{
-				classFileName = this.className + ".class";
-			}
-			else
-			{
-				classFileName =
-					this.packageName.replace('.', '/') + "/" +
-					this.className + ".class";
-			}
+			String classFileName = this.directory + this.className + ".class";
 
 			return new CompilationResult(classFileName, this.writer.toByteArray());
 		}

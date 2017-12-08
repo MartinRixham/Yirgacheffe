@@ -12,9 +12,13 @@ public abstract class Yirgacheffe
 {
 	public static void main(String[] args) throws Exception
 	{
-		try (InputStream inputStream = new FileInputStream(args[0]))
+		String sourceFile = args[0];
+
+		try (InputStream inputStream = new FileInputStream(sourceFile))
 		{
-			CompilationResult result = new Compiler(inputStream).compile();
+			String directory = getDirectory(sourceFile);
+
+			CompilationResult result = new Compiler(directory, inputStream).compile();
 
 			if (result.isSuccessful())
 			{
@@ -29,5 +33,18 @@ public abstract class Yirgacheffe
 				System.err.print(result.getErrors());
 			}
 		}
+	}
+
+	private static String getDirectory(String filePath)
+	{
+		String[] files = filePath.split("/");
+		String directory = "";
+
+		for (int i = 0; i < files.length - 1; i++)
+		{
+			directory += files[i] + "/";
+		}
+
+		return directory;
 	}
 }

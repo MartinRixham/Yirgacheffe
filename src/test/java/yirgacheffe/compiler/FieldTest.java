@@ -26,7 +26,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -57,7 +57,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -89,7 +89,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
@@ -124,7 +124,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -143,7 +143,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
@@ -162,7 +162,7 @@ public class FieldTest
 				"}";
 
 		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler(inputStream);
+		Compiler compiler = new Compiler("", inputStream);
 		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
