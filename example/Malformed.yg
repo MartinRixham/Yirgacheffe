@@ -1,1 +1,6 @@
-package example; thingy MyInterface {}
+package example;
+
+interface MyInterface
+{
+    public int myMethod();
+}

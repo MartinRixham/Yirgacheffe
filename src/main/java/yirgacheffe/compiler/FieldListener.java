@@ -6,7 +6,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.Map;
 
-public class FieldListener extends ClassListener
+public class FieldListener extends MethodListener
 {
 	public FieldListener(
 		String directory,

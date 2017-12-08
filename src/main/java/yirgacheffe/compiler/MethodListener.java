@@ -7,7 +7,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.util.List;
 import java.util.Map;
 
-public class MethodListener extends FieldListener
+public class MethodListener extends ClassListener
 {
 	public MethodListener(
 		String directory,
@@ -130,6 +130,51 @@ public class MethodListener extends FieldListener
 				new Error(context, "Expected type before argument identifier.");
 
 			this.errors.add(error);
+		}
+	}
+
+	@Override
+	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
+	{
+		if (context.Identifier() != null)
+		{
+			if (this.importedTypes.keySet().contains(context.Identifier().getText()))
+			{
+				return;
+			}
+
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+			try
+			{
+				classLoader.loadClass("java.lang." + context.getText());
+			}
+			catch (ClassNotFoundException e)
+			{
+				String message =
+					"Unrecognised type: " + context.getText() + " is not a type.";
+
+				this.errors.add(new Error(context, message));
+			}
+		}
+	}
+
+	@Override
+	public void enterFullyQualifiedType(
+		YirgacheffeParser.FullyQualifiedTypeContext context)
+	{
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+		try
+		{
+			classLoader.loadClass(context.getText());
+		}
+		catch (ClassNotFoundException e)
+		{
+			String message =
+				"Unrecognised type: " + context.getText() + " is not a type.";
+
+			this.errors.add(new Error(context, message));
 		}
 	}
 }

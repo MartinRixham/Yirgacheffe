@@ -2,7 +2,6 @@ package yirgacheffe.compiler;
 
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.parser.YirgacheffeBaseListener;
-import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,51 +32,6 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		this.errorListener = errorListener;
 		this.writer = writer;
 		this.importedTypes = importedTypes;
-	}
-
-	@Override
-	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
-	{
-		if (context.Identifier() != null)
-		{
-			if (this.importedTypes.keySet().contains(context.Identifier().getText()))
-			{
-				return;
-			}
-
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-			try
-			{
-				classLoader.loadClass("java.lang." + context.getText());
-			}
-			catch (ClassNotFoundException e)
-			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
-
-				this.errors.add(new Error(context, message));
-			}
-		}
-	}
-
-	@Override
-	public void enterFullyQualifiedType(
-		YirgacheffeParser.FullyQualifiedTypeContext context)
-	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-		try
-		{
-			classLoader.loadClass(context.getText());
-		}
-		catch (ClassNotFoundException e)
-		{
-			String message =
-				"Unrecognised type: " + context.getText() + " is not a type.";
-
-			this.errors.add(new Error(context, message));
-		}
 	}
 
 	public CompilationResult getCompilationResult()

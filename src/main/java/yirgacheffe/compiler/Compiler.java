@@ -42,7 +42,7 @@ public class Compiler
 		ClassWriter writer = new ClassWriter(0);
 		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeListener listener =
-			new MethodListener(this.directory, importedTypes, errorListener, writer);
+			new FieldListener(this.directory, importedTypes, errorListener, writer);
 
 		return this.execute(listener, errorListener);
 	}

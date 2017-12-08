@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.PrintStream;
 
@@ -42,9 +43,7 @@ public class MainTest
 
 		Yirgacheffe.main(new String[] {"example/Malformed.yg"});
 
-		assertEquals(
-			"line 1:17 Expected declaration of class or interface.\n",
-			spyError.toString());
+		assertTrue(spyError.toString().length() > 0);
 
 		System.setErr(originalError);
 	}
@@ -69,21 +68,30 @@ public class MainTest
 	}
 
 	@Test
-	public void testCompilingTwoClasses() throws Exception
+	public void testCompilingTwoInterfaces() throws Exception
 	{
-		new File("example/MyClass.class").delete();
 		new File("example/MyInterface.class").delete();
+		new File("example/AnotherInterface.class").delete();
 
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[] {"example/MyInterface.yg", "example/AnotherInterface.yg"};
 
 		System.setErr(error);
 
-		Yirgacheffe.main(new String[] {"example/MyClass.yg", "example/MyInterface.yg"});
+
+		Yirgacheffe.main(arguments);
+
+		InputStream firstFile =
+			new FileInputStream("example/MyInterface.class");
+		InputStream secondFile =
+			new FileInputStream("example/AnotherInterface.class");
 
 		assertTrue(spyError.toString().length() == 0);
-		assertTrue(new FileInputStream("example/MyClass.class").read() != -1);
+		assertTrue(firstFile.read() != -1);
+		assertTrue(secondFile.read() != -1);
 
 		System.setErr(originalError);
 	}
