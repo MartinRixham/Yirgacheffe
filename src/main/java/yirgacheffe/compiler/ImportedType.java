@@ -31,17 +31,18 @@ public class ImportedType implements Type
 		{
 			String name = this.simpleType.getText();
 
-			if (name.equals("num"))
+			switch (name)
 			{
-				return "D";
-			}
-			else if (name.equals("void"))
-			{
-				return "V";
-			}
-			else
-			{
-				return "Ljava/lang/" + name + ";";
+				case "void":
+					return "V";
+				case "bool":
+					return "B";
+				case "char":
+					return "C";
+				case "num":
+					return "D";
+				default:
+					return "Ljava/lang/" + name + ";";
 			}
 		}
 	}
