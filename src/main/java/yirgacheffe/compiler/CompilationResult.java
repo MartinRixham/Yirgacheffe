@@ -38,13 +38,13 @@ public class CompilationResult
 
 	public String getErrors()
 	{
-		String errors = "";
+		StringBuilder errors = new StringBuilder();
 
 		for (Error error: this.errors)
 		{
-			errors += error.toString() + "\n";
+			errors.append(error.toString()).append("\n");
 		}
 
-		return errors;
+		return errors.toString();
 	}
 }

@@ -2,7 +2,7 @@ grammar Yirgacheffe;
 
 compilationUnit:
     packageDeclaration?
-    importStatment*
+    importStatement*
     (malformedDeclaration | classDeclaration | interfaceDeclaration)
     EOF;
 
@@ -10,8 +10,8 @@ packageDeclaration: Package packageName ';';
 
 packageName: Identifier ('.' Identifier)*;
 
-importStatment:
-    packageName '.' Identifier ';';
+importStatement:
+    Import fullyQualifiedType ';';
 
 malformedDeclaration:
     Identifier Identifier?
@@ -57,6 +57,7 @@ fullyQualifiedType: packageName '.' Identifier;
 
 // keywords
 Package: 'package';
+Import: 'import';
 Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'bool' | 'char' | 'num';

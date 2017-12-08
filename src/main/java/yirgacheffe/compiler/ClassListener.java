@@ -33,6 +33,12 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
+	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
+	{
+		this.importedTypes.add(context.fullyQualifiedType().Identifier().getText());
+	}
+
+	@Override
 	public void enterMalformedDeclaration(
 		YirgacheffeParser.MalformedDeclarationContext context)
 	{

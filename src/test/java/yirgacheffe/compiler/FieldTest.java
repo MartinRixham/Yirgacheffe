@@ -205,4 +205,21 @@ public class FieldTest
 			"line 3:0 Unrecognised type: java.thingy.List is not a type.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testFieldWithImportedType() throws Exception
+	{
+		String source =
+			"import java.util.List;\n" +
+			"class MyClass\n" +
+				"{\n" +
+				"List myListField;\n" +
+				"}";
+
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertTrue(result.isSuccessful());
+	}
 }

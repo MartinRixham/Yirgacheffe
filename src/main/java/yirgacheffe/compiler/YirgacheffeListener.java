@@ -5,7 +5,10 @@ import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
@@ -18,6 +21,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	protected String directory;
 
 	protected String className;
+
+	protected Set<String> importedTypes = new HashSet<>();
 
 	public YirgacheffeListener(
 		String directory,
@@ -34,6 +39,11 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.Identifier() != null)
 		{
+			if (this.importedTypes.contains(context.Identifier().getText()))
+			{
+				return;
+			}
+
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
 			try
@@ -54,21 +64,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	public void enterFullyQualifiedType(
 		YirgacheffeParser.FullyQualifiedTypeContext context)
 	{
-		if (context.Identifier() != null)
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+		try
 		{
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			classLoader.loadClass(context.getText());
+		}
+		catch (ClassNotFoundException e)
+		{
+			String message =
+				"Unrecognised type: " + context.getText() + " is not a type.";
 
-			try
-			{
-				classLoader.loadClass(context.getText());
-			}
-			catch (ClassNotFoundException e)
-			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
-
-				this.errors.add(new Error(context, message));
-			}
+			this.errors.add(new Error(context, message));
 		}
 	}
 

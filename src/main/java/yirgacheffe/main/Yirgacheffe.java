@@ -38,13 +38,13 @@ public abstract class Yirgacheffe
 	private static String getDirectory(String filePath)
 	{
 		String[] files = filePath.split("/");
-		String directory = "";
+		StringBuilder directory = new StringBuilder();
 
 		for (int i = 0; i < files.length - 1; i++)
 		{
-			directory += files[i] + "/";
+			directory.append(files[i]).append("/");
 		}
 
-		return directory;
+		return directory.toString();
 	}
 }
