@@ -1,43 +1,42 @@
 package yirgacheffe.compiler;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class Yirgacheffe
 {
+	private String[] sourceFiles;
+
 	public static void main(String[] args) throws Exception
 	{
-		for (int i = 0; i < args.length; i++)
-		{
-			new Yirgacheffe(args);
-		}
+		new Yirgacheffe(args).execute();
 	}
 
 	private Yirgacheffe(String[] sourceFiles) throws Exception
 	{
-		List<Compiler> compilers = this.createCompilers(sourceFiles);
+		this.sourceFiles = sourceFiles;
+	}
 
-		Map<String, Type> importedTypes = new HashMap<>();
+	private void execute() throws Exception
+	{
+		Collection<Package> packages = this.createPackages(this.sourceFiles);
 
-		boolean failed = this.firstPass(compilers, importedTypes);
+		boolean failed = this.firstPass(packages);
 
 		if (failed)
 		{
 			return;
 		}
 
-		this.secondPass(compilers, importedTypes);
+		this.secondPass(packages);
 	}
 
-	private List<Compiler> createCompilers(String[] sourceFiles) throws Exception
+	private Collection<Package> createPackages(String[] sourceFiles) throws Exception
 	{
-		List<Compiler> compilers = new ArrayList<>();
+		Map<String, Package> packages = new HashMap<>();
 
 		for (String sourceFile : sourceFiles)
 		{
@@ -45,54 +44,34 @@ public final class Yirgacheffe
 			String source = new String(encoded, "UTF-8");
 			String directory = this.getDirectory(sourceFile);
 
-			compilers.add(new Compiler(directory, source));
+			if (!packages.containsKey(directory))
+			{
+				packages.put(directory, new Package());
+			}
+
+			packages.get(directory).addCompiler(new Compiler(directory, source));
 		}
 
-		return compilers;
+		return packages.values();
 	}
 
-	private boolean firstPass(
-		List<Compiler> compilers,
-		Map<String, Type> importedTypes)
-		throws Exception
+	private boolean firstPass(Collection<Package> packages) throws Exception
 	{
-		for (Compiler compiler : compilers)
+		boolean failed = false;
+
+		for (Package pkg: packages)
 		{
-			CompilationResult result =
-				compiler.compileClassDeclaration(importedTypes);
-
-			if (!result.isSuccessful())
-			{
-				System.err.print(result.getErrors());
-
-				return true;
-			}
+			failed = failed || pkg.compileClassDeclaration();
 		}
 
-		return false;
+		return failed;
 	}
 
-	private void secondPass(
-		List<Compiler> compilers,
-		Map<String, Type> importedTypes)
-		throws Exception
+	private void secondPass(Collection<Package> packages) throws Exception
 	{
-		for (Compiler compiler : compilers)
+		for (Package pkg: packages)
 		{
-			CompilationResult result = compiler.compile(importedTypes);
-
-			if (result.isSuccessful())
-			{
-				try (OutputStream outputStream =
-					new FileOutputStream(result.getClassFileName()))
-				{
-					outputStream.write(result.getBytecode());
-				}
-			}
-			else
-			{
-				System.err.print(result.getErrors());
-			}
+			pkg.compile();
 		}
 	}
 
