@@ -259,4 +259,29 @@ public class MethodTest
 
 		assertEquals("(Ljava/util/List;)Ljava/util/Set;", method.desc);
 	}
+
+	@Test
+	public void testInterfaceWithVoidMethod() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"void myMethod();\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals("()V", firstMethod.desc);
+	}
 }

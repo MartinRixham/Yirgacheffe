@@ -35,6 +35,10 @@ public class ImportedType implements Type
 			{
 				return "D";
 			}
+			else if (name.equals("void"))
+			{
+				return "V";
+			}
 			else
 			{
 				return "Ljava/lang/" + name + ";";
