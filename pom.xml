@@ -114,7 +114,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>yirgacheffe.main.Yirgacheffe</mainClass>
+							<mainClass>yirgacheffe.compiler.Yirgacheffe</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

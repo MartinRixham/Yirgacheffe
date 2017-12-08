@@ -1,7 +1,4 @@
-package yirgacheffe.main;
-
-import yirgacheffe.compiler.Compiler;
-import yirgacheffe.compiler.CompilationResult;
+package yirgacheffe.compiler;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,7 +9,10 @@ public final class Yirgacheffe
 {
 	public static void main(String[] args) throws Exception
 	{
-		new Yirgacheffe(args[0]);
+		for (int i = 0; i < args.length; i++)
+		{
+			new Yirgacheffe(args[i]);
+		}
 	}
 
 	private Yirgacheffe(String sourceFile) throws Exception
