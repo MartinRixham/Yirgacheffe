@@ -2,12 +2,16 @@ grammar Yirgacheffe;
 
 compilationUnit:
     packageDeclaration?
+    importStatment*
     (malformedDeclaration | classDeclaration | interfaceDeclaration)
     EOF;
 
 packageDeclaration: Package packageName ';';
 
 packageName: Identifier ('.' Identifier)*;
+
+importStatment:
+    packageName '.' Identifier ';';
 
 malformedDeclaration:
     Identifier Identifier?
@@ -45,7 +49,11 @@ modifier: Public | Private ;
 
 parameter: type? Identifier;
 
-type: Identifier | PrimitiveType;
+type: simpleType | fullyQualifiedType;
+
+simpleType: Identifier | PrimitiveType;
+
+fullyQualifiedType: packageName '.' Identifier;
 
 // keywords
 Package: 'package';

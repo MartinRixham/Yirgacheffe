@@ -170,4 +170,39 @@ public class FieldTest
 			"line 3:0 Unrecognised type: Thingy is not a type.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testFieldWithFullyQualifiedType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"java.util.List myListField;\n" +
+				"}";
+
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testFieldWithUnknownFullyQualifiedType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"java.thingy.List myListField;\n" +
+				"}";
+
+		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
+		Compiler compiler = new Compiler("", inputStream);
+		CompilationResult result = compiler.compile();
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Unrecognised type: java.thingy.List is not a type.\n",
+			result.getErrors());
+	}
 }

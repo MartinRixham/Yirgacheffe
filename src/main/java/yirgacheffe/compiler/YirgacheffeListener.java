@@ -30,7 +30,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterType(YirgacheffeParser.TypeContext context)
+	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
 	{
 		if (context.Identifier() != null)
 		{
@@ -39,6 +39,28 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			try
 			{
 				classLoader.loadClass("java.lang." + context.getText());
+			}
+			catch (ClassNotFoundException e)
+			{
+				String message =
+					"Unrecognised type: " + context.getText() + " is not a type.";
+
+				this.errors.add(new Error(context, message));
+			}
+		}
+	}
+
+	@Override
+	public void enterFullyQualifiedType(
+		YirgacheffeParser.FullyQualifiedTypeContext context)
+	{
+		if (context.Identifier() != null)
+		{
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+			try
+			{
+				classLoader.loadClass(context.getText());
 			}
 			catch (ClassNotFoundException e)
 			{

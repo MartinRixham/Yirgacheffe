@@ -15,10 +15,10 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
-	public void enterPackageName(
-		YirgacheffeParser.PackageNameContext context)
+	public void enterPackageDeclaration(
+		YirgacheffeParser.PackageDeclarationContext context)
 	{
-		String packageName = context.getText();
+		String packageName = context.packageName().getText();
 		String packageLocation =
 			packageName.replace('.', '/') +  "/";
 
@@ -28,7 +28,7 @@ public class ClassListener extends YirgacheffeListener
 				"Package name " + packageName +
 				" does not correspond to the file path " + this.directory + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.add(new Error(context.packageName(), message));
 		}
 	}
 
