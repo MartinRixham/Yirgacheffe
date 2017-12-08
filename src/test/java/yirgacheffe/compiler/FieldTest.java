@@ -185,6 +185,16 @@ public class FieldTest
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+		String descriptor = fields.get(0).desc;
+
+		assertEquals("Ljava/util/List;", descriptor);
 	}
 
 	@Test
@@ -221,5 +231,15 @@ public class FieldTest
 		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+		String descriptor = fields.get(0).desc;
+
+		assertEquals("Ljava/util/List;", descriptor);
 	}
 }

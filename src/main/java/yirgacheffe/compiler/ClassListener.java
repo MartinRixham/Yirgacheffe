@@ -35,7 +35,10 @@ public class ClassListener extends YirgacheffeListener
 	@Override
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
-		this.importedTypes.add(context.fullyQualifiedType().Identifier().getText());
+		String identifier = context.fullyQualifiedType().Identifier().getText();
+		Type type = new Type(context.fullyQualifiedType());
+
+		this.importedTypes.put(identifier, type);
 	}
 
 	@Override

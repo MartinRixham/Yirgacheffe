@@ -26,14 +26,25 @@ public class FieldListener extends ClassListener
 		}
 		else
 		{
-			Type type = new Type(context.type().getText());
+			String typeName = context.type().getText();
 			String identifier = context.Identifier().getText();
+			Type type;
+
+			if (context.type().simpleType() != null &&
+				this.importedTypes.containsKey(typeName))
+			{
+				type = this.importedTypes.get(typeName);
+			}
+			else
+			{
+				type = new Type(context.type());
+			}
 
 			this.writer
 				.visitField(
 					Opcodes.ACC_PRIVATE,
 					identifier,
-					type.getJVMType(),
+					type.toJVMType(),
 					null,
 					null);
 		}

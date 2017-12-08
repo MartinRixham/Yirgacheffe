@@ -1,23 +1,44 @@
 package yirgacheffe.compiler;
 
+import yirgacheffe.parser.YirgacheffeParser;
+
 public class Type
 {
-	private String name;
+	private YirgacheffeParser.SimpleTypeContext simpleType;
 
-	public Type(String name)
+	private YirgacheffeParser.FullyQualifiedTypeContext fullyQualifiedType;
+
+	public Type(YirgacheffeParser.TypeContext context)
 	{
-		this.name = name;
+		this.simpleType = context.simpleType();
+		this.fullyQualifiedType = context.fullyQualifiedType();
 	}
 
-	public String getJVMType()
+	public Type(YirgacheffeParser.FullyQualifiedTypeContext fullyQualifiedType)
 	{
-		if (this.name.equals("num"))
+		this.fullyQualifiedType = fullyQualifiedType;
+	}
+
+	public String toJVMType()
+	{
+		if (this.simpleType == null)
 		{
-			return "D";
+			String name = this.fullyQualifiedType.getText();
+
+			return "L" + name.replace('.', '/')  + ";";
 		}
 		else
 		{
-			return "Ljava/lang/" + this.name + ";";
+			String name = this.simpleType.getText();
+
+			if (name.equals("num"))
+			{
+				return "D";
+			}
+			else
+			{
+				return "Ljava/lang/" + name + ";";
+			}
 		}
 	}
 }

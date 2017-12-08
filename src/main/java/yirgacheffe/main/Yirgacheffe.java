@@ -8,15 +8,18 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public abstract class Yirgacheffe
+public final class Yirgacheffe
 {
 	public static void main(String[] args) throws Exception
 	{
-		String sourceFile = args[0];
+		new Yirgacheffe(args[0]);
+	}
 
+	private Yirgacheffe(String sourceFile) throws Exception
+	{
 		try (InputStream inputStream = new FileInputStream(sourceFile))
 		{
-			String directory = getDirectory(sourceFile);
+			String directory = this.getDirectory(sourceFile);
 
 			CompilationResult result = new Compiler(directory, inputStream).compile();
 
@@ -35,7 +38,7 @@ public abstract class Yirgacheffe
 		}
 	}
 
-	private static String getDirectory(String filePath)
+	private String getDirectory(String filePath)
 	{
 		String[] files = filePath.split("/");
 		StringBuilder directory = new StringBuilder();

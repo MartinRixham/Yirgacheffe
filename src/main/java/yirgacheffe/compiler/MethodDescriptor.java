@@ -29,12 +29,12 @@ public class MethodDescriptor
 
 			if (type != null)
 			{
-				descriptor.append(new Type(type.getText()).getJVMType());
+				descriptor.append(new Type(type).toJVMType());
 			}
 		}
 
 		descriptor.append(")");
-		descriptor.append(new Type(this.returnType.getText()).getJVMType());
+		descriptor.append(new Type(this.returnType).toJVMType());
 
 		return descriptor.toString();
 	}

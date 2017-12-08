@@ -5,9 +5,9 @@ import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
@@ -22,7 +22,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected String className;
 
-	protected Set<String> importedTypes = new HashSet<>();
+	protected Map<String, Type> importedTypes = new HashMap<>();
 
 	public YirgacheffeListener(
 		String directory,
@@ -39,7 +39,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.Identifier() != null)
 		{
-			if (this.importedTypes.contains(context.Identifier().getText()))
+			if (this.importedTypes.keySet().contains(context.Identifier().getText()))
 			{
 				return;
 			}
