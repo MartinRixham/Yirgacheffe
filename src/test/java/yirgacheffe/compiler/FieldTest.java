@@ -23,9 +23,9 @@ public class FieldTest
 					"num myField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 
@@ -54,9 +54,9 @@ public class FieldTest
 					"String myStringField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 
@@ -86,9 +86,9 @@ public class FieldTest
 				"String myStringField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 
@@ -121,9 +121,9 @@ public class FieldTest
 				"  num myField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -140,9 +140,9 @@ public class FieldTest
 				" myField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -159,9 +159,9 @@ public class FieldTest
 				"Thingy myStringField;\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

@@ -61,7 +61,7 @@
 							<failsOnError>true</failsOnError>
 							<includeTestSourceDirectory>true</includeTestSourceDirectory>
 							<suppressionsLocation>
-								checkstyle-suppressions.xml
+								checkstyle-suppression.xml
 							</suppressionsLocation>
 						</configuration>
 						<goals>
@@ -114,7 +114,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>yirgacheffe.compiler.Yirgacheffe</mainClass>
+							<mainClass>yirgacheffe.main.Yirgacheffe</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

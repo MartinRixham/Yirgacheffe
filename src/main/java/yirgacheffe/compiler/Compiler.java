@@ -12,11 +12,11 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-public final class Yirgacheffe
+public class Compiler
 {
 	private String source;
 
-	public Yirgacheffe(String source)
+	public Compiler(String source)
 	{
 		this.source = source;
 	}
@@ -41,19 +41,5 @@ public final class Yirgacheffe
 		walker.walk(listener, tree);
 
 		return listener.getCompilationResult();
-	}
-
-	public static void main(String[] args) throws Exception
-	{
-		CompilationResult result = new Yirgacheffe(args[0]).compile();
-
-		if (result.isSuccessful())
-		{
-			System.out.write(result.getBytecode());
-		}
-		else
-		{
-			System.err.print(result.getErrors());
-		}
 	}
 }

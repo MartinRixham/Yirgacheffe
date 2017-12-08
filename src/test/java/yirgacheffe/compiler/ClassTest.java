@@ -17,9 +17,9 @@ public class ClassTest
 	@Test
 	public void testParseError() throws Exception
 	{
-		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {");
+		Compiler compiler = new Compiler("interface MyInterface {");
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
@@ -31,9 +31,9 @@ public class ClassTest
 	@Test
 	public void testNamedEmptyInterface() throws Exception
 	{
-		Yirgacheffe yirgacheffe = new Yirgacheffe("interface MyInterface {}");
+		Compiler compiler = new Compiler("interface MyInterface {}");
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 
@@ -52,9 +52,9 @@ public class ClassTest
 	@Test
 	public void testFailToDeclareClassOrInterface() throws Exception
 	{
-		Yirgacheffe yirgacheffe = new Yirgacheffe("thingy MyInterface {}");
+		Compiler compiler = new Compiler("thingy MyInterface {}");
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -65,9 +65,9 @@ public class ClassTest
 	@Test
 	public void testNamedEmptyClass() throws Exception
 	{
-		Yirgacheffe yirgacheffe = new Yirgacheffe("class MyClass {}");
+		Compiler compiler = new Compiler("class MyClass {}");
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertTrue(result.isSuccessful());
 
@@ -99,9 +99,9 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -117,9 +117,9 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		Yirgacheffe yirgacheffe = new Yirgacheffe(source);
+		Compiler compiler = new Compiler(source);
 
-		CompilationResult result = yirgacheffe.compile();
+		CompilationResult result = compiler.compile();
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

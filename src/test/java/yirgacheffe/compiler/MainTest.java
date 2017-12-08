@@ -1,6 +1,7 @@
 package yirgacheffe.compiler;
 
 import org.junit.Test;
+import yirgacheffe.main.Yirgacheffe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
