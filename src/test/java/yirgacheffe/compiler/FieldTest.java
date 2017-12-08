@@ -6,8 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -25,9 +24,8 @@ public class FieldTest
 					"num myField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -56,9 +54,8 @@ public class FieldTest
 					"String myStringField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -88,9 +85,8 @@ public class FieldTest
 				"String myStringField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -123,9 +119,8 @@ public class FieldTest
 				"  num myField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -142,9 +137,8 @@ public class FieldTest
 				" myField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -161,9 +155,8 @@ public class FieldTest
 				"Thingy myStringField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -180,9 +173,8 @@ public class FieldTest
 				"java.util.List myListField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -206,9 +198,8 @@ public class FieldTest
 				"java.thingy.List myListField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -226,9 +217,8 @@ public class FieldTest
 				"List myListField;\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 

@@ -60,7 +60,7 @@ Package: 'package';
 Import: 'import';
 Class: 'class';
 Interface: 'interface';
-PrimitiveType: 'bool' | 'char' | 'num';
+PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Public: 'public';
 Private: 'private';
 

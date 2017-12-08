@@ -6,8 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -20,9 +19,8 @@ public class ClassTest
 	public void testParseError() throws Exception
 	{
 		String source = "interface MyInterface {";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
@@ -35,9 +33,8 @@ public class ClassTest
 	public void testNamedEmptyInterface() throws Exception
 	{
 		String source = "interface MyInterface {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface.class", result.getClassFileName());
@@ -58,9 +55,8 @@ public class ClassTest
 	public void testFailToDeclareClassOrInterface() throws Exception
 	{
 		String source = "thingy MyInterface {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -72,9 +68,8 @@ public class ClassTest
 	public void testNamedEmptyClass() throws Exception
 	{
 		String source = "class MyClass {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -107,9 +102,8 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -125,9 +119,8 @@ public class ClassTest
 				"{\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -139,9 +132,8 @@ public class ClassTest
 	public void testClassInPackage() throws Exception
 	{
 		String source = "package myPackage; class MyClass {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("myPackage/", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("myPackage/", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
@@ -151,9 +143,8 @@ public class ClassTest
 	public void testClassInNestedPackage() throws Exception
 	{
 		String source = "package myPackage.thingy; class MyClass {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("myPackage/thingy/", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("myPackage/thingy/", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
@@ -163,9 +154,8 @@ public class ClassTest
 	public void testClassInPackageWrongPackage() throws Exception
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("anotherPackage/wibble/", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

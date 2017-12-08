@@ -4,28 +4,33 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.Map;
+
 public class ClassListener extends YirgacheffeListener
 {
+	private String packageName;
+
 	public ClassListener(
 		String directory,
+		Map<String, Type> importedTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, errorListener, writer);
+		super(directory, importedTypes, errorListener, writer);
 	}
 
 	@Override
 	public void enterPackageDeclaration(
 		YirgacheffeParser.PackageDeclarationContext context)
 	{
-		String packageName = context.packageName().getText();
+		this.packageName = context.packageName().getText();
 		String packageLocation =
-			packageName.replace('.', '/') +  "/";
+			this.packageName.replace('.', '/') +  "/";
 
 		if (!packageLocation.equals(this.directory))
 		{
 			String message =
-				"Package name " + packageName +
+				"Package name " + this.packageName +
 				" does not correspond to the file path " + this.directory + ".";
 
 			this.errors.add(new Error(context.packageName(), message));
@@ -36,7 +41,7 @@ public class ClassListener extends YirgacheffeListener
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
 		String identifier = context.fullyQualifiedType().Identifier().getText();
-		Type type = new Type(context.fullyQualifiedType());
+		Type type = new ImportedType(context.fullyQualifiedType());
 
 		this.importedTypes.put(identifier, type);
 	}
@@ -103,5 +108,13 @@ public class ClassListener extends YirgacheffeListener
 				"java/lang/Object",
 				null);
 		}
+	}
+
+	@Override
+	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
+	{
+		Type type = new DeclaredType(this.className, this.packageName);
+
+		this.importedTypes.put(this.className, type);
 	}
 }

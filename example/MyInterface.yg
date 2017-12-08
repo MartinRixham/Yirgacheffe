@@ -1,1 +1,6 @@
-package example; class MyInterface {}
+package example;
+
+interface MyInterface
+{
+    MyClass myMethod(num param);
+}

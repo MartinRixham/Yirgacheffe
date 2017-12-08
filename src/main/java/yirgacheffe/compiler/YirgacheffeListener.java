@@ -5,7 +5,6 @@ import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +21,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected String className;
 
-	protected Map<String, Type> importedTypes = new HashMap<>();
+	protected Map<String, Type> importedTypes;
 
 	public YirgacheffeListener(
 		String directory,
+		Map<String, Type> importedTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
 		this.directory = directory;
 		this.errorListener = errorListener;
 		this.writer = writer;
+		this.importedTypes = importedTypes;
 	}
 
 	@Override

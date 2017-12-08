@@ -1,9 +1,13 @@
 package yirgacheffe.compiler;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Yirgacheffe
 {
@@ -11,17 +15,46 @@ public final class Yirgacheffe
 	{
 		for (int i = 0; i < args.length; i++)
 		{
-			new Yirgacheffe(args[i]);
+			new Yirgacheffe(args);
 		}
 	}
 
-	private Yirgacheffe(String sourceFile) throws Exception
+	private Yirgacheffe(String[] sourceFiles) throws Exception
 	{
-		try (InputStream inputStream = new FileInputStream(sourceFile))
+		List<Compiler> compilers = new ArrayList<>();
+
+		for (String sourceFile : sourceFiles)
 		{
+			byte[] encoded = Files.readAllBytes(Paths.get(sourceFile));
+			String source = new String(encoded, "UTF-8");
 			String directory = this.getDirectory(sourceFile);
 
-			CompilationResult result = new Compiler(directory, inputStream).compile();
+			compilers.add(new Compiler(directory, source));
+		}
+
+		Map<String, Type> importedTypes = new HashMap<>();
+		boolean failed = false;
+
+		for (Compiler compiler : compilers)
+		{
+			CompilationResult result =
+				compiler.compileClassDeclaration(importedTypes);
+
+			if (!result.isSuccessful())
+			{
+				System.err.print(result.getErrors());
+				failed = true;
+			}
+		}
+
+		if (failed)
+		{
+			return;
+		}
+
+		for (Compiler compiler : compilers)
+		{
+			CompilationResult result = compiler.compile(importedTypes);
 
 			if (result.isSuccessful())
 			{

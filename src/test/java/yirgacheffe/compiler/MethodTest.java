@@ -6,8 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -25,9 +24,8 @@ public class MethodTest
 				"num myMethod();\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -56,9 +54,8 @@ public class MethodTest
 				"public num myInterfaceMethod();\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -76,9 +73,8 @@ public class MethodTest
 				"num myParameterisedMethod(String param1, num param2);\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -103,9 +99,8 @@ public class MethodTest
 				"num myMethod(param1, num param2);\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -122,9 +117,8 @@ public class MethodTest
 				"public num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -157,9 +151,8 @@ public class MethodTest
 				"private num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -192,9 +185,8 @@ public class MethodTest
 				"num myMethod(String param1, num param2) {}\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -213,9 +205,8 @@ public class MethodTest
 				"public String buildString(StringBuilder builder) {}\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 
@@ -253,9 +244,8 @@ public class MethodTest
 				"public Set myMethod(List param1) {}\n" +
 				"}";
 
-		InputStream inputStream = new ByteArrayInputStream(source.getBytes());
-		Compiler compiler = new Compiler("", inputStream);
-		CompilationResult result = compiler.compile();
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new HashMap<>());
 
 		assertTrue(result.isSuccessful());
 

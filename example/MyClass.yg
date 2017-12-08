@@ -1,1 +1,5 @@
-package example; class MyClass {}
+package example;
+
+class MyClass
+{
+}

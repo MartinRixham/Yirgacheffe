@@ -4,14 +4,17 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.Map;
+
 public class FieldListener extends ClassListener
 {
 	public FieldListener(
 		String directory,
+		Map<String, Type> importedTypes,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, errorListener, writer);
+		super(directory, importedTypes, errorListener, writer);
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class FieldListener extends ClassListener
 			}
 			else
 			{
-				type = new Type(context.type());
+				type = new ImportedType(context.type());
 			}
 
 			this.writer
