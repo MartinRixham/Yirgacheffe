@@ -45,8 +45,10 @@ public class ConstructorListener extends MethodListener
 		}
 		else
 		{
+			boolean isPrivate = context.Modifier().getText().equals("private");
+
 			this.writer.visitMethod(
-				Opcodes.ACC_PUBLIC,
+				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				"<init>",
 				this.getMethodDescriptor(context.parameters()),
 				null,

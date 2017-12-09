@@ -134,4 +134,35 @@ public class ConstructorTest
 			"line 3:7 Constructor of incorrect type MyClasss: expected MyClass.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testPrivateConstructor() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"private MyClass(String param) {}\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(1, methods.size());
+
+		MethodNode constructor = methods.get(0);
+
+		assertEquals("(Ljava/lang/String;)V", constructor.desc);
+		assertEquals(Opcodes.ACC_PRIVATE, constructor.access);
+		assertEquals("<init>", constructor.name);
+	}
 }

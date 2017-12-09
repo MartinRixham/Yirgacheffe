@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
@@ -60,9 +59,8 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		YirgacheffeParser.MethodDeclarationContext method = context.methodDeclaration();
-		TerminalNode modifier = method.Modifier();
 
-		if (modifier == null)
+		if (method.Modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -74,7 +72,7 @@ public class MethodListener extends TypeListener
 		{
 			String descriptor =
 				this.getMethodDescriptor(method.parameters(), method.type());
-			boolean isPrivate = modifier.getText().equals("private");
+			boolean isPrivate = method.Modifier().getText().equals("private");
 
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
