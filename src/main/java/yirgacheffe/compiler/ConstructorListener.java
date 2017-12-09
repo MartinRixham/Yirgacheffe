@@ -21,18 +21,28 @@ public class ConstructorListener extends MethodListener
 
 	@Override
 	public void enterConstructorDeclaration(
-		YirgacheffeParser.ConstructorDeclarationContext constructorDeclarationContext)
+		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
-		this.writer.visitMethod(
-			Opcodes.ACC_PUBLIC,
-			"<init>",
-			this.getMethodDescriptor(constructorDeclarationContext.parameters()),
-			null,
-			null);
+		if (context.Modifier() == null)
+		{
+			String message =
+				"Expected public or private access modifier " +
+					"at start of constructor declaration.";
 
-		this.hasDefaultConstructor = false;
+			this.errors.add(new Error(context, message));
+		}
+		else
+		{
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC,
+				"<init>",
+				this.getMethodDescriptor(context.parameters()),
+				null,
+				null);
+
+			this.hasDefaultConstructor = false;
+		}
 	}
-
 
 	private String getMethodDescriptor(YirgacheffeParser.ParametersContext parameters)
 	{

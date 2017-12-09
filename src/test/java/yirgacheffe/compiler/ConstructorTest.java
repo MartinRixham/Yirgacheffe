@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ConstructorTest
@@ -40,7 +41,6 @@ public class ConstructorTest
 		assertEquals("<init>", constructor.name);
 	}
 
-
 	@Test
 	public void testConstructorWithNumberParameter() throws Exception
 	{
@@ -70,5 +70,25 @@ public class ConstructorTest
 		assertEquals("(D)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
 		assertEquals("<init>", constructor.name);
+	}
+
+	@Test
+	public void testConstructorWithMissingModifier() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"MyClass(num param) {}\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Expected public or private access modifier " +
+				"at start of constructor declaration.\n",
+			result.getErrors());
 	}
 }

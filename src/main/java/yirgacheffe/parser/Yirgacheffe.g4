@@ -30,7 +30,7 @@ classDeclaration:
 		classMethodDeclaration*
 	'}';
 
-constructorDeclaration: Modifier Identifier '(' parameters ')' '{' '}';
+constructorDeclaration: Modifier? Identifier '(' parameters ')' '{' '}';
 
 classMethodDeclaration: methodDeclaration '{' '}';
 
