@@ -26,12 +26,12 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected Map<String, DeclaredType> declaredTypes;
 
-	protected ByteCodeClassLoader classLoader;
+	protected BytecodeClassLoader classLoader;
 
 	public YirgacheffeListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader,
+		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{

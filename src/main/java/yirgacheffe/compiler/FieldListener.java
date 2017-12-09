@@ -6,12 +6,12 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.Map;
 
-public class FieldListener extends MethodListener
+public class FieldListener extends ConstructorListener
 {
 	public FieldListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader,
+		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{

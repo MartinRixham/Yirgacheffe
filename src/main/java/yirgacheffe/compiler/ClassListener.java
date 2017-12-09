@@ -8,10 +8,12 @@ import java.util.Map;
 
 public class ClassListener extends YirgacheffeListener
 {
+	protected boolean hasDefaultConstructor = true;
+
 	public ClassListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader,
+		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
@@ -63,19 +65,21 @@ public class ClassListener extends YirgacheffeListener
 				null,
 				"java/lang/Object",
 				null);
-
-			this.makeConstructor();
 		}
 	}
 
-	private void makeConstructor()
+	@Override
+	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
-		this.writer.visitMethod(
-			Opcodes.ACC_PUBLIC,
-			"<init>",
-			"()V",
-			null,
-			null);
+		if (this.hasDefaultConstructor)
+		{
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC,
+				"<init>",
+				"()V",
+				null,
+				null);
+		}
 	}
 
 	@Override

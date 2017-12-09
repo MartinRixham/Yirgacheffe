@@ -26,7 +26,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -57,7 +57,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -89,7 +89,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -124,7 +124,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -143,7 +143,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -162,7 +162,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -181,7 +181,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -207,7 +207,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -227,7 +227,7 @@ public class FieldTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 

@@ -1,51 +1,55 @@
 grammar Yirgacheffe;
 
 compilationUnit:
-    packageDeclaration?
-    importStatement*
-    (malformedDeclaration | classDeclaration | interfaceDeclaration)
-    EOF;
+	packageDeclaration?
+	importStatement*
+	(malformedDeclaration | classDeclaration | interfaceDeclaration)
+	EOF;
 
 packageDeclaration: Package packageName ';';
 
 packageName: Identifier ('.' Identifier)*;
 
 importStatement:
-    Import fullyQualifiedType ';';
+	Import fullyQualifiedType ';';
 
 malformedDeclaration:
-    Identifier Identifier?
-    '{'
-        fieldDeclaration*
-        classMethodDeclaration*
-        interfaceMethodDeclaration*
-    '}';
+	Identifier Identifier?
+	'{'
+		fieldDeclaration*
+		constructorDeclaration*
+		classMethodDeclaration*
+		interfaceMethodDeclaration*
+	'}';
 
 classDeclaration:
-    Class Identifier?
-    '{'
-        fieldDeclaration*
-        classMethodDeclaration*
-    '}';
+	Class Identifier?
+	'{'
+		fieldDeclaration*
+		constructorDeclaration*
+		classMethodDeclaration*
+	'}';
+
+constructorDeclaration: Modifier Identifier '(' parameters ')' '{' '}';
 
 classMethodDeclaration: methodDeclaration '{' '}';
 
 fieldDeclaration: type? Identifier ';';
 
 interfaceDeclaration:
-    Interface Identifier?
-    '{'
-        interfaceFieldDeclaration*
-        interfaceMethodDeclaration*
-    '}';
+	Interface Identifier?
+	'{'
+		interfaceFieldDeclaration*
+		interfaceMethodDeclaration*
+	'}';
 
 interfaceFieldDeclaration: type Identifier ';';
 
 interfaceMethodDeclaration: methodDeclaration ';';
 
-methodDeclaration: modifier? type Identifier '(' parameter? (',' parameter)* ')';
+methodDeclaration: Modifier? type Identifier '(' parameters ')';
 
-modifier: Public | Private ;
+parameters: parameter? (',' parameter)*;
 
 parameter: type? Identifier;
 
@@ -61,8 +65,7 @@ Import: 'import';
 Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
-Public: 'public';
-Private: 'private';
+Modifier: 'public' | 'private';
 
 Identifier: Letter LetterOrDigit*;
 

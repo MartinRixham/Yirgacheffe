@@ -1,5 +1,6 @@
 package yirgacheffe.compiler;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -7,12 +8,12 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.util.List;
 import java.util.Map;
 
-public class MethodListener extends ClassListener
+public class MethodListener extends TypeListener
 {
 	public MethodListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader,
+		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
@@ -23,17 +24,16 @@ public class MethodListener extends ClassListener
 	public void enterInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		YirgacheffeParser.MethodDeclarationContext methodContext =
-			context.methodDeclaration();
+		YirgacheffeParser.MethodDeclarationContext method = context.methodDeclaration();
 
-		if (methodContext.modifier() == null)
+		if (method.Modifier() == null)
 		{
 			String descriptor =
-				this.getMethodDescriptor(methodContext.parameter(), methodContext.type());
+				this.getMethodDescriptor(method.parameters(), method.type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				methodContext.Identifier().getText(),
+				method.Identifier().getText(),
 				descriptor,
 				null,
 				null);
@@ -53,9 +53,8 @@ public class MethodListener extends ClassListener
 	public void enterClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
-		YirgacheffeParser.MethodDeclarationContext methodContext =
-			context.methodDeclaration();
-		YirgacheffeParser.ModifierContext modifier = methodContext.modifier();
+		YirgacheffeParser.MethodDeclarationContext method = context.methodDeclaration();
+		TerminalNode modifier = method.Modifier();
 
 		if (modifier == null)
 		{
@@ -68,11 +67,12 @@ public class MethodListener extends ClassListener
 		else
 		{
 			String descriptor =
-				this.getMethodDescriptor(methodContext.parameter(), methodContext.type());
+				this.getMethodDescriptor(method.parameters(), method.type());
+			boolean isPrivate = modifier.getText().equals("private");
 
 			this.writer.visitMethod(
-				modifier.Public() == null ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				methodContext.Identifier().getText(),
+				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+				method.Identifier().getText(),
 				descriptor,
 				null,
 				null);
@@ -80,12 +80,13 @@ public class MethodListener extends ClassListener
 	}
 
 	private String getMethodDescriptor(
-		List<YirgacheffeParser.ParameterContext> parameters,
+		YirgacheffeParser.ParametersContext parameters,
 		YirgacheffeParser.TypeContext returnType)
 	{
 		StringBuilder descriptor = new StringBuilder("(");
+		List<YirgacheffeParser.ParameterContext> parameterList = parameters.parameter();
 
-		for (YirgacheffeParser.ParameterContext parameter : parameters)
+		for (YirgacheffeParser.ParameterContext parameter : parameterList)
 		{
 			YirgacheffeParser.TypeContext typeContext = parameter.type();
 
@@ -97,8 +98,7 @@ public class MethodListener extends ClassListener
 			}
 		}
 
-		descriptor.append(")");
-		descriptor.append(this.getType(returnType).toJVMType());
+		descriptor.append(")").append(this.getType(returnType).toJVMType());
 
 		return descriptor.toString();
 	}
@@ -133,68 +133,6 @@ public class MethodListener extends ClassListener
 				new Error(context, "Expected type before argument identifier.");
 
 			this.errors.add(error);
-		}
-	}
-
-	@Override
-	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
-	{
-		String identifier = context.fullyQualifiedType().Identifier().getText();
-		ImportedType type = new ImportedType(context.fullyQualifiedType());
-
-		this.importedTypes.put(identifier, type);
-	}
-
-	@Override
-	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
-	{
-		if (context.Identifier() != null)
-		{
-			if (this.importedTypes.containsKey(context.getText()) ||
-				this.declaredTypes.containsKey(context.getText()))
-			{
-				return;
-			}
-
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-			try
-			{
-				classLoader.loadClass("java.lang." + context.getText());
-			}
-			catch (ClassNotFoundException e)
-			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
-
-				this.errors.add(new Error(context, message));
-			}
-		}
-	}
-
-	@Override
-	public void enterFullyQualifiedType(
-		YirgacheffeParser.FullyQualifiedTypeContext context)
-	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-		try
-		{
-			classLoader.loadClass(context.getText());
-		}
-		catch (ClassNotFoundException e)
-		{
-			try
-			{
-				this.classLoader.loadClass(context.getText());
-			}
-			catch (ClassNotFoundException ex)
-			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
-
-				this.errors.add(new Error(context, message));
-			}
 		}
 	}
 }

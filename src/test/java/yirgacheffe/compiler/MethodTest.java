@@ -26,7 +26,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -57,7 +57,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -77,7 +77,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -104,7 +104,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -123,7 +123,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -136,15 +136,11 @@ public class MethodTest
 
 		assertEquals(2, methods.size());
 
-		MethodNode firstMethod = methods.get(0);
+		MethodNode method = methods.get(0);
 
-		assertEquals("<init>", firstMethod.name);
-
-		MethodNode secondMethod = methods.get(1);
-
-		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
-		assertEquals(Opcodes.ACC_PUBLIC, secondMethod.access);
-		assertEquals("myMethod", secondMethod.name);
+		assertEquals("(Ljava/lang/String;D)D", method.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals("myMethod", method.name);
 	}
 
 	@Test
@@ -158,7 +154,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -171,15 +167,11 @@ public class MethodTest
 
 		assertEquals(2, methods.size());
 
-		MethodNode firstMethod = methods.get(0);
+		MethodNode method = methods.get(0);
 
-		assertEquals("<init>", firstMethod.name);
-
-		MethodNode secondMethod = methods.get(1);
-
-		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
-		assertEquals(Opcodes.ACC_PRIVATE, secondMethod.access);
-		assertEquals("myMethod", secondMethod.name);
+		assertEquals("(Ljava/lang/String;D)D", method.desc);
+		assertEquals(Opcodes.ACC_PRIVATE, method.access);
+		assertEquals("myMethod", method.name);
 	}
 
 	@Test
@@ -193,7 +185,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -214,7 +206,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -227,12 +219,12 @@ public class MethodTest
 
 		assertEquals(3, methods.size());
 
-		MethodNode secondMethod = methods.get(1);
+		MethodNode secondMethod = methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
 		assertEquals("myMethod", secondMethod.name);
 
-		MethodNode thirdMethod = methods.get(2);
+		MethodNode thirdMethod = methods.get(1);
 
 		assertEquals(
 			"(Ljava/lang/StringBuilder;)Ljava/lang/String;",
@@ -254,7 +246,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -264,7 +256,7 @@ public class MethodTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode method = methods.get(1);
+		MethodNode method = methods.get(0);
 
 		assertEquals("(Ljava/util/List;)Ljava/util/Set;", method.desc);
 	}
@@ -280,7 +272,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -306,7 +298,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -332,7 +324,7 @@ public class MethodTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 

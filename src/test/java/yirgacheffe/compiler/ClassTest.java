@@ -21,7 +21,7 @@ public class ClassTest
 		String source = "interface MyInterface {";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
@@ -36,7 +36,7 @@ public class ClassTest
 		String source = "interface MyInterface {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface.class", result.getClassFileName());
@@ -59,7 +59,7 @@ public class ClassTest
 		String source = "thingy MyInterface {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -73,7 +73,7 @@ public class ClassTest
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -86,16 +86,6 @@ public class ClassTest
 		assertEquals("MyClass", classNode.name);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());
-
-		List<MethodNode> methods = classNode.methods;
-
-		assertEquals(1, methods.size());
-
-		MethodNode constructor = methods.get(0);
-
-		assertEquals("()V", constructor.desc);
-		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
-		assertEquals("<init>", constructor.name);
 	}
 
 	@Test
@@ -108,7 +98,7 @@ public class ClassTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -126,7 +116,7 @@ public class ClassTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -140,7 +130,7 @@ public class ClassTest
 		String source = "package myPackage; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
@@ -152,7 +142,7 @@ public class ClassTest
 		String source = "package myPackage.thingy; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/thingy/", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
@@ -164,7 +154,7 @@ public class ClassTest
 		String source = "package myPackage.wibble; class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -177,7 +167,7 @@ public class ClassTest
 	public void testPackagedClass() throws Exception
 	{
 		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
-		ByteCodeClassLoader classLoader = new ByteCodeClassLoader();
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
 		String source = "package this.that; interface MyInterface {}";
 		Compiler compiler = new Compiler("this/that/", source);
 		CompilationResult result =

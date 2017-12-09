@@ -3,7 +3,7 @@ package yirgacheffe.compiler;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ByteCodeClassLoader extends ClassLoader
+public class BytecodeClassLoader extends ClassLoader
 {
 	private Map<String, byte[]> bytecode = new HashMap<>();
 

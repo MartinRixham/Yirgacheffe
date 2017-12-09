@@ -25,7 +25,7 @@ public class Compiler
 
 	public CompilationResult compileClassDeclaration(
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader)
+		BytecodeClassLoader classLoader)
 		throws Exception
 	{
 		ClassWriter writer = new ClassWriter(0);
@@ -44,7 +44,7 @@ public class Compiler
 
 	public CompilationResult compile(
 		Map<String, DeclaredType> declaredTypes,
-		ByteCodeClassLoader classLoader)
+		BytecodeClassLoader classLoader)
 		throws Exception
 	{
 		ClassWriter writer = new ClassWriter(0);

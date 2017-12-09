@@ -13,9 +13,9 @@ public class Package
 
 	private Map<String, DeclaredType> declaredTypes = new HashMap<>();
 
-	private ByteCodeClassLoader classLoader;
+	private BytecodeClassLoader classLoader;
 
-	public Package(ByteCodeClassLoader classLoader)
+	public Package(BytecodeClassLoader classLoader)
 	{
 		this.classLoader = classLoader;
 	}

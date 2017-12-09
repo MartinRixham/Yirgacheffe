@@ -10,7 +10,7 @@ public final class Yirgacheffe
 {
 	private String[] sourceFiles;
 
-	private ByteCodeClassLoader classLoader = new ByteCodeClassLoader();
+	private BytecodeClassLoader classLoader = new BytecodeClassLoader();
 
 	public static void main(String[] args) throws Exception
 	{
