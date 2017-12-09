@@ -1,4 +1,4 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.Type;
 
 import yirgacheffe.parser.YirgacheffeParser;
 

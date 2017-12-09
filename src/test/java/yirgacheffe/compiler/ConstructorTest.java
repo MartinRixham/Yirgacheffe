@@ -5,6 +5,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -89,6 +90,25 @@ public class ConstructorTest
 		assertEquals(
 			"line 3:0 Expected public or private access modifier " +
 				"at start of constructor declaration.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testConstructorWithWrongName() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"public MyClasss(num param) {}\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:7 Constructor of incorrect type MyClasss: expected MyClass.\n",
 			result.getErrors());
 	}
 }

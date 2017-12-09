@@ -6,6 +6,12 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.ClassWriter;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.error.ParseErrorListener;
+import yirgacheffe.compiler.listener.ClassListener;
+import yirgacheffe.compiler.listener.FieldListener;
+import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.parser.YirgacheffeLexer;
 import yirgacheffe.parser.YirgacheffeParser;
 

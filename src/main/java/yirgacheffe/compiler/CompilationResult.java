@@ -1,5 +1,7 @@
 package yirgacheffe.compiler;
 
+import yirgacheffe.compiler.error.Error;
+
 import java.util.List;
 
 public class CompilationResult

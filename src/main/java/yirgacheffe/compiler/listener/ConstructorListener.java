@@ -1,7 +1,11 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.List;
@@ -31,6 +35,14 @@ public class ConstructorListener extends MethodListener
 
 			this.errors.add(new Error(context, message));
 		}
+		else if (!context.Identifier().getText().equals(this.className))
+		{
+			String message =
+				"Constructor of incorrect type " + context.Identifier().getText() +
+					": expected " + this.className + ".";
+
+			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+		}
 		else
 		{
 			this.writer.visitMethod(
@@ -46,44 +58,8 @@ public class ConstructorListener extends MethodListener
 
 	private String getMethodDescriptor(YirgacheffeParser.ParametersContext parameters)
 	{
-		StringBuilder descriptor = new StringBuilder("(");
 		List<YirgacheffeParser.ParameterContext> parameterList = parameters.parameter();
 
-		for (YirgacheffeParser.ParameterContext parameter : parameterList)
-		{
-			YirgacheffeParser.TypeContext typeContext = parameter.type();
-
-			if (typeContext != null)
-			{
-				Type type = this.getType(typeContext);
-
-				descriptor.append(type.toJVMType());
-			}
-		}
-
-		descriptor.append(")V");
-
-		return descriptor.toString();
-	}
-
-	private Type getType(YirgacheffeParser.TypeContext context)
-	{
-		String typeName = context.getText();
-		Type type;
-
-		if (this.importedTypes.containsKey(typeName))
-		{
-			type = this.importedTypes.get(typeName);
-		}
-		else if (this.declaredTypes.containsKey(typeName))
-		{
-			type = this.declaredTypes.get(typeName);
-		}
-		else
-		{
-			type = new ImportedType(context);
-		}
-
-		return type;
+		return this.getParameterDescriptor(parameterList) + "V";
 	}
 }

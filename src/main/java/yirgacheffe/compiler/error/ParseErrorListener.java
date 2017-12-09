@@ -1,4 +1,4 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.error;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

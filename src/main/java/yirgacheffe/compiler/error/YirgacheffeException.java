@@ -1,4 +1,4 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.error;
 
 public class YirgacheffeException extends RuntimeException
 {

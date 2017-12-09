@@ -1,8 +1,14 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Type.ImportedType;
+import yirgacheffe.compiler.error.ParseErrorListener;
+import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.List;
@@ -83,8 +89,19 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ParametersContext parameters,
 		YirgacheffeParser.TypeContext returnType)
 	{
-		StringBuilder descriptor = new StringBuilder("(");
 		List<YirgacheffeParser.ParameterContext> parameterList = parameters.parameter();
+
+		String descriptor =
+			this.getParameterDescriptor(parameterList) +
+				this.getType(returnType).toJVMType();
+
+		return descriptor;
+	}
+
+	protected String getParameterDescriptor(
+		List<YirgacheffeParser.ParameterContext> parameterList)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
 
 		for (YirgacheffeParser.ParameterContext parameter : parameterList)
 		{
@@ -98,7 +115,7 @@ public class MethodListener extends TypeListener
 			}
 		}
 
-		descriptor.append(")").append(this.getType(returnType).toJVMType());
+		descriptor.append(")");
 
 		return descriptor.toString();
 	}

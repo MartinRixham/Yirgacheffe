@@ -1,4 +1,7 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.main;
+
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Compiler;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

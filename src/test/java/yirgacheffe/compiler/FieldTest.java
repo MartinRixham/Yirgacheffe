@@ -5,6 +5,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,7 +1,13 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Type.ImportedType;
+import yirgacheffe.compiler.error.ParseErrorListener;
+import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.Map;
