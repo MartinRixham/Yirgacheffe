@@ -69,9 +69,8 @@
 		<property name="message" value="Line has leading space characters; indentation should be performed with tabs only."/>
 	</module>
 
-
 	<!-- Miscellaneous other checks.                   -->
-	<!-- See http://checkstyle.sf.net/config_misc.html -->
+	<!-- See http://checkstyle	.sf.net/config_misc.html -->
 	<module name="RegexpSingleline">
 		<property name="format" value="\s+$"/>
 		<property name="minimum" value="0"/>
@@ -89,6 +88,13 @@
 	<module name="TreeWalker">
 
 		<property name="tabWidth" value="4"/>
+
+		<!-- Disallow triple line breaks -->
+		<module name="Regexp">
+			<property name="format" value="\n\n\n+"/>
+			<property name="illegalPattern" value="true"/>
+			<property name="message" value="More than two consecutive line breaks."/>
+		</module>
 
 		<!-- Checks for Javadoc comments.                     -->
 		<!-- See http://checkstyle.sf.net/config_javadoc.html -->

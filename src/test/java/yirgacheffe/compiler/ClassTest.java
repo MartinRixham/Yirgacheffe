@@ -192,7 +192,6 @@ public class ClassTest
 
 		reader.accept(classNode, 0);
 
-
 		List<MethodNode> methods = classNode.methods;
 		MethodNode method = methods.get(0);
 
