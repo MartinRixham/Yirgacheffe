@@ -12,10 +12,11 @@ public class MethodListener extends ClassListener
 	public MethodListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
+		ByteCodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, errorListener, writer);
+		super(directory, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -54,7 +55,6 @@ public class MethodListener extends ClassListener
 	{
 		YirgacheffeParser.MethodDeclarationContext methodContext =
 			context.methodDeclaration();
-
 		YirgacheffeParser.ModifierContext modifier = methodContext.modifier();
 
 		if (modifier == null)
@@ -137,6 +137,15 @@ public class MethodListener extends ClassListener
 	}
 
 	@Override
+	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
+	{
+		String identifier = context.fullyQualifiedType().Identifier().getText();
+		ImportedType type = new ImportedType(context.fullyQualifiedType());
+
+		this.importedTypes.put(identifier, type);
+	}
+
+	@Override
 	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
 	{
 		if (context.Identifier() != null)
@@ -175,10 +184,17 @@ public class MethodListener extends ClassListener
 		}
 		catch (ClassNotFoundException e)
 		{
-			String message =
-				"Unrecognised type: " + context.getText() + " is not a type.";
+			try
+			{
+				this.classLoader.loadClass(context.getText());
+			}
+			catch (ClassNotFoundException ex)
+			{
+				String message =
+					"Unrecognised type: " + context.getText() + " is not a type.";
 
-			this.errors.add(new Error(context, message));
+				this.errors.add(new Error(context, message));
+			}
 		}
 	}
 }

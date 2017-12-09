@@ -10,6 +10,8 @@ public final class Yirgacheffe
 {
 	private String[] sourceFiles;
 
+	private ByteCodeClassLoader classLoader = new ByteCodeClassLoader();
+
 	public static void main(String[] args) throws Exception
 	{
 		new Yirgacheffe(args).execute();
@@ -46,7 +48,7 @@ public final class Yirgacheffe
 
 			if (!packages.containsKey(directory))
 			{
-				packages.put(directory, new Package());
+				packages.put(directory, new Package(this.classLoader));
 			}
 
 			packages.get(directory).addCompiler(new Compiler(directory, source));

@@ -20,7 +20,8 @@ public class ClassTest
 	{
 		String source = "interface MyInterface {";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
@@ -34,7 +35,8 @@ public class ClassTest
 	{
 		String source = "interface MyInterface {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface.class", result.getClassFileName());
@@ -56,7 +58,8 @@ public class ClassTest
 	{
 		String source = "thingy MyInterface {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -69,7 +72,8 @@ public class ClassTest
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -103,7 +107,8 @@ public class ClassTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -120,7 +125,8 @@ public class ClassTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -133,7 +139,8 @@ public class ClassTest
 	{
 		String source = "package myPackage; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
@@ -144,7 +151,8 @@ public class ClassTest
 	{
 		String source = "package myPackage.thingy; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/thingy/", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
@@ -155,7 +163,8 @@ public class ClassTest
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -168,9 +177,11 @@ public class ClassTest
 	public void testPackagedClass() throws Exception
 	{
 		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
+		ByteCodeClassLoader classLoader = new ByteCodeClassLoader();
 		String source = "package this.that; interface MyInterface {}";
 		Compiler compiler = new Compiler("this/that/", source);
-		CompilationResult result = compiler.compileClassDeclaration(declaredTypes);
+		CompilationResult result =
+			compiler.compileClassDeclaration(declaredTypes, classLoader);
 
 		assertTrue(result.isSuccessful());
 
@@ -182,7 +193,7 @@ public class ClassTest
 				"}";
 
 		compiler = new Compiler("this/that/", source);
-		result = compiler.compile(declaredTypes);
+		result = compiler.compile(declaredTypes, classLoader);
 
 		assertTrue(result.isSuccessful());
 

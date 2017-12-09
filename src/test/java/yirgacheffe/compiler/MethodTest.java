@@ -25,7 +25,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -55,7 +56,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -74,7 +76,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -100,7 +103,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -118,7 +122,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -152,7 +157,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -186,7 +192,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -206,7 +213,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -245,7 +253,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -270,7 +279,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -295,7 +305,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 
@@ -320,7 +331,8 @@ public class MethodTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new HashMap<>());
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new ByteCodeClassLoader());
 
 		assertTrue(result.isSuccessful());
 

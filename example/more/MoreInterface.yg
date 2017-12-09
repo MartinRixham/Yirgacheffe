@@ -1,0 +1,8 @@
+package example.more;
+
+import example.MyInterface;
+
+interface MoreInterface
+{
+    void moreMethod(MyInterface param);
+}

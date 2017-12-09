@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	private ParseErrorListener errorListener;
@@ -16,6 +15,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	protected ClassWriter writer;
 
 	protected List<Error> errors = new ArrayList<>();
+
+	protected String packageName;
 
 	protected String directory;
 
@@ -25,14 +26,18 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected Map<String, DeclaredType> declaredTypes;
 
+	protected ByteCodeClassLoader classLoader;
+
 	public YirgacheffeListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
+		ByteCodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
 		this.directory = directory;
 		this.declaredTypes = declaredTypes;
+		this.classLoader = classLoader;
 		this.errorListener = errorListener;
 		this.writer = writer;
 	}
@@ -50,8 +55,11 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		else
 		{
 			String classFileName = this.directory + this.className + ".class";
+			byte[] bytes = this.writer.toByteArray();
 
-			return new CompilationResult(classFileName, this.writer.toByteArray());
+			this.classLoader.addClass(this.packageName + "." + this.className, bytes);
+
+			return new CompilationResult(classFileName, bytes);
 		}
 	}
 }

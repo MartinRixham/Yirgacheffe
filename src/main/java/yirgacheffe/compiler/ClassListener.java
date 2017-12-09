@@ -8,15 +8,14 @@ import java.util.Map;
 
 public class ClassListener extends YirgacheffeListener
 {
-	private String packageName;
-
 	public ClassListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
+		ByteCodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, errorListener, writer);
+		super(directory, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -35,15 +34,6 @@ public class ClassListener extends YirgacheffeListener
 
 			this.errors.add(new Error(context.packageName(), message));
 		}
-	}
-
-	@Override
-	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
-	{
-		String identifier = context.fullyQualifiedType().Identifier().getText();
-		ImportedType type = new ImportedType(context.fullyQualifiedType());
-
-		this.importedTypes.put(identifier, type);
 	}
 
 	@Override
@@ -69,7 +59,7 @@ public class ClassListener extends YirgacheffeListener
 			this.writer.visit(
 				Opcodes.V1_8,
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-				this.className,
+				this.directory + this.className,
 				null,
 				"java/lang/Object",
 				null);
@@ -103,7 +93,7 @@ public class ClassListener extends YirgacheffeListener
 			this.writer.visit(
 				Opcodes.V1_8,
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-				this.className,
+				this.directory + this.className,
 				null,
 				"java/lang/Object",
 				null);

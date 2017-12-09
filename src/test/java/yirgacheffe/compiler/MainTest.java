@@ -72,12 +72,18 @@ public class MainTest
 	{
 		new File("example/MyInterface.class").delete();
 		new File("example/AnotherClass.class").delete();
+		new File("example/more/MoreInterface.class").delete();
 
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
 		String[] arguments =
-			new String[] {"example/MyInterface.yg", "example/AnotherClass.yg"};
+			new String[]
+				{
+					"example/MyInterface.yg",
+					"example/AnotherClass.yg",
+					"example/more/MoreInterface.yg"
+				};
 
 		System.setErr(error);
 
@@ -87,10 +93,13 @@ public class MainTest
 			new FileInputStream("example/MyInterface.class");
 		InputStream secondFile =
 			new FileInputStream("example/AnotherClass.class");
+		InputStream thirdFile =
+			new FileInputStream("example/more/MoreInterface.class");
 
 		assertTrue(spyError.toString().length() == 0);
 		assertTrue(firstFile.read() != -1);
 		assertTrue(secondFile.read() != -1);
+		assertTrue(thirdFile.read() != -1);
 
 		System.setErr(originalError);
 	}

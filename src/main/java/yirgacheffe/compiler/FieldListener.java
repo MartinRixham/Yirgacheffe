@@ -11,10 +11,11 @@ public class FieldListener extends MethodListener
 	public FieldListener(
 		String directory,
 		Map<String, DeclaredType> declaredTypes,
+		ByteCodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, errorListener, writer);
+		super(directory, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override

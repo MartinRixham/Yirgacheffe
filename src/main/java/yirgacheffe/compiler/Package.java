@@ -13,8 +13,11 @@ public class Package
 
 	private Map<String, DeclaredType> declaredTypes = new HashMap<>();
 
-	public Package()
+	private ByteCodeClassLoader classLoader;
+
+	public Package(ByteCodeClassLoader classLoader)
 	{
+		this.classLoader = classLoader;
 	}
 
 	public void addCompiler(Compiler compiler)
@@ -29,7 +32,7 @@ public class Package
 		for (Compiler compiler: this.compilers)
 		{
 			CompilationResult result =
-				compiler.compileClassDeclaration(this.declaredTypes);
+				compiler.compileClassDeclaration(this.declaredTypes, this.classLoader);
 
 			if (!result.isSuccessful())
 			{
@@ -46,7 +49,8 @@ public class Package
 	{
 		for (Compiler compiler: this.compilers)
 		{
-			CompilationResult result = compiler.compile(this.declaredTypes);
+			CompilationResult result =
+				compiler.compile(this.declaredTypes, this.classLoader);
 
 			if (result.isSuccessful())
 			{
