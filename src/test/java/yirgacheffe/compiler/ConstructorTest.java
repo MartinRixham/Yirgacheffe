@@ -4,7 +4,10 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 
 import java.util.HashMap;
@@ -40,6 +43,26 @@ public class ConstructorTest
 		assertEquals("()V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
 		assertEquals("<init>", constructor.name);
+		assertEquals(1, constructor.maxLocals);
+		assertEquals(1, constructor.maxStack);
+
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(3, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("java/lang/Object", secondInstruction.owner);
+		assertEquals("<init>", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
+
+		assertEquals(Opcodes.RETURN, instructions.get(2).getOpcode());
 	}
 
 	@Test
