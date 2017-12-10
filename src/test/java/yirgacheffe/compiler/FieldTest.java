@@ -364,4 +364,74 @@ public class FieldTest
 
 		assertEquals(1.2, fourthInstruction.cst);
 	}
+
+	@Test
+	public void testCharacterFieldWithInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"char myCharacterField = 'a';\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode constructor = methods.get(0);
+		InsnList instructions = constructor.instructions;
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals((int) 'a', fourthInstruction.cst);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("myCharacterField", fifthInstruction.name);
+		assertEquals("C", fifthInstruction.desc);
+	}
+
+	@Test
+	public void testBoolenFieldWithInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"bool myBooleanField = true;\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode constructor = methods.get(0);
+		InsnList instructions = constructor.instructions;
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(1, fourthInstruction.cst);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("myBooleanField", fifthInstruction.name);
+		assertEquals("B", fifthInstruction.desc);
+	}
 }

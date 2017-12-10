@@ -59,7 +59,7 @@ fullyQualifiedType: packageName '.' Identifier;
 
 expression: literal;
 
-literal: IntegerLiteral | DecimalLiteral | StringLiteral;
+literal: BooleanLiteral | CharacterLiteral | IntegerLiteral | DecimalLiteral | StringLiteral;
 
 // keywords
 Package: 'package';
@@ -68,10 +68,16 @@ Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
+BooleanLiteral: 'true' | 'false';
 
-DecimalLiteral: IntegerLiteral '.' Digit+ ;
+CharacterLiteral: '\'' SingleCharacter '\'' | '\'' EscapeSequence '\'';
+
+fragment
+SingleCharacter: ~['\\\r\n];
 
 IntegerLiteral: ('0' | Sign? NonZeroDigit Digit*);
+
+DecimalLiteral: IntegerLiteral '.' Digit+ ;
 
 fragment
 Sign: [+-];

@@ -142,13 +142,21 @@ public class ClassListener extends YirgacheffeListener
 	{
 		YirgacheffeParser.LiteralContext literal = expression.literal();
 
-		if (literal.StringLiteral() == null)
+		if (literal.StringLiteral() != null)
 		{
-			return new Double(expression.getText());
+			return expression.getText().replace("\"", "");
+		}
+		else if (literal.CharacterLiteral() != null)
+		{
+			return expression.getText().charAt(1);
+		}
+		else if (literal.BooleanLiteral() != null)
+		{
+			return expression.getText().equals("true");
 		}
 		else
 		{
-			return expression.getText().replace("\"", "");
+			return new Double(expression.getText());
 		}
 	}
 
