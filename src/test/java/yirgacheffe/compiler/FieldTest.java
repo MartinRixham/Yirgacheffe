@@ -335,4 +335,33 @@ public class FieldTest
 		assertEquals("myNumberField", fifthInstruction.name);
 		assertEquals("D", fifthInstruction.desc);
 	}
+
+	@Test
+	public void testNumberFieldWithDecimalInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"num myNumberField = 1.2;\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode constructor = methods.get(0);
+		InsnList instructions = constructor.instructions;
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(1.2, fourthInstruction.cst);
+	}
 }
