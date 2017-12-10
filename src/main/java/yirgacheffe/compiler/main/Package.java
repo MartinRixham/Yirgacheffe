@@ -1,8 +1,6 @@
 package yirgacheffe.compiler.main;
 
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.CompilationResult;
-import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.Type.DeclaredType;
 
 import java.io.FileOutputStream;

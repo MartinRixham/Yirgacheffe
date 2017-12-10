@@ -10,8 +10,7 @@ packageDeclaration: Package packageName ';';
 
 packageName: Identifier ('.' Identifier)*;
 
-importStatement:
-	Import fullyQualifiedType ';';
+importStatement: Import fullyQualifiedType ';';
 
 malformedDeclaration:
 	Identifier Identifier?
@@ -30,11 +29,13 @@ classDeclaration:
 		classMethodDeclaration*
 	'}';
 
-constructorDeclaration: Modifier? Identifier '(' parameters ')' '{' '}';
+constructorDeclaration:
+	Modifier? Identifier '(' parameter? (',' parameter)* ')' '{' '}';
 
-classMethodDeclaration: methodDeclaration '{' '}';
+classMethodDeclaration:
+	Modifier? type Identifier '(' parameter? (',' parameter)* ')' '{' '}';
 
-fieldDeclaration: type? Identifier ';';
+fieldDeclaration: type? Identifier ('=' StringLiteral)? ';';
 
 interfaceDeclaration:
 	Interface Identifier?
@@ -43,13 +44,10 @@ interfaceDeclaration:
 		interfaceMethodDeclaration*
 	'}';
 
-interfaceFieldDeclaration: type Identifier ';';
+interfaceFieldDeclaration: type Identifier ('=' StringLiteral)? ';';
 
-interfaceMethodDeclaration: methodDeclaration ';';
-
-methodDeclaration: Modifier? type Identifier '(' parameters ')';
-
-parameters: parameter? (',' parameter)*;
+interfaceMethodDeclaration:
+	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
 
 parameter: type? Identifier;
 
@@ -66,6 +64,17 @@ Class: 'class';
 Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
+
+StringLiteral: '"' StringCharacters? '"';
+
+fragment
+StringCharacters: StringCharacter+;
+
+fragment
+StringCharacter: ~["\\\r\n] | EscapeSequence;
+
+fragment
+EscapeSequence:	'\\' [btnfr"'\\];
 
 Identifier: Letter LetterOrDigit*;
 

@@ -50,7 +50,7 @@ public class ConstructorListener extends MethodListener
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				"<init>",
-				this.getMethodDescriptor(context.parameters()),
+				this.getMethodDescriptor(context.parameter()),
 				null,
 				null);
 
@@ -58,10 +58,9 @@ public class ConstructorListener extends MethodListener
 		}
 	}
 
-	private String getMethodDescriptor(YirgacheffeParser.ParametersContext parameters)
+	private String getMethodDescriptor(
+		List<YirgacheffeParser.ParameterContext> parameters)
 	{
-		List<YirgacheffeParser.ParameterContext> parameterList = parameters.parameter();
-
-		return this.getParameterDescriptor(parameterList) + "V";
+		return this.getParameterDescriptor(parameters) + "V";
 	}
 }

@@ -6,6 +6,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.main.CompilationResult;
+import yirgacheffe.compiler.main.Compiler;
 
 import java.util.HashMap;
 import java.util.List;

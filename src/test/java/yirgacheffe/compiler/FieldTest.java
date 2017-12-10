@@ -6,6 +6,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.main.CompilationResult;
+import yirgacheffe.compiler.main.Compiler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -241,5 +243,36 @@ public class FieldTest
 		String descriptor = fields.get(0).desc;
 
 		assertEquals("Ljava/util/List;", descriptor);
+	}
+
+	@Test
+	public void testStringFieldWithInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"String myStringField = \"thingy\";\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		FieldNode firstField = fields.get(0);
+
+		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+		assertEquals("Ljava/lang/String;", firstField.desc);
+		assertEquals("myStringField", firstField.name);
 	}
 }

@@ -29,16 +29,14 @@ public class MethodListener extends TypeListener
 	public void enterInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		YirgacheffeParser.MethodDeclarationContext method = context.methodDeclaration();
-
-		if (method.Modifier() == null)
+		if (context.Modifier() == null)
 		{
 			String descriptor =
-				this.getMethodDescriptor(method.parameters(), method.type());
+				this.getMethodDescriptor(context.parameter(), context.type());
 
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				method.Identifier().getText(),
+				context.Identifier().getText(),
 				descriptor,
 				null,
 				null);
@@ -58,9 +56,7 @@ public class MethodListener extends TypeListener
 	public void enterClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
-		YirgacheffeParser.MethodDeclarationContext method = context.methodDeclaration();
-
-		if (method.Modifier() == null)
+		if (context.Modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -71,12 +67,12 @@ public class MethodListener extends TypeListener
 		else
 		{
 			String descriptor =
-				this.getMethodDescriptor(method.parameters(), method.type());
-			boolean isPrivate = method.Modifier().getText().equals("private");
+				this.getMethodDescriptor(context.parameter(), context.type());
+			boolean isPrivate = context.Modifier().getText().equals("private");
 
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				method.Identifier().getText(),
+				context.Identifier().getText(),
 				descriptor,
 				null,
 				null);
@@ -84,16 +80,12 @@ public class MethodListener extends TypeListener
 	}
 
 	private String getMethodDescriptor(
-		YirgacheffeParser.ParametersContext parameters,
+		List<YirgacheffeParser.ParameterContext> parameters,
 		YirgacheffeParser.TypeContext returnType)
 	{
-		List<YirgacheffeParser.ParameterContext> parameterList = parameters.parameter();
-
-		String descriptor =
-			this.getParameterDescriptor(parameterList) +
+		return
+			this.getParameterDescriptor(parameters) +
 				this.getType(returnType).toJVMType();
-
-		return descriptor;
 	}
 
 	protected String getParameterDescriptor(

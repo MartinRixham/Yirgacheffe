@@ -2,7 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.CompilationResult;
+import yirgacheffe.compiler.main.CompilationResult;
 import yirgacheffe.compiler.Type.DeclaredType;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.Type.ImportedType;
