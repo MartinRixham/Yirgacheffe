@@ -114,7 +114,7 @@ public class ConstructorTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Expected public or private access modifier " +
-				"at start of constructor declaration.\n",
+				"at start of method declaration.\n",
 			result.getErrors());
 	}
 

@@ -65,12 +65,19 @@ public class MethodListener extends TypeListener
 			isPrivate = context.Modifier().getText().equals("private");
 		}
 
+		String name = "<init>";
+
+		if (context.Identifier() != null)
+		{
+			name = context.Identifier().getText();
+		}
+
 		String descriptor =
 			this.getMethodDescriptor(context.parameter(), context.type());
 
 		this.writer.visitMethod(
 			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-			context.Identifier().getText(),
+			name,
 			descriptor,
 			null,
 			null);

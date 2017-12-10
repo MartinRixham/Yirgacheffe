@@ -20,7 +20,6 @@ malformedDeclaration:
 	Identifier classIdentifier?
 	'{'
 		field*
-		constructorDeclaration*
 		classMethodDeclaration*
 		interfaceMethodDeclaration*
 	'}';
@@ -29,15 +28,13 @@ classDeclaration:
 	Class classIdentifier?
 	'{'
 		field*
-		constructorDeclaration*
 		classMethodDeclaration*
 	'}';
 
-constructorDeclaration:
-	Modifier? Identifier '(' parameter? (',' parameter)* ')' '{' '}';
-
 classMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* ')' '{' '}';
+	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* ')' '{' '}';
+
+constructorIdentifier: Identifier;
 
 interfaceDeclaration:
 	Interface interfaceIdentifier?
