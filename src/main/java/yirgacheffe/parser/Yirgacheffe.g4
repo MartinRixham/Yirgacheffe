@@ -12,19 +12,23 @@ packageName: Identifier ('.' Identifier)*;
 
 importStatement: Import fullyQualifiedType ';';
 
+classIdentifier: Identifier;
+
+interfaceIdentifier: Identifier;
+
 malformedDeclaration:
-	Identifier Identifier?
+	Identifier classIdentifier?
 	'{'
-		fieldDeclaration*
+		field*
 		constructorDeclaration*
 		classMethodDeclaration*
 		interfaceMethodDeclaration*
 	'}';
 
 classDeclaration:
-	Class Identifier?
+	Class classIdentifier?
 	'{'
-		fieldDeclaration*
+		field*
 		constructorDeclaration*
 		classMethodDeclaration*
 	'}';
@@ -35,19 +39,21 @@ constructorDeclaration:
 classMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' '{' '}';
 
-fieldDeclaration: type? Identifier ('=' expression)?';';
-
 interfaceDeclaration:
-	Interface Identifier?
+	Interface interfaceIdentifier?
 	'{'
-		interfaceFieldDeclaration*
+		field*
 		interfaceMethodDeclaration*
 	'}';
 
-interfaceFieldDeclaration: type Identifier ('=' expression)? ';';
-
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
+
+field: (fieldDeclaration | fieldInitialisation) ';';
+
+fieldDeclaration: type? Identifier;
+
+fieldInitialisation: fieldDeclaration '=' expression;
 
 parameter: type? Identifier;
 

@@ -51,47 +51,59 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
-	public void enterClassDeclaration(
-		YirgacheffeParser.ClassDeclarationContext context)
+	public void enterClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
-		if (context.Identifier() == null)
+		if (context.classIdentifier() == null)
 		{
 			this.errors.add(new Error(context, "Class identifier expected."));
 		}
-		else
-		{
-			this.className = context.Identifier().getText();
+	}
 
-			this.writer.visit(
-				Opcodes.V1_8,
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-				this.directory + this.className,
-				null,
-				"java/lang/Object",
-				null);
-		}
+	@Override
+	public void enterClassIdentifier(
+		YirgacheffeParser.ClassIdentifierContext context)
+	{
+		this.className = context.getText();
+
+		this.writer.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+			this.directory + context.getText(),
+			null,
+			"java/lang/Object",
+			null);
 	}
 
 	@Override
 	public void enterInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
-		if (context.Identifier() == null)
+		if (context.interfaceIdentifier() == null)
 		{
 			this.errors.add(new Error(context, "Interface identifier expected."));
 		}
-		else
-		{
-			this.className = context.Identifier().getText();
 
-			this.writer.visit(
-				Opcodes.V1_8,
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-				this.directory + this.className,
-				null,
-				"java/lang/Object",
-				null);
+		if (context.field().size() > 0)
+		{
+			String message = "Interface cannot contain field.";
+
+			this.errors.add(new Error(context.field(0), message));
 		}
+	}
+
+	@Override
+	public void enterInterfaceIdentifier(
+		YirgacheffeParser.InterfaceIdentifierContext context)
+	{
+		this.className = context.getText();
+
+		this.writer.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
+			this.directory + context.getText(),
+			null,
+			"java/lang/Object",
+			null);
 	}
 
 	@Override

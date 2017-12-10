@@ -27,33 +27,31 @@ public class MethodListener extends TypeListener
 	public void enterInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		if (context.Modifier() == null)
+		if (context.Modifier() != null)
 		{
-			String descriptor =
-				this.getMethodDescriptor(context.parameter(), context.type());
+			String message =
+				"Access modifier is not required for interface method declaration.";
 
-			this.writer.visitMethod(
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-				context.Identifier().getText(),
-				descriptor,
-				null,
-				null);
+			this.errors.add(new Error(context, message));
 		}
-		else
-		{
-			Error error =
-				new Error(
-					context,
-					"Access modifier is not required for interface method declaration.");
 
-			this.errors.add(error);
-		}
+		String descriptor =
+			this.getMethodDescriptor(context.parameter(), context.type());
+
+		this.writer.visitMethod(
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
+			context.Identifier().getText(),
+			descriptor,
+			null,
+			null);
 	}
 
 	@Override
 	public void enterClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
+		boolean isPrivate = false;
+
 		if (context.Modifier() == null)
 		{
 			String message =
@@ -64,17 +62,18 @@ public class MethodListener extends TypeListener
 		}
 		else
 		{
-			String descriptor =
-				this.getMethodDescriptor(context.parameter(), context.type());
-			boolean isPrivate = context.Modifier().getText().equals("private");
-
-			this.writer.visitMethod(
-				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				context.Identifier().getText(),
-				descriptor,
-				null,
-				null);
+			isPrivate = context.Modifier().getText().equals("private");
 		}
+
+		String descriptor =
+			this.getMethodDescriptor(context.parameter(), context.type());
+
+		this.writer.visitMethod(
+			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+			context.Identifier().getText(),
+			descriptor,
+			null,
+			null);
 	}
 
 	private String getMethodDescriptor(

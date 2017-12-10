@@ -18,6 +18,11 @@ public class Types
 
 	public Type getType(YirgacheffeParser.TypeContext context)
 	{
+		if (context == null)
+		{
+			return new NullType();
+		}
+
 		String typeName = context.getText();
 		Type type;
 

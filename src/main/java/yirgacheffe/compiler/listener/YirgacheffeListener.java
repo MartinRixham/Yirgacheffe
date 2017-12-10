@@ -23,7 +23,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected String directory;
 
-	protected String className;
+	protected String className = "null";
 
 	protected Types types;
 

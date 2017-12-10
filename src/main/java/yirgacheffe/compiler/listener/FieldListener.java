@@ -12,6 +12,8 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ConstructorListener
 {
+	private MethodVisitor methodVisitor;
+
 	public FieldListener(
 		String directory,
 		Types types,
@@ -32,47 +34,79 @@ public class FieldListener extends ConstructorListener
 
 			this.errors.add(error);
 		}
+
+		String identifier = context.Identifier().getText();
+		Type type = this.types.getType(context.type());
+
+		this.writer
+			.visitField(
+				Opcodes.ACC_PRIVATE,
+				identifier,
+				type.toJVMType(),
+				null,
+				null);
+	}
+
+	@Override
+	public void enterFieldInitialisation(
+		YirgacheffeParser.FieldInitialisationContext context)
+	{
+		this.methodVisitor =
+			this.writer.visitMethod(
+				Opcodes.ACC_PRIVATE,
+				"<init_field_0>",
+				"()V",
+				null,
+				null);
+
+		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+	}
+
+	@Override
+	public void enterLiteral(YirgacheffeParser.LiteralContext context)
+	{
+		Object value;
+
+		if (context.StringLiteral() != null)
+		{
+			value = context.getText().replace("\"", "");
+		}
+		else if (context.CharacterLiteral() != null)
+		{
+			value = context.getText().charAt(1);
+		}
+		else if (context.BooleanLiteral() != null)
+		{
+			value = context.getText().equals("true");
+		}
 		else
 		{
-			String identifier = context.Identifier().getText();
-			Type type = this.types.getType(context.type());
+			value = new Double(context.getText());
+		}
 
-			this.writer
-				.visitField(
-					Opcodes.ACC_PRIVATE,
-					identifier,
-					type.toJVMType(),
-					null,
-					null);
+		this.methodVisitor.visitLdcInsn(value);
+	}
 
-			if (!(context.expression() == null))
-			{
-				if (this.checkTypes(type, context.expression()))
-				{
-					MethodVisitor methodVisitor =
-						this.writer.visitMethod(
-							Opcodes.ACC_PRIVATE,
-							"<init_field_0>",
-							"()V",
-							null,
-							null);
+	@Override
+	public void exitFieldInitialisation(
+		YirgacheffeParser.FieldInitialisationContext context)
+	{
+		YirgacheffeParser.FieldDeclarationContext declaration =
+			context.fieldDeclaration();
 
-					methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-					methodVisitor.visitLdcInsn(this.getValue(context.expression()));
+		this.methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			this.className,
+			declaration.Identifier().getText(),
+			this.types.getType(declaration.type()).toJVMType());
 
-					methodVisitor.visitFieldInsn(
-						Opcodes.PUTFIELD,
-						this.className,
-						identifier,
-						type.toJVMType());
+		this.methodVisitor.visitInsn(Opcodes.RETURN);
 
-					methodVisitor.visitInsn(Opcodes.RETURN);
-				}
-				else
-				{
-					this.errors.add(new Error(context, ""));
-				}
-			}
+		Type type = this.types.getType(declaration.type());
+
+		if (!this.checkTypes(type, context.expression()))
+		{
+			this.errors.add(new Error(context, ""));
 		}
 	}
 
@@ -91,34 +125,5 @@ public class FieldListener extends ConstructorListener
 		{
 			return true;
 		}
-	}
-
-	private Object getValue(YirgacheffeParser.ExpressionContext expression)
-	{
-		YirgacheffeParser.LiteralContext literal = expression.literal();
-
-		if (literal.StringLiteral() != null)
-		{
-			return expression.getText().replace("\"", "");
-		}
-		else if (literal.CharacterLiteral() != null)
-		{
-			return expression.getText().charAt(1);
-		}
-		else if (literal.BooleanLiteral() != null)
-		{
-			return expression.getText().equals("true");
-		}
-		else
-		{
-			return new Double(expression.getText());
-		}
-	}
-
-	@Override
-	public void enterInterfaceFieldDeclaration(
-		YirgacheffeParser.InterfaceFieldDeclarationContext context)
-	{
-		this.errors.add(new Error(context, "Interface cannot contain field."));
 	}
 }

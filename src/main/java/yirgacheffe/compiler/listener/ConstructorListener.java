@@ -26,6 +26,8 @@ public class ConstructorListener extends MethodListener
 	public void enterConstructorDeclaration(
 		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
+		boolean isPrivate = false;
+
 		if (context.Modifier() == null)
 		{
 			String message =
@@ -34,7 +36,12 @@ public class ConstructorListener extends MethodListener
 
 			this.errors.add(new Error(context, message));
 		}
-		else if (!context.Identifier().getText().equals(this.className))
+		else
+		{
+			isPrivate = context.Modifier().getText().equals("private");
+		}
+
+		if (!context.Identifier().getText().equals(this.className))
 		{
 			String message =
 				"Constructor of incorrect type " + context.Identifier().getText() +
@@ -42,19 +49,15 @@ public class ConstructorListener extends MethodListener
 
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
-		else
-		{
-			boolean isPrivate = context.Modifier().getText().equals("private");
 
-			this.writer.visitMethod(
-				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				"<init>",
-				this.getMethodDescriptor(context.parameter()),
-				null,
-				null);
+		this.writer.visitMethod(
+			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+			"<init>",
+			this.getMethodDescriptor(context.parameter()),
+			null,
+			null);
 
-			this.hasDefaultConstructor = false;
-		}
+		this.hasDefaultConstructor = false;
 	}
 
 	private String getMethodDescriptor(
