@@ -270,16 +270,6 @@ public class FieldTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
-
-		assertEquals(1, fields.size());
-
-		FieldNode firstField = fields.get(0);
-
-		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
-		assertEquals("Ljava/lang/String;", firstField.desc);
-		assertEquals("myStringField", firstField.name);
-
 		List<MethodNode> methods = classNode.methods;
 		MethodNode constructor = methods.get(0);
 		InsnList instructions = constructor.instructions;
@@ -306,5 +296,43 @@ public class FieldTest
 		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
 
 		assertEquals(Opcodes.RETURN, instructions.get(5).getOpcode());
+	}
+
+	@Test
+	public void testNumberFieldWithIntegerInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"num myNumberField = 5;\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode constructor = methods.get(0);
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(5.0, fourthInstruction.cst);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("myNumberField", fifthInstruction.name);
+		assertEquals("D", fifthInstruction.desc);
 	}
 }

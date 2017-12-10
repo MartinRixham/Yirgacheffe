@@ -123,19 +123,35 @@ public class ClassListener extends YirgacheffeListener
 
 			if (this.assignment != null)
 			{
-				String value = this.assignment.Expression().getText().replace("\"", "");
+				Object value = this.getValue(this.assignment.expression());
+				String identifier = this.assignment.Identifier().getText();
+				String type = this.getType(this.assignment.type()).toJVMType();
 
 				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 				methodVisitor.visitLdcInsn(value);
 				methodVisitor.visitFieldInsn(
 					Opcodes.PUTFIELD,
 					this.className,
-					this.assignment.Identifier().getText(),
-					this.getType(this.assignment.type()).toJVMType());
+					identifier,
+					type);
 			}
 
 			methodVisitor.visitInsn(Opcodes.RETURN);
 			methodVisitor.visitMaxs(1, 1);
+		}
+	}
+
+	private Object getValue(YirgacheffeParser.ExpressionContext expression)
+	{
+		YirgacheffeParser.LiteralContext literal = expression.literal();
+
+		if (literal.IntegerLiteral() == null)
+		{
+			return expression.getText().replace("\"", "");
+		}
+		else
+		{
+			return new Double(expression.getText());
 		}
 	}
 

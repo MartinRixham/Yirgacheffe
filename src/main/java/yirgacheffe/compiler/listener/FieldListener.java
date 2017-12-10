@@ -46,7 +46,7 @@ public class FieldListener extends ConstructorListener
 					null,
 					null);
 
-			if (!(context.Expression() == null))
+			if (!(context.expression() == null))
 			{
 				this.assignment = context;
 			}

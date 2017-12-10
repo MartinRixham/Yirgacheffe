@@ -35,7 +35,7 @@ constructorDeclaration:
 classMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' '{' '}';
 
-fieldDeclaration: type? Identifier ('=' Expression)?';';
+fieldDeclaration: type? Identifier ('=' expression)?';';
 
 interfaceDeclaration:
 	Interface Identifier?
@@ -44,7 +44,7 @@ interfaceDeclaration:
 		interfaceMethodDeclaration*
 	'}';
 
-interfaceFieldDeclaration: type Identifier ('=' Expression)? ';';
+interfaceFieldDeclaration: type Identifier ('=' expression)? ';';
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
@@ -57,6 +57,10 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
+expression: literal;
+
+literal: IntegerLiteral | StringLiteral;
+
 // keywords
 Package: 'package';
 Import: 'import';
@@ -65,9 +69,16 @@ Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 
-Expression: Literal;
+IntegerLiteral: ('0' | Sign? NonZeroDigit Digit*);
 
-Literal: StringLiteral;
+fragment
+Sign: [+-];
+
+fragment
+Digit: [0-9];
+
+fragment
+NonZeroDigit: [1-9];
 
 StringLiteral: '"' StringCharacter* '"';
 
