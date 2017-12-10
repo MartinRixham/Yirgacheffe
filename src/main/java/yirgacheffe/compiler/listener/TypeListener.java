@@ -2,24 +2,22 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.Type.ImportedType;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.Map;
-
 public class TypeListener extends ClassListener
 {
 	public TypeListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, classLoader, errorListener, writer);
+		super(directory, types, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -28,7 +26,7 @@ public class TypeListener extends ClassListener
 		String identifier = context.fullyQualifiedType().Identifier().getText();
 		ImportedType type = new ImportedType(context.fullyQualifiedType());
 
-		this.importedTypes.put(identifier, type);
+		this.types.putImportedType(identifier, type);
 	}
 
 	@Override
@@ -36,8 +34,7 @@ public class TypeListener extends ClassListener
 	{
 		if (context.Identifier() != null)
 		{
-			if (this.importedTypes.containsKey(context.getText()) ||
-				this.declaredTypes.containsKey(context.getText()))
+			if (this.types.containsKey(context.getText()))
 			{
 				return;
 			}

@@ -3,24 +3,23 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.List;
-import java.util.Map;
 
 public class ConstructorListener extends MethodListener
 {
 	public ConstructorListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, classLoader, errorListener, writer);
+		super(directory, types, classLoader, errorListener, writer);
 	}
 
 	@Override

@@ -3,24 +3,22 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.Map;
-
 public class FieldListener extends ConstructorListener
 {
 	public FieldListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, classLoader, errorListener, writer);
+		super(directory, types, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class FieldListener extends ConstructorListener
 		else
 		{
 			String identifier = context.Identifier().getText();
-			Type type = this.getType(context.type());
+			Type type = this.types.getType(context.type());
 
 			this.writer
 				.visitField(

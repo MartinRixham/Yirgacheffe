@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
 import yirgacheffe.compiler.listener.FieldListener;
@@ -40,7 +41,7 @@ public class Compiler
 		YirgacheffeListener listener =
 			new ClassListener(
 				this.directory,
-				declaredTypes,
+				new Types(declaredTypes),
 				classLoader,
 				errorListener,
 				writer);
@@ -59,7 +60,7 @@ public class Compiler
 		YirgacheffeListener listener =
 			new FieldListener(
 				this.directory,
-				declaredTypes,
+				new Types(declaredTypes),
 				classLoader,
 				errorListener,
 				writer);

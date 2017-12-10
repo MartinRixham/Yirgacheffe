@@ -2,17 +2,14 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.main.CompilationResult;
-import yirgacheffe.compiler.Type.DeclaredType;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.Type.ImportedType;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
@@ -28,21 +25,19 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected String className;
 
-	protected Map<String, ImportedType> importedTypes = new HashMap<>();
-
-	protected Map<String, DeclaredType> declaredTypes;
+	protected Types types;
 
 	protected BytecodeClassLoader classLoader;
 
 	public YirgacheffeListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
 		this.directory = directory;
-		this.declaredTypes = declaredTypes;
+		this.types = types;
 		this.classLoader = classLoader;
 		this.errorListener = errorListener;
 		this.writer = writer;

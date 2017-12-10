@@ -5,13 +5,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
-import yirgacheffe.compiler.Type.ImportedType;
-import yirgacheffe.compiler.Type.Type;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Map;
 
 public class ClassListener extends YirgacheffeListener
 {
@@ -21,12 +18,12 @@ public class ClassListener extends YirgacheffeListener
 
 	public ClassListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, classLoader, errorListener, writer);
+		super(directory, types, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -125,7 +122,7 @@ public class ClassListener extends YirgacheffeListener
 			{
 				Object value = this.getValue(this.assignment.expression());
 				String identifier = this.assignment.Identifier().getText();
-				String type = this.getType(this.assignment.type()).toJVMType();
+				String type = this.types.getType(this.assignment.type()).toJVMType();
 
 				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 				methodVisitor.visitLdcInsn(value);
@@ -160,27 +157,6 @@ public class ClassListener extends YirgacheffeListener
 	{
 		DeclaredType type = new DeclaredType(this.packageName, this.className);
 
-		this.declaredTypes.put(this.className, type);
-	}
-
-	protected Type getType(YirgacheffeParser.TypeContext context)
-	{
-		String typeName = context.getText();
-		Type type;
-
-		if (this.importedTypes.containsKey(typeName))
-		{
-			type = this.importedTypes.get(typeName);
-		}
-		else if (this.declaredTypes.containsKey(typeName))
-		{
-			type = this.declaredTypes.get(typeName);
-		}
-		else
-		{
-			type = new ImportedType(context);
-		}
-
-		return type;
+		this.types.putDeclaredType(this.className, type);
 	}
 }

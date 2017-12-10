@@ -3,25 +3,24 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.List;
-import java.util.Map;
 
 public class MethodListener extends TypeListener
 {
 	public MethodListener(
 		String directory,
-		Map<String, DeclaredType> declaredTypes,
+		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, declaredTypes, classLoader, errorListener, writer);
+		super(directory, types, classLoader, errorListener, writer);
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class MethodListener extends TypeListener
 	{
 		return
 			this.getParameterDescriptor(parameters) +
-				this.getType(returnType).toJVMType();
+				this.types.getType(returnType).toJVMType();
 	}
 
 	protected String getParameterDescriptor(
@@ -98,7 +97,7 @@ public class MethodListener extends TypeListener
 
 			if (typeContext != null)
 			{
-				Type type = this.getType(typeContext);
+				Type type = this.types.getType(typeContext);
 
 				descriptor.append(type.toJVMType());
 			}
