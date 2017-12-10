@@ -401,7 +401,7 @@ public class FieldTest
 	}
 
 	@Test
-	public void testBoolenFieldWithInitialiser() throws Exception
+	public void testBooleanFieldWithInitialiser() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
@@ -433,5 +433,21 @@ public class FieldTest
 		assertEquals("MyClass", fifthInstruction.owner);
 		assertEquals("myBooleanField", fifthInstruction.name);
 		assertEquals("B", fifthInstruction.desc);
+	}
+
+	@Test
+	public void testFieldInitialiserWithMismatchedTypes() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+				"num myBooleanField = true;\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
 	}
 }

@@ -46,8 +46,30 @@ public class FieldListener extends ConstructorListener
 
 			if (!(context.expression() == null))
 			{
+				if (!this.checkTypes(type, context.expression()))
+				{
+					this.errors.add(new Error(context, ""));
+				}
+
 				this.assignment = context;
 			}
+		}
+	}
+
+	private boolean checkTypes(
+		Type fieldType,
+		YirgacheffeParser.ExpressionContext expression)
+	{
+		YirgacheffeParser.LiteralContext literal = expression.literal();
+		String jvmType = fieldType.toJVMType();
+
+		if (literal.BooleanLiteral() != null)
+		{
+			return jvmType.equals("B");
+		}
+		else
+		{
+			return true;
 		}
 	}
 
