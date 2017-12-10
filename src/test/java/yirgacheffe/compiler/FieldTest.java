@@ -4,7 +4,12 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.main.CompilationResult;
 import yirgacheffe.compiler.main.Compiler;
@@ -274,5 +279,32 @@ public class FieldTest
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
 		assertEquals("Ljava/lang/String;", firstField.desc);
 		assertEquals("myStringField", firstField.name);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode constructor = methods.get(0);
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		assertEquals(Opcodes.ALOAD, instructions.get(0).getOpcode());
+		assertEquals(Opcodes.INVOKESPECIAL, instructions.get(1).getOpcode());
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals("thingy", fourthInstruction.cst);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("myStringField", fifthInstruction.name);
+		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
+
+		assertEquals(Opcodes.RETURN, instructions.get(5).getOpcode());
 	}
 }

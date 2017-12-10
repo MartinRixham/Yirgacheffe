@@ -5,7 +5,6 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.Type.ImportedType;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -108,27 +107,6 @@ public class MethodListener extends TypeListener
 		descriptor.append(")");
 
 		return descriptor.toString();
-	}
-
-	private Type getType(YirgacheffeParser.TypeContext context)
-	{
-		String typeName = context.getText();
-		Type type;
-
-		if (this.importedTypes.containsKey(typeName))
-		{
-			type = this.importedTypes.get(typeName);
-		}
-		else if (this.declaredTypes.containsKey(typeName))
-		{
-			type = this.declaredTypes.get(typeName);
-		}
-		else
-		{
-			type = new ImportedType(context);
-		}
-
-		return type;
 	}
 
 	@Override

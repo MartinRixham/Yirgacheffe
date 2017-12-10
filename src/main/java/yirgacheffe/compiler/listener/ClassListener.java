@@ -5,6 +5,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.Type.ImportedType;
+import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -14,6 +16,8 @@ import java.util.Map;
 public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
+
+	protected YirgacheffeParser.FieldDeclarationContext assignment;
 
 	public ClassListener(
 		String directory,
@@ -74,33 +78,6 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
-	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
-	{
-		if (this.hasDefaultConstructor)
-		{
-			MethodVisitor methodVisitor =
-				this.writer.visitMethod(
-					Opcodes.ACC_PUBLIC,
-					"<init>",
-					"()V",
-					null,
-					null);
-
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESPECIAL,
-				"java/lang/Object",
-				"<init>",
-				"()V",
-				false);
-
-			methodVisitor.visitInsn(Opcodes.RETURN);
-			methodVisitor.visitMaxs(1, 1);
-		}
-	}
-
-	@Override
 	public void enterInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
@@ -123,10 +100,71 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
+	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
+	{
+		if (this.hasDefaultConstructor)
+		{
+			MethodVisitor methodVisitor =
+				this.writer.visitMethod(
+					Opcodes.ACC_PUBLIC,
+					"<init>",
+					"()V",
+					null,
+					null);
+
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESPECIAL,
+				"java/lang/Object",
+				"<init>",
+				"()V",
+				false);
+
+			if (this.assignment != null)
+			{
+				String value = this.assignment.Expression().getText().replace("\"", "");
+
+				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+				methodVisitor.visitLdcInsn(value);
+				methodVisitor.visitFieldInsn(
+					Opcodes.PUTFIELD,
+					this.className,
+					this.assignment.Identifier().getText(),
+					this.getType(this.assignment.type()).toJVMType());
+			}
+
+			methodVisitor.visitInsn(Opcodes.RETURN);
+			methodVisitor.visitMaxs(1, 1);
+		}
+	}
+
+	@Override
 	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
 	{
 		DeclaredType type = new DeclaredType(this.packageName, this.className);
 
 		this.declaredTypes.put(this.className, type);
+	}
+
+	protected Type getType(YirgacheffeParser.TypeContext context)
+	{
+		String typeName = context.getText();
+		Type type;
+
+		if (this.importedTypes.containsKey(typeName))
+		{
+			type = this.importedTypes.get(typeName);
+		}
+		else if (this.declaredTypes.containsKey(typeName))
+		{
+			type = this.declaredTypes.get(typeName);
+		}
+		else
+		{
+			type = new ImportedType(context);
+		}
+
+		return type;
 	}
 }

@@ -5,7 +5,6 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.Type.ImportedType;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -36,22 +35,8 @@ public class FieldListener extends ConstructorListener
 		}
 		else
 		{
-			String typeName = context.type().getText();
 			String identifier = context.Identifier().getText();
-			Type type;
-
-			if (this.importedTypes.containsKey(typeName))
-			{
-				type = this.importedTypes.get(typeName);
-			}
-			else if (this.declaredTypes.containsKey(typeName))
-			{
-				type = this.declaredTypes.get(typeName);
-			}
-			else
-			{
-				type = new ImportedType(context.type());
-			}
+			Type type = this.getType(context.type());
 
 			this.writer
 				.visitField(
@@ -60,6 +45,11 @@ public class FieldListener extends ConstructorListener
 					type.toJVMType(),
 					null,
 					null);
+
+			if (!(context.Expression() == null))
+			{
+				this.assignment = context;
+			}
 		}
 	}
 

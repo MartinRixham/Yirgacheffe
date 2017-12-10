@@ -35,7 +35,7 @@ constructorDeclaration:
 classMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' '{' '}';
 
-fieldDeclaration: type? Identifier ('=' StringLiteral)? ';';
+fieldDeclaration: type? Identifier ('=' Expression)?';';
 
 interfaceDeclaration:
 	Interface Identifier?
@@ -44,7 +44,7 @@ interfaceDeclaration:
 		interfaceMethodDeclaration*
 	'}';
 
-interfaceFieldDeclaration: type Identifier ('=' StringLiteral)? ';';
+interfaceFieldDeclaration: type Identifier ('=' Expression)? ';';
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
@@ -65,10 +65,11 @@ Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 
-StringLiteral: '"' StringCharacters? '"';
+Expression: Literal;
 
-fragment
-StringCharacters: StringCharacter+;
+Literal: StringLiteral;
+
+StringLiteral: '"' StringCharacter* '"';
 
 fragment
 StringCharacter: ~["\\\r\n] | EscapeSequence;
