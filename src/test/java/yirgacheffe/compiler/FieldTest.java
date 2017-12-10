@@ -271,31 +271,33 @@ public class FieldTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode constructor = methods.get(0);
-		InsnList instructions = constructor.instructions;
+		MethodNode initialiser = methods.get(0);
 
-		assertEquals(6, instructions.size());
+		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
+		assertEquals("<init_field_0>", initialiser.name);
+		assertEquals("()V", initialiser.desc);
 
-		assertEquals(Opcodes.ALOAD, instructions.get(0).getOpcode());
-		assertEquals(Opcodes.INVOKESPECIAL, instructions.get(1).getOpcode());
+		InsnList instructions = initialiser.instructions;
 
-		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+		assertEquals(4, instructions.size());
 
-		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
-		assertEquals(0, thirdInstruction.var);
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
 
-		assertEquals("thingy", fourthInstruction.cst);
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		assertEquals("thingy", secondInstruction.cst);
 
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("myStringField", fifthInstruction.name);
-		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
+		FieldInsnNode thirInstruction = (FieldInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.RETURN, instructions.get(5).getOpcode());
+		assertEquals(Opcodes.PUTFIELD, thirInstruction.getOpcode());
+		assertEquals("MyClass", thirInstruction.owner);
+		assertEquals("myStringField", thirInstruction.name);
+		assertEquals("Ljava/lang/String;", thirInstruction.desc);
+
+		assertEquals(Opcodes.RETURN, instructions.get(3).getOpcode());
 	}
 
 	@Test
@@ -319,21 +321,21 @@ public class FieldTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode constructor = methods.get(0);
-		InsnList instructions = constructor.instructions;
+		MethodNode initialiser = methods.get(0);
+		InsnList instructions = initialiser.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(4, instructions.size());
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(5.0, fourthInstruction.cst);
+		assertEquals(5.0, secondInstruction.cst);
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("myNumberField", fifthInstruction.name);
-		assertEquals("D", fifthInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("myNumberField", thirdInstruction.name);
+		assertEquals("D", thirdInstruction.desc);
 	}
 
 	@Test
@@ -357,12 +359,12 @@ public class FieldTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode constructor = methods.get(0);
-		InsnList instructions = constructor.instructions;
+		MethodNode initialiser = methods.get(0);
+		InsnList instructions = initialiser.instructions;
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(1.2, fourthInstruction.cst);
+		assertEquals(1.2, secondInstruction.cst);
 	}
 
 	@Test
@@ -386,18 +388,18 @@ public class FieldTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode constructor = methods.get(0);
-		InsnList instructions = constructor.instructions;
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		MethodNode initialiser = methods.get(0);
+		InsnList instructions = initialiser.instructions;
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals((int) 'a', fourthInstruction.cst);
+		assertEquals((int) 'a', secondInstruction.cst);
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("myCharacterField", fifthInstruction.name);
-		assertEquals("C", fifthInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("myCharacterField", thirdInstruction.name);
+		assertEquals("C", thirdInstruction.desc);
 	}
 
 	@Test
@@ -421,18 +423,18 @@ public class FieldTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
-		MethodNode constructor = methods.get(0);
-		InsnList instructions = constructor.instructions;
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		MethodNode initialiser = methods.get(0);
+		InsnList instructions = initialiser.instructions;
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(1, fourthInstruction.cst);
+		assertEquals(1, secondInstruction.cst);
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("myBooleanField", fifthInstruction.name);
-		assertEquals("B", fifthInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("myBooleanField", thirdInstruction.name);
+		assertEquals("B", thirdInstruction.desc);
 	}
 
 	@Test

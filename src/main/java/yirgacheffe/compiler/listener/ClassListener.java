@@ -14,8 +14,6 @@ public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
 
-	protected YirgacheffeParser.FieldDeclarationContext assignment;
-
 	public ClassListener(
 		String directory,
 		Types types,
@@ -118,45 +116,8 @@ public class ClassListener extends YirgacheffeListener
 				"()V",
 				false);
 
-			if (this.assignment != null)
-			{
-				Object value = this.getValue(this.assignment.expression());
-				String identifier = this.assignment.Identifier().getText();
-				String type = this.types.getType(this.assignment.type()).toJVMType();
-
-				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-				methodVisitor.visitLdcInsn(value);
-				methodVisitor.visitFieldInsn(
-					Opcodes.PUTFIELD,
-					this.className,
-					identifier,
-					type);
-			}
-
 			methodVisitor.visitInsn(Opcodes.RETURN);
 			methodVisitor.visitMaxs(1, 1);
-		}
-	}
-
-	private Object getValue(YirgacheffeParser.ExpressionContext expression)
-	{
-		YirgacheffeParser.LiteralContext literal = expression.literal();
-
-		if (literal.StringLiteral() != null)
-		{
-			return expression.getText().replace("\"", "");
-		}
-		else if (literal.CharacterLiteral() != null)
-		{
-			return expression.getText().charAt(1);
-		}
-		else if (literal.BooleanLiteral() != null)
-		{
-			return expression.getText().equals("true");
-		}
-		else
-		{
-			return new Double(expression.getText());
 		}
 	}
 
