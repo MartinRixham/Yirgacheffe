@@ -4,8 +4,10 @@ import yirgacheffe.compiler.Type.BytecodeClassLoader;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Yirgacheffe
@@ -38,9 +40,9 @@ public final class Yirgacheffe
 		this.secondPass(packages);
 	}
 
-	private Collection<Package> createPackages(String[] sourceFiles) throws Exception
+	private List<Package> createPackages(String[] sourceFiles) throws Exception
 	{
-		Map<String, Package> packages = new HashMap<>();
+		Map<String, List<Compiler>> compilers = new HashMap<>();
 
 		for (String sourceFile : sourceFiles)
 		{
@@ -48,15 +50,35 @@ public final class Yirgacheffe
 			String source = new String(encoded, "UTF-8");
 			String directory = this.getDirectory(sourceFile);
 
-			if (!packages.containsKey(directory))
+			if (!compilers.containsKey(directory))
 			{
-				packages.put(directory, new Package(this.classLoader));
+				compilers.put(directory, new ArrayList<>());
 			}
 
-			packages.get(directory).addCompiler(new Compiler(directory, source));
+			compilers.get(directory).add(new Compiler(directory, source));
 		}
 
-		return packages.values();
+		List<Package> packages = new ArrayList<>();
+
+		for (List<Compiler> comp: compilers.values())
+		{
+			packages.add(new Package(this.classLoader, comp));
+		}
+
+		return packages;
+	}
+
+	private String getDirectory(String filePath)
+	{
+		String[] files = filePath.split("/");
+		StringBuilder directory = new StringBuilder();
+
+		for (int i = 0; i < files.length - 1; i++)
+		{
+			directory.append(files[i]).append("/");
+		}
+
+		return directory.toString();
 	}
 
 	private boolean firstPass(Collection<Package> packages) throws Exception
@@ -77,18 +99,5 @@ public final class Yirgacheffe
 		{
 			pkg.compile();
 		}
-	}
-
-	private String getDirectory(String filePath)
-	{
-		String[] files = filePath.split("/");
-		StringBuilder directory = new StringBuilder();
-
-		for (int i = 0; i < files.length - 1; i++)
-		{
-			directory.append(files[i]).append("/");
-		}
-
-		return directory.toString();
 	}
 }

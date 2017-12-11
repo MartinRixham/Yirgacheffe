@@ -12,20 +12,18 @@ import java.util.Map;
 
 public class Package
 {
-	private List<Compiler> compilers = new ArrayList<>();
-
 	private Map<String, DeclaredType> declaredTypes = new HashMap<>();
 
 	private BytecodeClassLoader classLoader;
 
-	public Package(BytecodeClassLoader classLoader)
+	private List<Compiler> compilers = new ArrayList<>();
+
+	public Package(
+		BytecodeClassLoader classLoader,
+		List<Compiler> compilers)
 	{
 		this.classLoader = classLoader;
-	}
-
-	public void addCompiler(Compiler compiler)
-	{
-		this.compilers.add(compiler);
+		this.compilers = compilers;
 	}
 
 	public boolean compileClassDeclaration() throws Exception
