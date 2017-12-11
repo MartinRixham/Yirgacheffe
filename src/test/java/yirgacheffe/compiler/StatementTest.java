@@ -139,6 +139,69 @@ public class StatementTest
 	}
 
 	@Test
+	public void testInstantiationOfFullyQualifiedType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new java.lang.String();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testInstantiationOfUnknownType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new NotAClass();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:4 Unrecognised type: NotAClass is not a type.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInstantiationOfPrimitiveType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new bool();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:4 Cannot instantiate primitive type bool.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testFunctionCall() throws Exception
 	{
 		String source =

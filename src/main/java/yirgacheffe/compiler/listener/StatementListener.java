@@ -32,6 +32,7 @@ public class StatementListener extends FieldListener
 		if (context.StringLiteral() != null)
 		{
 			value = context.getText().replace("\"", "");
+
 			this.typeStack.push("java.lang.String");
 		}
 		else if (context.CharacterLiteral() != null)
@@ -60,6 +61,15 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
+		if (context.type().simpleType() != null &&
+			context.type().simpleType().PrimitiveType() != null)
+		{
+			String message =
+				"Cannot instantiate primitive type " + context.type().getText() + ".";
+
+			this.errors.add(new Error(context.type(), message));
+		}
+
 		this.methodVisitor.visitTypeInsn(Opcodes.NEW, "java/lang/String");
 		this.methodVisitor.visitInsn(Opcodes.DUP);
 
@@ -90,7 +100,10 @@ public class StatementListener extends FieldListener
 			}
 			catch (NoSuchMethodException e)
 			{
-				this.errors.add(new Error(context.Identifier().getSymbol(), "no such method."));
+				Error error =
+					new Error(context.Identifier().getSymbol(), "no such method.");
+
+				this.errors.add(error);
 			}
 		}
 		catch (ClassNotFoundException e)
