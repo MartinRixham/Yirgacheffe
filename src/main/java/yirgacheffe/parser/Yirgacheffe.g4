@@ -25,12 +25,12 @@ interfaceDeclaration:
 	closeBlock;
 
 classMethodDeclaration:
-	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* ')'
+	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* closeBracket
 	'{'
 	closeBlock;
 
 interfaceMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semiColon;
+	Modifier? type Identifier '(' parameter? (',' parameter)* closeBracket semiColon;
 
 constructorIdentifier: Identifier;
 
@@ -60,6 +60,8 @@ literal:
 semiColon: SEMI_COLON?;
 
 closeBlock: CLOSE_BLOCK?;
+
+closeBracket: CLOSE_BRACKET?;
 
 // keywords
 Package: 'package';
@@ -101,12 +103,14 @@ Letter: [a-zA-Z$_];
 fragment
 LetterOrDigit: [a-zA-Z0-9$_];
 
+SEMI_COLON: ';';
+
+CLOSE_BLOCK: '}';
+
+CLOSE_BRACKET: ')';
+
 WHITE_SPACE: [ \t\r\n\u000C]+ -> skip;
 
 COMMENT: '/*' .*? '*/' -> skip;
 
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
-
-SEMI_COLON: ';';
-
-CLOSE_BLOCK: '}';

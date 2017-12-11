@@ -20,7 +20,7 @@ public class ParseErrorListener extends BaseErrorListener
 		String message,
 		RecognitionException e)
 	{
-		this.errors.add(new Error(line, charPosition, message));
+		this.errors.add(new Error(line, charPosition, message + "."));
 	}
 
 	public boolean hasError()

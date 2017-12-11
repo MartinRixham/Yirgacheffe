@@ -79,7 +79,16 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.CLOSE_BLOCK() == null)
 		{
-			this.errors.add(new Error(context, "Missing closing brace."));
+			this.errors.add(new Error(context, "Missing '}'."));
+		}
+	}
+
+	@Override
+	public void enterCloseBracket(YirgacheffeParser.CloseBracketContext context)
+	{
+		if (context.CLOSE_BRACKET() == null)
+		{
+			this.errors.add(new Error(context, "Missing ')'."));
 		}
 	}
 }
