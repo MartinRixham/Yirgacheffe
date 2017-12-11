@@ -15,13 +15,13 @@ importStatement: Import fullyQualifiedType semiColon;
 classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
-		(field | classMethodDeclaration)*
+		(field | classMethodDeclaration | interfaceMethodDeclaration)*
 	closeBlock;
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
-		(field | interfaceMethodDeclaration)*
+		(field | classMethodDeclaration | interfaceMethodDeclaration)*
 	closeBlock;
 
 classMethodDeclaration:

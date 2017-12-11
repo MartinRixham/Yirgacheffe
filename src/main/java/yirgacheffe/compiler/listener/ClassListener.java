@@ -60,6 +60,14 @@ public class ClassListener extends YirgacheffeListener
 			this.className = context.Identifier().get(0).getText();
 		}
 
+		for (YirgacheffeParser.InterfaceMethodDeclarationContext interfaceMethod:
+			context.interfaceMethodDeclaration())
+		{
+			String message = "Method requires method body.";
+
+			this.errors.add(new Error(interfaceMethod, message));
+		}
+
 		this.writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
@@ -87,6 +95,14 @@ public class ClassListener extends YirgacheffeListener
 			String message = "Interface cannot contain field.";
 
 			this.errors.add(new Error(context.field(0), message));
+		}
+
+		for (YirgacheffeParser.ClassMethodDeclarationContext interfaceMethod:
+			context.classMethodDeclaration())
+		{
+			String message = "Method body not permitted for interface method.";
+
+			this.errors.add(new Error(interfaceMethod, message));
 		}
 
 		this.writer.visit(

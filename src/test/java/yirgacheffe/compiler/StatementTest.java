@@ -36,10 +36,10 @@ public class StatementTest
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-				"public MyClass()" +
-				"{\n" +
-				"num myVariable = 1;\n" +
-				"}\n" +
+					"public MyClass()" +
+					"{\n" +
+						"num myVariable = 1;\n" +
+					"}\n" +
 				"}";
 
 		Compiler compiler = new Compiler("", source);

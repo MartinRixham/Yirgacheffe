@@ -201,4 +201,38 @@ public class ClassTest
 
 		assertEquals("()Lthis/that/MyInterface;", method.desc);
 	}
+
+	@Test
+	public void testClassWithInterfaceMethod() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+				"{\n" +
+					"String myMethod();\n" +
+				"}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 3:0 Method requires method body.\n", result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceWithClassMethod() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"public String myMethod() {}\n" +
+				"}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Method body not permitted for interface method.\n",
+			result.getErrors());
+	}
 }
