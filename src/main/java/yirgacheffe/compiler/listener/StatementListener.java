@@ -4,11 +4,16 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.Types;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.Stack;
+
 public class StatementListener extends FieldListener
 {
+	private Stack<String> typeStack = new Stack<>();
+
 	public StatementListener(
 		String directory,
 		Types types,
@@ -27,6 +32,7 @@ public class StatementListener extends FieldListener
 		if (context.StringLiteral() != null)
 		{
 			value = context.getText().replace("\"", "");
+			this.typeStack.push("java.lang.String");
 		}
 		else if (context.CharacterLiteral() != null)
 		{
@@ -70,10 +76,32 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		String type = this.typeStack.pop();
+		String methodName = context.Identifier().getText();
+
+		try
+		{
+			Class<?> loadedClass = classLoader.loadClass(type);
+
+			try
+			{
+				loadedClass.getMethod(methodName);
+			}
+			catch (NoSuchMethodException e)
+			{
+				this.errors.add(new Error(context.Identifier().getSymbol(), "no such method."));
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
+
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			"java/lang/String",
-			"toString",
+			methodName,
 			"()Ljava/lang/String;",
 			false);
 

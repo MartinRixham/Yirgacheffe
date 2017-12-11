@@ -189,4 +189,23 @@ public class StatementTest
 
 		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testUndefinedFunctionCall() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"\"thingy\".notAMethod();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+	}
 }
