@@ -92,7 +92,7 @@ public class MethodListener extends TypeListener
 				this.types.getType(returnType).toJVMType();
 	}
 
-	protected String getParameterDescriptor(
+	private String getParameterDescriptor(
 		List<YirgacheffeParser.ParameterContext> parameterList)
 	{
 		StringBuilder descriptor = new StringBuilder("(");
@@ -120,7 +120,7 @@ public class MethodListener extends TypeListener
 		if (context.type() == null)
 		{
 			Error error =
-				new Error(context, "Expected type before argument identifier.");
+				new Error(context, "Expected type before parameter identifier.");
 
 			this.errors.add(error);
 		}

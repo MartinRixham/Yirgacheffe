@@ -43,32 +43,27 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
-	public void enterMalformedDeclaration(
-		YirgacheffeParser.MalformedDeclarationContext context)
-	{
-		this.errors.add(
-			new Error(context, "Expected declaration of class or interface."));
-	}
-
-	@Override
 	public void enterClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
-		if (context.classIdentifier() == null)
+		if (context.Class() == null)
+		{
+			this.errors.add(
+				new Error(context, "Expected declaration of class or interface."));
+		}
+
+		if (context.Identifier().size() == 0)
 		{
 			this.errors.add(new Error(context, "Class identifier expected."));
 		}
-	}
-
-	@Override
-	public void enterClassIdentifier(
-		YirgacheffeParser.ClassIdentifierContext context)
-	{
-		this.className = context.getText();
+		else
+		{
+			this.className = context.Identifier().get(0).getText();
+		}
 
 		this.writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-			this.directory + context.getText(),
+			this.directory + this.className,
 			null,
 			"java/lang/Object",
 			null);
@@ -78,9 +73,13 @@ public class ClassListener extends YirgacheffeListener
 	public void enterInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
-		if (context.interfaceIdentifier() == null)
+		if (context.Identifier() == null)
 		{
 			this.errors.add(new Error(context, "Interface identifier expected."));
+		}
+		else
+		{
+			this.className = context.Identifier().getText();
 		}
 
 		if (context.field().size() > 0)
@@ -89,18 +88,11 @@ public class ClassListener extends YirgacheffeListener
 
 			this.errors.add(new Error(context.field(0), message));
 		}
-	}
-
-	@Override
-	public void enterInterfaceIdentifier(
-		YirgacheffeParser.InterfaceIdentifierContext context)
-	{
-		this.className = context.getText();
 
 		this.writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			this.directory + context.getText(),
+			this.directory + this.className,
 			null,
 			"java/lang/Object",
 			null);

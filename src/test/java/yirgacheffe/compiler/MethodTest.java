@@ -111,7 +111,7 @@ public class MethodTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:13 Expected type before argument identifier.\n",
+			"line 3:13 Expected type before parameter identifier.\n",
 			result.getErrors());
 	}
 

@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration?
 	importStatement*
-	(malformedDeclaration | classDeclaration | interfaceDeclaration)
+	(classDeclaration | interfaceDeclaration)
 	EOF;
 
 packageDeclaration: Package packageName ';';
@@ -12,39 +12,27 @@ packageName: Identifier ('.' Identifier)*;
 
 importStatement: Import fullyQualifiedType ';';
 
-classIdentifier: Identifier;
-
-interfaceIdentifier: Identifier;
-
-malformedDeclaration:
-	Identifier classIdentifier?
+classDeclaration:
+	(Class | Identifier) Identifier?
 	'{'
-		field*
-		classMethodDeclaration*
-		interfaceMethodDeclaration*
+		(field | classMethodDeclaration)*
 	'}';
 
-classDeclaration:
-	Class classIdentifier?
+interfaceDeclaration:
+	Interface Identifier?
 	'{'
-		field*
-		classMethodDeclaration*
+		(field | interfaceMethodDeclaration)*
 	'}';
 
 classMethodDeclaration:
-	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* ')' '{' '}';
-
-constructorIdentifier: Identifier;
-
-interfaceDeclaration:
-	Interface interfaceIdentifier?
+	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* ')'
 	'{'
-		field*
-		interfaceMethodDeclaration*
 	'}';
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
+
+constructorIdentifier: Identifier;
 
 field: (fieldDeclaration | fieldInitialisation) ';';
 
@@ -62,7 +50,12 @@ fullyQualifiedType: packageName '.' Identifier;
 
 expression: literal;
 
-literal: BooleanLiteral | CharacterLiteral | IntegerLiteral | DecimalLiteral | StringLiteral;
+literal:
+	BooleanLiteral |
+	CharacterLiteral |
+	IntegerLiteral |
+	DecimalLiteral |
+	StringLiteral;
 
 // keywords
 Package: 'package';
@@ -73,10 +66,7 @@ PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 BooleanLiteral: 'true' | 'false';
 
-CharacterLiteral: '\'' SingleCharacter '\'' | '\'' EscapeSequence '\'';
-
-fragment
-SingleCharacter: ~['\\\r\n];
+CharacterLiteral: '\'' StringCharacter '\'';
 
 IntegerLiteral: ('0' | Sign? NonZeroDigit Digit*);
 
