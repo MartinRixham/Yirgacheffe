@@ -7,6 +7,7 @@ import yirgacheffe.compiler.main.CompilationResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeBaseListener;
+import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,15 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			this.classLoader.addClass(this.packageName + "." + this.className, bytes);
 
 			return new CompilationResult(classFileName, bytes);
+		}
+	}
+
+	@Override
+	public void enterSemiColon(YirgacheffeParser.SemiColonContext context)
+	{
+		if (context.SEMI_COLON() == null)
+		{
+			this.errors.add(new Error(context, "Missing semicolon."));
 		}
 	}
 }

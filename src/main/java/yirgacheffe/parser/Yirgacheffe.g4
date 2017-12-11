@@ -6,11 +6,11 @@ compilationUnit:
 	(classDeclaration | interfaceDeclaration)
 	EOF;
 
-packageDeclaration: Package packageName ';';
+packageDeclaration: Package packageName semiColon;
 
 packageName: Identifier ('.' Identifier)*;
 
-importStatement: Import fullyQualifiedType ';';
+importStatement: Import fullyQualifiedType semiColon;
 
 classDeclaration:
 	(Class | Identifier) Identifier?
@@ -30,11 +30,11 @@ classMethodDeclaration:
 	'}';
 
 interfaceMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* ')' ';';
+	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semiColon;
 
 constructorIdentifier: Identifier;
 
-field: (fieldDeclaration | fieldInitialisation) ';';
+field: (fieldInitialisation | fieldDeclaration) semiColon;
 
 fieldDeclaration: type? Identifier;
 
@@ -56,6 +56,8 @@ literal:
 	IntegerLiteral |
 	DecimalLiteral |
 	StringLiteral;
+
+semiColon: SEMI_COLON?;
 
 // keywords
 Package: 'package';
@@ -102,3 +104,5 @@ WHITE_SPACE: [ \t\r\n\u000C]+ -> skip;
 COMMENT: '/*' .*? '*/' -> skip;
 
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
+
+SEMI_COLON: ';';
