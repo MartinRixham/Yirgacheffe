@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.Types;
@@ -12,8 +11,6 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ConstructorListener
 {
-	private MethodVisitor methodVisitor;
-
 	public FieldListener(
 		String directory,
 		Types types,

@@ -27,6 +27,7 @@ interfaceDeclaration:
 classMethodDeclaration:
 	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* closeBracket
 	'{'
+		variableInitialisation*
 	closeBlock;
 
 interfaceMethodDeclaration:
@@ -39,6 +40,8 @@ field: (fieldInitialisation | fieldDeclaration) semiColon;
 fieldDeclaration: type? Identifier;
 
 fieldInitialisation: fieldDeclaration '=' expression;
+
+variableInitialisation: type Identifier ('=' expression)? semiColon;
 
 parameter: type? Identifier;
 

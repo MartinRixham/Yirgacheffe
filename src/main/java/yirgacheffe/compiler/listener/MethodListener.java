@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.Types;
@@ -13,6 +14,8 @@ import java.util.List;
 
 public class MethodListener extends TypeListener
 {
+	protected MethodVisitor methodVisitor;
+
 	public MethodListener(
 		String directory,
 		Types types,
@@ -75,12 +78,13 @@ public class MethodListener extends TypeListener
 		String descriptor =
 			this.getMethodDescriptor(context.parameter(), context.type());
 
-		this.writer.visitMethod(
-			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-			name,
-			descriptor,
-			null,
-			null);
+		this.methodVisitor =
+			this.writer.visitMethod(
+				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+				name,
+				descriptor,
+				null,
+				null);
 	}
 
 	private String getMethodDescriptor(
