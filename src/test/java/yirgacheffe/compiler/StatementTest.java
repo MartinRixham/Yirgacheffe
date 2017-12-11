@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class StatementTest
@@ -109,6 +110,8 @@ public class StatementTest
 
 		InsnList instructions = firstMethod.instructions;
 
+		assertEquals(5, instructions.size());
+
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
@@ -124,7 +127,7 @@ public class StatementTest
 		assertEquals("java/lang/String", thirdInstruction.owner);
 		assertEquals("<init>", thirdInstruction.name);
 		assertEquals("()V", thirdInstruction.desc);
-		assertEquals(false, thirdInstruction.itf);
+		assertFalse(thirdInstruction.itf);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
@@ -133,5 +136,57 @@ public class StatementTest
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
 		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFunctionCall() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"\"thingy\".toString();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(4, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("thingy", firstInstruction.cst);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, secondInstruction.getOpcode());
+		assertEquals("java/lang/String", secondInstruction.owner);
+		assertEquals("toString", secondInstruction.name);
+		assertEquals("()Ljava/lang/String;", secondInstruction.desc);
+		assertFalse(secondInstruction.itf);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.POP, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
 }

@@ -29,7 +29,7 @@ classMethodDeclaration:
 		parameter?(','
 		parameter)* closeBracket
 	'{'
-		(variableInitialisation | instantiation) *
+		(statement semicolon) *
 	closeBlock;
 
 interfaceMethodDeclaration:
@@ -43,7 +43,9 @@ fieldDeclaration: type? Identifier;
 
 fieldInitialisation: fieldDeclaration '=' expression;
 
-variableInitialisation: type Identifier ('=' expression)? semicolon;
+statement: variableInitialisation | methodCall | instantiation;
+
+variableInitialisation: type Identifier ('=' expression)?;
 
 parameter: type? Identifier;
 
@@ -53,9 +55,11 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
+methodCall: expression '.' Identifier '(' ')';
+
 expression: instantiation | literal;
 
-instantiation: New type '(' closeBracket semicolon;
+instantiation: New type '(' closeBracket;
 
 literal:
 	BooleanLiteral |

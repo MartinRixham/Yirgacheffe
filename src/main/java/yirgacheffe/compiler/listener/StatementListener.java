@@ -66,4 +66,17 @@ public class StatementListener extends FieldListener
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
 	}
+
+	@Override
+	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
+	{
+		this.methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			"java/lang/String",
+			"toString",
+			"()Ljava/lang/String;",
+			false);
+
+		this.methodVisitor.visitInsn(Opcodes.POP);
+	}
 }
