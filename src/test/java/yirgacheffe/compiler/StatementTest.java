@@ -5,8 +5,11 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.main.CompilationResult;
@@ -25,12 +28,12 @@ public class StatementTest
 	{
 		String source =
 			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
 				"{\n" +
-					"public MyClass()" +
-					"{\n" +
-						"num myVariable;\n" +
-					"}\n" +
-				"}";
+					"num myVariable;\n" +
+				"}\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
@@ -44,12 +47,12 @@ public class StatementTest
 	{
 		String source =
 			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
 				"{\n" +
-					"public MyClass()" +
-					"{\n" +
-						"num myVariable = 1;\n" +
-					"}\n" +
-				"}";
+					"num myVariable = 1;\n" +
+				"}\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
@@ -76,5 +79,59 @@ public class StatementTest
 
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testInstantiationStatement() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new String();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/String", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.owner);
+		assertEquals("<init>", thirdInstruction.name);
+		assertEquals("()V", thirdInstruction.desc);
+		assertEquals(false, thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
 	}
 }

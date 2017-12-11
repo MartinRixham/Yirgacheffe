@@ -66,11 +66,11 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	}
 
 	@Override
-	public void enterSemiColon(YirgacheffeParser.SemiColonContext context)
+	public void enterSemicolon(YirgacheffeParser.SemicolonContext context)
 	{
 		if (context.SEMI_COLON() == null)
 		{
-			this.errors.add(new Error(context, "Missing semicolon."));
+			this.errors.add(new Error(context, "Missing ';'."));
 		}
 	}
 

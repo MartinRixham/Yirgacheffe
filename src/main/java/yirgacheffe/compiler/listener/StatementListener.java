@@ -49,6 +49,21 @@ public class StatementListener extends FieldListener
 		YirgacheffeParser.VariableInitialisationContext context)
 	{
 		this.methodVisitor.visitVarInsn(Opcodes.DSTORE, 1);
+	}
 
+	@Override
+	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
+	{
+		this.methodVisitor.visitTypeInsn(Opcodes.NEW, "java/lang/String");
+		this.methodVisitor.visitInsn(Opcodes.DUP);
+
+		this.methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"java/lang/String",
+			"<init>",
+			"()V",
+			false);
+
+		this.methodVisitor.visitInsn(Opcodes.POP);
 	}
 }

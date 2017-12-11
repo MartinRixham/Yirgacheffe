@@ -129,4 +129,11 @@ public class MethodListener extends TypeListener
 			this.errors.add(error);
 		}
 	}
+
+	@Override
+	public void exitClassMethodDeclaration(
+		YirgacheffeParser.ClassMethodDeclarationContext context)
+	{
+		this.methodVisitor.visitInsn(Opcodes.RETURN);
+	}
 }

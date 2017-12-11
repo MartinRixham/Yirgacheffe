@@ -6,11 +6,11 @@ compilationUnit:
 	(classDeclaration | interfaceDeclaration)
 	EOF;
 
-packageDeclaration: Package packageName semiColon;
+packageDeclaration: Package packageName semicolon;
 
 packageName: Identifier ('.' Identifier)*;
 
-importStatement: Import fullyQualifiedType semiColon;
+importStatement: Import fullyQualifiedType semicolon;
 
 classDeclaration:
 	(Class | Identifier) Identifier?
@@ -25,23 +25,25 @@ interfaceDeclaration:
 	closeBlock;
 
 classMethodDeclaration:
-	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* closeBracket
+	Modifier? (type Identifier | constructorIdentifier) '('
+		parameter?(','
+		parameter)* closeBracket
 	'{'
-		variableInitialisation*
+		(variableInitialisation | instantiation) *
 	closeBlock;
 
 interfaceMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* closeBracket semiColon;
+	Modifier? type Identifier '(' parameter? (',' parameter)* closeBracket semicolon;
 
 constructorIdentifier: Identifier;
 
-field: (fieldInitialisation | fieldDeclaration) semiColon;
+field: (fieldInitialisation | fieldDeclaration) semicolon;
 
 fieldDeclaration: type? Identifier;
 
 fieldInitialisation: fieldDeclaration '=' expression;
 
-variableInitialisation: type Identifier ('=' expression)? semiColon;
+variableInitialisation: type Identifier ('=' expression)? semicolon;
 
 parameter: type? Identifier;
 
@@ -51,7 +53,9 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
-expression: literal;
+expression: instantiation | literal;
+
+instantiation: New type '(' closeBracket semicolon;
 
 literal:
 	BooleanLiteral |
@@ -60,7 +64,7 @@ literal:
 	DecimalLiteral |
 	StringLiteral;
 
-semiColon: SEMI_COLON?;
+semicolon: SEMI_COLON?;
 
 closeBlock: CLOSE_BLOCK?;
 
@@ -74,6 +78,7 @@ Interface: 'interface';
 PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 BooleanLiteral: 'true' | 'false';
+New: 'new';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 
