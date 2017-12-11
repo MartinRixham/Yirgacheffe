@@ -135,5 +135,6 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
+		this.methodVisitor.visitMaxs(1, 1);
 	}
 }

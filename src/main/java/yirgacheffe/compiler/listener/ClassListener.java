@@ -28,17 +28,27 @@ public class ClassListener extends YirgacheffeListener
 	public void enterPackageDeclaration(
 		YirgacheffeParser.PackageDeclarationContext context)
 	{
-		this.packageName = context.packageName().getText();
-		String packageLocation =
-			this.packageName.replace('.', '/') +  "/";
-
-		if (!packageLocation.equals(this.directory))
+		if (context.packageName() == null && this.directory.length() > 0)
 		{
 			String message =
-				"Package name " + this.packageName +
-				" does not correspond to the file path " + this.directory + ".";
+				"Missing package declaration for file path " + this.directory + ".";
 
-			this.errors.add(new Error(context.packageName(), message));
+			this.errors.add(new Error(context, message));
+		}
+		else if (context.packageName() != null)
+		{
+			this.packageName = context.packageName().getText();
+			String packageLocation =
+				this.packageName.replace('.', '/') + "/";
+
+			if (!packageLocation.equals(this.directory))
+			{
+				String message =
+					"Package name " + this.packageName +
+						" does not correspond to the file path " + this.directory + ".";
+
+				this.errors.add(new Error(context.packageName(), message));
+			}
 		}
 	}
 

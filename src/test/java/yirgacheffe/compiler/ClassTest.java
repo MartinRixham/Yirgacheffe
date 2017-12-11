@@ -153,6 +153,21 @@ public class ClassTest
 	}
 
 	@Test
+	public void testClassWithMissingPackage() throws Exception
+	{
+		String source = "class MyClass {}";
+		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Missing package declaration " +
+				"for file path anotherPackage/wibble/.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testClassInPackageWrongPackage() throws Exception
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
@@ -210,6 +225,7 @@ public class ClassTest
 				"{\n" +
 					"String myMethod();\n" +
 				"}";
+
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
@@ -226,6 +242,7 @@ public class ClassTest
 				"{\n" +
 				"public String myMethod() {}\n" +
 				"}";
+
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
@@ -233,6 +250,80 @@ public class ClassTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Method body not permitted for interface method.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testCompilingMultipleClasses() throws Exception
+	{
+		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		String source =
+			"package this.that;\n" +
+			"class String\n" +
+			"{\n" +
+				"\tpublic void read() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("this/that/", source);
+		CompilationResult result =
+			compiler.compile(declaredTypes, classLoader);
+
+		assertTrue(result.isSuccessful());
+
+		source =
+			"package this.that;\n" +
+			"class Reader\n" +
+			"{\n" +
+				"\tpublic void read()\n" +
+				"\t{\n" +
+					"\t\tnew String().read();\n" +
+				"\t}\n" +
+			"}\n";
+
+		compiler = new Compiler("this/that/", source);
+		result = compiler.compile(declaredTypes, classLoader);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testMissingMethod() throws Exception
+	{
+		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		String source =
+			"package this.that;\n" +
+				"class String\n" +
+				"{\n" +
+				"\tpublic void read() {}\n" +
+				"}\n";
+
+		Compiler compiler = new Compiler("this/that/", source);
+		CompilationResult result =
+			compiler.compile(declaredTypes, classLoader);
+
+		assertTrue(result.isSuccessful());
+
+		source =
+			"package this.that;\n" +
+				"\n" +
+				"class Writer\n" +
+				"{\n" +
+				"\tpublic void write()\n" +
+				"\t{\n" +
+				"\t\tnew String().write();\n" +
+				"\t}\n" +
+				"}";
+
+		compiler = new Compiler("this/that/", source);
+		result = compiler.compile(declaredTypes, classLoader);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 7:15 No method write() on object of type this.that.String.\n",
 			result.getErrors());
 	}
 }

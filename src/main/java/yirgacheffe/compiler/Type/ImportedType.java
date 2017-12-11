@@ -46,4 +46,10 @@ public class ImportedType implements Type
 			}
 		}
 	}
+
+	@Override
+	public String toFullyQualifiedType()
+	{
+		return null;
+	}
 }

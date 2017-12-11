@@ -17,4 +17,9 @@ public class DeclaredType implements Type
 		return "L" + this.packageName.replace('.', '/') + "/" +
 			this.identifier + ";";
 	}
+
+	public String toFullyQualifiedType()
+	{
+		return this.packageName + "." + this.identifier;
+	}
 }

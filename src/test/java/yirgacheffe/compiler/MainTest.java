@@ -69,7 +69,7 @@ public class MainTest
 	}
 
 	@Test
-	public void testCompilingTwoInterfaces() throws Exception
+	public void testCompilingMultipleInterfaces() throws Exception
 	{
 		new File("example/MyInterface.class").delete();
 		new File("example/AnotherClass.class").delete();

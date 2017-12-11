@@ -6,4 +6,9 @@ public class NullType implements Type
 	{
 		return "V";
 	}
+
+	public String toFullyQualifiedType()
+	{
+		throw new RuntimeException();
+	}
 }

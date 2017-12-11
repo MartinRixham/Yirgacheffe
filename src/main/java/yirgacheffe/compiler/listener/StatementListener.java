@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
@@ -81,6 +82,10 @@ public class StatementListener extends FieldListener
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
+
+		Type type = this.types.getType(context.type());
+
+		this.typeStack.push(type.toFullyQualifiedType());
 	}
 
 	@Override
@@ -90,25 +95,35 @@ public class StatementListener extends FieldListener
 		String type = this.typeStack.pop();
 		String methodName = context.Identifier().getText();
 
+		Class<?> loadedClass;
+
 		try
 		{
-			Class<?> loadedClass = classLoader.loadClass(type);
-
-			try
-			{
-				loadedClass.getMethod(methodName);
-			}
-			catch (NoSuchMethodException e)
-			{
-				Error error =
-					new Error(context.Identifier().getSymbol(), "no such method.");
-
-				this.errors.add(error);
-			}
+			loadedClass = this.classLoader.loadClass(type);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new RuntimeException(e);
+			try
+			{
+				loadedClass = classLoader.loadClass(type);
+
+			}
+			catch (ClassNotFoundException ex)
+			{
+				throw new RuntimeException(ex);
+			}
+		}
+
+		try
+		{
+			loadedClass.getMethod(methodName);
+		}
+		catch (NoSuchMethodException ex)
+		{
+			String message =
+				"No method " + methodName + "() on object of type " + type + ".";
+
+			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
 		this.methodVisitor.visitMethodInsn(

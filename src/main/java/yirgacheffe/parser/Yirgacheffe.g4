@@ -1,12 +1,12 @@
 grammar Yirgacheffe;
 
 compilationUnit:
-	packageDeclaration?
+	packageDeclaration
 	importStatement*
 	(classDeclaration | interfaceDeclaration)
 	EOF;
 
-packageDeclaration: Package packageName semicolon;
+packageDeclaration: (Package packageName semicolon)?;
 
 packageName: Identifier ('.' Identifier)*;
 

@@ -13,7 +13,7 @@ public class BytecodeClassLoader extends ClassLoader
 	}
 
 	@Override
-	public Class findClass(String name) throws ClassNotFoundException
+	protected Class<?> findClass(String name) throws ClassNotFoundException
 	{
 		byte[] bytes = this.bytecode.get(name);
 
@@ -22,7 +22,6 @@ public class BytecodeClassLoader extends ClassLoader
 			throw new ClassNotFoundException();
 		}
 
-		// return defineClass(name, bytes, 0, bytes.length);
-		return null;
+		return this.defineClass(name, bytes, 0, bytes.length);
 	}
 }
