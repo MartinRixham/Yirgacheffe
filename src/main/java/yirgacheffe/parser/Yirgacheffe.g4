@@ -16,18 +16,18 @@ classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
 		(field | classMethodDeclaration)*
-	'}';
+	closeBlock;
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
 		(field | interfaceMethodDeclaration)*
-	'}';
+	closeBlock;
 
 classMethodDeclaration:
 	Modifier? (type Identifier | constructorIdentifier) '(' parameter? (',' parameter)* ')'
 	'{'
-	'}';
+	closeBlock;
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semiColon;
@@ -58,6 +58,8 @@ literal:
 	StringLiteral;
 
 semiColon: SEMI_COLON?;
+
+closeBlock: CLOSE_BLOCK?;
 
 // keywords
 Package: 'package';
@@ -106,3 +108,5 @@ COMMENT: '/*' .*? '*/' -> skip;
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
 
 SEMI_COLON: ';';
+
+CLOSE_BLOCK: '}';

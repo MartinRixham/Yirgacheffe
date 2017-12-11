@@ -73,4 +73,13 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			this.errors.add(new Error(context, "Missing semicolon."));
 		}
 	}
+
+	@Override
+	public void enterCloseBlock(YirgacheffeParser.CloseBlockContext context)
+	{
+		if (context.CLOSE_BLOCK() == null)
+		{
+			this.errors.add(new Error(context, "Missing closing brace."));
+		}
+	}
 }

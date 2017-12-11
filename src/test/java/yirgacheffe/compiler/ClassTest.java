@@ -22,7 +22,7 @@ public class ClassTest
 	@Test
 	public void testParseError() throws Exception
 	{
-		String source = "interface MyInterface {";
+		String source = "interface MyInterface {{";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
@@ -30,7 +30,7 @@ public class ClassTest
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
 		assertEquals(
-			"line 1:23 mismatched input",
+			"line 1:23 extraneous input",
 			result.getErrors().substring(0, 26));
 	}
 

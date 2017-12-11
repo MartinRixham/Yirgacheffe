@@ -62,8 +62,8 @@ public class MainTest
 
 		assertEquals(1, spyError.toString().split("\n").length);
 		assertEquals(
-			"line 2:0 mismatched input",
-			spyError.toString().substring(0, 25));
+			"line 1:40 extraneous input",
+			spyError.toString().substring(0, 26));
 
 		System.setErr(originalError);
 	}
