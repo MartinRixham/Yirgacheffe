@@ -139,6 +139,71 @@ public class StatementTest
 	}
 
 	@Test
+	public void testUninitialisedVariable() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"myVariable = 1;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Assignment to uninitialised variable 'myVariable'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testLocalVariableAssignment() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"num myVariable;" +
+					"myVariable = 1;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(2, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1.0, firstInstruction.cst);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
 	public void testInstantiationStatement() throws Exception
 	{
 		String source =

@@ -43,13 +43,13 @@ fieldInitialisation: fieldDeclaration '=' expression;
 
 fieldDeclaration: type? Identifier;
 
-statement: variable | methodCall | instantiation;
+statement: variableAssignment | variableDeclaration | methodCall | instantiation;
 
-variable: (variableInitialisation | variableDeclaration);
-
-variableInitialisation: variableDeclaration '=' expression;
+variableAssignment: (variableDeclaration | variableReference) '=' expression;
 
 variableDeclaration: type Identifier;
+
+variableReference: Identifier;
 
 parameter: type? Identifier;
 

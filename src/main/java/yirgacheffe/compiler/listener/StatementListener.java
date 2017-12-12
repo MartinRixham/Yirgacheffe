@@ -60,8 +60,20 @@ public class StatementListener extends FieldListener
 	}
 
 	@Override
-	public void exitVariableInitialisation(
-		YirgacheffeParser.VariableInitialisationContext context)
+	public void enterVariableReference(YirgacheffeParser.VariableReferenceContext context)
+	{
+		if (!this.localVariables.contains(context.getText()))
+		{
+			String message =
+				"Assignment to uninitialised variable '" + context.getText() + "'.";
+
+			this.errors.add(new Error(context, message));
+		}
+	}
+
+	@Override
+	public void exitVariableAssignment(
+		YirgacheffeParser.VariableAssignmentContext context)
 	{
 		String type = this.typeStack.pop();
 		int variableNumber = this.localVariables.size();
