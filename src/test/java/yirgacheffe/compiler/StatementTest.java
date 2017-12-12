@@ -348,6 +348,9 @@ public class StatementTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(4, instructions.size());
@@ -399,6 +402,9 @@ public class StatementTest
 
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 

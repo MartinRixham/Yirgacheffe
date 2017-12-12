@@ -152,14 +152,10 @@ public class StatementListener extends FieldListener
 
 		try
 		{
-			if (loadedClasses.size() > 0)
-			{
-				owner.getMethod(methodName, loadedClasses.remove());
-			}
-			else
-			{
-				owner.getMethod(methodName);
-			}
+			Class<?>[] argumentClasses =
+				loadedClasses.toArray(new Class<?>[loadedClasses.size()]);
+
+			owner.getMethod(methodName, argumentClasses);
 		}
 		catch (NoSuchMethodException ex)
 		{

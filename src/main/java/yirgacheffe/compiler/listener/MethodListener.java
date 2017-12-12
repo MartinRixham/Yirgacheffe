@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
+import yirgacheffe.compiler.Type.TypeStack;
 import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
@@ -12,11 +13,10 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class MethodListener extends TypeListener
 {
-	protected Stack<String> typeStack = new Stack<>();
+	protected TypeStack typeStack = new TypeStack();
 
 	protected List<String> localVariables = new ArrayList<>();
 
@@ -141,7 +141,10 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
-		this.methodVisitor.visitMaxs(1, this.localVariables.size() + 1);
+
+		int maxSize = this.typeStack.reset();
+
+		this.methodVisitor.visitMaxs(maxSize, this.localVariables.size() + 1);
 
 		this.localVariables = new ArrayList<>();
 	}
