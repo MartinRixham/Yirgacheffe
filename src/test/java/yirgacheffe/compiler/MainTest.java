@@ -125,8 +125,10 @@ public class MainTest
 
 		Yirgacheffe.main(arguments);
 
-		assertEquals("Errors in file example/more/MoreClass.yg:\n" +
-			"line 7:6 Unrecognised type: MyClass is not a type.\n",
+		assertEquals(
+			"Errors in file example/more/MoreClass.yg:\n" +
+			"line 7:6 Unrecognised type: MyClass is not a type.\n" +
+			"line 10:1 Method requires method body.\n",
 			spyError.toString());
 
 		System.setErr(originalError);

@@ -3,9 +3,13 @@ package yirgacheffe.compiler.error;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
-public class Error
+public class Error implements Comparable<Error>
 {
-	private String error;
+	private int line;
+
+	private int charPosition;
+
+	private String message;
 
 	public Error(ParserRuleContext context, String message)
 	{
@@ -19,12 +23,20 @@ public class Error
 
 	public Error(int line, int charPosition, String message)
 	{
-		this.error = "line " + line + ":" + charPosition + " " + message;
+		this.line = line;
+		this.charPosition = charPosition;
+		this.message = message;
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.error;
+		return "line " + this.line + ":" + this.charPosition + " " + this.message;
+	}
+
+	@Override
+	public int compareTo(Error error)
+	{
+		return Integer.compare(this.line, error.line);
 	}
 }
