@@ -59,7 +59,7 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
-methodCall: expression '.' Identifier '(' ')';
+methodCall: expression '.' Identifier '(' expression? (',' expression)* ')';
 
 expression: instantiation | literal;
 

@@ -9,6 +9,9 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class StatementListener extends FieldListener
 {
 	public StatementListener(
@@ -120,36 +123,49 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		String type = this.typeStack.pop();
-		String methodName = context.Identifier().getText();
+		Queue<Class<?>> loadedClasses = new LinkedList<>();
 
-		Class<?> loadedClass;
+		for (YirgacheffeParser.ExpressionContext expression: context.expression())
+		{
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			String type = this.typeStack.pop();
 
-		try
-		{
-			loadedClass = this.classLoader.loadClass(type);
-		}
-		catch (ClassNotFoundException e)
-		{
 			try
 			{
-				loadedClass = classLoader.loadClass(type);
+				loadedClasses.add(this.classLoader.loadClass(type));
 			}
-			catch (ClassNotFoundException ex)
+			catch (ClassNotFoundException e)
 			{
-				throw new RuntimeException(ex);
+				try
+				{
+					loadedClasses.add(classLoader.loadClass(type));
+				}
+				catch (ClassNotFoundException ex)
+				{
+					throw new RuntimeException(ex);
+				}
 			}
 		}
 
+		String methodName = context.Identifier().getText();
+		Class<?> owner = loadedClasses.remove();
+
 		try
 		{
-			loadedClass.getMethod(methodName);
+			if (loadedClasses.size() > 0)
+			{
+				owner.getMethod(methodName, loadedClasses.remove());
+			}
+			else
+			{
+				owner.getMethod(methodName);
+			}
 		}
 		catch (NoSuchMethodException ex)
 		{
 			String message =
-				"No method " + methodName + "() on object of type " + type + ".";
+				"No method " + methodName + "() on object of type " +
+				owner.getName() + ".";
 
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
