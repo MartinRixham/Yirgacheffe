@@ -1,0 +1,9 @@
+package example.more;
+
+class MoreClass
+{
+	public void more()
+	{
+		new MyClass();
+	}
+}

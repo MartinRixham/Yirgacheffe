@@ -11,13 +11,13 @@ import yirgacheffe.parser.YirgacheffeParser;
 public class TypeListener extends ClassListener
 {
 	public TypeListener(
-		String directory,
+		String sourceFile,
 		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, types, classLoader, errorListener, writer);
+		super(sourceFile, types, classLoader, errorListener, writer);
 	}
 
 	@Override

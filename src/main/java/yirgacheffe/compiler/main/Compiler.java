@@ -21,17 +21,17 @@ import java.util.Map;
 
 public class Compiler
 {
-	private String directory;
+	private String sourceFile;
 
 	private String source;
 
-	public Compiler(String directory, String source)
+	public Compiler(String sourceFile, String source)
 	{
-		this.directory = directory;
+		this.sourceFile = sourceFile;
 		this.source = source;
 	}
 
-	public CompilationResult compileClassDeclaration(
+	public void compileClassDeclaration(
 		Map<String, DeclaredType> declaredTypes,
 		BytecodeClassLoader classLoader)
 		throws Exception
@@ -41,16 +41,16 @@ public class Compiler
 
 		YirgacheffeListener listener =
 			new ClassListener(
-				this.directory,
+				this.sourceFile,
 				new Types(declaredTypes),
 				classLoader,
 				errorListener,
 				writer);
 
-		return this.execute(listener, errorListener);
+		this.execute(listener, errorListener);
 	}
 
-	public CompilationResult compileInterface(
+	public void compileInterface(
 		Map<String, DeclaredType> declaredTypes,
 		BytecodeClassLoader classLoader)
 		throws Exception
@@ -60,13 +60,13 @@ public class Compiler
 
 		YirgacheffeListener listener =
 			new MethodListener(
-				this.directory,
+				this.sourceFile,
 				new Types(declaredTypes),
 				classLoader,
 				errorListener,
 				writer);
 
-		return this.execute(listener, errorListener);
+		this.execute(listener, errorListener);
 	}
 
 	public CompilationResult compile(
@@ -79,7 +79,7 @@ public class Compiler
 
 		YirgacheffeListener listener =
 			new StatementListener(
-				this.directory,
+				this.sourceFile,
 				new Types(declaredTypes),
 				classLoader,
 				errorListener,

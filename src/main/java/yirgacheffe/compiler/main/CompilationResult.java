@@ -6,6 +6,8 @@ import java.util.List;
 
 public class CompilationResult
 {
+	private String sourceFileName;
+
 	private String classFileName;
 
 	private byte[] bytecode;
@@ -18,8 +20,9 @@ public class CompilationResult
 		this.bytecode = bytecode;
 	}
 
-	public CompilationResult(List<Error> errors)
+	public CompilationResult(String sourceFileName, List<Error> errors)
 	{
+		this.sourceFileName = sourceFileName;
 		this.errors = errors;
 	}
 
@@ -31,6 +34,11 @@ public class CompilationResult
 	public boolean isSuccessful()
 	{
 		return this.errors == null;
+	}
+
+	public String getSourceFileName()
+	{
+		return this.sourceFileName;
 	}
 
 	public String getClassFileName()

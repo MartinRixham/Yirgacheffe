@@ -132,7 +132,7 @@ public class ClassTest
 	public void testClassInPackage() throws Exception
 	{
 		String source = "package myPackage; class MyClass {}";
-		Compiler compiler = new Compiler("myPackage/", source);
+		Compiler compiler = new Compiler("myPackage/gile.gg", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
@@ -144,7 +144,7 @@ public class ClassTest
 	public void testClassInNestedPackage() throws Exception
 	{
 		String source = "package myPackage.thingy; class MyClass {}";
-		Compiler compiler = new Compiler("myPackage/thingy/", source);
+		Compiler compiler = new Compiler("myPackage/thingy/file.yg", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
@@ -156,7 +156,7 @@ public class ClassTest
 	public void testClassWithMissingPackage() throws Exception
 	{
 		String source = "class MyClass {}";
-		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
+		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
@@ -171,7 +171,7 @@ public class ClassTest
 	public void testClassInPackageWrongPackage() throws Exception
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
-		Compiler compiler = new Compiler("anotherPackage/wibble/", source);
+		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result =
 			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
 
@@ -188,11 +188,8 @@ public class ClassTest
 		HashMap<String, DeclaredType> declaredTypes = new HashMap<>();
 		BytecodeClassLoader classLoader = new BytecodeClassLoader();
 		String source = "package this.that; interface MyInterface {}";
-		Compiler compiler = new Compiler("this/that/", source);
-		CompilationResult result =
-			compiler.compileClassDeclaration(declaredTypes, classLoader);
-
-		assertTrue(result.isSuccessful());
+		Compiler compiler = new Compiler("this/that/MyInterface.yg", source);
+		compiler.compileClassDeclaration(declaredTypes, classLoader);
 
 		source =
 			"package this.that;\n" +
@@ -201,8 +198,8 @@ public class ClassTest
 				"MyInterface myMethod();\n" +
 				"}";
 
-		compiler = new Compiler("this/that/", source);
-		result = compiler.compile(declaredTypes, classLoader);
+		compiler = new Compiler("this/that/AnotherInterface.yg", source);
+		CompilationResult result = compiler.compile(declaredTypes, classLoader);
 
 		assertTrue(result.isSuccessful());
 

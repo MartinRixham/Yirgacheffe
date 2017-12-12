@@ -16,13 +16,13 @@ public class StatementListener extends FieldListener
 	private Stack<String> typeStack = new Stack<>();
 
 	public StatementListener(
-		String directory,
+		String sourceFile,
 		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, types, classLoader, errorListener, writer);
+		super(sourceFile, types, classLoader, errorListener, writer);
 	}
 
 	@Override

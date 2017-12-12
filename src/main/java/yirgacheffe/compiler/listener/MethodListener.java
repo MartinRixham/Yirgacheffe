@@ -17,13 +17,13 @@ public class MethodListener extends TypeListener
 	protected MethodVisitor methodVisitor;
 
 	public MethodListener(
-		String directory,
+		String sourceFile,
 		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, types, classLoader, errorListener, writer);
+		super(sourceFile, types, classLoader, errorListener, writer);
 	}
 
 	@Override

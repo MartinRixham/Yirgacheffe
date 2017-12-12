@@ -15,13 +15,13 @@ public class ClassListener extends YirgacheffeListener
 	protected boolean hasDefaultConstructor = true;
 
 	public ClassListener(
-		String directory,
+		String sourceFile,
 		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(directory, types, classLoader, errorListener, writer);
+		super(sourceFile, types, classLoader, errorListener, writer);
 	}
 
 	@Override

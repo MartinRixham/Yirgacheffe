@@ -3,8 +3,6 @@ package yirgacheffe.compiler.main;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.DeclaredType;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,65 +24,31 @@ public class Package
 		this.compilers = compilers;
 	}
 
-	public boolean compileClassDeclaration() throws Exception
+	public void compileClassDeclaration() throws Exception
 	{
-		boolean failed = false;
-
 		for (Compiler compiler: this.compilers)
 		{
-			CompilationResult result =
-				compiler.compileClassDeclaration(this.declaredTypes, this.classLoader);
-
-			if (!result.isSuccessful())
-			{
-				System.err.print(result.getErrors());
-
-				failed = true;
-			}
+			compiler.compileClassDeclaration(this.declaredTypes, this.classLoader);
 		}
-
-		return failed;
 	}
 
-	public boolean compileInterface() throws Exception
+	public void compileInterface() throws Exception
 	{
-		boolean failed = false;
-
 		for (Compiler compiler: this.compilers)
 		{
-			CompilationResult result =
-				compiler.compileInterface(this.declaredTypes, this.classLoader);
-
-			if (!result.isSuccessful())
-			{
-				System.err.print(result.getErrors());
-
-				failed = true;
-			}
+			compiler.compileInterface(this.declaredTypes, this.classLoader);
 		}
-
-		return failed;
 	}
 
-	public void compile() throws Exception
+	public List<CompilationResult> compile() throws Exception
 	{
+		List<CompilationResult> results = new ArrayList<>();
+
 		for (Compiler compiler: this.compilers)
 		{
-			CompilationResult result =
-				compiler.compile(this.declaredTypes, this.classLoader);
-
-			if (result.isSuccessful())
-			{
-				try (OutputStream outputStream =
-					new FileOutputStream(result.getClassFileName()))
-				{
-					outputStream.write(result.getBytecode());
-				}
-			}
-			else
-			{
-				System.err.print(result.getErrors());
-			}
+			results.add(compiler.compile(this.declaredTypes, this.classLoader));
 		}
+
+		return results;
 	}
 }

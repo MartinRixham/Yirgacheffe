@@ -2,6 +2,8 @@ package yirgacheffe.compiler.main;
 
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -30,20 +32,8 @@ public final class Yirgacheffe
 	{
 		Collection<Package> packages = this.createPackages(this.sourceFiles);
 
-		boolean failed = this.firstPass(packages);
-
-		if (failed)
-		{
-			return;
-		}
-
-		failed = this.secondPass(packages);
-
-		if (failed)
-		{
-			return;
-		}
-
+		this.firstPass(packages);
+		this.secondPass(packages);
 		this.thirdPass(packages);
 	}
 
@@ -62,7 +52,7 @@ public final class Yirgacheffe
 				compilers.put(directory, new ArrayList<>());
 			}
 
-			compilers.get(directory).add(new Compiler(directory, source));
+			compilers.get(directory).add(new Compiler(sourceFile, source));
 		}
 
 		List<Package> packages = new ArrayList<>();
@@ -88,35 +78,47 @@ public final class Yirgacheffe
 		return directory.toString();
 	}
 
-	private boolean firstPass(Collection<Package> packages) throws Exception
+	private void firstPass(Collection<Package> packages) throws Exception
 	{
-		boolean failed = false;
-
 		for (Package pkg: packages)
 		{
-			failed = failed || pkg.compileClassDeclaration();
+			pkg.compileClassDeclaration();
 		}
-
-		return failed;
 	}
 
-	private boolean secondPass(Collection<Package> packages) throws Exception
+	private void secondPass(Collection<Package> packages) throws Exception
 	{
-		boolean failed = false;
-
 		for (Package pkg: packages)
 		{
-			failed = failed || pkg.compileInterface();
+			pkg.compileInterface();
 		}
-
-		return failed;
 	}
 
 	private void thirdPass(Collection<Package> packages) throws Exception
 	{
 		for (Package pkg: packages)
 		{
-			pkg.compile();
+			this.printResult(pkg.compile());
+		}
+	}
+
+	private void printResult(List<CompilationResult> results) throws Exception
+	{
+		for (CompilationResult result: results)
+		{
+			if (result.isSuccessful())
+			{
+				try (OutputStream outputStream =
+					new FileOutputStream(result.getClassFileName()))
+				{
+					outputStream.write(result.getBytecode());
+				}
+			}
+			else
+			{
+				System.err.println("Errors in file " + result.getSourceFileName() + ":");
+				System.err.print(result.getErrors());
+			}
 		}
 	}
 }

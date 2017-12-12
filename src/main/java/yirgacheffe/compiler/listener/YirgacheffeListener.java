@@ -16,6 +16,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	private ParseErrorListener errorListener;
 
+	private String sourceFile;
+
 	protected ClassWriter writer;
 
 	protected List<Error> errors = new ArrayList<>();
@@ -31,28 +33,42 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	protected BytecodeClassLoader classLoader;
 
 	public YirgacheffeListener(
-		String directory,
+		String sourceFile,
 		Types types,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		this.directory = directory;
+		this.sourceFile = sourceFile;
+		this.directory = this.getDirectory(sourceFile);
 		this.types = types;
 		this.classLoader = classLoader;
 		this.errorListener = errorListener;
 		this.writer = writer;
 	}
 
+	private String getDirectory(String filePath)
+	{
+		String[] files = filePath.split("/");
+		StringBuilder directory = new StringBuilder();
+
+		for (int i = 0; i < files.length - 1; i++)
+		{
+			directory.append(files[i]).append("/");
+		}
+
+		return directory.toString();
+	}
+
 	public CompilationResult getCompilationResult()
 	{
 		if (this.errorListener.hasError())
 		{
-			return new CompilationResult(this.errorListener.getErrors());
+			return new CompilationResult(this.sourceFile, this.errorListener.getErrors());
 		}
 		else if (this.errors.size() > 0)
 		{
-			return new CompilationResult(this.errors);
+			return new CompilationResult(this.sourceFile, this.errors);
 		}
 		else
 		{

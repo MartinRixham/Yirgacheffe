@@ -60,10 +60,10 @@ public class MainTest
 
 		Yirgacheffe.main(new String[] {"example/Unparsable.yg"});
 
-		assertEquals(1, spyError.toString().split("\n").length);
 		assertEquals(
-			"line 1:40 extraneous input",
-			spyError.toString().substring(0, 26));
+			"Errors in file example/Unparsable.yg:\n" +
+			"line 1:40 extraneous input '{' expecting <EOF>.\n",
+			spyError.toString());
 
 		System.setErr(originalError);
 	}
@@ -101,6 +101,33 @@ public class MainTest
 		assertTrue(firstFile.read() != -1);
 		assertTrue(secondFile.read() != -1);
 		assertTrue(thirdFile.read() != -1);
+
+		System.setErr(originalError);
+	}
+
+	@Test
+	public void testMismatchedPackages() throws Exception
+	{
+		new File("example/MyClass.class").delete();
+		new File("example/more/MoreClass.class").delete();
+
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[]
+				{
+					"example/MyClass.yg",
+					"example/more/MoreClass.yg"
+				};
+
+		System.setErr(error);
+
+		Yirgacheffe.main(arguments);
+
+		assertEquals("Errors in file example/more/MoreClass.yg:\n" +
+			"line 7:6 Unrecognised type: MyClass is not a type.\n",
+			spyError.toString());
 
 		System.setErr(originalError);
 	}
@@ -158,6 +185,7 @@ public class MainTest
 		Yirgacheffe.main(arguments);
 
 		assertEquals(
+			"Errors in file example/reader/Writer.yg:\n" +
 			"line 7:15 No method write() on object of type example.reader.String.\n",
 			spyError.toString());
 
