@@ -1,0 +1,6 @@
+package example.reader;
+
+class String
+{
+	public void read() {}
+}

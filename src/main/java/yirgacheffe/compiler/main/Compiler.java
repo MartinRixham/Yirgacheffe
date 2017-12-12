@@ -11,6 +11,7 @@ import yirgacheffe.compiler.Type.DeclaredType;
 import yirgacheffe.compiler.Type.Types;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
+import yirgacheffe.compiler.listener.MethodListener;
 import yirgacheffe.compiler.listener.StatementListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.parser.YirgacheffeLexer;
@@ -40,6 +41,25 @@ public class Compiler
 
 		YirgacheffeListener listener =
 			new ClassListener(
+				this.directory,
+				new Types(declaredTypes),
+				classLoader,
+				errorListener,
+				writer);
+
+		return this.execute(listener, errorListener);
+	}
+
+	public CompilationResult compileInterface(
+		Map<String, DeclaredType> declaredTypes,
+		BytecodeClassLoader classLoader)
+		throws Exception
+	{
+		ClassWriter writer = new ClassWriter(0);
+		ParseErrorListener errorListener = new ParseErrorListener();
+
+		YirgacheffeListener listener =
+			new MethodListener(
 				this.directory,
 				new Types(declaredTypes),
 				classLoader,

@@ -46,6 +46,26 @@ public class Package
 		return failed;
 	}
 
+	public boolean compileInterface() throws Exception
+	{
+		boolean failed = false;
+
+		for (Compiler compiler: this.compilers)
+		{
+			CompilationResult result =
+				compiler.compileInterface(this.declaredTypes, this.classLoader);
+
+			if (!result.isSuccessful())
+			{
+				System.err.print(result.getErrors());
+
+				failed = true;
+			}
+		}
+
+		return failed;
+	}
+
 	public void compile() throws Exception
 	{
 		for (Compiler compiler: this.compilers)

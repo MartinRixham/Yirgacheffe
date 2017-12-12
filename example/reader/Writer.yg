@@ -1,0 +1,9 @@
+package example.reader;
+
+class Writer
+{
+	public void write()
+	{
+		new String().write();
+	}
+}

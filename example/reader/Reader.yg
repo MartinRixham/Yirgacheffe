@@ -1,0 +1,9 @@
+package example.reader;
+
+class Reader
+{
+	public void read()
+	{
+		new String().read();
+	}
+}

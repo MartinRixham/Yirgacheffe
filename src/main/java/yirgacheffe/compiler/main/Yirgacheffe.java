@@ -37,7 +37,14 @@ public final class Yirgacheffe
 			return;
 		}
 
-		this.secondPass(packages);
+		failed = this.secondPass(packages);
+
+		if (failed)
+		{
+			return;
+		}
+
+		this.thirdPass(packages);
 	}
 
 	private List<Package> createPackages(String[] sourceFiles) throws Exception
@@ -93,7 +100,19 @@ public final class Yirgacheffe
 		return failed;
 	}
 
-	private void secondPass(Collection<Package> packages) throws Exception
+	private boolean secondPass(Collection<Package> packages) throws Exception
+	{
+		boolean failed = false;
+
+		for (Package pkg: packages)
+		{
+			failed = failed || pkg.compileInterface();
+		}
+
+		return failed;
+	}
+
+	private void thirdPass(Collection<Package> packages) throws Exception
 	{
 		for (Package pkg: packages)
 		{

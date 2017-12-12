@@ -104,4 +104,63 @@ public class MainTest
 
 		System.setErr(originalError);
 	}
+
+	@Test
+	public void testCompilingMultipleClasses() throws Exception
+	{
+		new File("example/reader/String.class").delete();
+		new File("example/reader/Reader.class").delete();
+
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[]
+				{
+					"example/reader/Reader.yg",
+					"example/reader/String.yg"
+				};
+
+		System.setErr(error);
+
+		Yirgacheffe.main(arguments);
+
+		InputStream firstFile =
+			new FileInputStream("example/reader/String.class");
+		InputStream secondFile =
+			new FileInputStream("example/reader/Reader.class");
+
+		assertTrue(spyError.toString().length() == 0);
+		assertTrue(firstFile.read() != -1);
+		assertTrue(secondFile.read() != -1);
+
+		System.setErr(originalError);
+	}
+
+	@Test
+	public void testMissingMethod() throws Exception
+	{
+		new File("example/reader/String.class").delete();
+		new File("example/reader/Writer.class").delete();
+
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[]
+				{
+					"example/reader/Writer.yg",
+					"example/reader/String.yg"
+				};
+
+		System.setErr(error);
+
+		Yirgacheffe.main(arguments);
+
+		assertEquals(
+			"line 7:15 No method write() on object of type example.reader.String.\n",
+			spyError.toString());
+
+		System.setErr(originalError);
+	}
 }
