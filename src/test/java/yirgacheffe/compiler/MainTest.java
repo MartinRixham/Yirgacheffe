@@ -42,7 +42,7 @@ public class MainTest
 
 		System.setErr(error);
 
-			Yirgacheffe.main(new String[] {"example/Malformed.yg"});
+		Yirgacheffe.main(new String[] {"example/Malformed.yg"});
 
 		assertTrue(spyError.toString().length() > 0);
 

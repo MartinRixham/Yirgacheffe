@@ -9,12 +9,8 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.Stack;
-
 public class StatementListener extends FieldListener
 {
-	private Stack<String> typeStack = new Stack<>();
-
 	public StatementListener(
 		String sourceFile,
 		Types types,
@@ -43,20 +39,41 @@ public class StatementListener extends FieldListener
 		else if (context.BooleanLiteral() != null)
 		{
 			value = context.getText().equals("true");
+
+			this.typeStack.push("bool");
 		}
 		else
 		{
 			value = new Double(context.getText());
+
+			this.typeStack.push("num");
 		}
 
 		this.methodVisitor.visitLdcInsn(value);
 	}
 
 	@Override
+	public void enterVariableDeclaration(
+		YirgacheffeParser.VariableDeclarationContext context)
+	{
+		this.localVariables.add(context.Identifier().getText());
+	}
+
+	@Override
 	public void exitVariableInitialisation(
 		YirgacheffeParser.VariableInitialisationContext context)
 	{
-		this.methodVisitor.visitVarInsn(Opcodes.DSTORE, 1);
+		String type = this.typeStack.pop();
+		int variableNumber = this.localVariables.size();
+
+		if (type.equals("num"))
+		{
+			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, variableNumber);
+		}
+		else if (type.equals("bool"))
+		{
+			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, variableNumber);
+		}
 	}
 
 	@Override
@@ -106,7 +123,6 @@ public class StatementListener extends FieldListener
 			try
 			{
 				loadedClass = classLoader.loadClass(type);
-
 			}
 			catch (ClassNotFoundException ex)
 			{

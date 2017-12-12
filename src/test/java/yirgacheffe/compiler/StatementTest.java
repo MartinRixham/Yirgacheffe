@@ -69,6 +69,9 @@ public class StatementTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(2, firstMethod.maxLocals);
+
 		InsnList instructions = firstMethod.instructions;
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
@@ -80,6 +83,59 @@ public class StatementTest
 
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testTwoVariableInitialisations() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"num myVariable = 1;\n" +
+					"bool anotherVariable = false;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(3, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1.0, firstInstruction.cst);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.cst);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ISTORE, fourthInstruction.getOpcode());
+		assertEquals(2, fourthInstruction.var);
 	}
 
 	@Test

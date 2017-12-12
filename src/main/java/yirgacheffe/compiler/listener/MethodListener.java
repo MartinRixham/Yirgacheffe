@@ -10,10 +10,16 @@ import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class MethodListener extends TypeListener
 {
+	protected Stack<String> typeStack = new Stack<>();
+
+	protected List<String> localVariables = new ArrayList<>();
+
 	protected MethodVisitor methodVisitor;
 
 	public MethodListener(
@@ -135,6 +141,8 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
-		this.methodVisitor.visitMaxs(1, 1);
+		this.methodVisitor.visitMaxs(1, this.localVariables.size() + 1);
+
+		this.localVariables = new ArrayList<>();
 	}
 }

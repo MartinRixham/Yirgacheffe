@@ -39,13 +39,17 @@ constructorIdentifier: Identifier;
 
 field: (fieldInitialisation | fieldDeclaration) semicolon;
 
-fieldDeclaration: type? Identifier;
-
 fieldInitialisation: fieldDeclaration '=' expression;
 
-statement: variableInitialisation | methodCall | instantiation;
+fieldDeclaration: type? Identifier;
 
-variableInitialisation: type Identifier ('=' expression)?;
+statement: variable | methodCall | instantiation;
+
+variable: (variableInitialisation | variableDeclaration);
+
+variableInitialisation: variableDeclaration '=' expression;
+
+variableDeclaration: type Identifier;
 
 parameter: type? Identifier;
 
