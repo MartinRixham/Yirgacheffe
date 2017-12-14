@@ -41,7 +41,7 @@ public class Types
 		return this.types.containsKey(key);
 	}
 
-	public void putImportedType(String key, Type importedType)
+	public void put(String key, Type importedType)
 	{
 		this.types.put(key, importedType);
 	}

@@ -29,7 +29,7 @@ public class TypeListener extends ClassListener
 		String identifier = context.fullyQualifiedType().Identifier().getText();
 		Type type = new ReferenceType(context.fullyQualifiedType());
 
-		this.types.putImportedType(identifier, type);
+		this.types.put(identifier, type);
 	}
 
 	@Override
@@ -42,15 +42,13 @@ public class TypeListener extends ClassListener
 				return;
 			}
 
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
 			try
 			{
-				classLoader.loadClass("java.lang." + context.getText());
+				this.classLoader.loadClass("java.lang." + context.getText());
 
 				Type type = new JavaLanguageType(context.getText());
 
-				this.types.putImportedType(context.getText(), type);
+				this.types.put(context.getText(), type);
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -71,29 +69,18 @@ public class TypeListener extends ClassListener
 			return;
 		}
 
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
 		try
 		{
-			classLoader.loadClass(context.getText());
+			this.classLoader.loadClass(context.getText());
 
-			this.types.putImportedType(context.getText(), new ReferenceType(context));
+			this.types.put(context.getText(), new ReferenceType(context));
 		}
-		catch (ClassNotFoundException e)
+		catch (ClassNotFoundException ex)
 		{
-			try
-			{
-				this.classLoader.loadClass(context.getText());
+			String message =
+				"Unrecognised type: " + context.getText() + " is not a type.";
 
-				this.types.putImportedType(context.getText(), new ReferenceType(context));
-			}
-			catch (ClassNotFoundException ex)
-			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
-
-				this.errors.add(new Error(context, message));
-			}
+			this.errors.add(new Error(context, message));
 		}
 	}
 }

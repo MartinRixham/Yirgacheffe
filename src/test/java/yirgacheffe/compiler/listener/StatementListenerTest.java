@@ -207,7 +207,7 @@ public class StatementListenerTest
 		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.ISTORE, fourthInstruction.getOpcode());
-		assertEquals(2, fourthInstruction.var);
+		assertEquals(3, fourthInstruction.var);
 	}
 
 	@Test

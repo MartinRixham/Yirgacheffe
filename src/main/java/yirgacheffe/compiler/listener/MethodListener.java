@@ -156,8 +156,14 @@ public class MethodListener extends TypeListener
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 
 		int maxSize = this.typeStack.reset();
+		int localVariablesSize = 1;
 
-		this.methodVisitor.visitMaxs(maxSize, this.localVariables.size() + 1);
+		for (Variable variable: this.localVariables.values())
+		{
+			localVariablesSize += variable.getType().width();
+		}
+
+		this.methodVisitor.visitMaxs(maxSize, localVariablesSize);
 
 		this.localVariables = new HashMap<>();
 	}

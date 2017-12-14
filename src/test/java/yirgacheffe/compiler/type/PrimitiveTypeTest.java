@@ -17,6 +17,7 @@ public class PrimitiveTypeTest
 
 		assertEquals("void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 
 	@Test
@@ -28,6 +29,7 @@ public class PrimitiveTypeTest
 
 		assertEquals("bool", type.toFullyQualifiedType());
 		assertEquals("B", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 
 	@Test
@@ -39,6 +41,7 @@ public class PrimitiveTypeTest
 
 		assertEquals("char", type.toFullyQualifiedType());
 		assertEquals("C", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 
 	@Test
@@ -50,6 +53,7 @@ public class PrimitiveTypeTest
 
 		assertEquals("num", type.toFullyQualifiedType());
 		assertEquals("D", type.toJVMType());
+		assertEquals(2, type.width());
 	}
 
 	@Test
@@ -61,5 +65,23 @@ public class PrimitiveTypeTest
 
 		assertEquals("char", type.toFullyQualifiedType());
 		assertEquals("C", type.toJVMType());
+	}
+
+	@Test
+	public void testTypesWithSameNameAreEqual()
+	{
+		assertTrue(new PrimitiveType("bool").equals(new PrimitiveType("bool")));
+	}
+
+	@Test
+	public void testTypesWithDifferentNamesAreUnqual()
+	{
+		assertFalse(new PrimitiveType("bool").equals(new PrimitiveType("char")));
+	}
+
+	@Test
+	public void testGetHashCode()
+	{
+		assertTrue(new PrimitiveType("bool").hashCode() == "bool".hashCode());
 	}
 }

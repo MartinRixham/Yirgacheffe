@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.error;
+package yirgacheffe;
 
 import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.InputMismatchException;

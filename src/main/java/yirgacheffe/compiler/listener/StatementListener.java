@@ -17,6 +17,8 @@ import java.util.Queue;
 
 public class StatementListener extends FieldListener
 {
+	private Variable currentVariable;
+
 	public StatementListener(
 		String sourceFile,
 		Map<String, Type> declaredTypes,
@@ -64,25 +66,26 @@ public class StatementListener extends FieldListener
 	{
 		Type type = this.types.getType(context.type());
 
-		Variable variable =
-			new Variable(this.localVariables.size(), type);
+		int index = 1;
 
-		this.localVariables.put(context.Identifier().getText(), variable);
-	}
-
-	@Override
-	public void enterVariableRead(YirgacheffeParser.VariableReadContext context)
-	{
-		if (this.localVariables.containsKey(context.getText()))
+		for (Variable variable: this.localVariables.values())
 		{
-			this.typeStack.push(this.localVariables.get(context.getText()).getType());
+			index += variable.getType().width();
 		}
+
+		this.currentVariable = new Variable(index, type);
+
+		this.localVariables.put(context.Identifier().getText(), this.currentVariable);
 	}
 
 	@Override
 	public void enterVariableWrite(YirgacheffeParser.VariableWriteContext context)
 	{
-		if (!this.localVariables.containsKey(context.getText()))
+		if (this.localVariables.containsKey(context.getText()))
+		{
+			this.currentVariable = this.localVariables.get(context.getText());
+		}
+		else
 		{
 			String message =
 				"Assignment to uninitialised variable '" + context.getText() + "'.";
@@ -96,15 +99,20 @@ public class StatementListener extends FieldListener
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
 		Type type = this.typeStack.pop();
-		int variableNumber = this.localVariables.size();
+		int index = 0;
+
+		if (this.currentVariable != null)
+		{
+			index = this.currentVariable.getIndex();
+		}
 
 		if (type.equals(new PrimitiveType("num")))
 		{
-			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, variableNumber);
+			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, index);
 		}
 		else if (type.equals(new PrimitiveType("bool")))
 		{
-			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, variableNumber);
+			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
 		}
 	}
 
@@ -144,7 +152,6 @@ public class StatementListener extends FieldListener
 
 		for (YirgacheffeParser.ExpressionContext expression: context.expression())
 		{
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			Type type = this.typeStack.pop();
 
 			try
@@ -154,14 +161,7 @@ public class StatementListener extends FieldListener
 			}
 			catch (ClassNotFoundException e)
 			{
-				try
-				{
-					loadedClasses.add(classLoader.loadClass(type.toFullyQualifiedType()));
-				}
-				catch (ClassNotFoundException ex)
-				{
-					throw new RuntimeException(ex);
-				}
+				throw new RuntimeException(e);
 			}
 		}
 

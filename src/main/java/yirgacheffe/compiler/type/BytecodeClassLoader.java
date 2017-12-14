@@ -19,9 +19,13 @@ public class BytecodeClassLoader extends ClassLoader
 
 		if (bytes == null)
 		{
-			throw new ClassNotFoundException();
+			this.getParent().loadClass(name);
+		}
+		else
+		{
+			return this.defineClass(name, bytes, 0, bytes.length);
 		}
 
-		return this.defineClass(name, bytes, 0, bytes.length);
+		throw new RuntimeException();
 	}
 }

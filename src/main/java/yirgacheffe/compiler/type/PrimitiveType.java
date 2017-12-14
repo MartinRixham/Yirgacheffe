@@ -50,4 +50,16 @@ public class PrimitiveType implements Type
 			return 1;
 		}
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		return this.name.equals(((PrimitiveType) other).name);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode();
+	}
 }

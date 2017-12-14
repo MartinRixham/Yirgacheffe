@@ -15,6 +15,7 @@ public class ReferenceTypeTest
 
 		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
 		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 
 	@Test
@@ -27,6 +28,7 @@ public class ReferenceTypeTest
 
 		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
 		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 
 	@Test
@@ -39,5 +41,6 @@ public class ReferenceTypeTest
 
 		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
 		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
+		assertEquals(1, type.width());
 	}
 }
