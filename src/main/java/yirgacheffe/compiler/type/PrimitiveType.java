@@ -37,4 +37,17 @@ public class PrimitiveType implements Type
 	{
 		return this.name;
 	}
+
+	@Override
+	public int width()
+	{
+		if (this.name.equals("num"))
+		{
+			return 2;
+		}
+		else
+		{
+			return 1;
+		}
+	}
 }

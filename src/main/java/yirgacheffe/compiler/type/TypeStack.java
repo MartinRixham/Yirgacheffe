@@ -4,18 +4,30 @@ import java.util.Stack;
 
 public class TypeStack
 {
-	private Stack<String> stack = new Stack<>();
+	private Stack<Type> stack = new Stack<>();
 
 	private int maxSize = 0;
 
-	public void push(String type)
+	public void push(Type type)
 	{
 		this.stack.push(type);
 
-		this.maxSize = Math.max(this.stack.size(), this.maxSize);
+		this.maxSize = Math.max(this.getSize(), this.maxSize);
 	}
 
-	public String pop()
+	private int getSize()
+	{
+		int size = 0;
+
+		for (Type type: this.stack)
+		{
+			size += type.width();
+		}
+
+		return size;
+	}
+
+	public Type pop()
 	{
 		return this.stack.pop();
 	}

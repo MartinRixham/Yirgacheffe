@@ -30,4 +30,10 @@ public class ReferenceType implements Type
 	{
 		return this.fullyQualifiedName;
 	}
+
+	@Override
+	public int width()
+	{
+		return 1;
+	}
 }

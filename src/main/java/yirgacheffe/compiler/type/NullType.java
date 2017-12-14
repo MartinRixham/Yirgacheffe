@@ -11,4 +11,10 @@ public class NullType implements Type
 	{
 		return "void";
 	}
+
+	@Override
+	public int width()
+	{
+		return 1;
+	}
 }

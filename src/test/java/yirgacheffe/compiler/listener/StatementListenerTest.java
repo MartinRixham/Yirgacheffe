@@ -185,7 +185,7 @@ public class StatementListenerTest
 		MethodNode firstMethod = methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
-		assertEquals(4, firstMethod.maxLocals);
+			assertEquals(4, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 

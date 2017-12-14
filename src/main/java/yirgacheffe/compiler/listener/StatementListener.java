@@ -3,6 +3,8 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.JavaLanguageType;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -34,7 +36,7 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().replace("\"", "");
 
-			this.typeStack.push("java.lang.String");
+			this.typeStack.push(new JavaLanguageType("String"));
 		}
 		else if (context.CharacterLiteral() != null)
 		{
@@ -44,13 +46,13 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().equals("true");
 
-			this.typeStack.push("bool");
+			this.typeStack.push(new PrimitiveType("bool"));
 		}
 		else
 		{
 			value = new Double(context.getText());
 
-			this.typeStack.push("num");
+			this.typeStack.push(new PrimitiveType("num"));
 		}
 
 		this.methodVisitor.visitLdcInsn(value);
@@ -60,20 +62,27 @@ public class StatementListener extends FieldListener
 	public void enterVariableDeclaration(
 		YirgacheffeParser.VariableDeclarationContext context)
 	{
+		Type type = this.types.getType(context.type());
+
 		Variable variable =
-			new Variable(this.localVariables.size(), context.type().getText());
+			new Variable(this.localVariables.size(), type);
 
 		this.localVariables.put(context.Identifier().getText(), variable);
 	}
 
 	@Override
-	public void enterVariableReference(YirgacheffeParser.VariableReferenceContext context)
+	public void enterVariableRead(YirgacheffeParser.VariableReadContext context)
 	{
 		if (this.localVariables.containsKey(context.getText()))
 		{
 			this.typeStack.push(this.localVariables.get(context.getText()).getType());
 		}
-		else
+	}
+
+	@Override
+	public void enterVariableWrite(YirgacheffeParser.VariableWriteContext context)
+	{
+		if (!this.localVariables.containsKey(context.getText()))
 		{
 			String message =
 				"Assignment to uninitialised variable '" + context.getText() + "'.";
@@ -86,14 +95,14 @@ public class StatementListener extends FieldListener
 	public void exitVariableAssignment(
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
-		String type = this.typeStack.pop();
+		Type type = this.typeStack.pop();
 		int variableNumber = this.localVariables.size();
 
-		if (type.equals("num"))
+		if (type.equals(new PrimitiveType("num")))
 		{
 			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, variableNumber);
 		}
-		else if (type.equals("bool"))
+		else if (type.equals(new PrimitiveType("bool")))
 		{
 			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, variableNumber);
 		}
@@ -125,7 +134,7 @@ public class StatementListener extends FieldListener
 
 		Type type = this.types.getType(context.type());
 
-		this.typeStack.push(type.toFullyQualifiedType());
+		this.typeStack.push(type);
 	}
 
 	@Override
@@ -136,17 +145,18 @@ public class StatementListener extends FieldListener
 		for (YirgacheffeParser.ExpressionContext expression: context.expression())
 		{
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			String type = this.typeStack.pop();
+			Type type = this.typeStack.pop();
 
 			try
 			{
-				loadedClasses.add(this.classLoader.loadClass(type));
+				loadedClasses.add(
+					this.classLoader.loadClass(type.toFullyQualifiedType()));
 			}
 			catch (ClassNotFoundException e)
 			{
 				try
 				{
-					loadedClasses.add(classLoader.loadClass(type));
+					loadedClasses.add(classLoader.loadClass(type.toFullyQualifiedType()));
 				}
 				catch (ClassNotFoundException ex)
 				{

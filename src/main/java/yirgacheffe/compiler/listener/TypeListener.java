@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.JavaLanguageType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
@@ -47,7 +48,7 @@ public class TypeListener extends ClassListener
 			{
 				classLoader.loadClass("java.lang." + context.getText());
 
-				Type type = new ReferenceType("java.lang", context.getText());
+				Type type = new JavaLanguageType(context.getText());
 
 				this.types.putImportedType(context.getText(), type);
 			}

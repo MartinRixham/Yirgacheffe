@@ -5,4 +5,6 @@ public interface Type
 	String toJVMType();
 
 	String toFullyQualifiedType();
+
+	int width();
 }

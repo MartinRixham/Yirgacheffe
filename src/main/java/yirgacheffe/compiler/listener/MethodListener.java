@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -128,7 +129,7 @@ public class MethodListener extends TypeListener
 	@Override
 	public void enterParameter(YirgacheffeParser.ParameterContext context)
 	{
-		String type = "void";
+		Type type = new NullType();
 
 		if (context.type() == null)
 		{
@@ -139,7 +140,7 @@ public class MethodListener extends TypeListener
 		}
 		else
 		{
-			type = context.type().getText();
+			type = this.types.getType(context.type());
 		}
 
 		Variable variable =

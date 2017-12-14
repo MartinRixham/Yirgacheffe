@@ -4,9 +4,9 @@ public class Variable
 {
 	private int index;
 
-	private String type;
+	private Type type;
 
-	public Variable(int index, String type)
+	public Variable(int index, Type type)
 	{
 		this.index = index;
 		this.type = type;
@@ -17,7 +17,7 @@ public class Variable
 		return  this.index;
 	}
 
-	public String getType()
+	public Type getType()
 	{
 		return this.type;
 	}

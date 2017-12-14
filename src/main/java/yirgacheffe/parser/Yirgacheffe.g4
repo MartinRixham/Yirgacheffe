@@ -44,11 +44,11 @@ fieldDeclaration: type? Identifier;
 
 statement: variableAssignment | variableDeclaration | methodCall | instantiation;
 
-variableAssignment: (variableDeclaration | variableReference) '=' expression;
+variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
 variableDeclaration: type Identifier;
 
-variableReference: Identifier;
+variableWrite: Identifier;
 
 parameter: type? Identifier;
 
@@ -60,7 +60,9 @@ fullyQualifiedType: packageName '.' Identifier;
 
 methodCall: expression '.' Identifier '(' expression? (',' expression)* ')';
 
-expression: instantiation | literal | variableReference;
+expression: instantiation | literal | variableRead;
+
+variableRead: Identifier;
 
 instantiation: New type '(' ')';
 
