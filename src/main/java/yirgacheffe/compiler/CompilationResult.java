@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.main;
+package yirgacheffe.compiler;
 
 import yirgacheffe.compiler.error.Error;
 

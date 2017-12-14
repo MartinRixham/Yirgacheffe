@@ -3,13 +3,12 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.TypeStack;
-import yirgacheffe.compiler.Type.Types;
-import yirgacheffe.compiler.Type.Variable;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.TypeStack;
+import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
-import yirgacheffe.compiler.Type.Type;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.HashMap;
@@ -26,16 +25,16 @@ public class MethodListener extends TypeListener
 
 	public MethodListener(
 		String sourceFile,
-		Types types,
+		Map<String, Type> declaredTypes,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(sourceFile, types, classLoader, errorListener, writer);
+		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override
-	public void enterInterfaceMethodDeclaration(
+	public void exitInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
 		if (context.Modifier() != null)
@@ -58,7 +57,7 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void enterClassMethodDeclaration(
+	public void exitClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		boolean isPrivate = false;
@@ -150,8 +149,8 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void exitClassMethodDeclaration(
-		YirgacheffeParser.ClassMethodDeclarationContext context)
+	public void exitMethod(
+		YirgacheffeParser.MethodContext context)
 	{
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 

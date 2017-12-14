@@ -1,4 +1,4 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.listener;
 
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
@@ -11,9 +11,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.main.CompilationResult;
-import yirgacheffe.compiler.main.Compiler;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.CompilationResult;
+import yirgacheffe.compiler.Compiler;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class StatementTest
+public class StatementListenerTest
 {
 	@Test
 	public void testLocalVariableDeclaration() throws Exception

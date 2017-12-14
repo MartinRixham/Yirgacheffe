@@ -1,30 +1,32 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.Types;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.Type.ImportedType;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
+
+import java.util.Map;
 
 public class TypeListener extends ClassListener
 {
 	public TypeListener(
 		String sourceFile,
-		Types types,
+		Map<String, Type> declaredTypes,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(sourceFile, types, classLoader, errorListener, writer);
+		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
 		String identifier = context.fullyQualifiedType().Identifier().getText();
-		ImportedType type = new ImportedType(context.fullyQualifiedType());
+		Type type = new ReferenceType(context.fullyQualifiedType());
 
 		this.types.putImportedType(identifier, type);
 	}
@@ -44,6 +46,10 @@ public class TypeListener extends ClassListener
 			try
 			{
 				classLoader.loadClass("java.lang." + context.getText());
+
+				Type type = new ReferenceType("java.lang", context.getText());
+
+				this.types.putImportedType(context.getText(), type);
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -59,17 +65,26 @@ public class TypeListener extends ClassListener
 	public void enterFullyQualifiedType(
 		YirgacheffeParser.FullyQualifiedTypeContext context)
 	{
+		if (this.types.containsKey(context.getText()))
+		{
+			return;
+		}
+
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
 		try
 		{
 			classLoader.loadClass(context.getText());
+
+			this.types.putImportedType(context.getText(), new ReferenceType(context));
 		}
 		catch (ClassNotFoundException e)
 		{
 			try
 			{
 				this.classLoader.loadClass(context.getText());
+
+				this.types.putImportedType(context.getText(), new ReferenceType(context));
 			}
 			catch (ClassNotFoundException ex)
 			{

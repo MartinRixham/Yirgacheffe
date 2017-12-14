@@ -1,7 +1,7 @@
-package yirgacheffe.compiler.main;
+package yirgacheffe.compiler;
 
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Package
 {
-	private Map<String, DeclaredType> declaredTypes = new HashMap<>();
+	private Map<String, Type> declaredTypes = new HashMap<>();
 
 	private BytecodeClassLoader classLoader;
 

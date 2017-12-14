@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.Type;
+package yirgacheffe.compiler.type;
 
 import java.util.HashMap;
 import java.util.Map;

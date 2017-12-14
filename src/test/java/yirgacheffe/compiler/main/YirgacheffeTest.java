@@ -1,18 +1,18 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.main;
 
 import org.junit.Test;
-import yirgacheffe.compiler.main.Yirgacheffe;
+import yirgacheffe.compiler.Yirgacheffe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MainTest
+public class YirgacheffeTest
 {
 	@Test
 	public void testMainMethodOnSuccess() throws Exception

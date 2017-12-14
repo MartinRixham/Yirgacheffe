@@ -2,27 +2,27 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.Type;
-import yirgacheffe.compiler.Type.Types;
-import yirgacheffe.compiler.Type.Variable;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class StatementListener extends FieldListener
 {
 	public StatementListener(
 		String sourceFile,
-		Types types,
+		Map<String, Type> declaredTypes,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(sourceFile, types, classLoader, errorListener, writer);
+		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
 	}
 
 	@Override

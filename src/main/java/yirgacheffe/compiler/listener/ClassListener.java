@@ -3,25 +3,31 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.DeclaredType;
-import yirgacheffe.compiler.Type.Types;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
+
+import java.util.Map;
 
 public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
 
+	private Map<String, Type> declaredTypes;
+
 	public ClassListener(
 		String sourceFile,
-		Types types,
+		Map<String, Type> declaredTypes,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
-		super(sourceFile, types, classLoader, errorListener, writer);
+		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
+
+		this.declaredTypes = declaredTypes;
 	}
 
 	@Override
@@ -107,8 +113,7 @@ public class ClassListener extends YirgacheffeListener
 			this.errors.add(new Error(context.field(0), message));
 		}
 
-		for (YirgacheffeParser.ClassMethodDeclarationContext interfaceMethod:
-			context.classMethodDeclaration())
+		for (YirgacheffeParser.MethodContext interfaceMethod: context.method())
 		{
 			String message = "Method body not permitted for interface method.";
 
@@ -154,8 +159,8 @@ public class ClassListener extends YirgacheffeListener
 	@Override
 	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
 	{
-		DeclaredType type = new DeclaredType(this.packageName, this.className);
+		Type type = new ReferenceType(this.packageName, this.className);
 
-		this.types.putDeclaredType(this.className, type);
+		this.declaredTypes.put(this.className, type);
 	}
 }

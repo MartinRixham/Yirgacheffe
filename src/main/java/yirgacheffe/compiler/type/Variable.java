@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.Type;
+package yirgacheffe.compiler.type;
 
 public class Variable
 {

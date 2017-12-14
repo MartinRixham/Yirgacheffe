@@ -15,22 +15,21 @@ importStatement: Import fullyQualifiedType semicolon;
 classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
-		(field | classMethodDeclaration | interfaceMethodDeclaration)*
+		(field | method | interfaceMethodDeclaration)*
 	'}';
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
-		(field | classMethodDeclaration | interfaceMethodDeclaration)*
+		(field | method | interfaceMethodDeclaration)*
 	'}';
+
+method: classMethodDeclaration '{' (statement semicolon)* '}';
 
 classMethodDeclaration:
 	Modifier? (type Identifier | constructorIdentifier) '('
 		parameter?(','
-		parameter)* ')'
-	'{'
-		(statement semicolon)*
-	'}';
+		parameter)* ')';
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semicolon;

@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.Type;
+package yirgacheffe.compiler.type;
 
 public class NullType implements Type
 {
@@ -9,6 +9,6 @@ public class NullType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		throw new RuntimeException();
+		return "void";
 	}
 }

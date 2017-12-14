@@ -1,9 +1,10 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.Type.BytecodeClassLoader;
-import yirgacheffe.compiler.Type.Types;
-import yirgacheffe.compiler.main.CompilationResult;
+import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Types;
+import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeBaseListener;
@@ -11,6 +12,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
@@ -34,14 +36,14 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	public YirgacheffeListener(
 		String sourceFile,
-		Types types,
+		Map<String, Type> declaredTypes,
 		BytecodeClassLoader classLoader,
 		ParseErrorListener errorListener,
 		ClassWriter writer)
 	{
 		this.sourceFile = sourceFile;
 		this.directory = this.getDirectory(sourceFile);
-		this.types = types;
+		this.types = new Types(declaredTypes);
 		this.classLoader = classLoader;
 		this.errorListener = errorListener;
 		this.writer = writer;
