@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.compiler.Type.Types;
+import yirgacheffe.compiler.Type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -59,13 +60,20 @@ public class StatementListener extends FieldListener
 	public void enterVariableDeclaration(
 		YirgacheffeParser.VariableDeclarationContext context)
 	{
-		this.localVariables.add(context.Identifier().getText());
+		Variable variable =
+			new Variable(this.localVariables.size(), context.type().getText());
+
+		this.localVariables.put(context.Identifier().getText(), variable);
 	}
 
 	@Override
 	public void enterVariableReference(YirgacheffeParser.VariableReferenceContext context)
 	{
-		if (!this.localVariables.contains(context.getText()))
+		if (this.localVariables.containsKey(context.getText()))
+		{
+			this.typeStack.push(this.localVariables.get(context.getText()).getType());
+		}
+		else
 		{
 			String message =
 				"Assignment to uninitialised variable '" + context.getText() + "'.";

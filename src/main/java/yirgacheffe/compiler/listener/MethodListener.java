@@ -6,19 +6,21 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Type.BytecodeClassLoader;
 import yirgacheffe.compiler.Type.TypeStack;
 import yirgacheffe.compiler.Type.Types;
+import yirgacheffe.compiler.Type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.Type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MethodListener extends TypeListener
 {
 	protected TypeStack typeStack = new TypeStack();
 
-	protected List<String> localVariables = new ArrayList<>();
+	protected Map<String, Variable> localVariables = new HashMap<>();
 
 	protected MethodVisitor methodVisitor;
 
@@ -127,6 +129,8 @@ public class MethodListener extends TypeListener
 	@Override
 	public void enterParameter(YirgacheffeParser.ParameterContext context)
 	{
+		String type = "void";
+
 		if (context.type() == null)
 		{
 			Error error =
@@ -134,6 +138,15 @@ public class MethodListener extends TypeListener
 
 			this.errors.add(error);
 		}
+		else
+		{
+			type = context.type().getText();
+		}
+
+		Variable variable =
+			new Variable(this.localVariables.size(), type);
+
+		this.localVariables.put(context.Identifier().getText(), variable);
 	}
 
 	@Override
@@ -146,6 +159,6 @@ public class MethodListener extends TypeListener
 
 		this.methodVisitor.visitMaxs(maxSize, this.localVariables.size() + 1);
 
-		this.localVariables = new ArrayList<>();
+		this.localVariables = new HashMap<>();
 	}
 }

@@ -1,5 +1,6 @@
 package yirgacheffe.compiler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -30,7 +31,7 @@ public class ClassTest
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
 		assertEquals(
-			"line 1:23 extraneous input",
+			"line 1:23 mismatched input",
 			result.getErrors().substring(0, 26));
 	}
 
@@ -115,8 +116,8 @@ public class ClassTest
 	{
 		String source =
 			"class\n" +
-				"{\n" +
-				"}";
+			"{\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
@@ -125,6 +126,24 @@ public class ClassTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 1:0 Class identifier expected.\n",
+			result.getErrors());
+	}
+
+	@Ignore
+	@Test
+	public void testClassWithMissingCloseBlock() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Missing ';'.\n",
 			result.getErrors());
 	}
 

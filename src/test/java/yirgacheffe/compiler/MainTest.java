@@ -62,8 +62,8 @@ public class MainTest
 
 		assertEquals(
 			"Errors in file example/Unparsable.yg:\n" +
-			"line 1:40 extraneous input '{' expecting <EOF>.\n",
-			spyError.toString());
+			"line 1:40 mismatched input '{'",
+			spyError.toString().substring(0, 68));
 
 		System.setErr(originalError);
 	}

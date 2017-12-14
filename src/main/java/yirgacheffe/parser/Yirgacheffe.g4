@@ -16,24 +16,24 @@ classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
 		(field | classMethodDeclaration | interfaceMethodDeclaration)*
-	closeBlock;
+	'}';
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
 		(field | classMethodDeclaration | interfaceMethodDeclaration)*
-	closeBlock;
+	'}';
 
 classMethodDeclaration:
 	Modifier? (type Identifier | constructorIdentifier) '('
 		parameter?(','
-		parameter)* closeBracket
+		parameter)* ')'
 	'{'
-		(statement semicolon) *
-	closeBlock;
+		(statement semicolon)*
+	'}';
 
 interfaceMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* closeBracket semicolon;
+	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semicolon;
 
 constructorIdentifier: Identifier;
 
@@ -61,9 +61,9 @@ fullyQualifiedType: packageName '.' Identifier;
 
 methodCall: expression '.' Identifier '(' expression? (',' expression)* ')';
 
-expression: instantiation | literal;
+expression: instantiation | literal | variableReference;
 
-instantiation: New type '(' closeBracket;
+instantiation: New type '(' ')';
 
 literal:
 	BooleanLiteral |
@@ -73,10 +73,6 @@ literal:
 	StringLiteral;
 
 semicolon: SEMI_COLON?;
-
-closeBlock: CLOSE_BLOCK?;
-
-closeBracket: CLOSE_BRACKET?;
 
 // keywords
 Package: 'package';
@@ -120,10 +116,6 @@ fragment
 LetterOrDigit: [a-zA-Z0-9$_];
 
 SEMI_COLON: ';';
-
-CLOSE_BLOCK: '}';
-
-CLOSE_BRACKET: ')';
 
 WHITE_SPACE: [ \t\r\n\u000C]+ -> skip;
 

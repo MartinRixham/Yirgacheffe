@@ -44,14 +44,40 @@ public class StatementTest
 	}
 
 	@Test
-	public void testLocalVariableInitialisation() throws Exception
+	public void testMissingSemicolon() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"num myVariable = 1;\n" +
+					"num myVariable\n" +
+					"num anotherVariable\n" +
+					"new String()\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:0 Missing ';'.\n" +
+			"line 6:0 Missing ';'.\n" +
+			"line 7:0 Missing ';'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testLocalVariableInitialisation() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"num myVariable = 50;\n" +
 				"}\n" +
 			"}";
 
@@ -69,20 +95,66 @@ public class StatementTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals(1, firstMethod.maxStack);
-		assertEquals(2, firstMethod.maxLocals);
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(3, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(1.0, firstInstruction.cst);
+		assertEquals(50.0, firstInstruction.cst);
 
 		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testAssignParameterToLocalVariable() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass(num param)" +
+				"{\n" +
+					"num myVariable = param;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(5, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
+		assertEquals(3, secondInstruction.var);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
 	}
 
 	@Test
@@ -112,8 +184,8 @@ public class StatementTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals(1, firstMethod.maxStack);
-		assertEquals(3, firstMethod.maxLocals);
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(4, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -187,8 +259,8 @@ public class StatementTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals(1, firstMethod.maxStack);
-		assertEquals(2, firstMethod.maxLocals);
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(3, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -378,7 +450,7 @@ public class StatementTest
 	}
 
 	@Test
-	public void testFunctionCallWithParameter() throws Exception
+	public void testFunctionCallWithArgument() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
