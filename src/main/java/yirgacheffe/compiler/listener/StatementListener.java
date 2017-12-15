@@ -11,7 +11,10 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -48,13 +51,13 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().equals("true");
 
-			this.typeStack.push(new PrimitiveType("bool"));
+			this.typeStack.push(PrimitiveType.BOOL);
 		}
 		else
 		{
 			value = new Double(context.getText());
 
-			this.typeStack.push(new PrimitiveType("num"));
+			this.typeStack.push(PrimitiveType.NUM);
 		}
 
 		this.methodVisitor.visitLdcInsn(value);
@@ -106,11 +109,11 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
-		if (type.equals(new PrimitiveType("num")))
+		if (type.equals(PrimitiveType.NUM))
 		{
 			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, index);
 		}
-		else if (type.equals(new PrimitiveType("bool")))
+		else if (type.equals(PrimitiveType.BOOL))
 		{
 			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
 		}
@@ -148,16 +151,16 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		Queue<Class<?>> loadedClasses = new LinkedList<>();
+		Class<?>[] argumentClasses = new Class<?>[context.expression().size() - 1];
 
-		for (YirgacheffeParser.ExpressionContext expression: context.expression())
+		for (int i = context.expression().size() - 2; i >= 0; i--)
 		{
 			Type type = this.typeStack.pop();
 
 			try
 			{
-				loadedClasses.add(
-					this.classLoader.loadClass(type.toFullyQualifiedType()));
+				argumentClasses[i] =
+					this.classLoader.loadClass(type.toFullyQualifiedType());
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -166,20 +169,48 @@ public class StatementListener extends FieldListener
 		}
 
 		String methodName = context.Identifier().getText();
-		Class<?> owner = loadedClasses.remove();
+
+		Class<?> owner;
 
 		try
 		{
-			Class<?>[] argumentClasses =
-				loadedClasses.toArray(new Class<?>[loadedClasses.size()]);
-
-			owner.getMethod(methodName, argumentClasses);
+			owner =
+				this.classLoader.loadClass(this.typeStack.pop().toFullyQualifiedType());
 		}
-		catch (NoSuchMethodException ex)
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException();
+		}
+
+		boolean hasMethod = false;
+
+		for (Method method: owner.getMethods())
+		{
+			if (method.getName().equals(methodName))
+			{
+				hasMethod = true;
+			}
+		}
+
+		if (hasMethod)
+		{
+			try
+			{
+				owner.getMethod(methodName, argumentClasses);
+			}
+			catch (NoSuchMethodException ex)
+			{
+				String message =
+					"No overload of method '" + methodName + "' with parameters (num).";
+
+				this.errors.add(new Error(context.Identifier().getSymbol(), message));
+			}
+		}
+		else
 		{
 			String message =
-				"No method " + methodName + "() on object of type " +
-				owner.getName() + ".";
+				"No method '" + methodName + "' on object of type " +
+					owner.getName() + ".";
 
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}

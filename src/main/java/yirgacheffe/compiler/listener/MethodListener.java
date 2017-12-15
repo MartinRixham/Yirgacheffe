@@ -102,6 +102,7 @@ public class MethodListener extends TypeListener
 		return
 			this.getParameterDescriptor(parameters) +
 				this.types.getType(returnType).toJVMType();
+
 	}
 
 	private String getParameterDescriptor(

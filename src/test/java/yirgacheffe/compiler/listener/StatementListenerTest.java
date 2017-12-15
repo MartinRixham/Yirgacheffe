@@ -509,6 +509,51 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testFunctionCallWithArgumentOfWrongType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"\"thingy\".split(1);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:9 No overload of method 'split' with parameters (num).\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMissingFunction() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"\"thingy\".read(1, \"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:9 No method 'read' " +
+				"on object of type java.lang.String.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testUndefinedFunctionCall() throws Exception
 	{
 		String source =

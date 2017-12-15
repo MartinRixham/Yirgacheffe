@@ -1,65 +1,43 @@
 package yirgacheffe.compiler.type;
 
-import java.util.Arrays;
-
-public class PrimitiveType implements Type
+public enum PrimitiveType implements Type
 {
-	private String name;
+	VOID("V", "Void", 0),
 
-	public PrimitiveType(String name)
-	{
-		this.name = name;
-	}
+	BOOL("B", "Boolean", 1),
 
-	public static boolean isPrimitive(String name)
+	CHAR("C", "Character", 1),
+
+	NUM("D", "Double", 2);
+
+	private String jvmType;
+
+	private String fullyQualifiedType;
+
+	private int width;
+
+	PrimitiveType(String jvmType, String wrapperClass, int width)
 	{
-		return Arrays.asList("void", "bool", "char", "num").contains(name);
+		this.jvmType = jvmType;
+		this.fullyQualifiedType = "java.lang." + wrapperClass;
+		this.width = width;
 	}
 
 	@Override
 	public String toJVMType()
 	{
-		switch (this.name)
-		{
-			case "void":
-				return "V";
-			case "bool":
-				return "B";
-			case "char":
-				return "C";
-			default:
-				return "D";
-		}
+		return this.jvmType;
 	}
 
 	@Override
 	public String toFullyQualifiedType()
 	{
-		return this.name;
+		return this.fullyQualifiedType;
 	}
 
 	@Override
 	public int width()
 	{
-		if (this.name.equals("num"))
-		{
-			return 2;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-
-	@Override
-	public boolean equals(Object other)
-	{
-		return this.name.equals(((PrimitiveType) other).name);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return this.name.hashCode();
+		return this.width;
 	}
 }

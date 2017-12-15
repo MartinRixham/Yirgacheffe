@@ -4,12 +4,12 @@ public class NullType implements Type
 {
 	public String toJVMType()
 	{
-		return "V";
+		return "I";
 	}
 
 	public String toFullyQualifiedType()
 	{
-		return "void";
+		return "java.lang.Integer";
 	}
 
 	@Override

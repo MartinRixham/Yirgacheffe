@@ -11,8 +11,8 @@ public class NullTypeTest
 	{
 		Type type = new NullType();
 
-		assertEquals("V", type.toJVMType());
-		assertEquals("void", type.toFullyQualifiedType());
+		assertEquals("I", type.toJVMType());
+		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
 		assertEquals(1, type.width());
 	}
 }

@@ -13,10 +13,10 @@ public class Types
 	{
 		this.types = new HashMap<>(declaredTypes);
 
-		this.types.put("void", new PrimitiveType("void"));
-		this.types.put("bool", new PrimitiveType("bool"));
-		this.types.put("char", new PrimitiveType("char"));
-		this.types.put("num", new PrimitiveType("num"));
+		this.types.put("void", PrimitiveType.VOID);
+		this.types.put("bool", PrimitiveType.BOOL);
+		this.types.put("char", PrimitiveType.CHAR);
+		this.types.put("num", PrimitiveType.NUM);
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)
