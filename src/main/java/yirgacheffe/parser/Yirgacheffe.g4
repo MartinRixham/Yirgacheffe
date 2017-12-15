@@ -61,7 +61,7 @@ expression: instantiation | literal | variableRead;
 
 variableRead: Identifier;
 
-instantiation: New type '(' ')';
+instantiation: New type '(' expression? (',' expression)* ')';
 
 literal:
 	BooleanLiteral |

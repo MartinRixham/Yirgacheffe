@@ -80,6 +80,67 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testInstantiationWithParameter() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new String(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(6, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/String", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals("thingy", thirdInstruction.cst);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
+		assertEquals("java/lang/String", fourthInstruction.owner);
+		assertEquals("<init>", fourthInstruction.name);
+		assertEquals("()V", fourthInstruction.desc);
+		assertFalse(fourthInstruction.itf);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.RETURN, sixthInstruction.getOpcode());
+	}
+
+	@Test
 	public void testInstantiationOfFullyQualifiedType() throws Exception
 	{
 		String source =
@@ -244,6 +305,7 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
 		assertEquals("java/lang/String", thirdInstruction.owner);
+
 		assertEquals("split", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
 

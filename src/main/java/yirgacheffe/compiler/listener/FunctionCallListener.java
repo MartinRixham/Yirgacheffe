@@ -24,7 +24,7 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
-	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
+	public void enterInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
 		if (context.type().simpleType() != null &&
 			context.type().simpleType().PrimitiveType() != null)
@@ -37,7 +37,11 @@ public class FunctionCallListener extends ExpressionListener
 
 		this.methodVisitor.visitTypeInsn(Opcodes.NEW, "java/lang/String");
 		this.methodVisitor.visitInsn(Opcodes.DUP);
+	}
 
+	@Override
+	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
+	{
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/String",
