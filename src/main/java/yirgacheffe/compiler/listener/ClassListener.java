@@ -31,6 +31,20 @@ public class ClassListener extends YirgacheffeListener
 	}
 
 	@Override
+	public void enterCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
+	{
+		int classCount =
+			context.interfaceDeclaration().size() + context.classDeclaration().size();
+
+		if (classCount > 1)
+		{
+			String message = "File contains multiple class declarations.";
+
+			this.errors.add(new Error(1, 0, message));
+		}
+	}
+
+	@Override
 	public void enterPackageDeclaration(
 		YirgacheffeParser.PackageDeclarationContext context)
 	{

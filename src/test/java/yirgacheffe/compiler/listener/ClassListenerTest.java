@@ -59,6 +59,20 @@ public class ClassListenerTest
 	}
 
 	@Test
+	public void testMultipleClassDeclarations() throws Exception
+	{
+		String source = "interface MyInterface {} class MyClass {}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 File contains multiple class declarations.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testFailToDeclareClassOrInterface() throws Exception
 	{
 		String source = "thingy MyInterface {}";

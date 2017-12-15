@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration
 	importStatement*
-	(classDeclaration | interfaceDeclaration)
+	(classDeclaration | interfaceDeclaration)*
 	EOF;
 
 packageDeclaration: (Package packageName semicolon)?;
