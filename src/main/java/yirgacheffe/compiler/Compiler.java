@@ -3,7 +3,7 @@ package yirgacheffe.compiler;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.listener.ExpressionListener;
+import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.ParseErrorListener;
@@ -73,7 +73,7 @@ public class Compiler
 		ParseErrorListener errorListener = new ParseErrorListener();
 
 		YirgacheffeListener listener =
-			new ExpressionListener(
+			new FunctionCallListener(
 				this.sourceFile,
 				declaredTypes,
 				classLoader,

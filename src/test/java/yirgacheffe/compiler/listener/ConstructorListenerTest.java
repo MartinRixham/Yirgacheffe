@@ -104,7 +104,7 @@ public class ConstructorListenerTest
 		String source =
 			"class MyClass\n" +
 				"{\n" +
-				"MyClass(num param) {}\n" +
+					"MyClass(num param) {}\n" +
 				"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -114,7 +114,7 @@ public class ConstructorListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Expected public or private access modifier " +
-				"at start of method declaration.\n",
+				"at start of constructor declaration.\n",
 			result.getErrors());
 	}
 

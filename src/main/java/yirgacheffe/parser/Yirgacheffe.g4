@@ -24,17 +24,14 @@ interfaceDeclaration:
 		(field | method | interfaceMethodDeclaration)*
 	'}';
 
-method: classMethodDeclaration '{' (statement semicolon)* '}';
+method: (classMethodDeclaration | constructorDeclaration) '{' (statement semicolon)* '}';
 
-classMethodDeclaration:
-	Modifier? (type Identifier | constructorIdentifier) '('
-		parameter?(','
-		parameter)* ')';
+classMethodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
+
+constructorDeclaration: Modifier? Identifier '(' parameter? (',' parameter)* ')';
 
 interfaceMethodDeclaration:
 	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semicolon;
-
-constructorIdentifier: Identifier;
 
 field: (fieldInitialisation | fieldDeclaration) semicolon;
 

@@ -1,7 +1,6 @@
-package yirgacheffe;
+package yirgacheffe.compiler;
 
 import org.junit.Test;
-import yirgacheffe.compiler.Yirgacheffe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -188,7 +187,7 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/reader/Writer.yg:\n" +
-			"line 7:15 No method write() on object of type example.reader.String.\n",
+			"line 7:15 No method 'write' on object of type example.reader.String.\n",
 			spyError.toString());
 
 		System.setErr(originalError);

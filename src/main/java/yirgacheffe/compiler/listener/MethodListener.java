@@ -76,7 +76,7 @@ public class MethodListener extends TypeListener
 			isPrivate = context.Modifier().getText().equals("private");
 		}
 
-		String name = "<init>";
+		String name = null;
 
 		if (context.Identifier() != null)
 		{
@@ -105,7 +105,7 @@ public class MethodListener extends TypeListener
 
 	}
 
-	private String getParameterDescriptor(
+	protected String getParameterDescriptor(
 		List<YirgacheffeParser.ParameterContext> parameterList)
 	{
 		StringBuilder descriptor = new StringBuilder("(");
