@@ -85,7 +85,7 @@ public class FieldListener extends ConstructorListener
 
 		if (literal.BooleanLiteral() != null)
 		{
-			return jvmType.equals("B");
+			return jvmType.equals("Z");
 		}
 		else
 		{

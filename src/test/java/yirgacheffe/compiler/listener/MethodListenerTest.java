@@ -312,7 +312,7 @@ public class MethodListenerTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals("()B", firstMethod.desc);
+		assertEquals("()Z", firstMethod.desc);
 	}
 
 	@Test

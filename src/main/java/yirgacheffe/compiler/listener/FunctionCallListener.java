@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -36,11 +37,21 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
+		int argumentCount = context.expression().size();
+		Type[] argumentTypes = new Type[argumentCount];
+
+		for (int i = context.expression().size() - 1; i >= 0; i--)
+		{
+			argumentTypes[i] = this.typeStack.pop();
+		}
+
+		String descriptor = this.getParameterDescriptor(argumentTypes);
+
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/String",
 			"<init>",
-			"()V",
+			descriptor + "V",
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
@@ -53,11 +64,14 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		Class<?>[] argumentClasses = new Class<?>[context.expression().size() - 1];
+		int argumentCount = context.expression().size() - 1;
+		Type[] argumentTypes = new Type[argumentCount];
+		Class<?>[] argumentClasses = new Class<?>[argumentCount];
 
 		for (int i = context.expression().size() - 2; i >= 0; i--)
 		{
-			argumentClasses[i] = this.typeStack.pop().reflectionClass();
+			argumentTypes[i] = this.typeStack.pop();
+			argumentClasses[i] = argumentTypes[i].reflectionClass();
 		}
 
 		String methodName = context.Identifier().getText();
@@ -69,14 +83,23 @@ public class FunctionCallListener extends ExpressionListener
 			if (method.getName().equals(methodName))
 			{
 				hasMethod = true;
+				break;
 			}
 		}
+
+		owner.getMethods()[0].getParameterTypes();
+
+		String descriptor = "()V";
 
 		if (hasMethod)
 		{
 			try
 			{
-				owner.getMethod(methodName, argumentClasses);
+				Method method = owner.getMethod(methodName, argumentClasses);
+				Type returnType = new ReferenceType(method.getReturnType());
+
+				descriptor =
+					this.getMethodDescriptor(argumentTypes, returnType);
 			}
 			catch (NoSuchMethodException ex)
 			{
@@ -99,9 +122,31 @@ public class FunctionCallListener extends ExpressionListener
 			Opcodes.INVOKEVIRTUAL,
 			"java/lang/String",
 			methodName,
-			"()Ljava/lang/String;",
+			descriptor,
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
+	}
+
+	private String getMethodDescriptor(
+		Type[] argumentTypes,
+		Type returnType)
+	{
+		return
+			this.getParameterDescriptor(argumentTypes) + returnType.toJVMType();
+	}
+
+	private String getParameterDescriptor(Type[] argumentTypes)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (Type type : argumentTypes)
+		{
+			descriptor.append(type.toJVMType());
+		}
+
+		descriptor.append(")");
+
+		return descriptor.toString();
 	}
 }

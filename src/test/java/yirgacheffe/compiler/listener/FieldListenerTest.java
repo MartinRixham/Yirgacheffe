@@ -433,7 +433,7 @@ public class FieldListenerTest
 		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
 		assertEquals("MyClass", thirdInstruction.owner);
 		assertEquals("myBooleanField", thirdInstruction.name);
-		assertEquals("B", thirdInstruction.desc);
+		assertEquals("Z", thirdInstruction.desc);
 	}
 
 	@Test

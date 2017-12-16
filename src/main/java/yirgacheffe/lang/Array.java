@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class Array<T>
 {
-	private static final int LOG_THIRTYTWO = 5;
+	private static final int LOG_THIRTY_TWO = 5;
 
 	private int length = 0;
 
@@ -12,13 +12,13 @@ public class Array<T>
 
 	public Array()
 	{
-		this.array = new Object[1 << LOG_THIRTYTWO];
+		this.array = new Object[1 << LOG_THIRTY_TWO];
 	}
 
 	public Array(T... items)
 	{
-		int power = LOG_THIRTYTWO;
-		int length = items.length >> LOG_THIRTYTWO;
+		int power = LOG_THIRTY_TWO;
+		int length = items.length >> LOG_THIRTY_TWO;
 
 		while (length > 0)
 		{
@@ -45,7 +45,7 @@ public class Array<T>
 	{
 		this.grow(this.length + items.length);
 
-		System.arraycopy(items, 0, this.array, this.length, items.length);
+		java.lang.System.arraycopy(items, 0, this.array, this.length, items.length);
 
 		this.length = this.length + items.length;
 	}
@@ -68,8 +68,8 @@ public class Array<T>
 	{
 		this.grow(this.length + items.length);
 
-		System.arraycopy(this.array, 0, this.array, items.length, this.length);
-		System.arraycopy(items, 0, this.array, 0, items.length);
+		java.lang.System.arraycopy(this.array, 0, this.array, items.length, this.length);
+		java.lang.System.arraycopy(items, 0, this.array, 0, items.length);
 
 		this.length = this.length + items.length;
 	}
@@ -83,7 +83,7 @@ public class Array<T>
 
 		T shiftedItem = (T) this.array[0];
 
-		System.arraycopy(this.array, 1, this.array, 0, this.length - 1);
+		java.lang.System.arraycopy(this.array, 1, this.array, 0, this.length - 1);
 
 		this.length--;
 		this.array[this.length] = null;
@@ -141,16 +141,16 @@ public class Array<T>
 
 		Object[] deleted = new Object[deleteCount];
 
-		System.arraycopy(this.array, startIndex, deleted, 0, deleteCount);
+		java.lang.System.arraycopy(this.array, startIndex, deleted, 0, deleteCount);
 
-		System.arraycopy(
+		java.lang.System.arraycopy(
 			this.array,
 			startIndex + deleteCount,
 			this.array,
 			startIndex + items.length,
 			this.length - (startIndex + deleteCount));
 
-		System.arraycopy(items, 0, this.array, startIndex, items.length);
+		java.lang.System.arraycopy(items, 0, this.array, startIndex, items.length);
 
 		for (int i = items.length; i < deleteCount; i++)
 		{
@@ -196,7 +196,8 @@ public class Array<T>
 
 		Object[] newArray = new Object[endIndex - startIndex];
 
-		System.arraycopy(this.array, startIndex, newArray, 0, endIndex - startIndex);
+		java.lang.System.arraycopy(
+			this.array, startIndex, newArray, 0, endIndex - startIndex);
 
 		return new Array<T>((T[]) newArray);
 	}
@@ -205,8 +206,8 @@ public class Array<T>
 	{
 		Object[] newArray = new Object[this.length + other.length];
 
-		System.arraycopy(this.array, 0, newArray, 0, this.length);
-		System.arraycopy(other.array, 0, newArray, this.length, other.length);
+		java.lang.System.arraycopy(this.array, 0, newArray, 0, this.length);
+		java.lang.System.arraycopy(other.array, 0, newArray, this.length, other.length);
 
 		return new Array<>((T[]) newArray);
 	}

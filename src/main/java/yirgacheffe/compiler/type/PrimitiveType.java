@@ -4,7 +4,7 @@ public enum PrimitiveType implements Type
 {
 	VOID("V", "Void", 0),
 
-	BOOL("B", "Boolean", 1),
+	BOOL("Z", "Boolean", 1),
 
 	CHAR("C", "Character", 1),
 

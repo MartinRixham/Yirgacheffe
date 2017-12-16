@@ -127,7 +127,7 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
 		assertEquals("java/lang/String", fourthInstruction.owner);
 		assertEquals("<init>", fourthInstruction.name);
-		assertEquals("()V", fourthInstruction.desc);
+		assertEquals("(Ljava/lang/String;)V", fourthInstruction.desc);
 		assertFalse(fourthInstruction.itf);
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
@@ -265,7 +265,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"\"thingy\".split(\"sumpt\");\n" +
+					"\"thingy\".concat(\"sumpt\");\n" +
 				"}\n" +
 			"}";
 
@@ -304,8 +304,8 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
 		assertEquals("java/lang/String", thirdInstruction.owner);
-
-		assertEquals("split", thirdInstruction.name);
+		assertEquals("(Ljava/lang/String;)Ljava/lang/String;", thirdInstruction.desc);
+		assertEquals("concat", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);

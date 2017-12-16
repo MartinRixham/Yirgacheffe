@@ -22,7 +22,7 @@ public class PrimitiveTypeTest
 		Type type = PrimitiveType.BOOL;
 
 		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());
-		assertEquals("B", type.toJVMType());
+		assertEquals("Z", type.toJVMType());
 		assertEquals(1, type.width());
 	}
 

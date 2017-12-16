@@ -52,6 +52,37 @@ public class MethodListener extends TypeListener
 			null);
 	}
 
+	private String getMethodDescriptor(
+		List<YirgacheffeParser.ParameterContext> parameters,
+		YirgacheffeParser.TypeContext returnType)
+	{
+		return
+			this.getParameterDescriptor(parameters) +
+				this.types.getType(returnType).toJVMType();
+	}
+
+	protected String getParameterDescriptor(
+		List<YirgacheffeParser.ParameterContext> parameterList)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (YirgacheffeParser.ParameterContext parameter : parameterList)
+		{
+			YirgacheffeParser.TypeContext typeContext = parameter.type();
+
+			if (typeContext != null)
+			{
+				Type type = this.types.getType(typeContext);
+
+				descriptor.append(type.toJVMType());
+			}
+		}
+
+		descriptor.append(")");
+
+		return descriptor.toString();
+	}
+
 	@Override
 	public void exitClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
@@ -88,38 +119,6 @@ public class MethodListener extends TypeListener
 				descriptor,
 				null,
 				null);
-	}
-
-	private String getMethodDescriptor(
-		List<YirgacheffeParser.ParameterContext> parameters,
-		YirgacheffeParser.TypeContext returnType)
-	{
-		return
-			this.getParameterDescriptor(parameters) +
-				this.types.getType(returnType).toJVMType();
-
-	}
-
-	protected String getParameterDescriptor(
-		List<YirgacheffeParser.ParameterContext> parameterList)
-	{
-		StringBuilder descriptor = new StringBuilder("(");
-
-		for (YirgacheffeParser.ParameterContext parameter : parameterList)
-		{
-			YirgacheffeParser.TypeContext typeContext = parameter.type();
-
-			if (typeContext != null)
-			{
-				Type type = this.types.getType(typeContext);
-
-				descriptor.append(type.toJVMType());
-			}
-		}
-
-		descriptor.append(")");
-
-		return descriptor.toString();
 	}
 
 	@Override
