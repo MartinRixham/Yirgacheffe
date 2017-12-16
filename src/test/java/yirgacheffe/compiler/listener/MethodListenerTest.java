@@ -5,11 +5,10 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +28,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -60,7 +59,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -80,7 +79,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -107,7 +106,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -126,7 +125,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -157,7 +156,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -188,7 +187,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -209,7 +208,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -249,7 +248,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -275,7 +274,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -301,7 +300,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -327,7 +326,7 @@ public class MethodListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 

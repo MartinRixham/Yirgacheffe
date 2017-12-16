@@ -1,33 +1,20 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
-import yirgacheffe.compiler.type.ReferenceType;
-import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ParseErrorListener;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Map;
 
 public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
 
-	private Map<String, Type> declaredTypes;
-
 	public ClassListener(
 		String sourceFile,
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader,
-		ParseErrorListener errorListener,
-		ClassWriter writer)
+		Classes classes)
 	{
-		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
-
-		this.declaredTypes = declaredTypes;
+		super(sourceFile, classes);
 	}
 
 	@Override
@@ -168,13 +155,5 @@ public class ClassListener extends YirgacheffeListener
 			methodVisitor.visitInsn(Opcodes.RETURN);
 			methodVisitor.visitMaxs(1, 1);
 		}
-	}
-
-	@Override
-	public void exitCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
-	{
-		Type type = new ReferenceType(this.packageName, this.className);
-
-		this.declaredTypes.put(this.className, type);
 	}
 }

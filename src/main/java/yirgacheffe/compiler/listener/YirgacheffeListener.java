@@ -1,8 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
-import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.error.Error;
@@ -12,15 +11,12 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
-	private ParseErrorListener errorListener;
-
 	private String sourceFile;
 
-	protected ClassWriter writer;
+	protected ClassWriter writer = new ClassWriter(0);
 
 	protected List<Error> errors = new ArrayList<>();
 
@@ -32,21 +28,16 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected Types types;
 
-	protected BytecodeClassLoader classLoader;
+	protected Classes classes;
 
 	public YirgacheffeListener(
 		String sourceFile,
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader,
-		ParseErrorListener errorListener,
-		ClassWriter writer)
+		Classes classes)
 	{
 		this.sourceFile = sourceFile;
 		this.directory = this.getDirectory(sourceFile);
-		this.types = new Types(declaredTypes);
-		this.classLoader = classLoader;
-		this.errorListener = errorListener;
-		this.writer = writer;
+		this.types = new Types();
+		this.classes = classes;
 	}
 
 	private String getDirectory(String filePath)
@@ -62,11 +53,19 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		return directory.toString();
 	}
 
-	public CompilationResult getCompilationResult()
+	public void exportDefinedTypes()
 	{
-		if (this.errorListener.hasError())
+		byte[] bytes = this.writer.toByteArray();
+
+		this.classes.addClass(this.packageName + "." + this.className, bytes);
+
+	}
+
+	public CompilationResult getCompilationResult(ParseErrorListener errorListener)
+	{
+		if (errorListener.hasError())
 		{
-			return new CompilationResult(this.sourceFile, this.errorListener.getErrors());
+			return new CompilationResult(this.sourceFile, errorListener.getErrors());
 		}
 		else if (this.errors.size() > 0)
 		{
@@ -76,8 +75,6 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		{
 			String classFileName = this.directory + this.className + ".class";
 			byte[] bytes = this.writer.toByteArray();
-
-			this.classLoader.addClass(this.packageName + "." + this.className, bytes);
 
 			return new CompilationResult(classFileName, bytes);
 		}

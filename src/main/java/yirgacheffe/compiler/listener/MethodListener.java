@@ -1,14 +1,12 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -26,12 +24,9 @@ public class MethodListener extends TypeListener
 
 	public MethodListener(
 		String sourceFile,
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader,
-		ParseErrorListener errorListener,
-		ClassWriter writer)
+		Classes classes)
 	{
-		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
+		super(sourceFile, classes);
 	}
 
 	@Override

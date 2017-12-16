@@ -2,17 +2,13 @@ package yirgacheffe.compiler;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.objectweb.asm.ClassWriter;
 import yirgacheffe.compiler.listener.FunctionCallListener;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
-import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
 import yirgacheffe.compiler.listener.MethodListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Map;
 
 public class Compiler
 {
@@ -27,67 +23,52 @@ public class Compiler
 	}
 
 	public void compileClassDeclaration(
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader)
+		Classes classes)
 		throws Exception
 	{
-		ClassWriter writer = new ClassWriter(0);
-		ParseErrorListener errorListener = new ParseErrorListener();
-
 		YirgacheffeListener listener =
 			new ClassListener(
 				this.sourceFile,
-				declaredTypes,
-				classLoader,
-				errorListener,
-				writer);
+				classes);
 
-		this.execute(listener, errorListener);
+		this.execute(listener);
+
+		listener.exportDefinedTypes();
 	}
 
 	public void compileInterface(
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader)
+		Classes classes)
 		throws Exception
 	{
-		ClassWriter writer = new ClassWriter(0);
-		ParseErrorListener errorListener = new ParseErrorListener();
-
 		YirgacheffeListener listener =
 			new MethodListener(
 				this.sourceFile,
-				declaredTypes,
-				classLoader,
-				errorListener,
-				writer);
+				classes);
 
-		this.execute(listener, errorListener);
+		this.execute(listener);
+
+		listener.exportDefinedTypes();
 	}
 
 	public CompilationResult compile(
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader)
+		Classes classes)
 		throws Exception
 	{
-		ClassWriter writer = new ClassWriter(0);
-		ParseErrorListener errorListener = new ParseErrorListener();
-
 		YirgacheffeListener listener =
 			new FunctionCallListener(
 				this.sourceFile,
-				declaredTypes,
-				classLoader,
-				errorListener,
-				writer);
+				classes);
 
-		return this.execute(listener, errorListener);
+		ParseErrorListener errors = this.execute(listener);
+
+		return listener.getCompilationResult(errors);
 	}
 
-	private CompilationResult execute(
-		YirgacheffeListener listener,
-		ParseErrorListener errorListener)
+	private ParseErrorListener execute(
+		YirgacheffeListener listener)
 		throws Exception
 	{
+		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeParser parser = new Source(this.source).parse();
 		parser.removeErrorListeners();
 		parser.addErrorListener(errorListener);
@@ -97,6 +78,6 @@ public class Compiler
 		ParseTreeWalker walker = new ParseTreeWalker();
 		walker.walk(listener, tree);
 
-		return listener.getCompilationResult();
+		return errorListener;
 	}
 }

@@ -80,9 +80,9 @@ public class YirgacheffeTest
 		String[] arguments =
 			new String[]
 				{
-					"example/MyInterface.yg",
 					"example/AnotherClass.yg",
-					"example/more/MoreInterface.yg"
+					"example/more/MoreInterface.yg",
+					"example/MyInterface.yg"
 				};
 
 		System.setErr(error);
@@ -170,6 +170,7 @@ public class YirgacheffeTest
 	{
 		new File("example/reader/String.class").delete();
 		new File("example/reader/Writer.class").delete();
+		new File("example/reader/Reader.class").delete();
 
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
@@ -178,7 +179,8 @@ public class YirgacheffeTest
 			new String[]
 				{
 					"example/reader/Writer.yg",
-					"example/reader/String.yg"
+					"example/reader/String.yg",
+					"example/reader/Reader.yg"
 				};
 
 		System.setErr(error);

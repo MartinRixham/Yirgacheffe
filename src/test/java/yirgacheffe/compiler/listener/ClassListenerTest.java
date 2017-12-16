@@ -6,12 +6,10 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
-import yirgacheffe.compiler.type.Type;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +24,7 @@ public class ClassListenerTest
 		String source = "interface MyInterface {{";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
@@ -41,7 +39,7 @@ public class ClassListenerTest
 		String source = "interface MyInterface {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface.class", result.getClassFileName());
@@ -64,7 +62,7 @@ public class ClassListenerTest
 		String source = "interface MyInterface {} class MyClass {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -78,7 +76,7 @@ public class ClassListenerTest
 		String source = "thingy MyInterface {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -92,7 +90,7 @@ public class ClassListenerTest
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -117,7 +115,7 @@ public class ClassListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -135,7 +133,7 @@ public class ClassListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -153,7 +151,7 @@ public class ClassListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -167,7 +165,7 @@ public class ClassListenerTest
 		String source = "package myPackage; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/gile.gg", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
@@ -179,7 +177,7 @@ public class ClassListenerTest
 		String source = "package myPackage.thingy; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/thingy/file.yg", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
@@ -191,7 +189,7 @@ public class ClassListenerTest
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -206,7 +204,7 @@ public class ClassListenerTest
 		String source = "package myPackage.wibble; class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -218,11 +216,12 @@ public class ClassListenerTest
 	@Test
 	public void testPackagedClass() throws Exception
 	{
-		HashMap<String, Type> declaredTypes = new HashMap<>();
-		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+		Classes classes = new Classes();
 		String source = "package this.that; interface MyInterface {}";
 		Compiler compiler = new Compiler("this/that/MyInterface.yg", source);
-		compiler.compileClassDeclaration(declaredTypes, classLoader);
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
 
 		source =
 			"package this.that;\n" +
@@ -232,7 +231,7 @@ public class ClassListenerTest
 				"}";
 
 		compiler = new Compiler("this/that/AnotherInterface.yg", source);
-		CompilationResult result = compiler.compile(declaredTypes, classLoader);
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -258,7 +257,7 @@ public class ClassListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals("line 3:0 Method requires method body.\n", result.getErrors());
@@ -275,7 +274,7 @@ public class ClassListenerTest
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result =
-			compiler.compile(new HashMap<>(), new BytecodeClassLoader());
+			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

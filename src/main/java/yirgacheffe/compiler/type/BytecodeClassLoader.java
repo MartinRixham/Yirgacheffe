@@ -7,7 +7,7 @@ public class BytecodeClassLoader extends ClassLoader
 {
 	private Map<String, byte[]> bytecode = new HashMap<>();
 
-	public void addClass(String name, byte[] bytes)
+	public void add(String name, byte[] bytes)
 	{
 		this.bytecode.put(name, bytes);
 	}
@@ -23,9 +23,9 @@ public class BytecodeClassLoader extends ClassLoader
 		}
 		else
 		{
-			return this.defineClass(name, bytes, 0, bytes.length);
+			this.defineClass(name, bytes, 0, bytes.length);
 		}
 
-		throw new RuntimeException();
+		return null;
 	}
 }

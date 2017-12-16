@@ -1,26 +1,19 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.JavaLanguageType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Map;
 
 public class TypeListener extends ClassListener
 {
 	public TypeListener(
 		String sourceFile,
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader,
-		ParseErrorListener errorListener,
-		ClassWriter writer)
+		Classes classes)
 	{
-		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
+		super(sourceFile, classes);
 	}
 
 	@Override
@@ -44,18 +37,29 @@ public class TypeListener extends ClassListener
 
 			try
 			{
-				this.classLoader.loadClass("java.lang." + context.getText());
+				this.classes.loadClass(this.packageName + "." + context.getText());
 
-				Type type = new JavaLanguageType(context.getText());
+				Type type = new ReferenceType(this.packageName, context.getText());
 
 				this.types.put(context.getText(), type);
 			}
 			catch (ClassNotFoundException e)
 			{
-				String message =
-					"Unrecognised type: " + context.getText() + " is not a type.";
+				try
+				{
+					this.classes.loadClass("java.lang." + context.getText());
 
-				this.errors.add(new Error(context, message));
+					Type type = new JavaLanguageType(context.getText());
+
+					this.types.put(context.getText(), type);
+				}
+				catch (ClassNotFoundException ex)
+				{
+					String message =
+						"Unrecognised type: " + context.getText() + " is not a type.";
+
+					this.errors.add(new Error(context, message));
+				}
 			}
 		}
 	}
@@ -71,7 +75,7 @@ public class TypeListener extends ClassListener
 
 		try
 		{
-			this.classLoader.loadClass(context.getText());
+			this.classes.loadClass(context.getText());
 
 			this.types.put(context.getText(), new ReferenceType(context));
 		}

@@ -1,26 +1,20 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ParseErrorListener;
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class FunctionCallListener extends ExpressionListener
 {
 	public FunctionCallListener(
 		String sourceFile,
-		Map<String, Type> declaredTypes,
-		BytecodeClassLoader classLoader,
-		ParseErrorListener errorListener,
-		ClassWriter writer)
+		Classes classes)
 	{
-		super(sourceFile, declaredTypes, classLoader, errorListener, writer);
+		super(sourceFile, classes);
 	}
 
 	@Override
@@ -67,8 +61,7 @@ public class FunctionCallListener extends ExpressionListener
 
 			try
 			{
-				argumentClasses[i] =
-					this.classLoader.loadClass(type.toFullyQualifiedType());
+				argumentClasses[i] = this.classes.loadClass(type.toFullyQualifiedType());
 			}
 			catch (ClassNotFoundException e)
 			{
@@ -82,8 +75,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		try
 		{
-			owner =
-				this.classLoader.loadClass(this.typeStack.pop().toFullyQualifiedType());
+			owner = this.classes.loadClass(this.typeStack.pop().toFullyQualifiedType());
 		}
 		catch (ClassNotFoundException e)
 		{

@@ -1,22 +1,17 @@
 package yirgacheffe.compiler;
 
-import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.compiler.type.Classes;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class Yirgacheffe
 {
 	private String[] sourceFiles;
-
-	private BytecodeClassLoader classLoader = new BytecodeClassLoader();
 
 	public static void main(String[] args) throws Exception
 	{
@@ -30,80 +25,39 @@ public final class Yirgacheffe
 
 	private void execute() throws Exception
 	{
-		Collection<Package> packages = this.createPackages(this.sourceFiles);
+		Classes classes = new Classes();
+		List<Compiler> compilers = new ArrayList<>();
 
-		this.firstPass(packages);
-		this.secondPass(packages);
-		this.thirdPass(packages);
-	}
-
-	private List<Package> createPackages(String[] sourceFiles) throws Exception
-	{
-		Map<String, List<Compiler>> compilers = new HashMap<>();
-
-		for (String sourceFile : sourceFiles)
+		for (String sourceFile : this.sourceFiles)
 		{
 			byte[] encoded = Files.readAllBytes(Paths.get(sourceFile));
 			String source = new String(encoded, "UTF-8");
-			String directory = this.getDirectory(sourceFile);
+			Compiler compiler = new Compiler(sourceFile, source);
 
-			if (!compilers.containsKey(directory))
-			{
-				compilers.put(directory, new ArrayList<>());
-			}
-
-			compilers.get(directory).add(new Compiler(sourceFile, source));
+			compilers.add(compiler);
 		}
 
-		List<Package> packages = new ArrayList<>();
-
-		for (List<Compiler> comp: compilers.values())
+		for (Compiler compiler: compilers)
 		{
-			packages.add(new Package(this.classLoader, comp));
+			compiler.compileClassDeclaration(classes);
 		}
 
-		return packages;
-	}
+		classes.clearCache();
 
-	private String getDirectory(String filePath)
-	{
-		String[] files = filePath.split("/");
-		StringBuilder directory = new StringBuilder();
-
-		for (int i = 0; i < files.length - 1; i++)
+		for (Compiler compiler: compilers)
 		{
-			directory.append(files[i]).append("/");
+			compiler.compileInterface(classes);
 		}
 
-		return directory.toString();
-	}
+		classes.clearCache();
 
-	private void firstPass(Collection<Package> packages) throws Exception
-	{
-		for (Package pkg: packages)
+		List<CompilationResult> results = new ArrayList<>();
+
+		for (Compiler compiler: compilers)
 		{
-			pkg.compileClassDeclaration();
+			results.add(compiler.compile(classes));
 		}
-	}
 
-	private void secondPass(Collection<Package> packages) throws Exception
-	{
-		for (Package pkg: packages)
-		{
-			pkg.compileInterface();
-		}
-	}
-
-	private void thirdPass(Collection<Package> packages) throws Exception
-	{
-		for (Package pkg: packages)
-		{
-			this.printResult(pkg.compile());
-		}
-	}
-
-	private void printResult(List<CompilationResult> results) throws Exception
-	{
 		for (CompilationResult result: results)
 		{
 			if (result.isSuccessful())

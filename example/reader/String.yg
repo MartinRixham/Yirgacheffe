@@ -2,5 +2,8 @@ package example.reader;
 
 class String
 {
-	public void read() {}
+	public void read(String string)
+	{
+		new Reader().read(new Reader());
+	}
 }

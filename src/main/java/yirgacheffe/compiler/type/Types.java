@@ -7,12 +7,10 @@ import java.util.Map;
 
 public class Types
 {
-	private Map<String, Type> types;
+	private Map<String, Type> types = new HashMap<>();
 
-	public Types(Map<String, Type> declaredTypes)
+	public Types()
 	{
-		this.types = new HashMap<>(declaredTypes);
-
 		this.types.put("void", PrimitiveType.VOID);
 		this.types.put("bool", PrimitiveType.BOOL);
 		this.types.put("char", PrimitiveType.CHAR);
