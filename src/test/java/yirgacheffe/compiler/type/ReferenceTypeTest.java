@@ -1,46 +1,24 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
-import yirgacheffe.compiler.Source;
-import yirgacheffe.parser.YirgacheffeParser;
 
 import static org.junit.Assert.assertEquals;
 
 public class ReferenceTypeTest
 {
 	@Test
-	public void testTypeFromPackageAndIdentifier()
+	public void testTypeFromPackageAndIdentifier() throws Exception
 	{
-		Type type = new ReferenceType("some.pkg", "MyClass");
+		Class<?> loadedClass =
+			Thread.currentThread()
+				.getContextClassLoader()
+				.loadClass("java.lang.String");
 
-		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
-		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
-		assertEquals(1, type.width());
-	}
+		Type type = new ReferenceType(loadedClass);
 
-	@Test
-	public void testTypeFromTypeContext()
-	{
-		YirgacheffeParser parser = new Source("some.pkg.MyClass").parse();
-		YirgacheffeParser.TypeContext context = parser.type();
-
-		Type type = new ReferenceType(context);
-
-		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
-		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
-		assertEquals(1, type.width());
-	}
-
-	@Test
-	public void testTypeFromFullyQualifiedTypeContext()
-	{
-		YirgacheffeParser parser = new Source("some.pkg.MyClass").parse();
-		YirgacheffeParser.FullyQualifiedTypeContext context = parser.fullyQualifiedType();
-
-		Type type = new ReferenceType(context);
-
-		assertEquals("some.pkg.MyClass", type.toFullyQualifiedType());
-		assertEquals("Lsome/pkg/MyClass;", type.toJVMType());
+		assertEquals(loadedClass, type.reflectionClass());
+		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals(1, type.width());
 	}
 }

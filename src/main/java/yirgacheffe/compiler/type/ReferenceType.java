@@ -1,34 +1,28 @@
 package yirgacheffe.compiler.type;
 
-import yirgacheffe.parser.YirgacheffeParser;
-
 public class ReferenceType implements Type
 {
-	private String fullyQualifiedName;
+	private Class<?> reflectionClass;
 
-	public ReferenceType(YirgacheffeParser.TypeContext context)
+	public ReferenceType(Class<?> reflectionClass)
 	{
-		this.fullyQualifiedName = context.getText();
+		this.reflectionClass = reflectionClass;
 	}
 
-	public ReferenceType(YirgacheffeParser.FullyQualifiedTypeContext context)
+	@Override
+	public Class<?> reflectionClass()
 	{
-		this.fullyQualifiedName = context.getText();
-	}
-
-	public ReferenceType(String packageName, String identifier)
-	{
-		this.fullyQualifiedName = packageName + "." + identifier;
+		return this.reflectionClass;
 	}
 
 	public String toJVMType()
 	{
-		return "L" + this.fullyQualifiedName.replace('.', '/')  + ";";
+		return "L" + this.toFullyQualifiedType().replace('.', '/')  + ";";
 	}
 
 	public String toFullyQualifiedType()
 	{
-		return this.fullyQualifiedName;
+		return this.reflectionClass.getName();
 	}
 
 	@Override

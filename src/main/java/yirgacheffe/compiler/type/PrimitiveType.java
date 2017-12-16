@@ -10,6 +10,8 @@ public enum PrimitiveType implements Type
 
 	NUM("D", "Double", 2);
 
+	private Class<?> reflectionClass;
+
 	private String jvmType;
 
 	private String fullyQualifiedType;
@@ -21,6 +23,24 @@ public enum PrimitiveType implements Type
 		this.jvmType = jvmType;
 		this.fullyQualifiedType = "java.lang." + wrapperClass;
 		this.width = width;
+
+		try
+		{
+			this.reflectionClass =
+				Thread.currentThread()
+					.getContextClassLoader()
+					.loadClass(this.fullyQualifiedType);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public Class<?> reflectionClass()
+	{
+		return null;
 	}
 
 	@Override

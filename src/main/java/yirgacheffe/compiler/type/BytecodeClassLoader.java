@@ -23,9 +23,9 @@ public class BytecodeClassLoader extends ClassLoader
 		}
 		else
 		{
-			this.defineClass(name, bytes, 0, bytes.length);
+			return this.defineClass(name, bytes, 0, bytes.length);
 		}
 
-		return null;
+		throw new RuntimeException();
 	}
 }

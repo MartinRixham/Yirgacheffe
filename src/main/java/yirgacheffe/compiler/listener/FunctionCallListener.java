@@ -57,31 +57,11 @@ public class FunctionCallListener extends ExpressionListener
 
 		for (int i = context.expression().size() - 2; i >= 0; i--)
 		{
-			Type type = this.typeStack.pop();
-
-			try
-			{
-				argumentClasses[i] = this.classes.loadClass(type.toFullyQualifiedType());
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new RuntimeException(e);
-			}
+			argumentClasses[i] = this.typeStack.pop().reflectionClass();
 		}
 
 		String methodName = context.Identifier().getText();
-
-		Class<?> owner;
-
-		try
-		{
-			owner = this.classes.loadClass(this.typeStack.pop().toFullyQualifiedType());
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException();
-		}
-
+		Class<?> owner = this.typeStack.pop().reflectionClass();
 		boolean hasMethod = false;
 
 		for (Method method: owner.getMethods())
@@ -109,8 +89,8 @@ public class FunctionCallListener extends ExpressionListener
 		else
 		{
 			String message =
-				"No method '" + methodName + "' on object of type " +
-					owner.getName() + ".";
+				"No method '" + methodName +
+				"' on object of type " + owner.getName() + ".";
 
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}

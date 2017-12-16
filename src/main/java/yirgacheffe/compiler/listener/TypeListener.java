@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.JavaLanguageType;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
@@ -19,8 +19,21 @@ public class TypeListener extends ClassListener
 	@Override
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
+		Type type;
+
+		try
+		{
+			Class<?> loadedClass =
+				this.classes.loadClass(context.fullyQualifiedType().getText());
+
+			type = new ReferenceType(loadedClass);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
+
 		String identifier = context.fullyQualifiedType().Identifier().getText();
-		Type type = new ReferenceType(context.fullyQualifiedType());
 
 		this.types.put(identifier, type);
 	}
@@ -35,23 +48,24 @@ public class TypeListener extends ClassListener
 				return;
 			}
 
+			Type type = new NullType();
+
 			try
 			{
-				this.classes.loadClass(this.packageName + "." + context.getText());
+				Class<?> loadedClass =
+					this.classes.loadClass(
+						this.packageName + "." + context.getText());
 
-				Type type = new ReferenceType(this.packageName, context.getText());
-
-				this.types.put(context.getText(), type);
+				type = new ReferenceType(loadedClass);
 			}
 			catch (ClassNotFoundException e)
 			{
 				try
 				{
-					this.classes.loadClass("java.lang." + context.getText());
+					Class<?> loadedClass =
+						this.classes.loadClass("java.lang." + context.getText());
 
-					Type type = new JavaLanguageType(context.getText());
-
-					this.types.put(context.getText(), type);
+					type = new ReferenceType(loadedClass);
 				}
 				catch (ClassNotFoundException ex)
 				{
@@ -61,6 +75,8 @@ public class TypeListener extends ClassListener
 					this.errors.add(new Error(context, message));
 				}
 			}
+
+			this.types.put(context.getText(), type);
 		}
 	}
 
@@ -75,9 +91,9 @@ public class TypeListener extends ClassListener
 
 		try
 		{
-			this.classes.loadClass(context.getText());
+			Class<?> loadedClass = this.classes.loadClass(context.getText());
 
-			this.types.put(context.getText(), new ReferenceType(context));
+			this.types.put(context.getText(), new ReferenceType(loadedClass));
 		}
 		catch (ClassNotFoundException ex)
 		{

@@ -2,6 +2,12 @@ package yirgacheffe.compiler.type;
 
 public class NullType implements Type
 {
+	@Override
+	public Class<?> reflectionClass()
+	{
+		throw new RuntimeException();
+	}
+
 	public String toJVMType()
 	{
 		return "I";

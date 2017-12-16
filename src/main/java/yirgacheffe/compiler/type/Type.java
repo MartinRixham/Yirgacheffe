@@ -2,6 +2,8 @@ package yirgacheffe.compiler.type;
 
 public interface Type
 {
+	Class<?> reflectionClass();
+
 	String toJVMType();
 
 	String toFullyQualifiedType();
