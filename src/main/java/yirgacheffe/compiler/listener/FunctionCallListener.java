@@ -76,10 +76,10 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		String methodName = context.Identifier().getText();
-		Class<?> owner = this.typeStack.pop().reflectionClass();
+		Type owner = this.typeStack.pop();
 		boolean hasMethod = false;
 
-		for (Method method: owner.getMethods())
+		for (Method method: owner.reflectionClass().getMethods())
 		{
 			if (method.getName().equals(methodName))
 			{
@@ -88,8 +88,6 @@ public class FunctionCallListener extends ExpressionListener
 			}
 		}
 
-		owner.getMethods()[0].getParameterTypes();
-
 		Parameters parameters = new Parameters(argumentTypes);
 		String descriptor = "()V";
 
@@ -97,7 +95,8 @@ public class FunctionCallListener extends ExpressionListener
 		{
 			try
 			{
-				Method method = owner.getMethod(methodName, argumentClasses);
+				Method method =
+					owner.reflectionClass().getMethod(methodName, argumentClasses);
 				Type returnType = new ReferenceType(method.getReturnType());
 
 				descriptor = parameters.getDescriptor() + returnType.toJVMType();
@@ -115,14 +114,14 @@ public class FunctionCallListener extends ExpressionListener
 		{
 			String message =
 				"No method '" + methodName +
-				"' on object of type " + owner.getName() + ".";
+				"' on object of type " + owner + ".";
 
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
-			"java/lang/String",
+			owner.toFullyQualifiedType().replace(".", "/"),
 			methodName,
 			descriptor,
 			false);

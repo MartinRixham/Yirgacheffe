@@ -140,6 +140,56 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testAnotherInstantiation() throws Exception
+	{
+		String source =
+			"import java.awt.Dimension;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new Dimension(1, 2);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result =
+			compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(7, instructions.size());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(1.0, thirdInstruction.cst);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(2.0, fourthInstruction.cst);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fifthInstruction.getOpcode());
+		assertEquals("java/awt/Dimension", fifthInstruction.owner);
+		assertEquals("<init>", fifthInstruction.name);
+		assertEquals("(II)V", fifthInstruction.desc);
+		assertFalse(fifthInstruction.itf);
+	}
+
+	@Test
 	public void testInstantiationOfFullyQualifiedType() throws Exception
 	{
 		String source =
