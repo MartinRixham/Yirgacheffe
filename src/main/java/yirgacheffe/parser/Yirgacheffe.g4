@@ -39,7 +39,7 @@ fieldInitialisation: fieldDeclaration '=' expression;
 
 fieldDeclaration: type? Identifier;
 
-statement: variableAssignment | variableDeclaration | methodCall | instantiation;
+statement: variableAssignment | variableDeclaration | functionCall;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
@@ -55,9 +55,9 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
-methodCall: method arguments;
+functionCall: instantiation | (expression method);
 
-method: expression '.' Identifier;
+method: '.' Identifier arguments;
 
 instantiation: constructor arguments;
 
@@ -65,7 +65,7 @@ constructor: New type;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression: instantiation | literal | variableRead;
+expression: (instantiation | literal | variableRead) method*;
 
 variableRead: Identifier;
 

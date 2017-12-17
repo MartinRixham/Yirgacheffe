@@ -53,14 +53,22 @@ public class TypeListener extends ClassListener
 			{
 				try
 				{
-					type = this.classes.loadClass("java.lang." + context.getText());
+					type =
+						this.classes.loadClass("yirgacheffe.lang." + context.getText());
 				}
 				catch (ClassNotFoundException ex)
 				{
-					String message =
-						"Unrecognised type: " + context.getText() + " is not a type.";
+					try
+					{
+						type = this.classes.loadClass("java.lang." + context.getText());
+					}
+					catch (ClassNotFoundException exc)
+					{
+						String message =
+							"Unrecognised type: " + context.getText() + " is not a type.";
 
-					this.errors.add(new Error(context, message));
+						this.errors.add(new Error(context, message));
+					}
 				}
 			}
 

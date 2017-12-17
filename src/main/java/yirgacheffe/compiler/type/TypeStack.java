@@ -40,4 +40,9 @@ public class TypeStack
 
 		return maxSize;
 	}
+
+	public boolean isEmpty()
+	{
+		return this.stack.size() == 0;
+	}
 }

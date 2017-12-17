@@ -3,6 +3,8 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -53,24 +55,33 @@ public class FunctionCallListener extends ExpressionListener
 			this.argumentDescriptor + "V",
 			false);
 
-		this.methodVisitor.visitInsn(Opcodes.POP);
-
 		this.typeStack.push(type);
 	}
 
 	@Override
-	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
+	public void exitMethod(YirgacheffeParser.MethodContext context)
 	{
-		String methodName = context.method().Identifier().getText();
+		String methodName = context.Identifier().getText();
 		Type owner = this.typeStack.pop();
 
 		String descriptor = "()V";
+		Type returnType = new NullType();
 
 		try
 		{
 			Method method =
 				owner.reflectionClass().getMethod(methodName, this.argumentClasses);
-			Type returnType = new ReferenceType(method.getReturnType());
+
+			Class<?> returnClass = method.getReturnType();
+
+			if (returnClass.isPrimitive())
+			{
+				returnType = PrimitiveType.valueOf(returnClass.getName().toUpperCase());
+			}
+			else
+			{
+				returnType = new ReferenceType(returnClass);
+			}
 
 			descriptor = this.argumentDescriptor + returnType.toJVMType();
 		}
@@ -80,7 +91,7 @@ public class FunctionCallListener extends ExpressionListener
 				"Method " + e.getMessage() + " not found.";
 
 			this.errors.add(
-				new Error(context.method().Identifier().getSymbol(), message));
+				new Error(context.Identifier().getSymbol(), message));
 		}
 
 		this.methodVisitor.visitMethodInsn(
@@ -90,7 +101,10 @@ public class FunctionCallListener extends ExpressionListener
 			descriptor,
 			false);
 
-		this.methodVisitor.visitInsn(Opcodes.POP);
+		if (!returnType.equals(PrimitiveType.VOID))
+		{
+			this.typeStack.push(returnType);
+		}
 	}
 
 	@Override
@@ -121,5 +135,14 @@ public class FunctionCallListener extends ExpressionListener
 		descriptor.append(")");
 
 		return descriptor.toString();
+	}
+
+	@Override
+	public void exitFunctionCall(YirgacheffeParser.FunctionCallContext context)
+	{
+		if (!this.typeStack.isEmpty())
+		{
+			this.methodVisitor.visitInsn(Opcodes.POP);
+		}
 	}
 }
