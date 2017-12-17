@@ -2,7 +2,6 @@ package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -23,10 +22,7 @@ public class TypeListener extends ClassListener
 
 		try
 		{
-			Class<?> loadedClass =
-				this.classes.loadClass(context.fullyQualifiedType().getText());
-
-			type = new ReferenceType(loadedClass);
+			type = this.classes.loadClass(context.fullyQualifiedType().getText());
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -52,20 +48,14 @@ public class TypeListener extends ClassListener
 
 			try
 			{
-				Class<?> loadedClass =
-					this.classes.loadClass(
-						this.packageName + "." + context.getText());
-
-				type = new ReferenceType(loadedClass);
+				type =
+					this.classes.loadClass(this.packageName + "." + context.getText());
 			}
 			catch (ClassNotFoundException e)
 			{
 				try
 				{
-					Class<?> loadedClass =
-						this.classes.loadClass("java.lang." + context.getText());
-
-					type = new ReferenceType(loadedClass);
+					type = this.classes.loadClass("java.lang." + context.getText());
 				}
 				catch (ClassNotFoundException ex)
 				{
@@ -91,9 +81,9 @@ public class TypeListener extends ClassListener
 
 		try
 		{
-			Class<?> loadedClass = this.classes.loadClass(context.getText());
+			Type type = this.classes.loadClass(context.getText());
 
-			this.types.put(context.getText(), new ReferenceType(loadedClass));
+			this.types.put(context.getText(), type);
 		}
 		catch (ClassNotFoundException ex)
 		{

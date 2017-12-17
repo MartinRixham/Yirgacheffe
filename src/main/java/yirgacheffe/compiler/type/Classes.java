@@ -11,9 +11,9 @@ public class Classes
 		this.classLoaderOut.add(name, bytes);
 	}
 
-	public Class<?> loadClass(String name) throws ClassNotFoundException
+	public Type loadClass(String name) throws ClassNotFoundException
 	{
-		return this.classLoaderIn.loadClass(name);
+		return new ReferenceType(this.classLoaderIn.loadClass(name));
 	}
 
 	public void clearCache()
