@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -45,7 +46,7 @@ public class FunctionCallListener extends ExpressionListener
 			argumentTypes[i] = this.typeStack.pop();
 		}
 
-		String descriptor = this.getParameterDescriptor(argumentTypes);
+		String descriptor = new Parameters(argumentTypes).getDescriptor();
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
@@ -99,7 +100,8 @@ public class FunctionCallListener extends ExpressionListener
 				Type returnType = new ReferenceType(method.getReturnType());
 
 				descriptor =
-					this.getMethodDescriptor(argumentTypes, returnType);
+					new Parameters(argumentTypes).getDescriptor() +
+					returnType.toJVMType();
 			}
 			catch (NoSuchMethodException ex)
 			{
@@ -126,27 +128,5 @@ public class FunctionCallListener extends ExpressionListener
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
-	}
-
-	private String getMethodDescriptor(
-		Type[] argumentTypes,
-		Type returnType)
-	{
-		return
-			this.getParameterDescriptor(argumentTypes) + returnType.toJVMType();
-	}
-
-	private String getParameterDescriptor(Type[] argumentTypes)
-	{
-		StringBuilder descriptor = new StringBuilder("(");
-
-		for (Type type : argumentTypes)
-		{
-			descriptor.append(type.toJVMType());
-		}
-
-		descriptor.append(")");
-
-		return descriptor.toString();
 	}
 }
