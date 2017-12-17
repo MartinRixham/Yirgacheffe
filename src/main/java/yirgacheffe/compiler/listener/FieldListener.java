@@ -8,9 +8,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ConstructorListener
 {
-	public FieldListener(
-		String sourceFile,
-		Classes classes)
+	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}

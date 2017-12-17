@@ -4,7 +4,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -12,6 +11,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MethodListener extends TypeListener
@@ -22,9 +22,7 @@ public class MethodListener extends TypeListener
 
 	protected MethodVisitor methodVisitor;
 
-	public MethodListener(
-		String sourceFile,
-		Classes classes)
+	public MethodListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}
@@ -42,7 +40,7 @@ public class MethodListener extends TypeListener
 		}
 
 		String descriptor =
-			new Parameters(context.parameter(), this.types).getDescriptor() +
+			this.getDescriptor(context.parameter()) +
 				this.types.getType(context.type()).toJVMType();
 
 		this.writer.visitMethod(
@@ -80,7 +78,7 @@ public class MethodListener extends TypeListener
 		}
 
 		String descriptor =
-			new Parameters(context.parameter(), this.types).getDescriptor() +
+			this.getDescriptor(context.parameter()) +
 				this.types.getType(context.type()).toJVMType();
 
 		this.methodVisitor =
@@ -90,6 +88,22 @@ public class MethodListener extends TypeListener
 				descriptor,
 				null,
 				null);
+	}
+
+	protected String getDescriptor(List<YirgacheffeParser.ParameterContext> parameters)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (YirgacheffeParser.ParameterContext parameter : parameters)
+		{
+			Type type = this.types.getType(parameter.type());
+
+			descriptor.append(type.toJVMType());
+		}
+
+		descriptor.append(")");
+
+		return descriptor.toString();
 	}
 
 	@Override
@@ -116,8 +130,8 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void exitMethod(
-		YirgacheffeParser.MethodContext context)
+	public void exitFunction(
+		YirgacheffeParser.FunctionContext context)
 	{
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 

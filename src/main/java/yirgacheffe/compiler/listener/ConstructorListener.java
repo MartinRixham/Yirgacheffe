@@ -3,14 +3,11 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ConstructorListener extends MethodListener
 {
-	public ConstructorListener(
-		String sourceFile,
-		Classes classes)
+	public ConstructorListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}
@@ -44,7 +41,7 @@ public class ConstructorListener extends MethodListener
 		}
 
 		String descriptor =
-			new Parameters(context.parameter(), this.types).getDescriptor() + "V";
+			this.getDescriptor(context.parameter()) + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

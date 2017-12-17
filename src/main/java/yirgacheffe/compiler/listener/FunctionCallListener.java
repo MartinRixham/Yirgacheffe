@@ -3,7 +3,6 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -12,6 +11,10 @@ import java.lang.reflect.Method;
 
 public class FunctionCallListener extends ExpressionListener
 {
+	private String argumentDescriptor;
+
+	private Class<?>[] argumentClasses;
+
 	public FunctionCallListener(
 		String sourceFile,
 		Classes classes)
@@ -20,7 +23,7 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
-	public void enterInstantiation(YirgacheffeParser.InstantiationContext context)
+	public void exitConstructor(YirgacheffeParser.ConstructorContext context)
 	{
 		if (context.type().simpleType() != null &&
 			context.type().simpleType().PrimitiveType() != null)
@@ -31,33 +34,26 @@ public class FunctionCallListener extends ExpressionListener
 			this.errors.add(new Error(context.type(), message));
 		}
 
-		this.methodVisitor.visitTypeInsn(Opcodes.NEW, "java/lang/String");
+		Type type = this.types.getType(context.type());
+		String typeWithSlashes = type.toFullyQualifiedType().replace(".", "/");
+
+		this.methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		this.methodVisitor.visitInsn(Opcodes.DUP);
 	}
 
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
-		int argumentCount = context.expression().size();
-		Type[] argumentTypes = new Type[argumentCount];
-
-		for (int i = context.expression().size() - 1; i >= 0; i--)
-		{
-			argumentTypes[i] = this.typeStack.pop();
-		}
-
-		String descriptor = new Parameters(argumentTypes).getDescriptor();
+		Type type = this.types.getType(context.constructor().type());
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
-			"java/lang/String",
+			type.toFullyQualifiedType().replace(".", "/"),
 			"<init>",
-			descriptor + "V",
+			this.argumentDescriptor + "V",
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
-
-		Type type = this.types.getType(context.type());
 
 		this.typeStack.push(type);
 	}
@@ -65,58 +61,26 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		int argumentCount = context.expression().size() - 1;
-		Type[] argumentTypes = new Type[argumentCount];
-		Class<?>[] argumentClasses = new Class<?>[argumentCount];
-
-		for (int i = context.expression().size() - 2; i >= 0; i--)
-		{
-			argumentTypes[i] = this.typeStack.pop();
-			argumentClasses[i] = argumentTypes[i].reflectionClass();
-		}
-
-		String methodName = context.Identifier().getText();
+		String methodName = context.method().Identifier().getText();
 		Type owner = this.typeStack.pop();
-		boolean hasMethod = false;
 
-		for (Method method: owner.reflectionClass().getMethods())
-		{
-			if (method.getName().equals(methodName))
-			{
-				hasMethod = true;
-				break;
-			}
-		}
-
-		Parameters parameters = new Parameters(argumentTypes);
 		String descriptor = "()V";
 
-		if (hasMethod)
+		try
 		{
-			try
-			{
-				Method method =
-					owner.reflectionClass().getMethod(methodName, argumentClasses);
-				Type returnType = new ReferenceType(method.getReturnType());
+			Method method =
+				owner.reflectionClass().getMethod(methodName, this.argumentClasses);
+			Type returnType = new ReferenceType(method.getReturnType());
 
-				descriptor = parameters.getDescriptor() + returnType.toJVMType();
-			}
-			catch (NoSuchMethodException ex)
-			{
-				String message =
-					"No overload of method '" + methodName +
-						"' with parameters " + parameters + ".";
-
-				this.errors.add(new Error(context.Identifier().getSymbol(), message));
-			}
+			descriptor = this.argumentDescriptor + returnType.toJVMType();
 		}
-		else
+		catch (NoSuchMethodException e)
 		{
 			String message =
-				"No method '" + methodName +
-				"' on object of type " + owner + ".";
+				"Method " + e.getMessage() + " not found.";
 
-			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+			this.errors.add(
+				new Error(context.method().Identifier().getSymbol(), message));
 		}
 
 		this.methodVisitor.visitMethodInsn(
@@ -127,5 +91,35 @@ public class FunctionCallListener extends ExpressionListener
 			false);
 
 		this.methodVisitor.visitInsn(Opcodes.POP);
+	}
+
+	@Override
+	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
+	{
+		int argumentCount = context.expression().size();
+		Type[] argumentTypes = new Type[argumentCount];
+		this.argumentClasses = new Class<?>[argumentCount];
+
+		for (int i = context.expression().size() - 1; i >= 0; i--)
+		{
+			argumentTypes[i] = this.typeStack.pop();
+			this.argumentClasses[i] = argumentTypes[i].reflectionClass();
+		}
+
+		this.argumentDescriptor = this.getDescriptor(argumentTypes);
+	}
+
+	private String getDescriptor(Type[] argumentTypes)
+	{
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (Type type : argumentTypes)
+		{
+			descriptor.append(type.toJVMType());
+		}
+
+		descriptor.append(")");
+
+		return descriptor.toString();
 	}
 }

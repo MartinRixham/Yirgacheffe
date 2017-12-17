@@ -6,9 +6,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ExpressionListener extends StatementListener
 {
-	public ExpressionListener(
-		String sourceFile,
-		Classes classes)
+	public ExpressionListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}

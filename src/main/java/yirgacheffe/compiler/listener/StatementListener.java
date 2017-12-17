@@ -13,9 +13,7 @@ public class StatementListener extends FieldListener
 {
 	private Variable currentVariable;
 
-	public StatementListener(
-		String sourceFile,
-		Classes classes)
+	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}

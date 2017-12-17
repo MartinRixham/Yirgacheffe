@@ -143,12 +143,11 @@ public class FunctionCallListenerTest
 	public void testAnotherInstantiation() throws Exception
 	{
 		String source =
-			"import java.awt.Dimension;\n" +
 			"class MyClass\n" +
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"new Dimension(1, 2);\n" +
+					"new Double(1.0);\n" +
 				"}\n" +
 			"}";
 
@@ -168,25 +167,25 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(7, instructions.size());
+		assertEquals(6, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/Double", firstInstruction.desc);
 
 		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
 		assertEquals(1.0, thirdInstruction.cst);
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
-		assertEquals(2.0, fourthInstruction.cst);
-
-		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.INVOKESPECIAL, fifthInstruction.getOpcode());
-		assertEquals("java/awt/Dimension", fifthInstruction.owner);
-		assertEquals("<init>", fifthInstruction.name);
-		assertEquals("(II)V", fifthInstruction.desc);
-		assertFalse(fifthInstruction.itf);
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
+		assertEquals("java/lang/Double", fourthInstruction.owner);
+		assertEquals("<init>", fourthInstruction.name);
+		assertEquals("(D)V", fourthInstruction.desc);
+		assertFalse(fourthInstruction.itf);
 	}
 
 	@Test
@@ -385,30 +384,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:9 No overload of method 'split' with parameters (bool).\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testMissingFunction() throws Exception
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"\"thingy\".read(1, \"thingy\");\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:9 No method 'read' " +
-				"on object of type java.lang.String.\n",
+			"line 4:9 Method java.lang.String.split(java.lang.Boolean) not found.\n",
 			result.getErrors());
 	}
 
@@ -429,5 +405,8 @@ public class FunctionCallListenerTest
 			compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:9 Method java.lang.String.notAMethod() not found.\n",
+			result.getErrors());
 	}
 }

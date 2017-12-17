@@ -10,9 +10,7 @@ public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
 
-	public ClassListener(
-		String sourceFile,
-		Classes classes)
+	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}
@@ -114,7 +112,7 @@ public class ClassListener extends YirgacheffeListener
 			this.errors.add(new Error(context.field(0), message));
 		}
 
-		for (YirgacheffeParser.MethodContext interfaceMethod: context.method())
+		for (YirgacheffeParser.FunctionContext interfaceMethod: context.function())
 		{
 			String message = "Method body not permitted for interface method.";
 

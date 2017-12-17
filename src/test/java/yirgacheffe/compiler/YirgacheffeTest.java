@@ -189,7 +189,7 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/reader/Writer.yg:\n" +
-			"line 7:15 No method 'write' on object of type example.reader.String.\n",
+			"line 7:15 Method example.reader.String.write() not found.\n",
 			spyError.toString());
 
 		System.setErr(originalError);

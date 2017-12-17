@@ -8,9 +8,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class TypeListener extends ClassListener
 {
-	public TypeListener(
-		String sourceFile,
-		Classes classes)
+	public TypeListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}

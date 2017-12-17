@@ -30,9 +30,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected Classes classes;
 
-	public YirgacheffeListener(
-		String sourceFile,
-		Classes classes)
+	public YirgacheffeListener(String sourceFile, Classes classes)
 	{
 		this.sourceFile = sourceFile;
 		this.directory = this.getDirectory(sourceFile);

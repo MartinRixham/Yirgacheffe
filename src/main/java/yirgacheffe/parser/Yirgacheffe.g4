@@ -15,16 +15,16 @@ importStatement: Import fullyQualifiedType semicolon;
 classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
-		(field | method | interfaceMethodDeclaration)*
+		(field | function | interfaceMethodDeclaration)*
 	'}';
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
-		(field | method | interfaceMethodDeclaration)*
+		(field | function | interfaceMethodDeclaration)*
 	'}';
 
-method: (classMethodDeclaration | constructorDeclaration) '{' (statement semicolon)* '}';
+function: (classMethodDeclaration | constructorDeclaration) '{' (statement semicolon)* '}';
 
 classMethodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
 
@@ -55,13 +55,19 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
-methodCall: expression '.' Identifier '(' expression? (',' expression)* ')';
+methodCall: method arguments;
+
+method: expression '.' Identifier;
+
+instantiation: constructor arguments;
+
+constructor: New type;
+
+arguments: '(' expression? (',' expression)* ')';
 
 expression: instantiation | literal | variableRead;
 
 variableRead: Identifier;
-
-instantiation: New type '(' expression? (',' expression)* ')';
 
 literal:
 	BooleanLiteral |
