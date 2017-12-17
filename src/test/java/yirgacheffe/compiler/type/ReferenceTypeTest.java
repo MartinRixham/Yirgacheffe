@@ -16,6 +16,7 @@ public class ReferenceTypeTest
 
 		Type type = new ReferenceType(loadedClass);
 
+		assertEquals("java.lang.String", type.toString());
 		assertEquals(loadedClass, type.reflectionClass());
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());

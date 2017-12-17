@@ -1,26 +1,24 @@
 package yirgacheffe.compiler.type;
 
-public class JavaLanguageType implements Type
+public class StringType implements Type
 {
+	private String fullyQualifiedType = "java.lang.String";
+
 	private Class<?> reflectionClass;
 
-	private String identifier;
-
-	public JavaLanguageType(String identifier)
+	public StringType()
 	{
 		try
 		{
 			this.reflectionClass =
 				Thread.currentThread()
 					.getContextClassLoader()
-					.loadClass("java.lang." + identifier);
+					.loadClass(this.fullyQualifiedType);
 		}
 		catch (ClassNotFoundException e)
 		{
 			throw new RuntimeException(e);
 		}
-
-		this.identifier = identifier;
 	}
 
 	@Override
@@ -32,18 +30,24 @@ public class JavaLanguageType implements Type
 	@Override
 	public String toJVMType()
 	{
-		return "Ljava/lang/" + this.identifier + ";";
+		return "Ljava/lang/String;";
 	}
 
 	@Override
 	public String toFullyQualifiedType()
 	{
-		return "java.lang." + this.identifier;
+		return this.fullyQualifiedType;
 	}
 
 	@Override
 	public int width()
 	{
 		return 1;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.fullyQualifiedType;
 	}
 }

@@ -4,6 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -11,7 +12,6 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MethodListener extends TypeListener
@@ -42,7 +42,8 @@ public class MethodListener extends TypeListener
 		}
 
 		String descriptor =
-			this.getMethodDescriptor(context.parameter(), context.type());
+			new Parameters(context.parameter(), this.types).getDescriptor() +
+				this.types.getType(context.type()).toJVMType();
 
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
@@ -50,37 +51,6 @@ public class MethodListener extends TypeListener
 			descriptor,
 			null,
 			null);
-	}
-
-	private String getMethodDescriptor(
-		List<YirgacheffeParser.ParameterContext> parameters,
-		YirgacheffeParser.TypeContext returnType)
-	{
-		return
-			this.getParameterDescriptor(parameters) +
-				this.types.getType(returnType).toJVMType();
-	}
-
-	protected String getParameterDescriptor(
-		List<YirgacheffeParser.ParameterContext> parameterList)
-	{
-		StringBuilder descriptor = new StringBuilder("(");
-
-		for (YirgacheffeParser.ParameterContext parameter : parameterList)
-		{
-			YirgacheffeParser.TypeContext typeContext = parameter.type();
-
-			if (typeContext != null)
-			{
-				Type type = this.types.getType(typeContext);
-
-				descriptor.append(type.toJVMType());
-			}
-		}
-
-		descriptor.append(")");
-
-		return descriptor.toString();
 	}
 
 	@Override
@@ -110,7 +80,8 @@ public class MethodListener extends TypeListener
 		}
 
 		String descriptor =
-			this.getMethodDescriptor(context.parameter(), context.type());
+			new Parameters(context.parameter(), this.types).getDescriptor() +
+				this.types.getType(context.type()).toJVMType();
 
 		this.methodVisitor =
 			this.writer.visitMethod(

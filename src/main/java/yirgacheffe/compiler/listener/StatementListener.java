@@ -2,7 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.JavaLanguageType;
+import yirgacheffe.compiler.type.StringType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -29,7 +29,7 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().replace("\"", "");
 
-			this.typeStack.push(new JavaLanguageType("String"));
+			this.typeStack.push(new StringType());
 		}
 		else if (context.CharacterLiteral() != null)
 		{

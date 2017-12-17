@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.Parameters;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ConstructorListener extends MethodListener
@@ -42,7 +43,8 @@ public class ConstructorListener extends MethodListener
 			isPrivate = context.Modifier().getText().equals("private");
 		}
 
-		String descriptor = this.getParameterDescriptor(context.parameter()) + "V";
+		String descriptor =
+			new Parameters(context.parameter(), this.types).getDescriptor() + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

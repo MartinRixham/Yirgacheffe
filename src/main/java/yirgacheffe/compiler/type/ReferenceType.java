@@ -30,4 +30,10 @@ public class ReferenceType implements Type
 	{
 		return 1;
 	}
+
+	@Override
+	public String toString()
+	{
+		return this.toFullyQualifiedType();
+	}
 }

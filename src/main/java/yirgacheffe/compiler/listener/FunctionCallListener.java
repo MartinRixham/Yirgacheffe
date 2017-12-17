@@ -90,6 +90,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		owner.getMethods()[0].getParameterTypes();
 
+		Parameters parameters = new Parameters(argumentTypes);
 		String descriptor = "()V";
 
 		if (hasMethod)
@@ -99,14 +100,13 @@ public class FunctionCallListener extends ExpressionListener
 				Method method = owner.getMethod(methodName, argumentClasses);
 				Type returnType = new ReferenceType(method.getReturnType());
 
-				descriptor =
-					new Parameters(argumentTypes).getDescriptor() +
-					returnType.toJVMType();
+				descriptor = parameters.getDescriptor() + returnType.toJVMType();
 			}
 			catch (NoSuchMethodException ex)
 			{
 				String message =
-					"No overload of method '" + methodName + "' with parameters (num).";
+					"No overload of method '" + methodName +
+						"' with parameters " + parameters + ".";
 
 				this.errors.add(new Error(context.Identifier().getSymbol(), message));
 			}

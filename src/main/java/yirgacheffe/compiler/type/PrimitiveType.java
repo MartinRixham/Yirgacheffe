@@ -2,15 +2,15 @@ package yirgacheffe.compiler.type;
 
 public enum PrimitiveType implements Type
 {
-	VOID("V", "Void", 0),
+	VOID("void", "V", "Void", 0),
 
-	BOOL("Z", "Boolean", 1),
+	BOOL("bool", "Z", "Boolean", 1),
 
-	CHAR("C", "Character", 1),
+	CHAR("char", "C", "Character", 1),
 
-	NUM("D", "Double", 2);
+	NUM("num", "D", "Double", 2);
 
-	private Class<?> reflectionClass;
+	private String name;
 
 	private String jvmType;
 
@@ -18,23 +18,12 @@ public enum PrimitiveType implements Type
 
 	private int width;
 
-	PrimitiveType(String jvmType, String wrapperClass, int width)
+	PrimitiveType(String name, String jvmType, String wrapperClass, int width)
 	{
+		this.name = name;
 		this.jvmType = jvmType;
 		this.fullyQualifiedType = "java.lang." + wrapperClass;
 		this.width = width;
-
-		try
-		{
-			this.reflectionClass =
-				Thread.currentThread()
-					.getContextClassLoader()
-					.loadClass(this.fullyQualifiedType);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
@@ -59,5 +48,11 @@ public enum PrimitiveType implements Type
 	public int width()
 	{
 		return this.width;
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.name;
 	}
 }

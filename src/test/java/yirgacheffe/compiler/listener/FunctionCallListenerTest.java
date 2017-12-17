@@ -325,7 +325,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"\"thingy\".split(1);\n" +
+					"\"thingy\".split(false);\n" +
 				"}\n" +
 			"}";
 
@@ -335,7 +335,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:9 No overload of method 'split' with parameters (num).\n",
+			"line 4:9 No overload of method 'split' with parameters (bool).\n",
 			result.getErrors());
 	}
 
