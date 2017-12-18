@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+
 public class NullType implements Type
 {
 	@Override
@@ -22,5 +24,11 @@ public class NullType implements Type
 	public int width()
 	{
 		return 1;
+	}
+
+	@Override
+	public int getReturnOpcode()
+	{
+		return Opcodes.IRETURN;
 	}
 }

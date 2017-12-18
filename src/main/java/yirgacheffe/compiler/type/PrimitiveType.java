@@ -1,14 +1,16 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+
 public enum PrimitiveType implements Type
 {
-	VOID("void", "V", "Void", 0),
+	VOID("void", "V", "Void", 0, Opcodes.RETURN),
 
-	BOOL("bool", "Z", "Boolean", 1),
+	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN),
 
-	CHAR("char", "C", "Character", 1),
+	CHAR("char", "C", "Character", 1, Opcodes.IRETURN),
 
-	NUM("num", "D", "Double", 2);
+	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN);
 
 	private String name;
 
@@ -20,12 +22,20 @@ public enum PrimitiveType implements Type
 
 	private int width;
 
-	PrimitiveType(String name, String jvmType, String wrapperClass, int width)
+	private int returnOpcode;
+
+	PrimitiveType(
+		String name,
+		String jvmType,
+		String wrapperClass,
+		int width,
+		int returnOpcode)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
 		this.fullyQualifiedType = "java.lang." + wrapperClass;
 		this.width = width;
+		this.returnOpcode = returnOpcode;
 
 		try
 		{
@@ -62,6 +72,12 @@ public enum PrimitiveType implements Type
 	public int width()
 	{
 		return this.width;
+	}
+
+	@Override
+	public int getReturnOpcode()
+	{
+		return this.returnOpcode;
 	}
 
 	@Override

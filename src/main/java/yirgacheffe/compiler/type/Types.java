@@ -14,7 +14,7 @@ public class Types
 		this.types.put("void", PrimitiveType.VOID);
 		this.types.put("bool", PrimitiveType.BOOL);
 		this.types.put("char", PrimitiveType.CHAR);
-		this.types.put("num", PrimitiveType.NUM);
+		this.types.put("num", PrimitiveType.DOUBLE);
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)

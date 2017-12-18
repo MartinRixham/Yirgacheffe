@@ -217,20 +217,20 @@ public class ClassListenerTest
 	public void testPackagedClass() throws Exception
 	{
 		Classes classes = new Classes();
-		String source = "package this.that; interface MyInterface {}";
-		Compiler compiler = new Compiler("this/that/MyInterface.yg", source);
+		String source = "package tis.that; interface MyInterface {}";
+		Compiler compiler = new Compiler("tis/that/MyInterface.yg", source);
 		compiler.compileClassDeclaration(classes);
 
 		classes.clearCache();
 
 		source =
-			"package this.that;\n" +
+			"package tis.that;\n" +
 			"interface AnotherInterface\n" +
 				"{\n" +
 				"MyInterface myMethod();\n" +
 				"}";
 
-		compiler = new Compiler("this/that/AnotherInterface.yg", source);
+		compiler = new Compiler("tis/that/AnotherInterface.yg", source);
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -243,7 +243,7 @@ public class ClassListenerTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode method = methods.get(0);
 
-		assertEquals("()Lthis/that/MyInterface;", method.desc);
+		assertEquals("()Ltis/that/MyInterface;", method.desc);
 	}
 
 	@Test

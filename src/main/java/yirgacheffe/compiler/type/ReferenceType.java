@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+
 public class ReferenceType implements Type
 {
 	private Class<?> reflectionClass;
@@ -29,6 +31,12 @@ public class ReferenceType implements Type
 	public int width()
 	{
 		return 1;
+	}
+
+	@Override
+	public int getReturnOpcode()
+	{
+		return Opcodes.ARETURN;
 	}
 
 	@Override

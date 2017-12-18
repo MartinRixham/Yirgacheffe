@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+
 public class StringType implements Type
 {
 	private String fullyQualifiedType = "java.lang.String";
@@ -43,6 +45,12 @@ public class StringType implements Type
 	public int width()
 	{
 		return 1;
+	}
+
+	@Override
+	public int getReturnOpcode()
+	{
+		return Opcodes.ARETURN;
 	}
 
 	@Override

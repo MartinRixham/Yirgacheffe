@@ -9,4 +9,6 @@ public interface Type
 	String toFullyQualifiedType();
 
 	int width();
+
+	int getReturnOpcode();
 }

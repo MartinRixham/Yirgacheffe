@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Classes;
@@ -34,8 +35,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 	}
@@ -55,8 +55,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -79,8 +78,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -121,8 +119,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -168,8 +165,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -243,8 +239,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -270,5 +265,83 @@ public class StatementListenerTest
 
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testAssignParameterFromFunction() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()\n" +
+				"{\n" +
+					"num myVariable = this.getOne();\n" +
+				"}\n" +
+				"public num getOne()\n" +
+				"{\n" +
+					"return 1;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(3, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(4, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, secondInstruction.getOpcode());
+		assertEquals("MyClass", secondInstruction.owner);
+		assertEquals("getOne", secondInstruction.name);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		MethodNode secondMethod = methods.get(1);
+
+		assertEquals("getOne", secondMethod.name);
+		assertEquals(2, secondMethod.maxStack);
+		assertEquals(1, secondMethod.maxLocals);
+
+		instructions = secondMethod.instructions;
+
+		assertEquals(2, instructions.size());
+
+		LdcInsnNode first = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, first.getOpcode());
+		assertEquals(1.0, first.cst);
+
+		InsnNode second = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DRETURN, second.getOpcode());
 	}
 }

@@ -39,7 +39,7 @@ fieldInitialisation: fieldDeclaration '=' expression;
 
 fieldDeclaration: type? Identifier;
 
-statement: variableAssignment | variableDeclaration | functionCall;
+statement: variableAssignment | variableDeclaration | functionCall | returnStatement;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
@@ -65,9 +65,13 @@ constructor: New type;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression: (instantiation | literal | variableRead) method*;
+expression: (instantiation | literal | variableRead | thisRead) method*;
 
 variableRead: Identifier;
+
+thisRead: This;
+
+returnStatement: Return expression?;
 
 literal:
 	BooleanLiteral |
@@ -87,6 +91,8 @@ PrimitiveType: 'void' | 'bool' | 'char' | 'num';
 Modifier: 'public' | 'private';
 BooleanLiteral: 'true' | 'false';
 New: 'new';
+This: 'this';
+Return: 'return';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 

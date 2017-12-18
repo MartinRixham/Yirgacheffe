@@ -4,6 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 public class MethodListener extends TypeListener
 {
+	protected Type returnType = new NullType();
+
 	protected TypeStack typeStack = new TypeStack();
 
 	protected Map<String, Variable> localVariables = new HashMap<>();
@@ -39,9 +42,11 @@ public class MethodListener extends TypeListener
 			this.errors.add(new Error(context, message));
 		}
 
+		this.returnType = this.types.getType(context.type());
+
 		String descriptor =
 			this.getDescriptor(context.parameter()) +
-				this.types.getType(context.type()).toJVMType();
+				this.returnType.toJVMType();
 
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
@@ -77,9 +82,11 @@ public class MethodListener extends TypeListener
 			name = context.Identifier().getText();
 		}
 
+		this.returnType = this.types.getType(context.type());
+
 		String descriptor =
 			this.getDescriptor(context.parameter()) +
-				this.types.getType(context.type()).toJVMType();
+				this.returnType.toJVMType();
 
 		this.methodVisitor =
 			this.writer.visitMethod(
@@ -130,11 +137,8 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void exitFunction(
-		YirgacheffeParser.FunctionContext context)
+	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
-		this.methodVisitor.visitInsn(Opcodes.RETURN);
-
 		int maxSize = this.typeStack.reset();
 		int localVariablesSize = 1;
 
@@ -143,7 +147,17 @@ public class MethodListener extends TypeListener
 			localVariablesSize += variable.getType().width();
 		}
 
-		this.methodVisitor.visitMaxs(maxSize, localVariablesSize);
+		if (this.returnType != PrimitiveType.VOID && maxSize == 0)
+		{
+			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
+			this.methodVisitor.visitMaxs(this.returnType.width(), localVariablesSize);
+		}
+		else
+		{
+			this.methodVisitor.visitMaxs(maxSize, localVariablesSize);
+		}
+
+		this.methodVisitor.visitInsn(this.returnType.getReturnOpcode());
 
 		this.localVariables = new HashMap<>();
 	}

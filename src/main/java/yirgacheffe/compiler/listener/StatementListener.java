@@ -43,7 +43,7 @@ public class StatementListener extends FieldListener
 		{
 			value = new Double(context.getText());
 
-			this.typeStack.push(PrimitiveType.NUM);
+			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 
 		this.methodVisitor.visitLdcInsn(value);
@@ -95,7 +95,7 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
-		if (type.equals(PrimitiveType.NUM))
+		if (type.equals(PrimitiveType.DOUBLE))
 		{
 			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, index);
 		}

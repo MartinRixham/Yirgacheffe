@@ -55,8 +55,12 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		byte[] bytes = this.writer.toByteArray();
 
-		this.classes.addClass(this.packageName + "." + this.className, bytes);
+		String fullyQualifiedType =
+			this.packageName == null ?
+				this.className :
+				this.packageName + "." + this.className;
 
+		this.classes.addClass(fullyQualifiedType, bytes);
 	}
 
 	public CompilationResult getCompilationResult(ParseErrorListener errorListener)

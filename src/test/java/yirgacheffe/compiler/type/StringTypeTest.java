@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
+import org.objectweb.asm.Opcodes;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,5 +17,6 @@ public class StringTypeTest
 		assertEquals("Ljava/lang/String;", string.toJVMType());
 		assertEquals("java.lang.String", string.toFullyQualifiedType());
 		assertEquals(1, string.width());
+		assertEquals(Opcodes.ARETURN, string.getReturnOpcode());
 	}
 }
