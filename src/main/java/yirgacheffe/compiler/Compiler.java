@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
-import yirgacheffe.compiler.listener.MethodListener;
+import yirgacheffe.compiler.listener.MainMethodListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -22,9 +22,7 @@ public class Compiler
 		this.source = source;
 	}
 
-	public void compileClassDeclaration(
-		Classes classes)
-		throws Exception
+	public void compileClassDeclaration(Classes classes) throws Exception
 	{
 		YirgacheffeListener listener =
 			new ClassListener(
@@ -36,12 +34,10 @@ public class Compiler
 		listener.exportDefinedTypes();
 	}
 
-	public void compileInterface(
-		Classes classes)
-		throws Exception
+	public void compileInterface(Classes classes) throws Exception
 	{
 		YirgacheffeListener listener =
-			new MethodListener(
+			new MainMethodListener(
 				this.sourceFile,
 				classes);
 
@@ -50,9 +46,7 @@ public class Compiler
 		listener.exportDefinedTypes();
 	}
 
-	public CompilationResult compile(
-		Classes classes)
-		throws Exception
+	public CompilationResult compile(Classes classes) throws Exception
 	{
 		YirgacheffeListener listener =
 			new FunctionCallListener(
@@ -64,9 +58,7 @@ public class Compiler
 		return listener.getCompilationResult(errors);
 	}
 
-	private ParseErrorListener execute(
-		YirgacheffeListener listener)
-		throws Exception
+	private ParseErrorListener execute(YirgacheffeListener listener) throws Exception
 	{
 		ParseErrorListener errorListener = new ParseErrorListener();
 		YirgacheffeParser parser = new Source(this.source).parse();

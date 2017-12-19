@@ -33,8 +33,7 @@ public class ExpressionListener extends StatementListener
 					this.className :
 					this.packageName + "." + this.className;
 
-			Type thisType =
-				this.classes.loadClass(fullyQualifiedType);
+			Type thisType = this.classes.loadClass(fullyQualifiedType);
 
 			this.typeStack.push(thisType);
 		}

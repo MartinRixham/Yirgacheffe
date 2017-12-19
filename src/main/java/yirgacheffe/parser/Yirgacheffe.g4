@@ -24,9 +24,15 @@ interfaceDeclaration:
 		(field | function | interfaceMethodDeclaration)*
 	'}';
 
-function: (classMethodDeclaration | constructorDeclaration) '{' (statement semicolon)* '}';
+function:
+	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
+	'{'
+		(statement semicolon)*
+	'}';
 
 classMethodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
+
+mainMethodDeclaration: Modifier? type? Main Identifier '(' parameter? (',' parameter)* ')';
 
 constructorDeclaration: Modifier? Identifier '(' parameter? (',' parameter)* ')';
 
@@ -49,11 +55,13 @@ variableWrite: Identifier;
 
 parameter: type? Identifier;
 
-type: simpleType | fullyQualifiedType;
+type: (simpleType | fullyQualifiedType) typeParameter?;
 
 simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
+
+typeParameter: '<' type '>';
 
 functionCall: instantiation | (expression method);
 
@@ -93,6 +101,7 @@ BooleanLiteral: 'true' | 'false';
 New: 'new';
 This: 'this';
 Return: 'return';
+Main: 'main';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 

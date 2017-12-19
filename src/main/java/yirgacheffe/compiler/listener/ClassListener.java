@@ -10,6 +10,8 @@ public class ClassListener extends YirgacheffeListener
 {
 	protected boolean hasDefaultConstructor = true;
 
+	protected String mainMethodName;
+
 	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -131,27 +133,68 @@ public class ClassListener extends YirgacheffeListener
 	@Override
 	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
+		if (this.mainMethodName != null)
+		{
+			this.makeMainMethod();
+		}
+
 		if (this.hasDefaultConstructor)
 		{
-			MethodVisitor methodVisitor =
-				this.writer.visitMethod(
-					Opcodes.ACC_PUBLIC,
-					"<init>",
-					"()V",
-					null,
-					null);
+			this.makeDefaultConstructor();
+		}
+	}
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+	private void makeMainMethod()
+	{
+		MethodVisitor methodVisitor =
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
+				"main",
+				"([Ljava/lang/String;)V",
+				null,
+				null);
 
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESPECIAL,
-				"java/lang/Object",
+		methodVisitor.visitTypeInsn(Opcodes.NEW, this.className);
+		methodVisitor.visitInsn(Opcodes.DUP);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			this.className,
+			"<init>",
+			"()V",
+			false);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			this.className,
+			this.mainMethodName,
+			"()V",
+			false);
+
+		methodVisitor.visitInsn(Opcodes.RETURN);
+		methodVisitor.visitMaxs(2, 1);
+	}
+
+	private void makeDefaultConstructor()
+	{
+		MethodVisitor methodVisitor =
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC,
 				"<init>",
 				"()V",
-				false);
+				null,
+				null);
 
-			methodVisitor.visitInsn(Opcodes.RETURN);
-			methodVisitor.visitMaxs(1, 1);
-		}
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"java/lang/Object",
+			"<init>",
+			"()V",
+			false);
+
+		methodVisitor.visitInsn(Opcodes.RETURN);
+		methodVisitor.visitMaxs(1, 1);
 	}
 }

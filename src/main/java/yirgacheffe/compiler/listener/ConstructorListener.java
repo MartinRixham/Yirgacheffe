@@ -6,7 +6,7 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class ConstructorListener extends MethodListener
+public class ConstructorListener extends MainMethodListener
 {
 	public ConstructorListener(String sourceFile, Classes classes)
 	{
