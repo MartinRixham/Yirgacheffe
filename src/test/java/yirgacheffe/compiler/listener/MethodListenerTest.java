@@ -27,8 +27,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -58,13 +57,30 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Access modifier is not required for " +
 				"interface method declaration.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceMethodWithKeywordIdentifier() throws Exception
+	{
+		String source =
+			"interface MyInterface\n" +
+				"{\n" +
+				"num return();\n" +
+				"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:4 Invalid use of keyword 'return'.\n",
 			result.getErrors());
 	}
 
@@ -78,8 +94,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -105,8 +120,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -124,8 +138,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -155,8 +168,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -186,8 +198,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -207,8 +218,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -247,8 +257,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -273,8 +282,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -299,8 +307,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -325,8 +332,7 @@ public class MethodListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 

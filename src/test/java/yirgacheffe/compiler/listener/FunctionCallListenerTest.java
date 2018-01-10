@@ -35,8 +35,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -91,8 +90,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -152,8 +150,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -201,8 +198,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 	}
@@ -220,8 +216,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -242,8 +237,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -264,8 +258,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -319,8 +312,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -379,8 +371,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -401,8 +392,7 @@ public class FunctionCallListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

@@ -216,8 +216,7 @@ public class StatementListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

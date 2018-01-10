@@ -23,14 +23,11 @@ public class ClassListenerTest
 	{
 		String source = "interface MyInterface {{";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
-		assertEquals(
-			"line 1:23 mismatched input",
-			result.getErrors().substring(0, 26));
+		assertEquals("line 1:23 mismatched input", result.getErrors().substring(0, 26));
 	}
 
 	@Test
@@ -38,8 +35,7 @@ public class ClassListenerTest
 	{
 		String source = "interface MyInterface {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyInterface.class", result.getClassFileName());
@@ -61,8 +57,7 @@ public class ClassListenerTest
 	{
 		String source = "interface MyInterface {} class MyClass {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -75,8 +70,7 @@ public class ClassListenerTest
 	{
 		String source = "thingy MyInterface {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -89,8 +83,7 @@ public class ClassListenerTest
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -114,8 +107,7 @@ public class ClassListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -132,8 +124,7 @@ public class ClassListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -150,8 +141,7 @@ public class ClassListenerTest
 			"{";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -164,8 +154,7 @@ public class ClassListenerTest
 	{
 		String source = "package myPackage; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/gile.gg", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/MyClass.class", result.getClassFileName());
@@ -176,8 +165,7 @@ public class ClassListenerTest
 	{
 		String source = "package myPackage.thingy; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/thingy/file.yg", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 		assertEquals("myPackage/thingy/MyClass.class", result.getClassFileName());
@@ -188,8 +176,7 @@ public class ClassListenerTest
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -203,8 +190,7 @@ public class ClassListenerTest
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -256,8 +242,7 @@ public class ClassListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals("line 3:0 Method requires method body.\n", result.getErrors());
@@ -273,8 +258,7 @@ public class ClassListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

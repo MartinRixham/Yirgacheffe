@@ -25,8 +25,7 @@ public class ConstructorListenerTest
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -76,8 +75,7 @@ public class ConstructorListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -107,8 +105,7 @@ public class ConstructorListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -127,8 +124,7 @@ public class ConstructorListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -146,8 +142,7 @@ public class ConstructorListenerTest
 				"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result =
-			compiler.compile(new Classes());
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 

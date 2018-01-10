@@ -1,13 +1,12 @@
-package yirgacheffe;
+package yirgacheffe.compiler.error;
 
 import org.antlr.v4.runtime.DefaultErrorStrategy;
-import org.antlr.v4.runtime.InputMismatchException;
+import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.RecognitionException;
 
 public class ParseErrorStrategy extends DefaultErrorStrategy
 {
-	@Override
+	/*@Override
 	public void reportInputMismatch(Parser recognizer, InputMismatchException e)
 		throws RecognitionException
 	{
@@ -18,5 +17,14 @@ public class ParseErrorStrategy extends DefaultErrorStrategy
 	public void reportMissingToken(Parser recognizer)
 	{
 		super.reportMissingToken(recognizer);
+	}*/
+
+	@Override
+	public void reportNoViableAlternative(Parser recognizer, NoViableAltException e)
+	{
+		String keyword = e.getOffendingToken().getText();
+		String message = "Invalid use of keyword '" + keyword + "'";
+
+		recognizer.notifyErrorListeners(e.getOffendingToken(), message, e);
 	}
 }

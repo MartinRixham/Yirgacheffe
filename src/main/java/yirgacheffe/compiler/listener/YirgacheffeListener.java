@@ -5,7 +5,6 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -63,13 +62,9 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		this.classes.addClass(fullyQualifiedType, bytes);
 	}
 
-	public CompilationResult getCompilationResult(ParseErrorListener errorListener)
+	public CompilationResult getCompilationResult()
 	{
-		if (errorListener.hasError())
-		{
-			return new CompilationResult(this.sourceFile, errorListener.getErrors());
-		}
-		else if (this.errors.size() > 0)
+		if (this.errors.size() > 0)
 		{
 			return new CompilationResult(this.sourceFile, this.errors);
 		}
