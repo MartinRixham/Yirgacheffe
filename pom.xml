@@ -6,7 +6,7 @@
 	<groupId>yirgacheffe</groupId>
 	<artifactId>yirgacheffe</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
+	<version>0.1</version>
 	<modules>
 		<module>lib</module>
 		<module>compiler</module>
