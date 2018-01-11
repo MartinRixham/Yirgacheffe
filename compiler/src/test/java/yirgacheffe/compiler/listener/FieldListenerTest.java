@@ -435,5 +435,8 @@ public class FieldListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Cannot assign bool to field of type num.\n",
+			result.getErrors());
 	}
 }

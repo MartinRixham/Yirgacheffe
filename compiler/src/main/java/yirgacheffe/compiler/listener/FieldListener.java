@@ -66,28 +66,16 @@ public class FieldListener extends ConstructorListener
 
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 
-		Type type = this.types.getType(declaration.type());
+		Type fieldType = this.types.getType(declaration.type());
+		Type expressionType = this.typeStack.pop();
 
-		if (!this.checkTypes(type, context.expression()))
+		if (!(fieldType.toJVMType().equals(expressionType.toJVMType())))
 		{
-			this.errors.add(new Error(context, ""));
-		}
-	}
+			String message =
+				"Cannot assign " + expressionType.toString() +
+				" to field of type " + fieldType.toString() + ".";
 
-	private boolean checkTypes(
-		Type fieldType,
-		YirgacheffeParser.ExpressionContext expression)
-	{
-		YirgacheffeParser.LiteralContext literal = expression.literal();
-		String jvmType = fieldType.toJVMType();
-
-		if (literal.BooleanLiteral() != null)
-		{
-			return jvmType.equals("Z");
-		}
-		else
-		{
-			return true;
+			this.errors.add(new Error(context, message));
 		}
 	}
 }

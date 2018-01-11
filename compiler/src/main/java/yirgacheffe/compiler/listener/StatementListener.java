@@ -32,6 +32,8 @@ public class StatementListener extends FieldListener
 		else if (context.CharacterLiteral() != null)
 		{
 			value = context.getText().charAt(1);
+
+			this.typeStack.push(PrimitiveType.CHAR);
 		}
 		else if (context.BooleanLiteral() != null)
 		{
