@@ -265,4 +265,20 @@ public class ClassListenerTest
 			"line 3:0 Method body not permitted for interface method.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testImportUnknownType() throws Exception
+	{
+		String source =
+			"import java.util.Liszt;\n" +
+			"class MyClass {}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:7 Unrecognised type: java.util.Liszt is not a type.\n",
+			result.getErrors());
+	}
 }

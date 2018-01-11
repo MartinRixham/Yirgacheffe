@@ -10,7 +10,7 @@ packageDeclaration: (Package packageName semicolon)?;
 
 packageName: Identifier ('.' Identifier)*;
 
-importStatement: Import fullyQualifiedType semicolon;
+importStatement: Import packageName '.' Identifier semicolon;
 
 classDeclaration:
 	(Class | Identifier) Identifier?

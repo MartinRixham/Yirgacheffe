@@ -267,7 +267,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testAssignParameterFromFunction() throws Exception
+	public void testAssignVariableFromFunction() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
@@ -342,5 +342,36 @@ public class StatementListenerTest
 		InsnNode second = (InsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.DRETURN, second.getOpcode());
+	}
+
+	@Test
+	public void testGenericLocalVariableInitialisation() throws Exception
+	{
+		String source =
+			"import java.util.List;" +
+			"import java.util.ArrayList;" +
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"List<Integer> list = new ArrayList<Integer>();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(2, firstMethod.maxLocals);
 	}
 }

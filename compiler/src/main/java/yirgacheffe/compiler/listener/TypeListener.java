@@ -16,20 +16,23 @@ public class TypeListener extends ClassListener
 	@Override
 	public void enterImportStatement(YirgacheffeParser.ImportStatementContext context)
 	{
-		Type type;
+		String className =
+			context.packageName().getText() + "." + context.Identifier().getText();
 
 		try
 		{
-			type = this.classes.loadClass(context.fullyQualifiedType().getText());
+			Type type = this.classes.loadClass(className);
+			String identifier = context.Identifier().getText();
+
+			this.types.put(identifier, type);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new RuntimeException(e);
+			String message =
+				"Unrecognised type: " + className + " is not a type.";
+
+			this.errors.add(new Error(context.packageName(), message));
 		}
-
-		String identifier = context.fullyQualifiedType().Identifier().getText();
-
-		this.types.put(identifier, type);
 	}
 
 	@Override
