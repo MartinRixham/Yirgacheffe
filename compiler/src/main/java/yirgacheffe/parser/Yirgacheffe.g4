@@ -63,9 +63,9 @@ fullyQualifiedType: packageName '.' Identifier;
 
 typeParameter: '<' type '>';
 
-functionCall: instantiation | (expression method);
+functionCall: instantiation | (expression methodCall);
 
-method: '.' Identifier arguments;
+methodCall: '.' Identifier arguments;
 
 instantiation: constructor arguments;
 
@@ -73,11 +73,13 @@ constructor: New type;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression: (instantiation | literal | variableRead | thisRead) method*;
+expression: (instantiation | literal | variableRead | thisRead) (fieldRead | methodCall)*;
 
 variableRead: Identifier;
 
 thisRead: This;
+
+fieldRead: '.' Identifier;
 
 returnStatement: Return expression?;
 

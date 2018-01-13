@@ -6,8 +6,13 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FieldListener extends ConstructorListener
 {
+	private Map<String, Type> fieldTypes = new HashMap<>();
+
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -24,16 +29,18 @@ public class FieldListener extends ConstructorListener
 			this.errors.add(error);
 		}
 
-		String identifier = context.Identifier().getText();
+		String fieldName = context.Identifier().getText();
 		Type type = this.types.getType(context.type());
 
 		this.writer
 			.visitField(
 				Opcodes.ACC_PRIVATE,
-				identifier,
+				fieldName,
 				type.toJVMType(),
 				null,
 				null);
+
+		this.fieldTypes.put(fieldName, type);
 	}
 
 	@Override
@@ -77,5 +84,18 @@ public class FieldListener extends ConstructorListener
 
 			this.errors.add(new Error(context, message));
 		}
+	}
+
+	@Override
+	public void enterFieldRead(YirgacheffeParser.FieldReadContext context)
+	{
+		String fieldName = context.Identifier().getText();
+		Type fieldType = this.fieldTypes.get(fieldName);
+
+		this.methodVisitor.visitFieldInsn(
+			Opcodes.GETFIELD,
+			this.className,
+			fieldName,
+			fieldType.toJVMType());
 	}
 }

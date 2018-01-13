@@ -48,9 +48,15 @@ public class StringType implements Type
 	}
 
 	@Override
-	public int getReturnOpcode()
+	public int getReturnInstruction()
 	{
 		return Opcodes.ARETURN;
+	}
+
+	@Override
+	public int getStoreInstruction()
+	{
+		return Opcodes.ASTORE;
 	}
 
 	@Override

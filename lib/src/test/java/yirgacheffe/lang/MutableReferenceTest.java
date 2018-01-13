@@ -25,14 +25,20 @@ public class MutableReferenceTest
 					"new MutableReference(\"Hello world.\");\n" +
 				"public void hello()" +
 				"{\n" +
-					"new System().getOut().println(myString.get());\n" +
+					"new System().getOut().println(this.myString.get());\n" +
 					"myString.set(\"Eh up, planet.\");\n" +
-					"new System().getOut().println(myString.get());\n" +
+					"new System().getOut().println(this.myString.get());\n" +
 				"}\n" +
 			"}";
 
+		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 

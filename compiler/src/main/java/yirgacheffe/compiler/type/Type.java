@@ -10,5 +10,7 @@ public interface Type
 
 	int width();
 
-	int getReturnOpcode();
+	int getReturnInstruction();
+
+	int getStoreInstruction();
 }

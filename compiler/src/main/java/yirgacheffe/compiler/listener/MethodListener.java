@@ -157,7 +157,7 @@ public class MethodListener extends TypeListener
 			this.methodVisitor.visitMaxs(maxSize, localVariablesSize);
 		}
 
-		this.methodVisitor.visitInsn(this.returnType.getReturnOpcode());
+		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 
 		this.localVariables = new HashMap<>();
 	}

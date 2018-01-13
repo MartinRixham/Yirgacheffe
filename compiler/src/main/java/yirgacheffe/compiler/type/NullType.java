@@ -27,8 +27,14 @@ public class NullType implements Type
 	}
 
 	@Override
-	public int getReturnOpcode()
+	public int getReturnInstruction()
 	{
 		return Opcodes.IRETURN;
+	}
+
+	@Override
+	public int getStoreInstruction()
+	{
+		return Opcodes.ISTORE;
 	}
 }

@@ -59,7 +59,7 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
-	public void exitMethod(YirgacheffeParser.MethodContext context)
+	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
 		String methodName = context.Identifier().getText();
 		Type owner = this.typeStack.pop();

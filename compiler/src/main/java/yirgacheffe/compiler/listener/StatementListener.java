@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.StringType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -97,13 +96,6 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
-		if (type.equals(PrimitiveType.DOUBLE))
-		{
-			this.methodVisitor.visitVarInsn(Opcodes.DSTORE, index);
-		}
-		else if (type.equals(PrimitiveType.BOOL))
-		{
-			this.methodVisitor.visitVarInsn(Opcodes.ISTORE, index);
-		}
+		this.methodVisitor.visitVarInsn(type.getStoreInstruction(), index);
 	}
 }

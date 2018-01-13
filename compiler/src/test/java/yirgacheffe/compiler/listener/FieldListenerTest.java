@@ -27,9 +27,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
-					"num myField;\n" +
-				"}";
+			"{\n" +
+				"num myField;\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -57,9 +57,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
-					"String myStringField;\n" +
-				"}";
+			"{\n" +
+				"String myStringField;\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -87,10 +87,10 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"num myNumberField;\n" +
 				"String myStringField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -122,9 +122,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"interface MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"  num myField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -140,9 +140,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				" myField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -158,9 +158,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"Thingy myStringField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -176,9 +176,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"java.util.List myListField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -201,9 +201,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"java.thingy.List myListField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -220,9 +220,9 @@ public class FieldListenerTest
 		String source =
 			"import java.util.List;\n" +
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"List myListField;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -245,9 +245,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"String myStringField = \"thingy\";\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -294,9 +294,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"num myNumberField = 5;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -331,9 +331,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"num myNumberField = 1.2;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -359,9 +359,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"char myCharacterField = 'a';\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -393,9 +393,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"bool myBooleanField = true;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -427,9 +427,9 @@ public class FieldListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"num myBooleanField = true;\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -438,5 +438,63 @@ public class FieldListenerTest
 		assertEquals(
 			"line 3:0 Cannot assign bool to field of type num.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testReadFromStringField() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String myStringField;\n" +
+				"public void read()\n" +
+				"{\n" +
+					"String read = this.myStringField;\n" +
+				"}" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(2, methods.size());
+
+		MethodNode method = methods.get(0);
+		InsnList instructions = method.instructions;
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+		assertEquals("MyClass", secondInstruction.owner);
+		assertEquals("myStringField", secondInstruction.name);
+		assertEquals("Ljava/lang/String;", secondInstruction.desc);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ASTORE, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
 	}
 }

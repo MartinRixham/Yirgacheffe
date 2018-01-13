@@ -16,7 +16,8 @@ public class PrimitiveTypeTest
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
 		assertEquals(0, type.width());
-		assertEquals(Opcodes.RETURN, type.getReturnOpcode());
+		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 	}
 
 	@Test
@@ -28,7 +29,8 @@ public class PrimitiveTypeTest
 		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());
 		assertEquals("Z", type.toJVMType());
 		assertEquals(1, type.width());
-		assertEquals(Opcodes.IRETURN, type.getReturnOpcode());
+		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 	}
 
 	@Test
@@ -40,7 +42,8 @@ public class PrimitiveTypeTest
 		assertEquals("java.lang.Character", type.toFullyQualifiedType());
 		assertEquals("C", type.toJVMType());
 		assertEquals(1, type.width());
-		assertEquals(Opcodes.IRETURN, type.getReturnOpcode());
+		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 	}
 
 	@Test
@@ -52,6 +55,7 @@ public class PrimitiveTypeTest
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 		assertEquals("D", type.toJVMType());
 		assertEquals(2, type.width());
-		assertEquals(Opcodes.DRETURN, type.getReturnOpcode());
+		assertEquals(Opcodes.DRETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.DSTORE, type.getStoreInstruction());
 	}
 }

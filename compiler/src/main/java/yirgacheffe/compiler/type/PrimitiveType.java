@@ -4,13 +4,13 @@ import org.objectweb.asm.Opcodes;
 
 public enum PrimitiveType implements Type
 {
-	VOID("void", "V", "Void", 0, Opcodes.RETURN),
+	VOID("void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE),
 
-	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN),
+	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE),
 
-	CHAR("char", "C", "Character", 1, Opcodes.IRETURN),
+	CHAR("char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE),
 
-	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN);
+	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE);
 
 	private String name;
 
@@ -22,20 +22,24 @@ public enum PrimitiveType implements Type
 
 	private int width;
 
-	private int returnOpcode;
+	private int returnInstruction;
+
+	private int storeInstruction;
 
 	PrimitiveType(
 		String name,
 		String jvmType,
 		String wrapperClass,
 		int width,
-		int returnOpcode)
+		int returnInstruction,
+		int storeInstruction)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
 		this.fullyQualifiedType = "java.lang." + wrapperClass;
 		this.width = width;
-		this.returnOpcode = returnOpcode;
+		this.returnInstruction = returnInstruction;
+		this.storeInstruction = storeInstruction;
 
 		try
 		{
@@ -75,9 +79,15 @@ public enum PrimitiveType implements Type
 	}
 
 	@Override
-	public int getReturnOpcode()
+	public int getReturnInstruction()
 	{
-		return this.returnOpcode;
+		return this.returnInstruction;
+	}
+
+	@Override
+	public int getStoreInstruction()
+	{
+		return this.storeInstruction;
 	}
 
 	@Override

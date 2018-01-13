@@ -15,6 +15,7 @@ public class NullTypeTest
 		assertEquals("I", type.toJVMType());
 		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
 		assertEquals(1, type.width());
-		assertEquals(Opcodes.IRETURN, type.getReturnOpcode());
+		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 	}
 }

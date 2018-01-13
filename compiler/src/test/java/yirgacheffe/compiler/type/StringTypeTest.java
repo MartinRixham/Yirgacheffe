@@ -17,6 +17,7 @@ public class StringTypeTest
 		assertEquals("Ljava/lang/String;", string.toJVMType());
 		assertEquals("java.lang.String", string.toFullyQualifiedType());
 		assertEquals(1, string.width());
-		assertEquals(Opcodes.ARETURN, string.getReturnOpcode());
+		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
+		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
 	}
 }
