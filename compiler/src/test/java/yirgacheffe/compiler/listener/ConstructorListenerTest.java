@@ -70,9 +70,9 @@ public class ConstructorListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"public MyClass(num param) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -93,6 +93,20 @@ public class ConstructorListenerTest
 		assertEquals("(D)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
 		assertEquals("<init>", constructor.name);
+
+		InsnList instructions = constructor.instructions;
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("java/lang/Object", secondInstruction.owner);
+		assertEquals("<init>", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
 	}
 
 	@Test

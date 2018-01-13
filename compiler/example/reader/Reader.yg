@@ -4,6 +4,6 @@ class Reader
 {
 	public void read(Reader reader)
 	{
-		new String().read(new String());
+		new Streeng().read(new Streeng());
 	}
 }

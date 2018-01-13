@@ -131,7 +131,7 @@ public class MethodListener extends TypeListener
 		}
 
 		Variable variable =
-			new Variable(this.localVariables.size(), type);
+			new Variable(this.localVariables.size() + 1, type);
 
 		this.localVariables.put(context.Identifier().getText(), variable);
 	}

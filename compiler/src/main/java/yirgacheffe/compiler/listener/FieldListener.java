@@ -91,10 +91,13 @@ public class FieldListener extends ConstructorListener
 	{
 		String fieldName = context.Identifier().getText();
 		Type fieldType = this.fieldTypes.get(fieldName);
+		Type ownerType = this.typeStack.pop();
+
+		this.typeStack.push(fieldType);
 
 		this.methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
-			this.className,
+			ownerType.toFullyQualifiedType(),
 			fieldName,
 			fieldType.toJVMType());
 	}

@@ -19,5 +19,6 @@ public class StringTypeTest
 		assertEquals(1, string.width());
 		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
+		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
 	}
 }

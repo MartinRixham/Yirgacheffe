@@ -1,8 +1,8 @@
 package example.reader;
 
-class String
+class Streeng
 {
-	public void read(String string)
+	public void read(Streeng string)
 	{
 		new Reader().read(new Reader());
 	}

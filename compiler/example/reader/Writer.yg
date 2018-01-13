@@ -4,6 +4,6 @@ class Writer
 {
 	public void write()
 	{
-		new String().write();
+		new Streeng().write();
 	}
 }

@@ -15,6 +15,7 @@ public class Types
 		this.types.put("bool", PrimitiveType.BOOL);
 		this.types.put("char", PrimitiveType.CHAR);
 		this.types.put("num", PrimitiveType.DOUBLE);
+		this.types.put("String", new StringType());
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)

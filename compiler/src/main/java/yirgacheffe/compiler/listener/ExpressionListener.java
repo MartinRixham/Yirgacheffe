@@ -1,8 +1,11 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ExpressionListener extends StatementListener
@@ -17,10 +20,22 @@ public class ExpressionListener extends StatementListener
 	{
 		if (this.localVariables.containsKey(context.getText()))
 		{
-			this.typeStack.push(this.localVariables.get(context.getText()).getType());
-		}
+			Variable variable = this.localVariables.get(context.getText());
+			Type type = variable.getType();
+			int index = variable.getIndex();
 
-		this.methodVisitor.visitVarInsn(Opcodes.DLOAD, 1);
+			this.methodVisitor.visitVarInsn(type.getLoadInstruction(), index);
+
+			this.typeStack.push(type);
+		}
+		else
+		{
+			String message = "Unknown local variable '" + context.getText() + "'.";
+
+			this.errors.add(new Error(context, message));
+
+			this.typeStack.push(new NullType());
+		}
 	}
 
 	@Override

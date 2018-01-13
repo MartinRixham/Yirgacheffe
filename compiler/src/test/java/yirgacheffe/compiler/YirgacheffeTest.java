@@ -136,7 +136,7 @@ public class YirgacheffeTest
 	@Test
 	public void testCompilingMultipleClasses() throws Exception
 	{
-		new File("example/reader/String.class").delete();
+		new File("example/reader/Streeng.class").delete();
 		new File("example/reader/Reader.class").delete();
 
 		PrintStream originalError = System.err;
@@ -146,7 +146,7 @@ public class YirgacheffeTest
 			new String[]
 				{
 					"example/reader/Reader.yg",
-					"example/reader/String.yg"
+					"example/reader/Streeng.yg"
 				};
 
 		System.setErr(error);
@@ -154,7 +154,7 @@ public class YirgacheffeTest
 		Yirgacheffe.main(arguments);
 
 		InputStream firstFile =
-			new FileInputStream("example/reader/String.class");
+			new FileInputStream("example/reader/Streeng.class");
 		InputStream secondFile =
 			new FileInputStream("example/reader/Reader.class");
 
@@ -168,7 +168,7 @@ public class YirgacheffeTest
 	@Test
 	public void testMissingMethod() throws Exception
 	{
-		new File("example/reader/String.class").delete();
+		new File("example/reader/Streeng.class").delete();
 		new File("example/reader/Writer.class").delete();
 		new File("example/reader/Reader.class").delete();
 
@@ -179,7 +179,7 @@ public class YirgacheffeTest
 			new String[]
 				{
 					"example/reader/Writer.yg",
-					"example/reader/String.yg",
+					"example/reader/Streeng.yg",
 					"example/reader/Reader.yg"
 				};
 
@@ -189,7 +189,7 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/reader/Writer.yg:\n" +
-			"line 7:15 Method example.reader.String.write() not found.\n",
+			"line 7:16 Method example.reader.Streeng.write() not found.\n",
 			spyError.toString());
 
 		System.setErr(originalError);

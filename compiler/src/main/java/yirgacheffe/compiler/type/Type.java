@@ -13,4 +13,6 @@ public interface Type
 	int getReturnInstruction();
 
 	int getStoreInstruction();
+
+	int getLoadInstruction();
 }

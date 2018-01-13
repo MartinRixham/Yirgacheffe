@@ -17,5 +17,6 @@ public class NullTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
 	}
 }

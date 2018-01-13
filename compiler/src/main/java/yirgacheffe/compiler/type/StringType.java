@@ -60,6 +60,12 @@ public class StringType implements Type
 	}
 
 	@Override
+	public int getLoadInstruction()
+	{
+		return Opcodes.ALOAD;
+	}
+
+	@Override
 	public String toString()
 	{
 		return this.fullyQualifiedType;

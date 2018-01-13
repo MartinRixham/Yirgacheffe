@@ -28,7 +28,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"new String();\n" +
 				"}\n" +
@@ -83,7 +83,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"new String(\"thingy\");\n" +
 				"}\n" +
@@ -143,7 +143,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"new Double(1.0);\n" +
 				"}\n" +
@@ -251,7 +251,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"\"thingy\".toString();\n" +
 				"}\n" +
@@ -305,7 +305,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"\"thingy\".concat(\"sumpt\");\n" +
 				"}\n" +

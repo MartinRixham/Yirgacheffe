@@ -18,6 +18,7 @@ public class PrimitiveTypeTest
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 	}
 
 	@Test
@@ -31,6 +32,7 @@ public class PrimitiveTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
 	}
 
 	@Test
@@ -44,6 +46,7 @@ public class PrimitiveTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
 	}
 
 	@Test
@@ -57,5 +60,6 @@ public class PrimitiveTypeTest
 		assertEquals(2, type.width());
 		assertEquals(Opcodes.DRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.DSTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.DLOAD, type.getLoadInstruction());
 	}
 }

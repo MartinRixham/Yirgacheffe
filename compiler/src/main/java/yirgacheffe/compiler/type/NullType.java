@@ -37,4 +37,10 @@ public class NullType implements Type
 	{
 		return Opcodes.ISTORE;
 	}
+
+	@Override
+	public int getLoadInstruction()
+	{
+		return Opcodes.ILOAD;
+	}
 }

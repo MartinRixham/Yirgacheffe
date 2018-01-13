@@ -4,13 +4,13 @@ import org.objectweb.asm.Opcodes;
 
 public enum PrimitiveType implements Type
 {
-	VOID("void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE),
+	VOID("void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD),
 
-	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE),
+	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
-	CHAR("char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE),
+	CHAR("char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
-	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE);
+	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD);
 
 	private String name;
 
@@ -26,13 +26,16 @@ public enum PrimitiveType implements Type
 
 	private int storeInstruction;
 
+	private int loadInstruction;
+
 	PrimitiveType(
 		String name,
 		String jvmType,
 		String wrapperClass,
 		int width,
 		int returnInstruction,
-		int storeInstruction)
+		int storeInstruction,
+		int loadInstruction)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
@@ -40,6 +43,7 @@ public enum PrimitiveType implements Type
 		this.width = width;
 		this.returnInstruction = returnInstruction;
 		this.storeInstruction = storeInstruction;
+		this.loadInstruction = loadInstruction;
 
 		try
 		{
@@ -88,6 +92,12 @@ public enum PrimitiveType implements Type
 	public int getStoreInstruction()
 	{
 		return this.storeInstruction;
+	}
+
+	@Override
+	public int getLoadInstruction()
+	{
+		return this.loadInstruction;
 	}
 
 	@Override

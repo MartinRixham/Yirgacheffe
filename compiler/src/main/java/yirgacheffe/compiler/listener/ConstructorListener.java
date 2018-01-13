@@ -54,6 +54,15 @@ public class ConstructorListener extends MainMethodListener
 				null,
 				null);
 
+		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"java/lang/Object",
+			"<init>",
+			"()V",
+			false);
+
 		this.hasDefaultConstructor = false;
 	}
 }
