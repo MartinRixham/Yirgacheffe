@@ -50,7 +50,7 @@ public class FieldListener extends ConstructorListener
 		this.methodVisitor =
 			this.writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
-				"<init_field_0>",
+				"<field0>",
 				"()V",
 				null,
 				null);

@@ -12,7 +12,7 @@ public class Types
 	public Types()
 	{
 		this.types.put("void", PrimitiveType.VOID);
-		this.types.put("bool", PrimitiveType.BOOL);
+		this.types.put("bool", PrimitiveType.BOOLEAN);
 		this.types.put("char", PrimitiveType.CHAR);
 		this.types.put("num", PrimitiveType.DOUBLE);
 		this.types.put("String", new StringType());

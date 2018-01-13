@@ -359,6 +359,43 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testFunctionCallWithSubtypeArgument() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"\"thingy\".equals(\"sumpt\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(5, instructions.size());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)Z", thirdInstruction.desc);
+		assertEquals("equals", thirdInstruction.name);
+		assertFalse(thirdInstruction.itf);
+	}
+
+	@Test
 	public void testFunctionCallWithArgumentOfWrongType() throws Exception
 	{
 		String source =

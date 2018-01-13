@@ -38,7 +38,7 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().equals("true");
 
-			this.typeStack.push(PrimitiveType.BOOL);
+			this.typeStack.push(PrimitiveType.BOOLEAN);
 		}
 		else
 		{

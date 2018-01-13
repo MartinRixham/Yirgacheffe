@@ -10,6 +10,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionCallListener extends ExpressionListener
 {
@@ -63,16 +65,69 @@ public class FunctionCallListener extends ExpressionListener
 	{
 		String methodName = context.Identifier().getText();
 		Type owner = this.typeStack.pop();
-
-		String descriptor = "()V";
+		Method[] methods = owner.reflectionClass().getMethods();
+		Method matchedMethod = null;
 		Type returnType = new NullType();
+		String argumentDescriptor = "()";
 
-		try
+		for (Method method: methods)
 		{
-			Method method =
-				owner.reflectionClass().getMethod(methodName, this.argumentClasses);
+			if (method.getName().equals(methodName))
+			{
+				Class<?>[] parameterTypes = method.getParameterTypes();
+				boolean matched = true;
 
-			Class<?> returnClass = method.getReturnType();
+				if (parameterTypes.length != this.argumentClasses.length)
+				{
+					continue;
+				}
+
+				for (int i = 0; i < parameterTypes.length; i++)
+				{
+					if (!parameterTypes[i].isAssignableFrom(this.argumentClasses[i]))
+					{
+						matched = false;
+						break;
+					}
+				}
+
+				if (matched)
+				{
+					matchedMethod = method;
+
+					argumentDescriptor = "(";
+
+					for (Class<?> parameterType: parameterTypes)
+					{
+						argumentDescriptor +=
+							new ReferenceType(parameterType).toJVMType();
+					}
+
+					argumentDescriptor += ")";
+				}
+			}
+		}
+
+		if (matchedMethod == null)
+		{
+			String method = owner.toFullyQualifiedType() + "." + methodName + "(";
+			List<String> arguments = new ArrayList<>();
+
+			for (Class<?> argumentClass: this.argumentClasses)
+			{
+				arguments.add(argumentClass.getName());
+			}
+
+			method += String.join(",", arguments) + ")";
+
+			String message = "Method " + method + " not found.";
+
+			this.errors.add(
+				new Error(context.Identifier().getSymbol(), message));
+		}
+		else
+		{
+			Class<?> returnClass = matchedMethod.getReturnType();
 
 			if (returnClass.isPrimitive())
 			{
@@ -82,23 +137,13 @@ public class FunctionCallListener extends ExpressionListener
 			{
 				returnType = new ReferenceType(returnClass);
 			}
-
-			descriptor = this.argumentDescriptor + returnType.toJVMType();
-		}
-		catch (NoSuchMethodException e)
-		{
-			String message =
-				"Method " + e.getMessage() + " not found.";
-
-			this.errors.add(
-				new Error(context.Identifier().getSymbol(), message));
 		}
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			owner.toFullyQualifiedType().replace(".", "/"),
 			methodName,
-			descriptor,
+			argumentDescriptor + returnType.toJVMType(),
 			false);
 
 		if (!returnType.equals(PrimitiveType.VOID))

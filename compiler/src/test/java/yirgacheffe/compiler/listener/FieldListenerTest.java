@@ -263,7 +263,7 @@ public class FieldListenerTest
 		MethodNode initialiser = methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
-		assertEquals("<init_field_0>", initialiser.name);
+		assertEquals("<field0>", initialiser.name);
 		assertEquals("()V", initialiser.desc);
 
 		InsnList instructions = initialiser.instructions;

@@ -24,7 +24,7 @@ public class PrimitiveTypeTest
 	@Test
 	public void testBoolIsPrimitive()
 	{
-		Type type = PrimitiveType.BOOL;
+		Type type = PrimitiveType.BOOLEAN;
 
 		assertEquals("bool", type.toString());
 		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());

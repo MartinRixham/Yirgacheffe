@@ -6,7 +6,7 @@ public enum PrimitiveType implements Type
 {
 	VOID("void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD),
 
-	BOOL("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
+	BOOLEAN("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
 	CHAR("char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
