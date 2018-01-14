@@ -50,12 +50,12 @@ public class FieldListener extends ConstructorListener
 		this.methodVisitor =
 			this.writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
-				"<field0>",
+				"0_init_field",
 				"()V",
 				null,
 				null);
 
-		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		this.enterThisRead(null);
 	}
 
 	@Override
@@ -75,8 +75,11 @@ public class FieldListener extends ConstructorListener
 
 		Type fieldType = this.types.getType(declaration.type());
 		Type expressionType = this.typeStack.pop();
+		this.typeStack.pop();
 
-		if (!(fieldType.toJVMType().equals(expressionType.toJVMType())))
+		this.methodVisitor.visitMaxs(this.typeStack.reset(), 1);
+
+		if (!fieldType.toJVMType().equals(expressionType.toJVMType()))
 		{
 			String message =
 				"Cannot assign " + expressionType.toString() +

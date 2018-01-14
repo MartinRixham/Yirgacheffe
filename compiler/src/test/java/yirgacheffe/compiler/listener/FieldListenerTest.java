@@ -250,7 +250,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -263,8 +269,10 @@ public class FieldListenerTest
 		MethodNode initialiser = methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
-		assertEquals("<field0>", initialiser.name);
+		assertEquals("0_init_field", initialiser.name);
 		assertEquals("()V", initialiser.desc);
+		assertEquals(1, initialiser.maxLocals);
+		assertEquals(2, initialiser.maxStack);
 
 		InsnList instructions = initialiser.instructions;
 
@@ -299,7 +307,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -336,7 +350,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -364,7 +384,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -398,7 +424,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -432,7 +464,13 @@ public class FieldListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -479,6 +517,8 @@ public class FieldListenerTest
 
 		MethodNode method = methods.get(0);
 		InsnList instructions = method.instructions;
+
+		assertEquals(4, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

@@ -28,7 +28,7 @@ public class ExpressionListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"String myVariable = \"thingy\";\n" +
 					"String anotherVariable = myVariable;\n" +
@@ -50,9 +50,9 @@ public class ExpressionListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(7, instructions.size());
+		assertEquals(5, instructions.size());
 
-		assertEquals(Opcodes.ALOAD, instructions.get(4).getOpcode());
+		assertEquals(Opcodes.ALOAD, instructions.get(2).getOpcode());
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class ExpressionListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public void method()" +
 				"{\n" +
 					"String myVariable = unknownVariable;\n" +
 				"}\n" +
