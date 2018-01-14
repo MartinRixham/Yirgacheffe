@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Classes;
@@ -309,6 +310,14 @@ public class FieldListenerTest
 
 		assertEquals(Opcodes.ALOAD, thirdInsn.getOpcode());
 		assertEquals(0, thirdInsn.var);
+
+		MethodInsnNode fourthInsn = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInsn.getOpcode());
+		assertEquals("0_init_field", fourthInsn.name);
+		assertEquals("()V", fourthInsn.desc);
+		assertEquals("MyClass", fourthInsn.owner);
+		assertFalse(fourthInsn.itf);
 	}
 
 	@Test
@@ -597,5 +606,32 @@ public class FieldListenerTest
 
 		assertEquals(Opcodes.ASTORE, thirdInstruction.getOpcode());
 		assertEquals(1, thirdInstruction.var);
+	}
+
+	@Test
+	public void testReadFromUnknownField() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void read()\n" +
+				"{\n" +
+					"String read = this.myStringField;\n" +
+				"}" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:19 Unknown field 'myStringField'.\n",
+			result.getErrors());
 	}
 }

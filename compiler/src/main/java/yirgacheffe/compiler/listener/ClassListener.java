@@ -157,6 +157,13 @@ public class ClassListener extends PackageListener
 		if (this.hasInitialiser)
 		{
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				this.className,
+				"0_init_field",
+				"()V",
+				false);
 		}
 
 		methodVisitor.visitInsn(Opcodes.RETURN);

@@ -8,6 +8,8 @@ import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.compiler.type.Classes;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 
@@ -47,6 +49,11 @@ public class MutableReferenceTest
 		BytecodeClassLoader classLoader = new BytecodeClassLoader();
 
 		classLoader.add("MyClass", result.getBytecode());
+
+		try (OutputStream outputStream = new FileOutputStream("MyClass.class"))
+		{
+			outputStream.write(result.getBytecode());
+		}
 
 		PrintStream originalOut = java.lang.System.out;
 		ByteArrayOutputStream sypOut = new ByteArrayOutputStream();

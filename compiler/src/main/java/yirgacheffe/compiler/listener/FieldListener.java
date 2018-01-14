@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -96,6 +97,16 @@ public class FieldListener extends ConstructorListener
 	{
 		String fieldName = context.Identifier().getText();
 		Type fieldType = this.fieldTypes.get(fieldName);
+
+		if (fieldType == null)
+		{
+			fieldType = new NullType();
+
+			String message = "Unknown field '" + fieldName + "'.";
+
+			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+		}
+
 		Type ownerType = this.typeStack.pop();
 
 		this.typeStack.push(fieldType);
