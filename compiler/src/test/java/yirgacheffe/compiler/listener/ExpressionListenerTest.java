@@ -181,7 +181,36 @@ public class ExpressionListenerTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode firstMethod = methods.get(0);
 
-		assertEquals(1, firstMethod.maxStack);
+		assertEquals(2, firstMethod.maxStack);
 		assertEquals(2, firstMethod.maxLocals);
+	}
+
+	@Test
+	public void testObjectConstructedWithObject() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public String method()" +
+				"{\n" +
+					"return new String(new String(\"thingy\"));\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(5, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
 	}
 }

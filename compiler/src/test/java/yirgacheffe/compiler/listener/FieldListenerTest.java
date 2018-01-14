@@ -469,6 +469,53 @@ public class FieldListenerTest
 	}
 
 	@Test
+	public void testObjectFieldWithInitialiser() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"Object myObject = new Object();\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(2, methods.size());
+
+		MethodNode initialiser = methods.get(0);
+
+		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
+		assertEquals("0_init_field", initialiser.name);
+		assertEquals("()V", initialiser.desc);
+		assertEquals(1, initialiser.maxLocals);
+		assertEquals(3, initialiser.maxStack);
+
+		InsnList instructions = initialiser.instructions;
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("myObject", fifthInstruction.name);
+		assertEquals("Ljava/lang/Object;", fifthInstruction.desc);
+	}
+
+	@Test
 	public void testFieldInitialiserWithMismatchedTypes() throws Exception
 	{
 		String source =

@@ -8,6 +8,8 @@ public class TypeStack
 
 	private int maxSize = 0;
 
+	private int currentInstantiations = 0;
+
 	public void push(Type type)
 	{
 		this.stack.push(type);
@@ -24,7 +26,7 @@ public class TypeStack
 			size += type.width();
 		}
 
-		return size;
+		return size + this.currentInstantiations;
 	}
 
 	public Type pop()
@@ -44,5 +46,15 @@ public class TypeStack
 	public boolean isEmpty()
 	{
 		return this.stack.size() == 0;
+	}
+
+	public void beginInstantiation()
+	{
+		this.currentInstantiations++;
+	}
+
+	public void endInstantiation()
+	{
+		this.currentInstantiations--;
 	}
 }

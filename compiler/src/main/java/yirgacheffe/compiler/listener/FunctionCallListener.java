@@ -19,6 +19,8 @@ public class FunctionCallListener extends ExpressionListener
 
 	private Class<?>[] argumentClasses;
 
+	private Type constructorType;
+
 	public FunctionCallListener(
 		String sourceFile,
 		Classes classes)
@@ -43,21 +45,24 @@ public class FunctionCallListener extends ExpressionListener
 
 		this.methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		this.methodVisitor.visitInsn(Opcodes.DUP);
+
+		this.constructorType = this.types.getType(context.type());
+
+		this.typeStack.beginInstantiation();
+		this.typeStack.push(this.constructorType);
 	}
 
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
-		Type type = this.types.getType(context.constructor().type());
-
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
-			type.toFullyQualifiedType().replace(".", "/"),
+			this.constructorType.toFullyQualifiedType().replace(".", "/"),
 			"<init>",
 			this.argumentDescriptor + "V",
 			false);
 
-		this.typeStack.push(type);
+		this.typeStack.endInstantiation();
 	}
 
 	@Override

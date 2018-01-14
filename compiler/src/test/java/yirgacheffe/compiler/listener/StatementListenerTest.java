@@ -177,7 +177,7 @@ public class StatementListenerTest
 		MethodNode firstMethod = methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
-			assertEquals(4, firstMethod.maxLocals);
+		assertEquals(4, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -200,6 +200,36 @@ public class StatementListenerTest
 
 		assertEquals(Opcodes.ISTORE, fourthInstruction.getOpcode());
 		assertEquals(3, fourthInstruction.var);
+	}
+
+	@Test
+	public void testInitialiseNumAfterObject() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"Object myObject = new Object();\n" +
+					"num myVariable = 1;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(4, firstMethod.maxLocals);
 	}
 
 	@Test
