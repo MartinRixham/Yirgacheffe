@@ -56,6 +56,8 @@ public class FieldListener extends ConstructorListener
 				null);
 
 		this.enterThisRead(null);
+
+		this.hasInitialiser = true;
 	}
 
 	@Override

@@ -266,6 +266,9 @@ public class FieldListenerTest
 		reader.accept(classNode, 0);
 
 		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(2, methods.size());
+
 		MethodNode initialiser = methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
@@ -287,14 +290,25 @@ public class FieldListenerTest
 
 		assertEquals("thingy", secondInstruction.cst);
 
-		FieldInsnNode thirInstruction = (FieldInsnNode) instructions.get(2);
+		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.PUTFIELD, thirInstruction.getOpcode());
-		assertEquals("MyClass", thirInstruction.owner);
-		assertEquals("myStringField", thirInstruction.name);
-		assertEquals("Ljava/lang/String;", thirInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("myStringField", thirdInstruction.name);
+		assertEquals("Ljava/lang/String;", thirdInstruction.desc);
 
 		assertEquals(Opcodes.RETURN, instructions.get(3).getOpcode());
+
+		MethodNode constructor = methods.get(1);
+
+		assertEquals("<init>", constructor.name);
+
+		instructions = constructor.instructions;
+
+		VarInsnNode thirdInsn = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInsn.getOpcode());
+		assertEquals(0, thirdInsn.var);
 	}
 
 	@Test
