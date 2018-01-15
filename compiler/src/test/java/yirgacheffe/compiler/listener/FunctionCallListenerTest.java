@@ -232,7 +232,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"new bool();\n" +
+					"new bool(true);\n" +
 				"}\n" +
 			"}";
 
@@ -393,6 +393,63 @@ public class FunctionCallListenerTest
 		assertEquals("(Ljava/lang/Object;)Z", thirdInstruction.desc);
 		assertEquals("equals", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
+	}
+
+	@Test
+	public void testConstructorCallWithWrongArgument() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Object method()" +
+				"{\n" +
+					"new String(1);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Constructor java.lang.String(java.lang.Double) not found.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testConstructorCallWithSubtypeArgument() throws Exception
+	{
+		String source =
+			"import java.lang.ref.WeakReference;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public Object method()" +
+				"{\n" +
+					"return new WeakReference(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
+		assertEquals("java/lang/ref/WeakReference", fourthInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)V", fourthInstruction.desc);
+		assertEquals("<init>", fourthInstruction.name);
+		assertFalse(fourthInstruction.itf);
 	}
 
 	@Test

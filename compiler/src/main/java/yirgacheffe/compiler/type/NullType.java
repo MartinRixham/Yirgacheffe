@@ -7,7 +7,7 @@ public class NullType implements Type
 	@Override
 	public Class<?> reflectionClass()
 	{
-		throw new RuntimeException();
+		return int.class;
 	}
 
 	public String toJVMType()
