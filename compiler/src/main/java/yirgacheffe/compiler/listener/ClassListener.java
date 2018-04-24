@@ -8,6 +8,8 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ClassListener extends PackageListener
 {
+	private static final int MAIN_METHOD_STACK_SIZE = 4;
+
 	protected boolean hasDefaultConstructor = true;
 
 	protected String mainMethodName;
@@ -124,15 +126,26 @@ public class ClassListener extends PackageListener
 			"()V",
 			false);
 
+		methodVisitor.visitTypeInsn(Opcodes.NEW, "yirgacheffe/lang/Array");
+		methodVisitor.visitInsn(Opcodes.DUP);
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"yirgacheffe/lang/Array",
+			"<init>",
+			"([Ljava/lang/Object;)V",
+			false);
+
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			this.className,
 			this.mainMethodName,
-			"()V",
+			"(Lyirgacheffe/lang/Array;)V",
 			false);
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(2, 1);
+		methodVisitor.visitMaxs(MAIN_METHOD_STACK_SIZE, 1);
 	}
 
 	private void makeDefaultConstructor()

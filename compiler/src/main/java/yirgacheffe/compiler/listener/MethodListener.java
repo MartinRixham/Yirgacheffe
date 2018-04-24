@@ -114,7 +114,7 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void enterParameter(YirgacheffeParser.ParameterContext context)
+	public void exitParameter(YirgacheffeParser.ParameterContext context)
 	{
 		Type type = new NullType();
 

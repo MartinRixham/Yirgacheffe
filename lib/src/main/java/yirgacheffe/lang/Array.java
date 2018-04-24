@@ -41,6 +41,18 @@ public class Array<T>
 		return Arrays.toString(Arrays.copyOf(this.array, this.length));
 	}
 
+	public T get(double index)
+	{
+		int intIndex = (int) index;
+
+		if (index < 0 || index >= this.length)
+		{
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(intIndex));
+		}
+
+		return (T) this.array[intIndex];
+	}
+
 	public void push(T... items)
 	{
 		this.grow(this.length + items.length);
@@ -108,96 +120,106 @@ public class Array<T>
 		this.array = newArray;
 	}
 
-	public Array<T> splice(int startIndex)
+	public Array<T> splice(double startIndex)
 	{
+		int intStartIndex = (int) startIndex;
+
 		if (startIndex < 0)
 		{
-			return this.splice(startIndex, -startIndex);
+			return this.splice(intStartIndex, -intStartIndex);
 		}
 		else
 		{
-			return this.splice(startIndex, this.length - startIndex);
+			return this.splice(intStartIndex, this.length - intStartIndex);
 		}
 	}
 
-	public Array<T> splice(int startIndex, int deleteCount, T... items)
+	public Array<T> splice(double startIndex, double deleteCount, T... items)
 	{
-		if (startIndex < 0)
+		int intStartIndex = (int) startIndex;
+		int intDeleteCount = (int) deleteCount;
+
+		if (intStartIndex < 0)
 		{
-			startIndex = this.length + startIndex;
+			intStartIndex = this.length + intStartIndex;
 		}
 
-		if (startIndex > this.length || startIndex < 0)
+		if (intStartIndex > this.length || intStartIndex < 0)
 		{
-			throw new ArrayIndexOutOfBoundsException(Integer.toString(startIndex));
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(intStartIndex));
 		}
 
-		if (startIndex + deleteCount > this.length)
+		if (intStartIndex + intDeleteCount > this.length)
 		{
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(this.length));
 		}
 
-		this.grow(this.length + items.length - deleteCount);
+		this.grow(this.length + items.length - intDeleteCount);
 
-		Object[] deleted = new Object[deleteCount];
+		Object[] deleted = new Object[intDeleteCount];
 
-		java.lang.System.arraycopy(this.array, startIndex, deleted, 0, deleteCount);
+		java.lang.System.arraycopy(this.array, intStartIndex, deleted, 0, intDeleteCount);
 
 		java.lang.System.arraycopy(
 			this.array,
-			startIndex + deleteCount,
+			intStartIndex + intDeleteCount,
 			this.array,
-			startIndex + items.length,
-			this.length - (startIndex + deleteCount));
+			intStartIndex + items.length,
+			this.length - (intStartIndex + intDeleteCount));
 
-		java.lang.System.arraycopy(items, 0, this.array, startIndex, items.length);
+		java.lang.System.arraycopy(items, 0, this.array, intStartIndex, items.length);
 
 		for (int i = items.length; i < deleteCount; i++)
 		{
-			this.array[this.length - deleteCount + i] = null;
+			this.array[this.length - intDeleteCount + i] = null;
 		}
 
-		this.length = this.length + items.length - deleteCount;
+		this.length = this.length + items.length - intDeleteCount;
 
 		return new Array<T>((T[]) deleted);
 	}
 
-	public Array<T> slice(int startIndex)
+	public Array<T> slice(double startIndex)
 	{
-		return this.slice(startIndex, this.length);
+		int intStartIndex = (int) startIndex;
+
+		return this.slice(intStartIndex, this.length);
 	}
 
-	public Array<T> slice(int startIndex, int endIndex)
+	public Array<T> slice(double startIndex, double endIndex)
 	{
-		if (startIndex < 0)
+		int intStartIndex = (int) startIndex;
+		int intEndIndex = (int) endIndex;
+
+		if (intStartIndex < 0)
 		{
-			startIndex = this.length + startIndex;
+			intStartIndex = this.length + intStartIndex;
 		}
 
-		if (endIndex < 0)
+		if (intEndIndex < 0)
 		{
-			endIndex = this.length + endIndex;
+			intEndIndex = this.length + intEndIndex;
 		}
 
-		if (startIndex >= this.length || startIndex < 0)
+		if (intStartIndex >= this.length || intStartIndex < 0)
 		{
-			throw new ArrayIndexOutOfBoundsException(Integer.toString(startIndex));
+			throw new ArrayIndexOutOfBoundsException(Integer.toString(intStartIndex));
 		}
 
-		if (endIndex > this.length)
+		if (intEndIndex > this.length)
 		{
 			throw new ArrayIndexOutOfBoundsException(Integer.toString(this.length));
 		}
 
-		if (endIndex <= startIndex)
+		if (intEndIndex <= intStartIndex)
 		{
 			return new Array<T>();
 		}
 
-		Object[] newArray = new Object[endIndex - startIndex];
+		Object[] newArray = new Object[intEndIndex - intStartIndex];
 
 		java.lang.System.arraycopy(
-			this.array, startIndex, newArray, 0, endIndex - startIndex);
+			this.array, intStartIndex, newArray, 0, intEndIndex - intStartIndex);
 
 		return new Array<T>((T[]) newArray);
 	}

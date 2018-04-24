@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
@@ -27,7 +28,7 @@ public class MainMethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main myMainMethod() {}\n" +
+				"main myMainMethod(Array<String> args) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -46,7 +47,7 @@ public class MainMethodListenerTest
 
 		MethodNode method = methods.get(0);
 
-		assertEquals("()V", method.desc);
+		assertEquals("(Lyirgacheffe/lang/Array;)V", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
 		assertEquals("myMainMethod", method.name);
 
@@ -55,7 +56,7 @@ public class MainMethodListenerTest
 		assertEquals("([Ljava/lang/String;)V", mainMethod.desc);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, mainMethod.access);
 		assertEquals("main", mainMethod.name);
-		assertEquals(2, mainMethod.maxStack);
+		assertEquals(4, mainMethod.maxStack);
 		assertEquals(1, mainMethod.maxLocals);
 
 		InsnList instructions = mainMethod.instructions;
@@ -77,16 +78,38 @@ public class MainMethodListenerTest
 		assertEquals("()V", thirdInstruction.desc);
 		assertFalse(thirdInstruction.itf);
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		TypeInsnNode fourthInstruction = (TypeInsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("MyClass", fourthInstruction.owner);
-		assertEquals("myMainMethod", fourthInstruction.name);
-		assertEquals("()V", fourthInstruction.desc);
-		assertFalse(fourthInstruction.itf);
+		assertEquals(Opcodes.NEW, fourthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", fourthInstruction.desc);
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.DUP, fifthInstruction.getOpcode());
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.ALOAD, sixthInstruction.getOpcode());
+		assertEquals(0, sixthInstruction.var);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESPECIAL, seventhInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", seventhInstruction.owner);
+		assertEquals("<init>", seventhInstruction.name);
+		assertEquals("([Ljava/lang/Object;)V", seventhInstruction.desc);
+		assertFalse(seventhInstruction.itf);
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
+		assertEquals("MyClass", eighthInstruction.owner);
+		assertEquals("myMainMethod", eighthInstruction.name);
+		assertEquals("(Lyirgacheffe/lang/Array;)V", eighthInstruction.desc);
+		assertFalse(eighthInstruction.itf);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.RETURN, ninthInstruction.getOpcode());
 	}
 }

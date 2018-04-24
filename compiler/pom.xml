@@ -30,7 +30,7 @@
     <dependency>
       <groupId>yirgacheffe</groupId>
       <artifactId>yirgacheffe-lib</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
   <build>

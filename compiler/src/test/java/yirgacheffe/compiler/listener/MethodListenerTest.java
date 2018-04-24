@@ -22,9 +22,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"num myMethod();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -52,9 +52,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"public num myInterfaceMethod();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -71,9 +71,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"num return();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -89,9 +89,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"num myParameterisedMethod(String param1, num param2);\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -115,9 +115,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"num myMethod(param1, num param2);\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -133,9 +133,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"public num myMethod(String param1, num param2) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -163,9 +163,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"private num myMethod(String param1, num param2) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -193,9 +193,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"num myMethod(String param1, num param2) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -212,10 +212,10 @@ public class MethodListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"public num myMethod(String param1, num param2) {}\n" +
 				"public String buildString(StringBuilder builder) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -252,9 +252,9 @@ public class MethodListenerTest
 			"import java.util.List;\n" +
 			"import java.util.Set;\n" +
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"public Set myMethod(List param1) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -277,9 +277,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"void myMethod();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -302,9 +302,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"bool myMethod();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -327,9 +327,9 @@ public class MethodListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"char myMethod();\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());

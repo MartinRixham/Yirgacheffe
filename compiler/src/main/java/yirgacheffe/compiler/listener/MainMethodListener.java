@@ -15,8 +15,8 @@ public class MainMethodListener extends MethodListener
 	@Override
 	public void exitMainMethodDeclaration(
 		YirgacheffeParser.MainMethodDeclarationContext context)
-		{
-			this.mainMethodName = context.Identifier().getText();
+	{
+		this.mainMethodName = context.Identifier().getText();
 
 		String descriptor = this.getDescriptor(context.parameter()) + "V";
 

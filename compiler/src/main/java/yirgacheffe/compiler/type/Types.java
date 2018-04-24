@@ -15,8 +15,6 @@ public class Types
 		this.types.put("bool", PrimitiveType.BOOLEAN);
 		this.types.put("char", PrimitiveType.CHAR);
 		this.types.put("num", PrimitiveType.DOUBLE);
-		this.types.put("String", new StringType());
-		this.types.put("Array", new ReferenceType(yirgacheffe.lang.Array.class));
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)

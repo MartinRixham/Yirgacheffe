@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.StringType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -26,7 +26,7 @@ public class StatementListener extends FieldListener
 		{
 			value = context.getText().replace("\"", "");
 
-			this.typeStack.push(new StringType());
+			this.typeStack.push(new ReferenceType(String.class));
 		}
 		else if (context.CharacterLiteral() != null)
 		{
@@ -51,7 +51,7 @@ public class StatementListener extends FieldListener
 	}
 
 	@Override
-	public void enterVariableDeclaration(
+	public void exitVariableDeclaration(
 		YirgacheffeParser.VariableDeclarationContext context)
 	{
 		Type type = this.types.getType(context.type());

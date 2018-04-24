@@ -48,6 +48,60 @@ public class ArrayTest
 	}
 
 	@Test
+	public void testGetFromEmptyArray()
+	{
+		Array<Integer> numbers = new Array<>();
+
+		Exception exception = null;
+
+		try
+		{
+			numbers.get(0);
+		}
+		catch (IndexOutOfBoundsException e)
+		{
+			exception = e;
+		}
+
+		assertNotNull(exception);
+		assertEquals("0", exception.getMessage());
+		assertEquals(0, numbers.length());
+	}
+
+	@Test
+	public void testGetItemFromArrayLengthOne()
+	{
+		Array<Integer> numbers = new Array<>(1);
+
+		int one = numbers.get(0);
+
+		assertEquals(1, one);
+		assertEquals(1, numbers.length());
+	}
+
+	@Test
+	public void testGetFirstItemFromArrayLengthTwo()
+	{
+		Array<Integer> numbers = new Array<>(1, 2);
+
+		int one = numbers.get(0);
+
+		assertEquals(1, one);
+		assertEquals(2, numbers.length());
+	}
+
+	@Test
+	public void testGetSecondItemFromArrayLengthTwo()
+	{
+		Array<Integer> numbers = new Array<>(1, 2);
+
+		int two = numbers.get(1);
+
+		assertEquals(2, two);
+		assertEquals(2, numbers.length());
+	}
+
+	@Test
 	public void testPushOneItemToEmptyArray()
 	{
 		Array<Integer> numbers = new Array<>();
