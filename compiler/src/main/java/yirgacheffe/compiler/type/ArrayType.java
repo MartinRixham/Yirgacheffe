@@ -2,24 +2,39 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
 
-public class StringType implements Type
+public class ArrayType implements Type
 {
-	private String fullyQualifiedType = "java.lang.String";
+	private String jvmType;
 
-	public StringType()
+	private String fullyQualifiedType;
+
+	private Class<?> reflectionClass;
+
+	public ArrayType(String name)
 	{
+		this.jvmType = name.replace(".", "/");
+		this.fullyQualifiedType = name.substring(2).replace(";", "[]");
+
+		try
+		{
+			this.reflectionClass = Class.forName(name);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public Class<?> reflectionClass()
 	{
-		return String.class;
+		return this.reflectionClass;
 	}
 
 	@Override
 	public String toJVMType()
 	{
-		return "Ljava/lang/String;";
+		return this.jvmType;
 	}
 
 	@Override

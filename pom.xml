@@ -11,7 +11,8 @@
 		<module>lib</module>
 		<module>compiler</module>
 		<module>executable</module>
-	</modules>
+    <module>integration</module>
+  </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

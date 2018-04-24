@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -155,7 +154,6 @@ public class ExpressionListenerTest
 		assertEquals(Opcodes.DRETURN, second.getOpcode());
 	}
 
-	@Ignore
 	@Test
 	public void testGenericLocalVariableInitialisation() throws Exception
 	{

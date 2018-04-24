@@ -23,8 +23,8 @@ public class MutableReferenceTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"MutableReference myString =" +
-					"new MutableReference(\"Hello world.\");\n" +
+				"MutableReference<String> myString =" +
+					"new MutableReference<String>(\"Hello world.\");\n" +
 				"public void hello()" +
 				"{\n" +
 					"new System().getOut().println(this.myString.get());\n" +

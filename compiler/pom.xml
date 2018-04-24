@@ -27,6 +27,11 @@
       <version>5.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>yirgacheffe</groupId>
+      <artifactId>yirgacheffe-lib</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>${project.parent.artifactId}</finalName>

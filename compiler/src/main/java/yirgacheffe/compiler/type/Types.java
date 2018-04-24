@@ -16,6 +16,7 @@ public class Types
 		this.types.put("char", PrimitiveType.CHAR);
 		this.types.put("num", PrimitiveType.DOUBLE);
 		this.types.put("String", new StringType());
+		this.types.put("Array", new ReferenceType(yirgacheffe.lang.Array.class));
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)
@@ -25,7 +26,7 @@ public class Types
 			return new NullType();
 		}
 
-		Type type = this.types.get(context.getText());
+		Type type = this.types.get(context.primaryType().getText());
 
 		if (type == null)
 		{

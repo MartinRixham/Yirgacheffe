@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -30,8 +31,8 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitConstructor(YirgacheffeParser.ConstructorContext context)
 	{
-		if (context.type().simpleType() != null &&
-			context.type().simpleType().PrimitiveType() != null)
+		if (context.type().primaryType().simpleType() != null &&
+			context.type().primaryType().simpleType().PrimitiveType() != null)
 		{
 			String message =
 				"Cannot instantiate primitive type " + context.type().getText() + ".";
@@ -45,7 +46,7 @@ public class FunctionCallListener extends ExpressionListener
 		this.methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		this.methodVisitor.visitInsn(Opcodes.DUP);
 
-		this.constructorType = this.types.getType(context.type());
+		this.constructorType = type;
 
 		this.typeStack.beginInstantiation();
 		this.typeStack.push(this.constructorType);
@@ -90,8 +91,7 @@ public class FunctionCallListener extends ExpressionListener
 
 			String message = "Constructor " + constructor + " not found.";
 
-			this.errors.add(
-				new Error(context.getStart(), message));
+			this.errors.add(new Error(context.getStart(), message));
 		}
 	}
 
@@ -113,8 +113,7 @@ public class FunctionCallListener extends ExpressionListener
 			}
 		}
 
-		Method matchedMethod =
-			(Method) this.getExecutable(namedMethods, argumentDescriptor);
+		Method matchedMethod = this.getExecutable(namedMethods, argumentDescriptor);
 
 		if (matchedMethod == null)
 		{
@@ -137,7 +136,11 @@ public class FunctionCallListener extends ExpressionListener
 		{
 			Class<?> returnClass = matchedMethod.getReturnType();
 
-			if (returnClass.isPrimitive())
+			if (returnClass.isArray())
+			{
+				returnType = new ArrayType(returnClass.getName());
+			}
+			else if (returnClass.isPrimitive())
 			{
 				returnType = PrimitiveType.valueOf(returnClass.getName().toUpperCase());
 			}
@@ -160,11 +163,11 @@ public class FunctionCallListener extends ExpressionListener
 		}
 	}
 
-	private Executable getExecutable(
-		List<? extends Executable> executables,
+	private <T extends Executable> T getExecutable(
+		List<T> executables,
 		StringBuilder argumentDescriptor)
 	{
-		for (Executable executable: executables)
+		for (T executable: executables)
 		{
 			Class<?>[] parameterTypes = executable.getParameterTypes();
 			boolean matched = true;
@@ -196,6 +199,11 @@ public class FunctionCallListener extends ExpressionListener
 						argumentDescriptor.append(
 							PrimitiveType.valueOf(parameterType.getName().toUpperCase())
 								.toJVMType());
+					}
+					else if (parameterType.isArray())
+					{
+						argumentDescriptor.append(
+							new ArrayType(parameterType.getName()).toJVMType());
 					}
 					else
 					{

@@ -10,12 +10,4 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>yirgacheffe-lib</artifactId>
   <packaging>jar</packaging>
-  <dependencies>
-    <dependency>
-      <groupId>yirgacheffe</groupId>
-      <artifactId>yirgacheffe-compiler</artifactId>
-      <version>${parent.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

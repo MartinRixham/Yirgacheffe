@@ -55,7 +55,9 @@ variableWrite: Identifier;
 
 parameter: type? Identifier;
 
-type: (simpleType | fullyQualifiedType) typeParameter?;
+type: primaryType typeParameter?;
+
+primaryType: (simpleType | fullyQualifiedType);
 
 simpleType: Identifier | PrimitiveType;
 
