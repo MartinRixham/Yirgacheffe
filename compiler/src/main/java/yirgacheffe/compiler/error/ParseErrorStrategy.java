@@ -8,7 +8,6 @@ public class ParseErrorStrategy extends DefaultErrorStrategy
 {
 	/*@Override
 	public void reportInputMismatch(Parser recognizer, InputMismatchException e)
-		throws RecognitionException
 	{
 		super.reportInputMismatch(recognizer, e);
 	}

@@ -36,6 +36,21 @@ public class TypeListener extends ClassListener
 	}
 
 	@Override
+	public void exitType(YirgacheffeParser.TypeContext context)
+	{
+		Type type = this.types.getType(context);
+
+		if (type.reflectionClass().getTypeParameters().length > 0 &&
+			context.typeParameter() == null)
+		{
+			String message =
+				"Missing type parameter for type " + type.toFullyQualifiedType() + ".";
+
+			this.errors.add(new Error(context, message));
+		}
+	}
+
+	@Override
 	public void enterSimpleType(YirgacheffeParser.SimpleTypeContext context)
 	{
 		if (context.Identifier() != null)

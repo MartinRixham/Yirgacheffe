@@ -425,7 +425,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Object method()" +
 				"{\n" +
-					"return new WeakReference(\"thingy\");\n" +
+					"return new WeakReference<String>(\"thingy\");\n" +
 				"}\n" +
 			"}";
 

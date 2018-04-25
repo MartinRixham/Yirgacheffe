@@ -12,6 +12,11 @@
   <packaging>jar</packaging>
   <dependencies>
     <dependency>
+      <groupId>yirgacheffe</groupId>
+      <artifactId>yirgacheffe-lib</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
       <version>5.2</version>
@@ -26,11 +31,6 @@
       <artifactId>asm-tree</artifactId>
       <version>5.2</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>yirgacheffe</groupId>
-      <artifactId>yirgacheffe-lib</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -67,6 +67,7 @@
                 <param>yirgacheffe.compiler.*</param>
               </targetTests>
               <mutationThreshold>100</mutationThreshold>
+              <withHistory>true</withHistory>
             </configuration>
             <goals>
               <goal>mutationCoverage</goal>

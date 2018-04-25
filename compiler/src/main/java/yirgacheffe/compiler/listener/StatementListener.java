@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -97,5 +98,18 @@ public class StatementListener extends FieldListener
 		}
 
 		this.methodVisitor.visitVarInsn(type.getStoreInstruction(), index);
+
+		if (
+			!(type instanceof NullType) &&
+			this.currentVariable != null &&
+			!this.currentVariable.getType().reflectionClass()
+				.isAssignableFrom(type.reflectionClass()))
+		{
+			String message =
+				"Cannot assign expression of type " + type +
+				" to variable of type " + this.currentVariable.getType() + ".";
+
+			this.errors.add(new Error(context, message));
+		}
 	}
 }

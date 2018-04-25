@@ -294,4 +294,72 @@ public class StatementListenerTest
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
 	}
+
+	@Test
+	public void testMissingVariableTypeParameter() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"MutableReference ref =" +
+						"new MutableReference<String>(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Missing type parameter for type" +
+				" yirgacheffe.lang.MutableReference.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMissingConstructorTypeParameter() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"MutableReference<String> ref =" +
+					"new MutableReference(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:34 Missing type parameter for type" +
+				" yirgacheffe.lang.MutableReference.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMismatchedTypeAssignment() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"num number = \"thingy\";" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Cannot assign expression of type " +
+				"java.lang.String to variable of type num.\n",
+			result.getErrors());
+	}
 }

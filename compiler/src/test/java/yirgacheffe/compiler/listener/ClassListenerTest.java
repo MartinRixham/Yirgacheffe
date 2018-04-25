@@ -145,7 +145,7 @@ public class ClassListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:0 Missing ';'.\n",
+			"line 2:1 Missing '}'.\n",
 			result.getErrors());
 	}
 

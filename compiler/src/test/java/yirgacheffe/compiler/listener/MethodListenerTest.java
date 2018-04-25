@@ -253,7 +253,7 @@ public class MethodListenerTest
 			"import java.util.Set;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"public Set myMethod(List param1) {}\n" +
+				"public Set<String> myMethod(List<String> param1) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

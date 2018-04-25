@@ -178,7 +178,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"java.util.List myListField;\n" +
+				"java.util.List<String> myListField;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -222,7 +222,7 @@ public class FieldListenerTest
 			"import java.util.List;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"List myListField;\n" +
+				"List<String> myListField;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
