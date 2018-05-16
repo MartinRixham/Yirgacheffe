@@ -362,4 +362,27 @@ public class StatementListenerTest
 				"java.lang.String to variable of type num.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testMismatchedTypeParameters() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"MutableReference<System> ref = " +
+						"new MutableReference<String>(\"thingy\");" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Cannot assign expression of type " +
+				"java.lang.String to variable of type num.\n",
+			result.getErrors());
+	}
 }
