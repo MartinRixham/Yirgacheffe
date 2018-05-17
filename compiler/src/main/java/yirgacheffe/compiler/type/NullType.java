@@ -43,4 +43,10 @@ public class NullType implements Type
 	{
 		return Opcodes.ILOAD;
 	}
+
+	@Override
+	public boolean isAssignableTo(Type other)
+	{
+		return true;
+	}
 }

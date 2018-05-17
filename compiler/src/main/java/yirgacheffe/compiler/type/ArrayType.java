@@ -72,4 +72,10 @@ public class ArrayType implements Type
 	{
 		return this.fullyQualifiedType;
 	}
+
+	@Override
+	public boolean isAssignableTo(Type other)
+	{
+		return other instanceof ArrayType;
+	}
 }

@@ -31,7 +31,16 @@ public class Types
 			return new NullType();
 		}
 
-		return  type;
+		if (context.typeParameter() != null)
+		{
+			Type typeParameter = this.getType(context.typeParameter().type());
+
+			return new ParameterisedType((ReferenceType) type, typeParameter);
+		}
+		else
+		{
+			return type;
+		}
 	}
 
 	public boolean containsKey(String key)

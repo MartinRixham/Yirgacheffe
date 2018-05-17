@@ -1,9 +1,6 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
@@ -16,39 +13,6 @@ public class StatementListener extends FieldListener
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
-	}
-
-	@Override
-	public void enterLiteral(YirgacheffeParser.LiteralContext context)
-	{
-		Object value;
-
-		if (context.StringLiteral() != null)
-		{
-			value = context.getText().replace("\"", "");
-
-			this.typeStack.push(new ReferenceType(String.class));
-		}
-		else if (context.CharacterLiteral() != null)
-		{
-			value = context.getText().charAt(1);
-
-			this.typeStack.push(PrimitiveType.CHAR);
-		}
-		else if (context.BooleanLiteral() != null)
-		{
-			value = context.getText().equals("true");
-
-			this.typeStack.push(PrimitiveType.BOOLEAN);
-		}
-		else
-		{
-			value = new Double(context.getText());
-
-			this.typeStack.push(PrimitiveType.DOUBLE);
-		}
-
-		this.methodVisitor.visitLdcInsn(value);
 	}
 
 	@Override
@@ -99,11 +63,8 @@ public class StatementListener extends FieldListener
 
 		this.methodVisitor.visitVarInsn(type.getStoreInstruction(), index);
 
-		if (
-			!(type instanceof NullType) &&
-			this.currentVariable != null &&
-			!this.currentVariable.getType().reflectionClass()
-				.isAssignableFrom(type.reflectionClass()))
+		if (this.currentVariable != null &&
+			!type.isAssignableTo(this.currentVariable.getType()))
 		{
 			String message =
 				"Cannot assign expression of type " + type +

@@ -105,4 +105,10 @@ public enum PrimitiveType implements Type
 	{
 		return this.name;
 	}
+
+	@Override
+	public boolean isAssignableTo(Type other)
+	{
+		return this == other;
+	}
 }

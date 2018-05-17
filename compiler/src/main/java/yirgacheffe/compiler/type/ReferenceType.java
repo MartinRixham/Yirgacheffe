@@ -56,4 +56,10 @@ public class ReferenceType implements Type
 	{
 		return this.toFullyQualifiedType();
 	}
+
+	@Override
+	public boolean isAssignableTo(Type other)
+	{
+		return other.reflectionClass().isAssignableFrom(this.reflectionClass());
+	}
 }

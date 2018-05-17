@@ -296,29 +296,6 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMissingVariableTypeParameter() throws Exception
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"MutableReference ref =" +
-						"new MutableReference<String>(\"thingy\");\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:0 Missing type parameter for type" +
-				" yirgacheffe.lang.MutableReference.\n",
-			result.getErrors());
-	}
-
-	@Test
 	public void testMissingConstructorTypeParameter() throws Exception
 	{
 		String source =
@@ -327,7 +304,7 @@ public class StatementListenerTest
 				"public MyClass()" +
 				"{\n" +
 					"MutableReference<String> ref =" +
-					"new MutableReference(\"thingy\");\n" +
+						"new MutableReference(\"thingy\");\n" +
 				"}\n" +
 			"}";
 
@@ -382,7 +359,9 @@ public class StatementListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 4:0 Cannot assign expression of type " +
-				"java.lang.String to variable of type num.\n",
+				"yirgacheffe.lang.MutableReference<java.lang.String> " +
+				"to variable of type " +
+				"yirgacheffe.lang.MutableReference<yirgacheffe.lang.System>.\n",
 			result.getErrors());
 	}
 }

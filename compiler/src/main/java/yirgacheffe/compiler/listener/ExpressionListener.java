@@ -4,6 +4,8 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -58,5 +60,38 @@ public class ExpressionListener extends StatementListener
 		}
 
 		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+	}
+
+	@Override
+	public void enterLiteral(YirgacheffeParser.LiteralContext context)
+	{
+		Object value;
+
+		if (context.StringLiteral() != null)
+		{
+			value = context.getText().replace("\"", "");
+
+			this.typeStack.push(new ReferenceType(String.class));
+		}
+		else if (context.CharacterLiteral() != null)
+		{
+			value = context.getText().charAt(1);
+
+			this.typeStack.push(PrimitiveType.CHAR);
+		}
+		else if (context.BooleanLiteral() != null)
+		{
+			value = context.getText().equals("true");
+
+			this.typeStack.push(PrimitiveType.BOOLEAN);
+		}
+		else
+		{
+			value = new Double(context.getText());
+
+			this.typeStack.push(PrimitiveType.DOUBLE);
+		}
+
+		this.methodVisitor.visitLdcInsn(value);
 	}
 }

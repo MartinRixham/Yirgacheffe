@@ -15,4 +15,6 @@ public interface Type
 	int getStoreInstruction();
 
 	int getLoadInstruction();
+
+	boolean isAssignableTo(Type other);
 }
