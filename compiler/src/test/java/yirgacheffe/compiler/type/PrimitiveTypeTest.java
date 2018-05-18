@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class PrimitiveTypeTest
 {
@@ -61,5 +63,22 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.DRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.DSTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.DLOAD, type.getLoadInstruction());
+	}
+
+	@Test
+	public void testPrimitiveIsAssignableToItself()
+	{
+		Type type = PrimitiveType.CHAR;
+
+		assertTrue(type.isAssignableTo(type));
+	}
+
+	@Test
+	public void testPrimitiveIsNotAssignableToSomethingElse()
+	{
+		Type type = PrimitiveType.CHAR;
+		Type otherType = PrimitiveType.BOOLEAN;
+
+		assertFalse(type.isAssignableTo(otherType));
 	}
 }

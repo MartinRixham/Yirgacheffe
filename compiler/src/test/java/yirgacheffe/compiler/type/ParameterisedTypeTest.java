@@ -4,10 +4,9 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-public class ReferenceTypeTest
+public class ParameterisedTypeTest
 {
 	@Test
 	public void testTypeFromPackageAndIdentifier() throws Exception
@@ -17,9 +16,11 @@ public class ReferenceTypeTest
 				.getContextClassLoader()
 				.loadClass("java.lang.String");
 
-		Type type = new ReferenceType(loadedClass);
+		ReferenceType referenceType = new ReferenceType(loadedClass);
+		Type typeParameter = new ReferenceType(loadedClass);
+		Type type = new ParameterisedType(referenceType, typeParameter);
 
-		assertEquals("java.lang.String", type.toString());
+		assertEquals("java.lang.String<java.lang.String>", type.toString());
 		assertEquals(loadedClass, type.reflectionClass());
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
@@ -27,25 +28,6 @@ public class ReferenceTypeTest
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
-	}
-
-	@Test
-	public void testStringIsAssignableToObject() throws Exception
-	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
-
-		Class<?> objectClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.Object");
-
-		Type string = new ReferenceType(stringClass);
-		Type object = new ReferenceType(objectClass);
-
-		assertTrue(string.isAssignableTo(object));
 	}
 
 	@Test
@@ -61,9 +43,18 @@ public class ReferenceTypeTest
 				.getContextClassLoader()
 				.loadClass("yirgacheffe.lang.System");
 
+		Class<?> mutableReferenceClass =
+			Thread.currentThread()
+				.getContextClassLoader()
+				.loadClass("yirgacheffe.lang.MutableReference");
+
+		ReferenceType reference = new ReferenceType(mutableReferenceClass);
 		Type string = new ReferenceType(stringClass);
 		Type system = new ReferenceType(systemClass);
 
-		assertFalse(string.isAssignableTo(system));
+		Type stringReferencce = new ParameterisedType(reference, string);
+		Type systemReference = new ParameterisedType(reference, system);
+
+		assertFalse(stringReferencce.isAssignableTo(systemReference));
 	}
 }

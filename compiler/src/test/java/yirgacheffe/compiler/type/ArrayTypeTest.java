@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class ArrayTypeTest
 {
@@ -20,5 +22,23 @@ public class ArrayTypeTest
 		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
+	}
+
+	@Test
+	public void testArrayIsAssignableToArray()
+	{
+		Type first = new ArrayType("[Ljava.lang.Object;");
+		Type second = new ArrayType("[Ljava.lang.String;");
+
+		assertTrue(first.isAssignableTo(second));
+	}
+
+	@Test
+	public void testArrayIsNotAssignableToAnythingElse()
+	{
+		Type first = new ArrayType("[Ljava.lang.Object;");
+		Type second = PrimitiveType.BOOLEAN;
+
+		assertFalse(first.isAssignableTo(second));
 	}
 }
