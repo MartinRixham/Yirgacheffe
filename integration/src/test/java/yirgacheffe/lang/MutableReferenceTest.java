@@ -54,8 +54,8 @@ public class MutableReferenceTest
 		}
 
 		PrintStream originalOut = java.lang.System.out;
-		ByteArrayOutputStream sypOut = new ByteArrayOutputStream();
-		PrintStream out = new PrintStream(sypOut);
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
 
 		java.lang.System.setOut(out);
 
@@ -65,7 +65,7 @@ public class MutableReferenceTest
 
 		hello.invoke(my);
 
-		assertEquals("Hello world.\nEh up, planet.\n", sypOut.toString());
+		assertEquals("Hello world.\nEh up, planet.\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

@@ -37,8 +37,8 @@ public class MainTest
 		classLoader.add("MyClass", result.getBytecode());
 
 		PrintStream originalOut = java.lang.System.out;
-		ByteArrayOutputStream sypOut = new ByteArrayOutputStream();
-		PrintStream out = new PrintStream(sypOut);
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
 
 		java.lang.System.setOut(out);
 
@@ -48,7 +48,7 @@ public class MainTest
 
 		hello.invoke(null, (Object) args);
 
-		assertEquals("Eh up, planet.\n", sypOut.toString());
+		assertEquals("Eh up, planet.\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

@@ -39,8 +39,8 @@ public class ArrayTest
 		classLoader.add("MyClass", result.getBytecode());
 
 		PrintStream originalOut = java.lang.System.out;
-		ByteArrayOutputStream sypOut = new ByteArrayOutputStream();
-		PrintStream out = new PrintStream(sypOut);
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
 
 		java.lang.System.setOut(out);
 
@@ -50,7 +50,7 @@ public class ArrayTest
 
 		hello.invoke(my);
 
-		assertEquals("[1, 2, 3, 4, 5]\n", sypOut.toString());
+		assertEquals("[1, 2, 3, 4, 5]\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

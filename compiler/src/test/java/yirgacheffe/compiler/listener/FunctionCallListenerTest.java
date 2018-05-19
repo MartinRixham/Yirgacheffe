@@ -417,7 +417,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorCallWithSubtypeArgument() throws Exception
+	public void testConstructorCallWithTypeParameter() throws Exception
 	{
 		String source =
 			"import java.lang.ref.WeakReference;\n" +
@@ -450,6 +450,25 @@ public class FunctionCallListenerTest
 		assertEquals("(Ljava/lang/Object;)V", fourthInstruction.desc);
 		assertEquals("<init>", fourthInstruction.name);
 		assertFalse(fourthInstruction.itf);
+	}
+
+	@Test
+	public void testConstructorCallWithMismatchedTypeParameter() throws Exception
+	{
+		String source =
+			"import java.lang.ref.WeakReference;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public Object method()" +
+				"{\n" +
+					"return new WeakReference<System>(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
 	}
 
 	@Test

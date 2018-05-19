@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.Executables;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -11,7 +12,6 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +60,9 @@ public class FunctionCallListener extends ExpressionListener
 
 		StringBuilder argumentDescriptor = new StringBuilder();
 
-		Executable matchedConstructor =
-			this.getExecutable(Arrays.asList(constructors), argumentDescriptor);
+		Constructor matchedConstructor =
+			new Executables<Constructor>(Arrays.asList(constructors))
+				.getExecutable(this.argumentClasses, argumentDescriptor);
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
@@ -80,16 +81,10 @@ public class FunctionCallListener extends ExpressionListener
 			}
 
 			String constructor = this.constructorType.toFullyQualifiedType() + "(";
-			List<String> arguments = new ArrayList<>();
 
-			for (Class<?> argumentClass : this.argumentClasses)
-			{
-				arguments.add(argumentClass.getName());
-			}
-
-			constructor += String.join(",", arguments) + ")";
-
-			String message = "Constructor " + constructor + " not found.";
+			String message =
+				"Constructor " + constructor +
+				this.formatArguments(this.argumentClasses) + " not found.";
 
 			this.errors.add(new Error(context.getStart(), message));
 		}
@@ -113,21 +108,16 @@ public class FunctionCallListener extends ExpressionListener
 			}
 		}
 
-		Method matchedMethod = this.getExecutable(namedMethods, argumentDescriptor);
+		Method matchedMethod =
+			new Executables<>(namedMethods)
+				.getExecutable(this.argumentClasses, argumentDescriptor);
 
 		if (matchedMethod == null)
 		{
 			String method = owner.toFullyQualifiedType() + "." + methodName + "(";
-			List<String> arguments = new ArrayList<>();
-
-			for (Class<?> argumentClass: this.argumentClasses)
-			{
-				arguments.add(argumentClass.getName());
-			}
-
-			method += String.join(",", arguments) + ")";
-
-			String message = "Method " + method + " not found.";
+			String message =
+				"Method " + method +
+				this.formatArguments(this.argumentClasses) + " not found.";
 
 			this.errors.add(
 				new Error(context.Identifier().getSymbol(), message));
@@ -163,76 +153,30 @@ public class FunctionCallListener extends ExpressionListener
 		}
 	}
 
-	private <T extends Executable> T getExecutable(
-		List<T> executables,
-		StringBuilder argumentDescriptor)
+	public String formatArguments(Class<?>[] argumentClasses)
 	{
-		for (T executable: executables)
+		List<String> arguments = new ArrayList<>();
+
+		for (Class<?> argumentClass : argumentClasses)
 		{
-			Class<?>[] parameterTypes = executable.getParameterTypes();
-			boolean matched = true;
-
-			if (parameterTypes.length != this.argumentClasses.length)
-			{
-				continue;
-			}
-
-			for (int i = 0; i < parameterTypes.length; i++)
-			{
-				if (!parameterTypes[i].isAssignableFrom(this.argumentClasses[i]) &&
-					!parameterTypes[i].getSimpleName().equals(
-						this.argumentClasses[i].getSimpleName().toLowerCase()))
-				{
-					matched = false;
-					break;
-				}
-			}
-
-			if (matched)
-			{
-				argumentDescriptor.append("(");
-
-				for (Class<?> parameterType: parameterTypes)
-				{
-					if (parameterType.isPrimitive())
-					{
-						argumentDescriptor.append(
-							PrimitiveType.valueOf(parameterType.getName().toUpperCase())
-								.toJVMType());
-					}
-					else if (parameterType.isArray())
-					{
-						argumentDescriptor.append(
-							new ArrayType(parameterType.getName()).toJVMType());
-					}
-					else
-					{
-						argumentDescriptor.append(
-							new ReferenceType(parameterType).toJVMType());
-					}
-				}
-
-				argumentDescriptor.append(")");
-
-				return executable;
-			}
+			arguments.add(argumentClass.getName());
 		}
 
-		return null;
+		return String.join(",", arguments) + ")";
 	}
 
 	@Override
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
 		int argumentCount = context.expression().size();
-		Type[] argumentTypes = new Type[argumentCount];
-		this.argumentClasses = new Class<?>[argumentCount];
+		Class<?>[] arguments = new Class<?>[argumentCount];
 
-		for (int i = context.expression().size() - 1; i >= 0; i--)
+		for (int i =  0; i < context.expression().size(); i++)
 		{
-			argumentTypes[i] = this.typeStack.pop();
-			this.argumentClasses[i] = argumentTypes[i].reflectionClass();
+			arguments[i] = this.typeStack.pop().reflectionClass();
 		}
+
+		this.argumentClasses = arguments;
 	}
 
 	@Override
