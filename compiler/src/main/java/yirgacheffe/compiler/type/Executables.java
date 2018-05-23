@@ -12,30 +12,15 @@ public class Executables<T extends Executable>
 		this.executables = executables;
 	}
 
-	public T getExecutable(Class<?>[] argumentClasses, StringBuilder argumentDescriptor)
+	public T getExecutable(
+		ArgumentClasses argumentClasses,
+		StringBuilder argumentDescriptor)
 	{
 		for (T executable: this.executables)
 		{
 			Class<?>[] parameterTypes = executable.getParameterTypes();
-			boolean matched = true;
 
-			if (parameterTypes.length != argumentClasses.length)
-			{
-				continue;
-			}
-
-			for (int i = 0; i < parameterTypes.length; i++)
-			{
-				if (!parameterTypes[i].isAssignableFrom(argumentClasses[i]) &&
-					!parameterTypes[i].getSimpleName().equals(
-						argumentClasses[i].getSimpleName().toLowerCase()))
-				{
-					matched = false;
-					break;
-				}
-			}
-
-			if (matched)
+			if (argumentClasses.matches(parameterTypes))
 			{
 				argumentDescriptor.append("(");
 

@@ -10,11 +10,13 @@ public class NullType implements Type
 		return int.class;
 	}
 
+	@Override
 	public String toJVMType()
 	{
 		return "I";
 	}
 
+	@Override
 	public String toFullyQualifiedType()
 	{
 		return "java.lang.Integer";

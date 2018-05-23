@@ -17,11 +17,13 @@ public class ReferenceType implements Type
 		return this.reflectionClass;
 	}
 
+	@Override
 	public String toJVMType()
 	{
 		return "L" + this.toFullyQualifiedType().replace('.', '/')  + ";";
 	}
 
+	@Override
 	public String toFullyQualifiedType()
 	{
 		return this.reflectionClass.getName();

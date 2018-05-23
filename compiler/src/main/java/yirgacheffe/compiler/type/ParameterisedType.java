@@ -20,11 +20,13 @@ public class ParameterisedType implements Type
 		return this.primaryType.reflectionClass();
 	}
 
+	@Override
 	public String toJVMType()
 	{
 		return "L" + this.toFullyQualifiedType().replace('.', '/')  + ";";
 	}
 
+	@Override
 	public String toFullyQualifiedType()
 	{
 		return this.primaryType.toFullyQualifiedType();

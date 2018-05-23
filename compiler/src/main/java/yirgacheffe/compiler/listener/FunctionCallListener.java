@@ -1,29 +1,25 @@
 package yirgacheffe.compiler.listener;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.ReferenceType;
-import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.ArrayType;
+import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Executables;
-import yirgacheffe.compiler.type.ParameterisedType;
+import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class FunctionCallListener extends ExpressionListener
 {
-	private Class<?>[] argumentClasses;
+	private ArgumentClasses argumentClasses;
 
 	private Type constructorType;
 
@@ -87,14 +83,14 @@ public class FunctionCallListener extends ExpressionListener
 			String constructor = this.constructorType.toFullyQualifiedType() + "(";
 
 			String message =
-				"Constructor " + constructor +
-				this.formatArguments(this.argumentClasses) + " not found.";
+				"Constructor " + constructor + this.argumentClasses + " not found.";
 
 			this.errors.add(new Error(context.getStart(), message));
 		}
 		else
 		{
-			this.checkTypeParameter(matchedConstructor, this.constructorType, context);
+			this.argumentClasses
+				.checkTypeParameter(matchedConstructor, this.constructorType, context);
 		}
 	}
 
@@ -123,9 +119,7 @@ public class FunctionCallListener extends ExpressionListener
 		if (matchedMethod == null)
 		{
 			String method = owner.toFullyQualifiedType() + "." + methodName + "(";
-			String message =
-				"Method " + method +
-				this.formatArguments(this.argumentClasses) + " not found.";
+			String message = "Method " + method + this.argumentClasses + " not found.";
 
 			this.errors.add(
 				new Error(context.Identifier().getSymbol(), message));
@@ -147,7 +141,7 @@ public class FunctionCallListener extends ExpressionListener
 				returnType = new ReferenceType(returnClass);
 			}
 
-			this.checkTypeParameter(matchedMethod, owner, context);
+			this.argumentClasses.checkTypeParameter(matchedMethod, owner, context);
 		}
 
 		this.methodVisitor.visitMethodInsn(
@@ -163,46 +157,6 @@ public class FunctionCallListener extends ExpressionListener
 		}
 	}
 
-	private String formatArguments(Class<?>[] argumentClasses)
-	{
-		List<String> arguments = new ArrayList<>();
-
-		for (Class<?> argumentClass : argumentClasses)
-		{
-			arguments.add(argumentClass.getName());
-		}
-
-		return String.join(",", arguments) + ")";
-	}
-
-	private void checkTypeParameter(
-		Executable executable,
-		Type owner,
-		ParserRuleContext context)
-	{
-		if (!(owner instanceof ParameterisedType))
-		{
-			return;
-		}
-
-		ParameterisedType type = (ParameterisedType) owner;
-		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
-
-		for (int i = 0; i < parameters.length; i++)
-		{
-			if (parameters[i] instanceof TypeVariable &&
-				!type.hasTypeParameter(this.argumentClasses[i]))
-			{
-				String message =
-					"Argument of type " + this.argumentClasses[i].getName() +
-					" cannot be assigned to generic parameter of type " +
-					type.getTypeParameterName() + ".";
-
-				this.errors.add(new Error(context, message));
-			}
-		}
-	}
-
 	@Override
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
@@ -214,7 +168,7 @@ public class FunctionCallListener extends ExpressionListener
 			arguments[i] = this.typeStack.pop().reflectionClass();
 		}
 
-		this.argumentClasses = arguments;
+		this.argumentClasses = new ArgumentClasses(arguments, this.errors);
 	}
 
 	@Override
