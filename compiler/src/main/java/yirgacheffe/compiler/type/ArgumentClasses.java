@@ -35,15 +35,24 @@ public class ArgumentClasses
 
 		for (int i = 0; i < parameters.length; i++)
 		{
-			if (parameters[i] instanceof TypeVariable &&
-				!type.hasTypeParameter(this.argumentClasses[i]))
+			if (parameters[i] instanceof TypeVariable)
 			{
-				String message =
-					"Argument of type " + this.argumentClasses[i].getName() +
-						" cannot be assigned to generic parameter of type " +
-						type.getTypeParameterName() + ".";
+				TypeVariable typeVariable = (TypeVariable) parameters[i];
 
-				this.errors.add(new Error(context, message));
+				boolean hasTypeParameter =
+					type.hasTypeParameter(
+						typeVariable.getName(),
+						this.argumentClasses[i]);
+
+				if (!hasTypeParameter)
+				{
+					String message =
+						"Argument of type " + this.argumentClasses[i].getName() +
+						" cannot be assigned to generic parameter of type " +
+						type.getTypeParameterName(typeVariable.getName()) + ".";
+
+					this.errors.add(new Error(context, message));
+				}
 			}
 		}
 	}

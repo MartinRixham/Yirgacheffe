@@ -2,7 +2,9 @@ package yirgacheffe.compiler.type;
 
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Types
@@ -31,11 +33,17 @@ public class Types
 			return new NullType();
 		}
 
-		if (context.typeParameter() != null)
+		if (context.typeParameters() != null)
 		{
-			Type typeParameter = this.getType(context.typeParameter().type());
+			List<Type> typeParameters = new ArrayList<>();
 
-			return new ParameterisedType((ReferenceType) type, typeParameter);
+			for (YirgacheffeParser.TypeContext typeParameter:
+				context.typeParameters().type())
+			{
+				typeParameters.add(this.getType(typeParameter));
+			}
+
+			return new ParameterisedType((ReferenceType) type, typeParameters);
 		}
 		else
 		{

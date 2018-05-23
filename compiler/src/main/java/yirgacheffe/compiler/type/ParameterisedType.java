@@ -2,16 +2,31 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
 
+import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
 public class ParameterisedType implements Type
 {
 	private ReferenceType primaryType;
 
-	private Type typeParameter;
+	private Map<String, Type> typeParameters;
 
-	public ParameterisedType(ReferenceType primaryType, Type typeParameter)
+	public ParameterisedType(ReferenceType primaryType, List<Type> typeParameters)
 	{
 		this.primaryType = primaryType;
-		this.typeParameter = typeParameter;
+
+		TypeVariable[] genericTypes = primaryType.reflectionClass().getTypeParameters();
+		Map<String, Type> types = new HashMap<>();
+
+		for (int i = 0; i < typeParameters.size(); i++)
+		{
+			types.put(genericTypes[i].getName(), typeParameters.get(i));
+		}
+
+		this.typeParameters = types;
 	}
 
 	@Override
@@ -59,8 +74,15 @@ public class ParameterisedType implements Type
 	@Override
 	public String toString()
 	{
+		List<String> typeNames = new ArrayList<>();
+
+		for (String key: this.typeParameters.keySet())
+		{
+			typeNames.add(this.typeParameters.get(key).toFullyQualifiedType());
+		}
+
 		return this.toFullyQualifiedType() +
-			"<" + this.typeParameter.toFullyQualifiedType() + ">";
+			"<" + String.join(",", typeNames) + ">";
 	}
 
 	@Override
@@ -70,8 +92,26 @@ public class ParameterisedType implements Type
 		{
 			ParameterisedType parameterisedType = (ParameterisedType) other;
 
-			return this.primaryType.isAssignableTo(parameterisedType.primaryType) &&
-				this.typeParameter.isAssignableTo(parameterisedType.typeParameter);
+			if (!this.primaryType.isAssignableTo(parameterisedType.primaryType))
+			{
+				return false;
+			}
+
+			if (this.typeParameters.size() != parameterisedType.typeParameters.size())
+			{
+				return false;
+			}
+
+			for (String key: this.typeParameters.keySet())
+			{
+				if (!this.typeParameters.get(key)
+					.isAssignableTo(parameterisedType.typeParameters.get(key)))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 		else
 		{
@@ -79,16 +119,22 @@ public class ParameterisedType implements Type
 		}
 	}
 
-	public boolean hasTypeParameter(Class<?> genericParameterType)
+	public boolean hasTypeParameter(String typeName, Class<?> genericParameterType)
 	{
-		return this.typeParameter
-			.reflectionClass()
-			.isAssignableFrom(genericParameterType);
+		Type type = this.typeParameters.get(typeName);
+
+		if (type == null)
+		{
+			return true;
+		}
+
+		return type.reflectionClass().isAssignableFrom(genericParameterType);
 	}
 
-	public String getTypeParameterName()
+	public String getTypeParameterName(String typeName)
 	{
-		return this.typeParameter
+		return this.typeParameters
+			.get(typeName)
 			.reflectionClass()
 			.getName();
 	}

@@ -313,9 +313,32 @@ public class StatementListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:34 Missing type parameter for type" +
+			"line 4:34 Missing type parameters for type" +
 				" yirgacheffe.lang.MutableReference.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testNotEnoughTypeParameters() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"MutableReference<String> ref =" +
+						"new MutableReference<>(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:34 Type yirgacheffe.lang.MutableReference" +
+				" requires 1 parameter(s) but found 0.",
+			result.getErrors().split("\n")[0]);
 	}
 
 	@Test

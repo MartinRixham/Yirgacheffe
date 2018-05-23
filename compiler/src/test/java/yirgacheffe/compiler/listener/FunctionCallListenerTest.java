@@ -500,6 +500,58 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testConstructorWithMultipleTypeParameters() throws Exception
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"Map<String, String> map = " +
+						"new HashMap<String, Object>();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Cannot assign expression of type " +
+				"java.util.HashMap<java.lang.Object,java.lang.String> " +
+				"to variable of type java.util.Map<java.lang.String,java.lang.String>.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMethodWithMultipleTypeParameters() throws Exception
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"Map<String, String> map = " +
+						"new HashMap<String, String>();\n" +
+					"map.put(\"thingy\", new Object());\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 7:3 Argument of type java.lang.Object cannot be assigned to " +
+				"generic parameter of type java.lang.String.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testFunctionCallWithArgumentOfWrongType() throws Exception
 	{
 		String source =

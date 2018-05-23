@@ -55,7 +55,7 @@ variableWrite: Identifier;
 
 parameter: type? Identifier;
 
-type: primaryType typeParameter?;
+type: primaryType typeParameters?;
 
 primaryType: (simpleType | fullyQualifiedType);
 
@@ -63,7 +63,7 @@ simpleType: Identifier | PrimitiveType;
 
 fullyQualifiedType: packageName '.' Identifier;
 
-typeParameter: '<' type '>';
+typeParameters: '<' type? (',' type)* '>';
 
 functionCall: instantiation | (expression methodCall);
 

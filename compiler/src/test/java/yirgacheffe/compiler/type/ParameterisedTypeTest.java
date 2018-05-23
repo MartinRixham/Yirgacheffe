@@ -3,6 +3,8 @@ package yirgacheffe.compiler.type;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -11,19 +13,24 @@ public class ParameterisedTypeTest
 	@Test
 	public void testTypeFromPackageAndIdentifier() throws Exception
 	{
-		Class<?> loadedClass =
+		Class<?> list =
+			Thread.currentThread()
+				.getContextClassLoader()
+				.loadClass("java.util.List");
+
+		Class<?> string =
 			Thread.currentThread()
 				.getContextClassLoader()
 				.loadClass("java.lang.String");
 
-		ReferenceType referenceType = new ReferenceType(loadedClass);
-		Type typeParameter = new ReferenceType(loadedClass);
-		Type type = new ParameterisedType(referenceType, typeParameter);
+		ReferenceType referenceType = new ReferenceType(list);
+		Type typeParameter = new ReferenceType(string);
+		Type type = new ParameterisedType(referenceType, Arrays.asList(typeParameter));
 
-		assertEquals("java.lang.String<java.lang.String>", type.toString());
-		assertEquals(loadedClass, type.reflectionClass());
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
-		assertEquals("Ljava/lang/String;", type.toJVMType());
+		assertEquals("java.util.List<java.lang.String>", type.toString());
+		assertEquals(list, type.reflectionClass());
+		assertEquals("java.util.List", type.toFullyQualifiedType());
+		assertEquals("Ljava/util/List;", type.toJVMType());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
@@ -52,9 +59,9 @@ public class ParameterisedTypeTest
 		Type string = new ReferenceType(stringClass);
 		Type system = new ReferenceType(systemClass);
 
-		Type stringReferencce = new ParameterisedType(reference, string);
-		Type systemReference = new ParameterisedType(reference, system);
+		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
+		Type systemReference = new ParameterisedType(reference, Arrays.asList(system));
 
-		assertFalse(stringReferencce.isAssignableTo(systemReference));
+		assertFalse(stringReference.isAssignableTo(systemReference));
 	}
 }
