@@ -469,6 +469,10 @@ public class FunctionCallListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:7 Argument of type java.lang.String cannot be assigned to " +
+			"generic parameter of type yirgacheffe.lang.System.\n",
+			result.getErrors());
 	}
 
 	@Test

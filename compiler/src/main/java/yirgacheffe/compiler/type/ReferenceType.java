@@ -62,10 +62,4 @@ public class ReferenceType implements Type
 	{
 		return other.reflectionClass().isAssignableFrom(this.reflectionClass());
 	}
-
-	@Override
-	public boolean hasTypeParameter(Class<?> genericParameterType)
-	{
-		return true;
-	}
 }

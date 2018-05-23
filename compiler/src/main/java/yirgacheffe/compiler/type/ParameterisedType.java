@@ -77,11 +77,17 @@ public class ParameterisedType implements Type
 		}
 	}
 
-	@Override
 	public boolean hasTypeParameter(Class<?> genericParameterType)
 	{
 		return this.typeParameter
 			.reflectionClass()
 			.isAssignableFrom(genericParameterType);
+	}
+
+	public String getTypeParameterName()
+	{
+		return this.typeParameter
+			.reflectionClass()
+			.getName();
 	}
 }

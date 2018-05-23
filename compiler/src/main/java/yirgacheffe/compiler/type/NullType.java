@@ -49,10 +49,4 @@ public class NullType implements Type
 	{
 		return true;
 	}
-
-	@Override
-	public boolean hasTypeParameter(Class<?> genericParameterType)
-	{
-		return true;
-	}
 }

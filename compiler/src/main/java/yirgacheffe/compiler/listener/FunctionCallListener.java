@@ -1,14 +1,16 @@
 package yirgacheffe.compiler.listener;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.Executables;
-import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ArrayType;
+import yirgacheffe.compiler.type.Executables;
+import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Constructor;
@@ -92,7 +94,7 @@ public class FunctionCallListener extends ExpressionListener
 		}
 		else
 		{
-			this.checkTypeParameter(matchedConstructor);
+			this.checkTypeParameter(matchedConstructor, context);
 		}
 	}
 
@@ -171,16 +173,27 @@ public class FunctionCallListener extends ExpressionListener
 		return String.join(",", arguments) + ")";
 	}
 
-	private void checkTypeParameter(Executable executable)
+	private void checkTypeParameter(Executable executable, ParserRuleContext context)
 	{
+		if (!(this.constructorType instanceof ParameterisedType))
+		{
+			return;
+		}
+
+		ParameterisedType type = (ParameterisedType) this.constructorType;
 		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
 
 		for (int i = 0; i < parameters.length; i++)
 		{
 			if (parameters[i] instanceof TypeVariable &&
-				!this.constructorType.hasTypeParameter(this.argumentClasses[i]))
+				!type.hasTypeParameter(this.argumentClasses[i]))
 			{
-				this.errors.add(new Error(0, 1, ""));
+				String message =
+					"Argument of type " + this.argumentClasses[i].getName() +
+					" cannot be assigned to generic parameter of type " +
+					type.getTypeParameterName() + ".";
+
+				this.errors.add(new Error(context, message));
 			}
 		}
 	}

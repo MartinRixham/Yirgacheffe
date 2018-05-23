@@ -19,7 +19,6 @@ public class NullTypeTest
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
-		assertTrue(type.hasTypeParameter(String.class));
 	}
 
 	@Test

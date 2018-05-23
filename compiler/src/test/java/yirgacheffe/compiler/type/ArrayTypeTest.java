@@ -22,7 +22,6 @@ public class ArrayTypeTest
 		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
-		assertTrue(string.hasTypeParameter(String.class));
 	}
 
 	@Test
