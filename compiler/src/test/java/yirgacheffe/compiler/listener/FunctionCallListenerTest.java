@@ -476,6 +476,30 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testMethodCallWithMismatchedTypeParameter() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public void method()" +
+				"{\n" +
+					"MutableReference<String> ref = " +
+						"new MutableReference<String>(\"thingy\");\n" +
+					"ref.set(new Object());" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:3 Argument of type java.lang.Object cannot be assigned to " +
+				"generic parameter of type java.lang.String.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testFunctionCallWithArgumentOfWrongType() throws Exception
 	{
 		String source =

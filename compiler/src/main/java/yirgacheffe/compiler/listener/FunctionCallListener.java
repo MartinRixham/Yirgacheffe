@@ -94,7 +94,7 @@ public class FunctionCallListener extends ExpressionListener
 		}
 		else
 		{
-			this.checkTypeParameter(matchedConstructor, context);
+			this.checkTypeParameter(matchedConstructor, this.constructorType, context);
 		}
 	}
 
@@ -146,6 +146,8 @@ public class FunctionCallListener extends ExpressionListener
 			{
 				returnType = new ReferenceType(returnClass);
 			}
+
+			this.checkTypeParameter(matchedMethod, owner, context);
 		}
 
 		this.methodVisitor.visitMethodInsn(
@@ -173,14 +175,17 @@ public class FunctionCallListener extends ExpressionListener
 		return String.join(",", arguments) + ")";
 	}
 
-	private void checkTypeParameter(Executable executable, ParserRuleContext context)
+	private void checkTypeParameter(
+		Executable executable,
+		Type owner,
+		ParserRuleContext context)
 	{
-		if (!(this.constructorType instanceof ParameterisedType))
+		if (!(owner instanceof ParameterisedType))
 		{
 			return;
 		}
 
-		ParameterisedType type = (ParameterisedType) this.constructorType;
+		ParameterisedType type = (ParameterisedType) owner;
 		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
 
 		for (int i = 0; i < parameters.length; i++)
