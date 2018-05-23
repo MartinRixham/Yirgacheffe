@@ -17,4 +17,6 @@ public interface Type
 	int getLoadInstruction();
 
 	boolean isAssignableTo(Type other);
+
+	boolean hasTypeParameter(Class<?> genericParameterType);
 }

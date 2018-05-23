@@ -21,6 +21,7 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
+		assertTrue(type.hasTypeParameter(String.class));
 	}
 
 	@Test

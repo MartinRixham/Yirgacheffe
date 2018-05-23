@@ -27,6 +27,7 @@ public class ReferenceTypeTest
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
+		assertTrue(type.hasTypeParameter(String.class));
 	}
 
 	@Test

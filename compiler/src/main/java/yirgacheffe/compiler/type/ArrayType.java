@@ -78,4 +78,10 @@ public class ArrayType implements Type
 	{
 		return other instanceof ArrayType;
 	}
+
+	@Override
+	public boolean hasTypeParameter(Class<?> genericParameterType)
+	{
+		return true;
+	}
 }

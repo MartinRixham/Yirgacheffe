@@ -111,4 +111,10 @@ public enum PrimitiveType implements Type
 	{
 		return this == other;
 	}
+
+	@Override
+	public boolean hasTypeParameter(Class<?> genericParameterType)
+	{
+		return true;
+	}
 }

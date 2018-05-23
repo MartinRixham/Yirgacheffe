@@ -12,7 +12,9 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,6 +90,10 @@ public class FunctionCallListener extends ExpressionListener
 
 			this.errors.add(new Error(context.getStart(), message));
 		}
+		else
+		{
+			this.checkTypeParameter(matchedConstructor);
+		}
 	}
 
 	@Override
@@ -153,7 +159,7 @@ public class FunctionCallListener extends ExpressionListener
 		}
 	}
 
-	public String formatArguments(Class<?>[] argumentClasses)
+	private String formatArguments(Class<?>[] argumentClasses)
 	{
 		List<String> arguments = new ArrayList<>();
 
@@ -163,6 +169,20 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		return String.join(",", arguments) + ")";
+	}
+
+	private void checkTypeParameter(Executable executable)
+	{
+		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
+
+		for (int i = 0; i < parameters.length; i++)
+		{
+			if (parameters[i] instanceof TypeVariable &&
+				!this.constructorType.hasTypeParameter(this.argumentClasses[i]))
+			{
+				this.errors.add(new Error(0, 1, ""));
+			}
+		}
 	}
 
 	@Override
