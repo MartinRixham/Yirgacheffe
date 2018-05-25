@@ -16,8 +16,6 @@ public class YirgacheffeTest
 	@Test
 	public void testMainMethodOnSuccess() throws Exception
 	{
-		new File("example/MyClass.class").delete();
-
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
@@ -30,6 +28,8 @@ public class YirgacheffeTest
 		assertTrue(new FileInputStream("example/MyClass.class").read() != -1);
 
 		System.setErr(originalError);
+
+		new File("example/MyClass.class").delete();
 	}
 
 	@Test
@@ -70,10 +70,6 @@ public class YirgacheffeTest
 	@Test
 	public void testCompilingMultipleInterfaces() throws Exception
 	{
-		new File("example/MyInterface.class").delete();
-		new File("example/AnotherClass.class").delete();
-		new File("example/more/MoreInterface.class").delete();
-
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
@@ -102,14 +98,15 @@ public class YirgacheffeTest
 		assertTrue(thirdFile.read() != -1);
 
 		System.setErr(originalError);
+
+		new File("example/MyInterface.class").delete();
+		new File("example/AnotherClass.class").delete();
+		new File("example/more/MoreInterface.class").delete();
 	}
 
 	@Test
 	public void testMismatchedPackages() throws Exception
 	{
-		new File("example/MyClass.class").delete();
-		new File("example/more/MoreClass.class").delete();
-
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
@@ -131,14 +128,14 @@ public class YirgacheffeTest
 			spyError.toString());
 
 		System.setErr(originalError);
+
+		new File("example/MyClass.class").delete();
+		new File("example/more/MoreClass.class").delete();
 	}
 
 	@Test
 	public void testCompilingMultipleClasses() throws Exception
 	{
-		new File("example/reader/Streeng.class").delete();
-		new File("example/reader/Reader.class").delete();
-
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
@@ -163,15 +160,14 @@ public class YirgacheffeTest
 		assertTrue(secondFile.read() != -1);
 
 		System.setErr(originalError);
+
+		new File("example/reader/Streeng.class").delete();
+		new File("example/reader/Reader.class").delete();
 	}
 
 	@Test
 	public void testMissingMethod() throws Exception
 	{
-		new File("example/reader/Streeng.class").delete();
-		new File("example/reader/Writer.class").delete();
-		new File("example/reader/Reader.class").delete();
-
 		PrintStream originalError = System.err;
 		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
 		PrintStream error = new PrintStream(spyError);
@@ -193,5 +189,9 @@ public class YirgacheffeTest
 			spyError.toString());
 
 		System.setErr(originalError);
+
+		new File("example/reader/Streeng.class").delete();
+		new File("example/reader/Writer.class").delete();
+		new File("example/reader/Reader.class").delete();
 	}
 }

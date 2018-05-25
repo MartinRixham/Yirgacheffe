@@ -18,7 +18,7 @@ public final class Yirgacheffe
 		new Yirgacheffe(args).execute();
 	}
 
-	private Yirgacheffe(String[] sourceFiles) throws Exception
+	private Yirgacheffe(String[] sourceFiles)
 	{
 		this.sourceFiles = sourceFiles;
 	}

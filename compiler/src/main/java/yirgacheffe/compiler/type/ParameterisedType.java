@@ -92,16 +92,6 @@ public class ParameterisedType implements Type
 		{
 			ParameterisedType parameterisedType = (ParameterisedType) other;
 
-			if (!this.primaryType.isAssignableTo(parameterisedType.primaryType))
-			{
-				return false;
-			}
-
-			if (this.typeParameters.size() != parameterisedType.typeParameters.size())
-			{
-				return false;
-			}
-
 			for (String key: this.typeParameters.keySet())
 			{
 				if (!this.typeParameters.get(key)
