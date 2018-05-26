@@ -17,6 +17,8 @@ import java.util.Map;
 
 public class MethodListener extends TypeListener
 {
+	protected boolean inConstructor = false;
+
 	protected Type returnType = new NullType();
 
 	protected TypeStack typeStack = new TypeStack();
@@ -160,5 +162,6 @@ public class MethodListener extends TypeListener
 		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 
 		this.localVariables = new HashMap<>();
+		this.inConstructor = false;
 	}
 }

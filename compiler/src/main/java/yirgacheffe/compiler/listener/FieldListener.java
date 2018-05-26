@@ -119,10 +119,25 @@ public class FieldListener extends ConstructorListener
 	}
 
 	@Override
-	public void enterFieldWrite(YirgacheffeParser.FieldWriteContext context)
+	public void exitFieldWrite(YirgacheffeParser.FieldWriteContext context)
 	{
-		String message = "Fields must be assigned in initialisers or constructors.";
+		if (!this.inConstructor)
+		{
+			String message = "Fields must be assigned in initialisers or constructors.";
 
-		this.errors.add(new Error(context, message));
+			this.errors.add(new Error(context, message));
+		}
+		else
+		{
+			String fieldName = context.Identifier().getText();
+			Type fieldType = this.typeStack.pop();
+			Type ownerType = this.typeStack.pop();
+
+			this.methodVisitor.visitFieldInsn(
+				Opcodes.PUTFIELD,
+				ownerType.toFullyQualifiedType(),
+				fieldName,
+				fieldType.toJVMType());
+		}
 	}
 }

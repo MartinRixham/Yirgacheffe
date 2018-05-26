@@ -64,5 +64,6 @@ public class ConstructorListener extends MainMethodListener
 			false);
 
 		this.hasDefaultConstructor = false;
+		this.inConstructor = true;
 	}
 }

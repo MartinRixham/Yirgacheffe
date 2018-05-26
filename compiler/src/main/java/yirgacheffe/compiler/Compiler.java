@@ -3,11 +3,11 @@ package yirgacheffe.compiler;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import yirgacheffe.compiler.error.ParseErrorStrategy;
-import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
-import yirgacheffe.compiler.listener.MainMethodListener;
+import yirgacheffe.compiler.listener.ConstructorListener;
+import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -42,7 +42,7 @@ public class Compiler
 	public void compileInterface(Classes classes) throws Exception
 	{
 		YirgacheffeListener listener =
-			new MainMethodListener(
+			new ConstructorListener(
 				this.sourceFile,
 				classes);
 

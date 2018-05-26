@@ -662,4 +662,71 @@ public class FieldListenerTest
 			"line 6:0 Fields must be assigned in initialisers or constructors.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testAssignFieldInConstructor() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this.thingy = \"sumpt\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<FieldNode> fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(1, methods.size());
+
+		MethodNode constructor = methods.get(0);
+
+		assertEquals("<init>", constructor.name);
+
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals("sumpt", fourthInstruction.cst);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
+		assertEquals("MyClass", fifthInstruction.owner);
+		assertEquals("thingy", fifthInstruction.name);
+		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
+	}
 }
