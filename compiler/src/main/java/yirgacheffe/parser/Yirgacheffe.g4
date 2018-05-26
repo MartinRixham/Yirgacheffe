@@ -45,7 +45,7 @@ fieldInitialisation: fieldDeclaration '=' expression;
 
 fieldDeclaration: type? Identifier;
 
-statement: variableAssignment | variableDeclaration | functionCall | returnStatement;
+statement: fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
@@ -82,6 +82,8 @@ variableRead: Identifier;
 thisRead: This;
 
 fieldRead: '.' Identifier;
+
+fieldWrite: expression '.' Identifier '=' expression;
 
 returnStatement: Return expression?;
 

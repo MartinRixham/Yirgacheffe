@@ -117,4 +117,12 @@ public class FieldListener extends ConstructorListener
 			fieldName,
 			fieldType.toJVMType());
 	}
+
+	@Override
+	public void enterFieldWrite(YirgacheffeParser.FieldWriteContext context)
+	{
+		String message = "Fields must be assigned in initialisers or constructors.";
+
+		this.errors.add(new Error(context, message));
+	}
 }

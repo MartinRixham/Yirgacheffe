@@ -634,4 +634,32 @@ public class FieldListenerTest
 			"line 5:19 Unknown field 'myStringField'.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testFieldWrite() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy = \"thingy\";\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.thingy = \"sumpt\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Fields must be assigned in initialisers or constructors.\n",
+			result.getErrors());
+	}
 }
