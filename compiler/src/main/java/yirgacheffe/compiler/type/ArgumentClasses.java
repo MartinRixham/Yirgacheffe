@@ -67,7 +67,7 @@ public class ArgumentClasses
 		for (int i = 0; i < parameterTypes.length; i++)
 		{
 			if (!parameterTypes[i].isAssignableFrom(this.argumentClasses[i]) &&
-				!this.areEqualPrimitives(parameterTypes[i], this.argumentClasses[i]))
+				!this.isAssignable(parameterTypes[i], this.argumentClasses[i]))
 			{
 				return false;
 			}
@@ -76,7 +76,7 @@ public class ArgumentClasses
 		return true;
 	}
 
-	private boolean areEqualPrimitives(Class<?> first, Class<?> second)
+	private boolean isAssignable(Class<?> first, Class<?> second)
 	{
 		return first.getSimpleName().equals(second.getSimpleName().toLowerCase());
 	}

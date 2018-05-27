@@ -6,7 +6,7 @@ import yirgacheffe.compiler.error.ParseErrorStrategy;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
-import yirgacheffe.compiler.listener.ConstructorListener;
+import yirgacheffe.compiler.listener.FieldDeclarationListener;
 import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
@@ -27,31 +27,26 @@ public class Compiler
 		this.source = source;
 	}
 
-	public void compileClassDeclaration(Classes classes) throws Exception
+	public void compileClassDeclaration(Classes classes)
 	{
-		YirgacheffeListener listener =
-			new ClassListener(
-				this.sourceFile,
-				classes);
+		YirgacheffeListener listener = new ClassListener(this.sourceFile, classes);
 
 		this.execute(listener);
 
 		listener.exportDefinedTypes();
 	}
 
-	public void compileInterface(Classes classes) throws Exception
+	public void compileInterface(Classes classes)
 	{
 		YirgacheffeListener listener =
-			new ConstructorListener(
-				this.sourceFile,
-				classes);
+			new FieldDeclarationListener(this.sourceFile, classes);
 
 		this.execute(listener);
 
 		listener.exportDefinedTypes();
 	}
 
-	public CompilationResult compile(Classes classes) throws Exception
+	public CompilationResult compile(Classes classes)
 	{
 		YirgacheffeListener listener =
 			new FunctionCallListener(this.sourceFile, classes);
@@ -68,7 +63,7 @@ public class Compiler
 		}
 	}
 
-	private List<Error> execute(YirgacheffeListener listener) throws Exception
+	private List<Error> execute(YirgacheffeListener listener)
 	{
 		List<Error> errors = new ArrayList<>();
 		ParseErrorListener errorListener = new ParseErrorListener(errors);

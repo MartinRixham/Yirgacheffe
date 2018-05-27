@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class StatementListenerTest
 {
 	@Test
-	public void testLocalVariableDeclaration() throws Exception
+	public void testLocalVariableDeclaration()
 	{
 		String source =
 			"class MyClass\n" +
@@ -40,7 +40,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMissingSemicolon() throws Exception
+	public void testMissingSemicolon()
 	{
 		String source =
 			"class MyClass\n" +
@@ -65,7 +65,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testLocalVariableInitialisation() throws Exception
+	public void testLocalVariableInitialisation()
 	{
 		String source =
 			"class MyClass\n" +
@@ -106,7 +106,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testAssignParameterToLocalVariable() throws Exception
+	public void testAssignParameterToLocalVariable()
 	{
 		String source =
 			"class MyClass\n" +
@@ -151,7 +151,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testTwoVariableInitialisations() throws Exception
+	public void testTwoVariableInitialisations()
 	{
 		String source =
 			"class MyClass\n" +
@@ -203,7 +203,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testInitialiseNumAfterObject() throws Exception
+	public void testInitialiseNumAfterObject()
 	{
 		String source =
 			"class MyClass\n" +
@@ -233,7 +233,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testUninitialisedVariable() throws Exception
+	public void testUninitialisedVariable()
 	{
 		String source =
 			"class MyClass\n" +
@@ -254,7 +254,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testLocalVariableAssignment() throws Exception
+	public void testLocalVariableAssignment()
 	{
 		String source =
 			"class MyClass\n" +
@@ -296,7 +296,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMissingConstructorTypeParameter() throws Exception
+	public void testMissingConstructorTypeParameter()
 	{
 		String source =
 			"class MyClass\n" +
@@ -319,7 +319,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testNotEnoughTypeParameters() throws Exception
+	public void testNotEnoughTypeParameters()
 	{
 		String source =
 			"class MyClass\n" +
@@ -342,7 +342,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMismatchedTypeAssignment() throws Exception
+	public void testMismatchedTypeAssignment()
 	{
 		String source =
 			"class MyClass\n" +
@@ -364,7 +364,7 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMismatchedTypeParameters() throws Exception
+	public void testMismatchedTypeParameters()
 	{
 		String source =
 			"class MyClass\n" +

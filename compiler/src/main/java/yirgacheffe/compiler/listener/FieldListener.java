@@ -7,41 +7,11 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class FieldListener extends ConstructorListener
+public class FieldListener extends FieldDeclarationListener
 {
-	private Map<String, Type> fieldTypes = new HashMap<>();
-
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
-	}
-
-	@Override
-	public void exitFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
-	{
-		if (context.type() == null)
-		{
-			Error error =
-				new Error(context, "Field declaration should start with type.");
-
-			this.errors.add(error);
-		}
-
-		String fieldName = context.Identifier().getText();
-		Type type = this.types.getType(context.type());
-
-		this.writer
-			.visitField(
-				Opcodes.ACC_PRIVATE,
-				fieldName,
-				type.toJVMType(),
-				null,
-				null);
-
-		this.fieldTypes.put(fieldName, type);
 	}
 
 	@Override
@@ -121,23 +91,43 @@ public class FieldListener extends ConstructorListener
 	@Override
 	public void exitFieldWrite(YirgacheffeParser.FieldWriteContext context)
 	{
-		if (!this.inConstructor)
+		if (!this.inConstructor || context.expression().get(0).thisRead() == null)
 		{
 			String message = "Fields must be assigned in initialisers or constructors.";
 
 			this.errors.add(new Error(context, message));
 		}
-		else
-		{
-			String fieldName = context.Identifier().getText();
-			Type fieldType = this.typeStack.pop();
-			Type ownerType = this.typeStack.pop();
 
-			this.methodVisitor.visitFieldInsn(
-				Opcodes.PUTFIELD,
-				ownerType.toFullyQualifiedType(),
-				fieldName,
-				fieldType.toJVMType());
+		String fieldName = context.Identifier().getText();
+		Type expressionType = this.typeStack.pop();
+		Type ownerType = this.typeStack.pop();
+
+		try
+		{
+			Class<?> fieldClass =
+				ownerType.reflectionClass().getDeclaredField(fieldName).getType();
+			Class<?> expressionClass = expressionType.reflectionClass();
+
+			if (!fieldClass.isAssignableFrom(expressionClass) &&
+				!fieldClass.getSimpleName()
+					.equals(expressionClass.getSimpleName().toLowerCase()))
+			{
+				String message =
+					"Cannot assign expression of type " + expressionType +
+					" to field of type " + fieldClass.getName() + ".";
+
+				this.errors.add(new Error(context, message));
+			}
 		}
+		catch (NoSuchFieldException e)
+		{
+			throw new RuntimeException(e);
+		}
+
+		this.methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			ownerType.toFullyQualifiedType(),
+			fieldName,
+			expressionType.toJVMType());
 	}
 }

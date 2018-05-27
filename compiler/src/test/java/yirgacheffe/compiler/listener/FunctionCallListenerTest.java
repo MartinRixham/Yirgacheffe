@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class FunctionCallListenerTest
 {
 	@Test
-	public void testInstantiationStatement() throws Exception
+	public void testInstantiationStatement()
 	{
 		String source =
 			"class MyClass\n" +
@@ -78,7 +78,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testInstantiationWithParameter() throws Exception
+	public void testInstantiationWithParameter()
 	{
 		String source =
 			"class MyClass\n" +
@@ -138,7 +138,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testAnotherInstantiation() throws Exception
+	public void testAnotherInstantiation()
 	{
 		String source =
 			"class MyClass\n" +
@@ -186,7 +186,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testInstantiationOfFullyQualifiedType() throws Exception
+	public void testInstantiationOfFullyQualifiedType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -204,7 +204,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testInstantiationOfUnknownType() throws Exception
+	public void testInstantiationOfUnknownType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -225,7 +225,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testInstantiationOfPrimitiveType() throws Exception
+	public void testInstantiationOfPrimitiveType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -246,7 +246,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testFunctionCall() throws Exception
+	public void testFunctionCall()
 	{
 		String source =
 			"class MyClass\n" +
@@ -300,7 +300,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testFunctionCallWithArgument() throws Exception
+	public void testFunctionCallWithArgument()
 	{
 		String source =
 			"class MyClass\n" +
@@ -359,7 +359,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testFunctionCallWithSubtypeArgument() throws Exception
+	public void testFunctionCallWithSubtypeArgument()
 	{
 		String source =
 			"class MyClass\n" +
@@ -396,7 +396,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorCallWithWrongArgument() throws Exception
+	public void testConstructorCallWithWrongArgument()
 	{
 		String source =
 			"class MyClass\n" +
@@ -417,7 +417,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorCallWithTypeParameter() throws Exception
+	public void testConstructorCallWithTypeParameter()
 	{
 		String source =
 			"import java.lang.ref.WeakReference;\n" +
@@ -453,7 +453,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorCallWithMismatchedTypeParameter() throws Exception
+	public void testConstructorCallWithMismatchedTypeParameter()
 	{
 		String source =
 			"import java.lang.ref.WeakReference;\n" +
@@ -476,7 +476,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testMethodCallWithMismatchedTypeParameter() throws Exception
+	public void testMethodCallWithMismatchedTypeParameter()
 	{
 		String source =
 			"class MyClass\n" +
@@ -500,7 +500,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorWithMultipleTypeParameters() throws Exception
+	public void testConstructorWithMultipleTypeParameters()
 	{
 		String source =
 			"import java.util.Map;\n" +
@@ -526,7 +526,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testMethodWithMultipleTypeParameters() throws Exception
+	public void testMethodWithMultipleTypeParameters()
 	{
 		String source =
 			"import java.util.Map;\n" +
@@ -552,7 +552,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testFunctionCallWithArgumentOfWrongType() throws Exception
+	public void testFunctionCallWithArgumentOfWrongType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -573,7 +573,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testUndefinedFunctionCall() throws Exception
+	public void testUndefinedFunctionCall()
 	{
 		String source =
 			"class MyClass\n" +

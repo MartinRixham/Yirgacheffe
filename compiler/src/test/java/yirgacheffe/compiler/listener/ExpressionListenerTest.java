@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class ExpressionListenerTest
 {
 	@Test
-	public void testLocalVariableRead() throws Exception
+	public void testLocalVariableRead()
 	{
 		String source =
 			"class MyClass\n" +
@@ -56,7 +56,7 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testUnknownVariableRead() throws Exception
+	public void testUnknownVariableRead()
 	{
 		String source =
 			"class MyClass\n" +
@@ -77,7 +77,7 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testAssignVariableFromFunction() throws Exception
+	public void testAssignVariableFromFunction()
 	{
 		String source =
 			"class MyClass\n" +
@@ -155,7 +155,7 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testGenericLocalVariableInitialisation() throws Exception
+	public void testGenericLocalVariableInitialisation()
 	{
 		String source =
 			"import java.util.List;" +
@@ -186,7 +186,7 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testObjectConstructedWithObject() throws Exception
+	public void testObjectConstructedWithObject()
 	{
 		String source =
 			"class MyClass\n" +

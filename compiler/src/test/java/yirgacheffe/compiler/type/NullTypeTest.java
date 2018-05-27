@@ -35,7 +35,7 @@ public class NullTypeTest
 	}
 
 	@Test
-	public void testNullIsAssignableToBoolean() throws Exception
+	public void testNullIsAssignableToBoolean()
 	{
 		assertTrue(new NullType().isAssignableTo(PrimitiveType.BOOLEAN));
 	}

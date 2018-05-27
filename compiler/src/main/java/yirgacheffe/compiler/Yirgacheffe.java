@@ -3,6 +3,7 @@ package yirgacheffe.compiler;
 import yirgacheffe.compiler.type.Classes;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,7 +14,7 @@ public final class Yirgacheffe
 {
 	private String[] sourceFiles;
 
-	public static void main(String[] args) throws Exception
+	public static void main(String[] args) throws IOException
 	{
 		new Yirgacheffe(args).execute();
 	}
@@ -23,7 +24,7 @@ public final class Yirgacheffe
 		this.sourceFiles = sourceFiles;
 	}
 
-	private void execute() throws Exception
+	private void execute() throws IOException
 	{
 		Classes classes = new Classes();
 		List<Compiler> compilers = new ArrayList<>();

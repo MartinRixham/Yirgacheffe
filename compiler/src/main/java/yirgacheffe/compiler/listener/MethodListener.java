@@ -156,7 +156,7 @@ public class MethodListener extends TypeListener
 		}
 		else
 		{
-			this.methodVisitor.visitMaxs(maxSize, localVariablesSize);
+			this.methodVisitor.visitMaxs(Math.max(maxSize, 1), localVariablesSize);
 		}
 
 		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());

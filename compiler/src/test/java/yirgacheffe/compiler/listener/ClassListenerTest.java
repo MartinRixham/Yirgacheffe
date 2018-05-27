@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class ClassListenerTest
 {
 	@Test
-	public void testParseError() throws Exception
+	public void testParseError()
 	{
 		String source = "interface MyInterface {{";
 		Compiler compiler = new Compiler("", source);
@@ -31,7 +31,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testNamedEmptyInterface() throws Exception
+	public void testNamedEmptyInterface()
 	{
 		String source = "interface MyInterface {}";
 		Compiler compiler = new Compiler("", source);
@@ -53,7 +53,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testMultipleClassDeclarations() throws Exception
+	public void testMultipleClassDeclarations()
 	{
 		String source = "interface MyInterface {} class MyClass {}";
 		Compiler compiler = new Compiler("", source);
@@ -66,7 +66,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testFailToDeclareClassOrInterface() throws Exception
+	public void testFailToDeclareClassOrInterface()
 	{
 		String source = "thingy MyInterface {}";
 		Compiler compiler = new Compiler("", source);
@@ -79,7 +79,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testNamedEmptyClass() throws Exception
+	public void testNamedEmptyClass()
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
@@ -99,7 +99,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithMissingIdentifier() throws Exception
+	public void testInterfaceWithMissingIdentifier()
 	{
 		String source =
 			"interface\n" +
@@ -116,7 +116,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassWithMissingIdentifier() throws Exception
+	public void testClassWithMissingIdentifier()
 	{
 		String source =
 			"class\n" +
@@ -134,7 +134,7 @@ public class ClassListenerTest
 
 	@Ignore
 	@Test
-	public void testClassWithMissingCloseBlock() throws Exception
+	public void testClassWithMissingCloseBlock()
 	{
 		String source =
 			"class MyClass\n" +
@@ -150,7 +150,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassInPackage() throws Exception
+	public void testClassInPackage()
 	{
 		String source = "package myPackage; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/gile.gg", source);
@@ -161,7 +161,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassInNestedPackage() throws Exception
+	public void testClassInNestedPackage()
 	{
 		String source = "package myPackage.thingy; class MyClass {}";
 		Compiler compiler = new Compiler("myPackage/thingy/file.yg", source);
@@ -172,7 +172,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassWithMissingPackage() throws Exception
+	public void testClassWithMissingPackage()
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
@@ -186,7 +186,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassInPackageWrongPackage() throws Exception
+	public void testClassInPackageWrongPackage()
 	{
 		String source = "package myPackage.wibble; class MyClass {}";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
@@ -200,7 +200,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testPackagedClass() throws Exception
+	public void testPackagedClass()
 	{
 		Classes classes = new Classes();
 		String source = "package tis.that; interface MyInterface {}";
@@ -233,7 +233,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testClassWithInterfaceMethod() throws Exception
+	public void testClassWithInterfaceMethod()
 	{
 		String source =
 			"class MyClass\n" +
@@ -249,7 +249,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithClassMethod() throws Exception
+	public void testInterfaceWithClassMethod()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -267,7 +267,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testImportUnknownType() throws Exception
+	public void testImportUnknownType()
 	{
 		String source =
 			"import java.util.Liszt;\n" +

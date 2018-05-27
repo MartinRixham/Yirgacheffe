@@ -64,4 +64,25 @@ public class ParameterisedTypeTest
 
 		assertFalse(stringReference.isAssignableTo(systemReference));
 	}
+
+	@Test
+	public void testNotAssignableToReferenceType() throws Exception
+	{
+		Class<?> stringClass =
+			Thread.currentThread()
+				.getContextClassLoader()
+				.loadClass("java.lang.String");
+
+		Class<?> mutableReferenceClass =
+			Thread.currentThread()
+				.getContextClassLoader()
+				.loadClass("yirgacheffe.lang.MutableReference");
+
+		ReferenceType reference = new ReferenceType(mutableReferenceClass);
+		Type string = new ReferenceType(stringClass);
+
+		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
+
+		assertFalse(stringReference.isAssignableTo(new ReferenceType(stringClass)));
+	}
 }

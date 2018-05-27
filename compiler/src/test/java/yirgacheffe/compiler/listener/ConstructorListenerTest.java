@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 public class ConstructorListenerTest
 {
 	@Test
-	public void testEmptyClassHasDefaultConstructor() throws Exception
+	public void testEmptyClassHasDefaultConstructor()
 	{
 		String source = "class MyClass {}";
 		Compiler compiler = new Compiler("", source);
@@ -66,7 +66,7 @@ public class ConstructorListenerTest
 	}
 
 	@Test
-	public void testConstructorWithNumberParameter() throws Exception
+	public void testConstructorWithNumberParameter()
 	{
 		String source =
 			"class MyClass\n" +
@@ -110,13 +110,13 @@ public class ConstructorListenerTest
 	}
 
 	@Test
-	public void testConstructorWithMissingModifier() throws Exception
+	public void testConstructorWithMissingModifier()
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
-					"MyClass(num param) {}\n" +
-				"}";
+			"{\n" +
+				"MyClass(num param) {}\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -129,13 +129,13 @@ public class ConstructorListenerTest
 	}
 
 	@Test
-	public void testConstructorWithWrongName() throws Exception
+	public void testConstructorWithWrongName()
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"public MyClasss(num param) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -147,13 +147,13 @@ public class ConstructorListenerTest
 	}
 
 	@Test
-	public void testPrivateConstructor() throws Exception
+	public void testPrivateConstructor()
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"private MyClass(String param) {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());

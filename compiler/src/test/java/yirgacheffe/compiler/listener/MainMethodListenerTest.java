@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class MainMethodListenerTest
 {
 	@Test
-	public void testMainMethod() throws Exception
+	public void testMainMethod()
 	{
 		String source =
 			"class MyClass\n" +

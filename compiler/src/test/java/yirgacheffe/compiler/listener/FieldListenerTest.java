@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class FieldListenerTest
 {
 	@Test
-	public void testClassWithNumberField() throws Exception
+	public void testClassWithNumberField()
 	{
 		String source =
 			"class MyClass\n" +
@@ -54,7 +54,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testClassWithStringField() throws Exception
+	public void testClassWithStringField()
 	{
 		String source =
 			"class MyClass\n" +
@@ -84,7 +84,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testClassWithNumberAndStringFields() throws Exception
+	public void testClassWithNumberAndStringFields()
 	{
 		String source =
 			"class MyClass\n" +
@@ -119,7 +119,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithField() throws Exception
+	public void testInterfaceWithField()
 	{
 		String source =
 			"interface MyClass\n" +
@@ -137,7 +137,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testClassFieldWithMissingType() throws Exception
+	public void testClassFieldWithMissingType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -155,7 +155,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWithUnknownType() throws Exception
+	public void testFieldWithUnknownType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -173,7 +173,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWithFullyQualifiedType() throws Exception
+	public void testFieldWithFullyQualifiedType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -198,7 +198,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWithUnknownFullyQualifiedType() throws Exception
+	public void testFieldWithUnknownFullyQualifiedType()
 	{
 		String source =
 			"class MyClass\n" +
@@ -216,7 +216,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWithImportedType() throws Exception
+	public void testFieldWithImportedType()
 	{
 		String source =
 			"import java.util.List;\n" +
@@ -242,7 +242,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testStringFieldWithInitialiser() throws Exception
+	public void testStringFieldWithInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -321,7 +321,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testNumberFieldWithIntegerInitialiser() throws Exception
+	public void testNumberFieldWithIntegerInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -364,7 +364,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testNumberFieldWithDecimalInitialiser() throws Exception
+	public void testNumberFieldWithDecimalInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -398,7 +398,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testCharacterFieldWithInitialiser() throws Exception
+	public void testCharacterFieldWithInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -438,7 +438,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testBooleanFieldWithInitialiser() throws Exception
+	public void testBooleanFieldWithInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -478,7 +478,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testObjectFieldWithInitialiser() throws Exception
+	public void testObjectFieldWithInitialiser()
 	{
 		String source =
 			"class MyClass\n" +
@@ -525,7 +525,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldInitialiserWithMismatchedTypes() throws Exception
+	public void testFieldInitialiserWithMismatchedTypes()
 	{
 		String source =
 			"class MyClass\n" +
@@ -549,7 +549,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testReadFromStringField() throws Exception
+	public void testReadFromStringField()
 	{
 		String source =
 			"class MyClass\n" +
@@ -609,7 +609,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testReadFromUnknownField() throws Exception
+	public void testReadFromUnknownField()
 	{
 		String source =
 			"class MyClass\n" +
@@ -636,7 +636,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWrite() throws Exception
+	public void testFieldWrite()
 	{
 		String source =
 			"class MyClass\n" +
@@ -655,6 +655,10 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
@@ -664,7 +668,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testAssignFieldInConstructor() throws Exception
+	public void testAssignFieldInConstructor()
 	{
 		String source =
 			"class MyClass\n" +
@@ -728,5 +732,38 @@ public class FieldListenerTest
 		assertEquals("MyClass", fifthInstruction.owner);
 		assertEquals("thingy", fifthInstruction.name);
 		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
+	}
+
+	@Test
+	public void testAssignWrongTypeToField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy = \"thingy\";\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this.thingy = 1;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result =  compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Cannot assign expression of type " +
+				"num to field of type java.lang.String.\n",
+			result.getErrors());
 	}
 }

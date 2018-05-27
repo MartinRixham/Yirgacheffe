@@ -56,7 +56,7 @@ public class ConstructorListener extends MainMethodListener
 
 		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
-		methodVisitor.visitMethodInsn(
+		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/Object",
 			"<init>",

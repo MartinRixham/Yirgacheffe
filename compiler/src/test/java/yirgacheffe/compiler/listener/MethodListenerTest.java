@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class MethodListenerTest
 {
 	@Test
-	public void testInterfaceWithMethod() throws Exception
+	public void testInterfaceWithMethod()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -48,7 +48,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceMethodWithModifier() throws Exception
+	public void testInterfaceMethodWithModifier()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -67,7 +67,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceMethodWithKeywordIdentifier() throws Exception
+	public void testInterfaceMethodWithKeywordIdentifier()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -85,7 +85,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceMethodWithParameters() throws Exception
+	public void testInterfaceMethodWithParameters()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -111,7 +111,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testParameterWithMissingType() throws Exception
+	public void testParameterWithMissingType()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -129,7 +129,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testClassWithPublicMethod() throws Exception
+	public void testClassWithPublicMethod()
 	{
 		String source =
 			"class MyClass\n" +
@@ -159,7 +159,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testClassWithPrivateMethod() throws Exception
+	public void testClassWithPrivateMethod()
 	{
 		String source =
 			"class MyClass\n" +
@@ -189,7 +189,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testClassMethodWithMissingModifier() throws Exception
+	public void testClassMethodWithMissingModifier()
 	{
 		String source =
 			"class MyClass\n" +
@@ -208,7 +208,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testClassWithTwoMethods() throws Exception
+	public void testClassWithTwoMethods()
 	{
 		String source =
 			"class MyClass\n" +
@@ -246,7 +246,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testMethodWithImportedTypes() throws Exception
+	public void testMethodWithImportedTypes()
 	{
 		String source =
 			"import java.util.List;\n" +
@@ -273,7 +273,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithVoidMethod() throws Exception
+	public void testInterfaceWithVoidMethod()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -298,7 +298,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithBooleanMethod() throws Exception
+	public void testInterfaceWithBooleanMethod()
 	{
 		String source =
 			"interface MyInterface\n" +
@@ -323,7 +323,7 @@ public class MethodListenerTest
 	}
 
 	@Test
-	public void testInterfaceWithCharacterMethod() throws Exception
+	public void testInterfaceWithCharacterMethod()
 	{
 		String source =
 			"interface MyInterface\n" +
