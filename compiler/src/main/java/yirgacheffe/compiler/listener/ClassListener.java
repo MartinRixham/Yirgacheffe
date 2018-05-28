@@ -14,7 +14,7 @@ public class ClassListener extends PackageListener
 
 	protected String mainMethodName;
 
-	protected boolean hasInitialiser;
+	protected int initialiserCount = 0;
 
 	public ClassListener(String sourceFile, Classes classes)
 	{
@@ -167,14 +167,14 @@ public class ClassListener extends PackageListener
 			"()V",
 			false);
 
-		if (this.hasInitialiser)
+		for (int i = 0; i < this.initialiserCount; i++)
 		{
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				this.className,
-				"0_init_field",
+				i + "_init_field",
 				"()V",
 				false);
 		}

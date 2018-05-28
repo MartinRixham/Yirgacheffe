@@ -525,6 +525,48 @@ public class FieldListenerTest
 	}
 
 	@Test
+	public void testTwoInitialisedFields()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"Object myObject = new Object();\n" +
+				"String myString = \"thingy\";\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+
+		assertEquals(3, methods.size());
+
+		MethodNode first = methods.get(0);
+
+		assertEquals(Opcodes.ACC_PRIVATE, first.access);
+		assertEquals("0_init_field", first.name);
+
+		MethodNode second = methods.get(1);
+
+		assertEquals(Opcodes.ACC_PRIVATE, second.access);
+		assertEquals("1_init_field", second.name);
+	}
+
+	@Test
 	public void testFieldInitialiserWithMismatchedTypes()
 	{
 		String source =

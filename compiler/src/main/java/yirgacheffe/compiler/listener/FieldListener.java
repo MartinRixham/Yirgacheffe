@@ -21,14 +21,14 @@ public class FieldListener extends FieldDeclarationListener
 		this.methodVisitor =
 			this.writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
-				"0_init_field",
+				this.initialiserCount + "_init_field",
 				"()V",
 				null,
 				null);
 
 		this.enterThisRead(null);
 
-		this.hasInitialiser = true;
+		this.initialiserCount++;
 	}
 
 	@Override
