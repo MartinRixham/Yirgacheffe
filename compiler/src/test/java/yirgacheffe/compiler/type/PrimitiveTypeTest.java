@@ -14,7 +14,7 @@ public class PrimitiveTypeTest
 	{
 		Type type = PrimitiveType.VOID;
 
-		assertEquals("void", type.toString());
+		assertEquals("Void", type.toString());
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
 		assertEquals(0, type.width());
@@ -28,7 +28,7 @@ public class PrimitiveTypeTest
 	{
 		Type type = PrimitiveType.BOOLEAN;
 
-		assertEquals("bool", type.toString());
+		assertEquals("Bool", type.toString());
 		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());
 		assertEquals("Z", type.toJVMType());
 		assertEquals(1, type.width());
@@ -42,7 +42,7 @@ public class PrimitiveTypeTest
 	{
 		Type type = PrimitiveType.CHAR;
 
-		assertEquals("char", type.toString());
+		assertEquals("Char", type.toString());
 		assertEquals("java.lang.Character", type.toFullyQualifiedType());
 		assertEquals("C", type.toJVMType());
 		assertEquals(1, type.width());
@@ -56,7 +56,7 @@ public class PrimitiveTypeTest
 	{
 		Type type = PrimitiveType.DOUBLE;
 
-		assertEquals("num", type.toString());
+		assertEquals("Num", type.toString());
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 		assertEquals("D", type.toJVMType());
 		assertEquals(2, type.width());

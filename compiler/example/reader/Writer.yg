@@ -2,7 +2,7 @@ package example.reader;
 
 class Writer
 {
-	public void write()
+	public Void write()
 	{
 		new Streeng().write();
 	}

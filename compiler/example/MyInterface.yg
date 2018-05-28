@@ -2,5 +2,5 @@ package example;
 
 interface MyInterface
 {
-    AnotherClass myMethod(num param);
+    AnotherClass myMethod(Num param);
 }

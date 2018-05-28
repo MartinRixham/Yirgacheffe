@@ -28,7 +28,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"new String();\n" +
 				"}\n" +
@@ -83,7 +83,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"new String(\"thingy\");\n" +
 				"}\n" +
@@ -143,7 +143,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"new Double(1.0);\n" +
 				"}\n" +
@@ -232,7 +232,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"new bool(true);\n" +
+					"new Bool(true);\n" +
 				"}\n" +
 			"}";
 
@@ -241,7 +241,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:4 Cannot instantiate primitive type bool.\n",
+			"line 4:4 Cannot instantiate primitive type Bool.\n",
 			result.getErrors());
 	}
 
@@ -251,7 +251,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"\"thingy\".toString();\n" +
 				"}\n" +
@@ -305,7 +305,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"\"thingy\".concat(\"sumpt\");\n" +
 				"}\n" +
@@ -364,7 +364,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"\"thingy\".equals(\"sumpt\");\n" +
 				"}\n" +
@@ -481,7 +481,7 @@ public class FunctionCallListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"MutableReference<String> ref = " +
 						"new MutableReference<String>(\"thingy\");\n" +
@@ -507,7 +507,7 @@ public class FunctionCallListenerTest
 			"import java.util.HashMap;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"Map<String, String> map = " +
 						"new HashMap<String, Object>();\n" +
@@ -533,7 +533,7 @@ public class FunctionCallListenerTest
 			"import java.util.HashMap;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"Map<String, String> map = " +
 						"new HashMap<String, String>();\n" +

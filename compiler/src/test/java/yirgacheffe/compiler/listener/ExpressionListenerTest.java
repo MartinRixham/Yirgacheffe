@@ -28,7 +28,7 @@ public class ExpressionListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"String myVariable = \"thingy\";\n" +
 					"String anotherVariable = myVariable;\n" +
@@ -61,7 +61,7 @@ public class ExpressionListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"String myVariable = unknownVariable;\n" +
 				"}\n" +
@@ -82,11 +82,11 @@ public class ExpressionListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()\n" +
+				"public Void method()\n" +
 				"{\n" +
-					"num myVariable = this.getOne();\n" +
+					"Num myVariable = this.getOne();\n" +
 				"}\n" +
-				"public num getOne()\n" +
+				"public Num getOne()\n" +
 				"{\n" +
 					"return 1;\n" +
 				"}\n" +
@@ -162,7 +162,7 @@ public class ExpressionListenerTest
 			"import java.util.ArrayList;" +
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"List<Integer> list = new ArrayList<Integer>();\n" +
 				"}\n" +

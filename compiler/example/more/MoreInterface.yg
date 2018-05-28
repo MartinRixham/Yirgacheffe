@@ -4,5 +4,5 @@ import example.MyInterface;
 
 interface MoreInterface
 {
-    void moreMethod(MyInterface param);
+    Void moreMethod(MyInterface param);
 }

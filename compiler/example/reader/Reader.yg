@@ -2,7 +2,7 @@ package example.reader;
 
 class Reader
 {
-	public void read(Reader reader)
+	public Void read(Reader reader)
 	{
 		new Streeng().read(new Streeng());
 	}

@@ -2,10 +2,10 @@ package example.more;
 
 class MoreClass
 {
-	public void more()
+	public Void more()
 	{
 		new MyClass();
 	}
 
-	void less();
+	Void less();
 }

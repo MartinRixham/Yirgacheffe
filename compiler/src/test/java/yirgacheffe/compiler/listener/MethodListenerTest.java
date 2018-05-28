@@ -23,7 +23,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"num myMethod();\n" +
+				"Num myMethod();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -53,7 +53,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"public num myInterfaceMethod();\n" +
+				"public Num myInterfaceMethod();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -72,7 +72,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"num return();\n" +
+				"Num return();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -90,7 +90,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"num myParameterisedMethod(String param1, num param2);\n" +
+				"Num myParameterisedMethod(String param1, Num param2);\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -116,7 +116,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"num myMethod(param1, num param2);\n" +
+				"Num myMethod(param1, Num param2);\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -134,7 +134,7 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public num myMethod(String param1, num param2) {}\n" +
+				"public Num myMethod(String param1, Num param2) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -164,7 +164,7 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"private num myMethod(String param1, num param2) {}\n" +
+				"private Num myMethod(String param1, Num param2) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -194,7 +194,7 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myMethod(String param1, num param2) {}\n" +
+				"Num myMethod(String param1, Num param2) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -213,7 +213,7 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public num myMethod(String param1, num param2) {}\n" +
+				"public Num myMethod(String param1, Num param2) {}\n" +
 				"public String buildString(StringBuilder builder) {}\n" +
 			"}";
 
@@ -278,7 +278,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"void myMethod();\n" +
+				"Void myMethod();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -303,7 +303,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"bool myMethod();\n" +
+				"Bool myMethod();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -328,7 +328,7 @@ public class MethodListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"char myMethod();\n" +
+				"Char myMethod();\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

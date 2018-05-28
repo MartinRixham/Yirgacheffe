@@ -4,13 +4,13 @@ import org.objectweb.asm.Opcodes;
 
 public enum PrimitiveType implements Type
 {
-	VOID("void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD),
+	VOID("Void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD),
 
-	BOOLEAN("bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
+	BOOLEAN("Bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
-	CHAR("char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
+	CHAR("Char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
 
-	DOUBLE("num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD);
+	DOUBLE("Num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD);
 
 	private String name;
 

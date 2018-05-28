@@ -29,7 +29,7 @@ public class StatementListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"num myVariable;\n" +
+					"Num myVariable;\n" +
 				"}\n" +
 			"}";
 
@@ -47,8 +47,8 @@ public class StatementListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"num myVariable\n" +
-					"num anotherVariable\n" +
+					"Num myVariable\n" +
+					"Num anotherVariable\n" +
 					"new String()\n" +
 				"}\n" +
 			"}";
@@ -70,9 +70,9 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
-					"num myVariable = 50;\n" +
+					"Num myVariable = 50;\n" +
 				"}\n" +
 			"}";
 
@@ -111,9 +111,9 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method(num param)" +
+				"public Void method(Num param)" +
 				"{\n" +
-					"num myVariable = param;\n" +
+					"Num myVariable = param;\n" +
 				"}\n" +
 			"}";
 
@@ -156,10 +156,10 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
-					"num myVariable = 1;\n" +
-					"bool anotherVariable = false;\n" +
+					"Num myVariable = 1;\n" +
+					"Bool anotherVariable = false;\n" +
 				"}\n" +
 			"}";
 
@@ -208,10 +208,10 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
 					"Object myObject = new Object();\n" +
-					"num myVariable = 1;\n" +
+					"Num myVariable = 1;\n" +
 				"}\n" +
 			"}";
 
@@ -259,9 +259,9 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void method()" +
+				"public Void method()" +
 				"{\n" +
-					"num myVariable;" +
+					"Num myVariable;" +
 					"myVariable = 1;\n" +
 				"}\n" +
 			"}";
@@ -349,7 +349,7 @@ public class StatementListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"num number = \"thingy\";" +
+					"Num number = \"thingy\";" +
 				"}\n" +
 			"}";
 
@@ -359,7 +359,7 @@ public class StatementListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 4:0 Cannot assign expression of type " +
-				"java.lang.String to variable of type num.\n",
+				"java.lang.String to variable of type Num.\n",
 			result.getErrors());
 	}
 

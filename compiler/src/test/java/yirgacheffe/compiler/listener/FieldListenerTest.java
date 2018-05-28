@@ -29,7 +29,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myField;\n" +
+				"Num myField;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -89,7 +89,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myNumberField;\n" +
+				"Num myNumberField;\n" +
 				"String myStringField;\n" +
 			"}";
 
@@ -124,7 +124,7 @@ public class FieldListenerTest
 		String source =
 			"interface MyClass\n" +
 			"{\n" +
-				"  num myField;\n" +
+				"Num myField;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -132,7 +132,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:2 Interface cannot contain field.\n",
+			"line 3:0 Interface cannot contain field.\n",
 			result.getErrors());
 	}
 
@@ -326,7 +326,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myNumberField = 5;\n" +
+				"Num myNumberField = 5;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -369,7 +369,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myNumberField = 1.2;\n" +
+				"Num myNumberField = 1.2;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -403,7 +403,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"char myCharacterField = 'a';\n" +
+				"Char myCharacterField = 'a';\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -443,7 +443,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"bool myBooleanField = true;\n" +
+				"Bool myBooleanField = true;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -616,7 +616,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"num myBooleanField = true;\n" +
+				"Num myBooleanField = true;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -630,7 +630,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:0 Cannot assign bool to field of type num.\n",
+			"line 3:0 Cannot assign Bool to field of type Num.\n",
 			result.getErrors());
 	}
 
@@ -641,7 +641,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"String myStringField;\n" +
-				"public void read()\n" +
+				"public Void read()\n" +
 				"{\n" +
 					"String read = this.myStringField;\n" +
 				"}" +
@@ -700,7 +700,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public void read()\n" +
+				"public Void read()\n" +
 				"{\n" +
 					"String read = this.myStringField;\n" +
 				"}" +
@@ -849,7 +849,7 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
-				"num to field of type java.lang.String.\n",
+				"Num to field of type java.lang.String.\n",
 			result.getErrors());
 	}
 }

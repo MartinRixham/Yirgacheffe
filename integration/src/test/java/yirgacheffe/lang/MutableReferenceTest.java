@@ -23,7 +23,7 @@ public class MutableReferenceTest
 			"{\n" +
 				"MutableReference<String> myString =" +
 					"new MutableReference<String>(\"Hello world.\");\n" +
-				"public void hello()" +
+				"public Void hello()" +
 				"{\n" +
 					"new System().getOut().println(this.myString.get());\n" +
 					"this.myString.set(\"Eh up, planet.\");\n" +

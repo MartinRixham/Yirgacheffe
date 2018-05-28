@@ -4,5 +4,5 @@ class AnotherClass
 {
     MyInterface myField;
 
-    public void doThing(MyInterface param) {}
+    public Void doThing(MyInterface param) {}
 }

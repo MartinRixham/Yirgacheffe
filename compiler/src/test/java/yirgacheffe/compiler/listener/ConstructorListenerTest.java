@@ -71,7 +71,7 @@ public class ConstructorListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass(num param) {}\n" +
+				"public MyClass(Num param) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -115,7 +115,7 @@ public class ConstructorListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"MyClass(num param) {}\n" +
+				"MyClass(Num param) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -134,7 +134,7 @@ public class ConstructorListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClasss(num param) {}\n" +
+				"public MyClasss(Num param) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

@@ -101,7 +101,7 @@ Package: 'package';
 Import: 'import';
 Class: 'class';
 Interface: 'interface';
-PrimitiveType: 'void' | 'bool' | 'char' | 'num';
+PrimitiveType: 'Void' | 'Bool' | 'Char' | 'Num';
 Modifier: 'public' | 'private';
 BooleanLiteral: 'true' | 'false';
 New: 'new';

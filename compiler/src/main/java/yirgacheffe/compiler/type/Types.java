@@ -13,10 +13,10 @@ public class Types
 
 	public Types()
 	{
-		this.types.put("void", PrimitiveType.VOID);
-		this.types.put("bool", PrimitiveType.BOOLEAN);
-		this.types.put("char", PrimitiveType.CHAR);
-		this.types.put("num", PrimitiveType.DOUBLE);
+		this.types.put("Void", PrimitiveType.VOID);
+		this.types.put("Bool", PrimitiveType.BOOLEAN);
+		this.types.put("Char", PrimitiveType.CHAR);
+		this.types.put("Num", PrimitiveType.DOUBLE);
 	}
 
 	public Type getType(YirgacheffeParser.TypeContext context)
