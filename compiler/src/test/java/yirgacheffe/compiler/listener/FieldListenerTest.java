@@ -522,6 +522,22 @@ public class FieldListenerTest
 		assertEquals("MyClass", fifthInstruction.owner);
 		assertEquals("myObject", fifthInstruction.name);
 		assertEquals("Ljava/lang/Object;", fifthInstruction.desc);
+
+		MethodNode constructor = methods.get(1);
+
+		instructions = constructor.instructions;
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("()V", fourthInstruction.desc);
 	}
 
 	@Test
@@ -564,6 +580,34 @@ public class FieldListenerTest
 
 		assertEquals(Opcodes.ACC_PRIVATE, second.access);
 		assertEquals("1_init_field", second.name);
+
+		MethodNode constructor = methods.get(2);
+
+		InsnList instructions = constructor.instructions;
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("()V", fourthInstruction.desc);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ALOAD, fifthInstruction.getOpcode());
+		assertEquals(0, fifthInstruction.var);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, sixthInstruction.getOpcode());
+		assertEquals("1_init_field", sixthInstruction.name);
+		assertEquals("MyClass", sixthInstruction.owner);
+		assertEquals("()V", sixthInstruction.desc);
 	}
 
 	@Test

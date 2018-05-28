@@ -43,8 +43,7 @@ public class ConstructorListener extends MainMethodListener
 
 		this.returnType = PrimitiveType.VOID;
 
-		String descriptor =
-			this.getDescriptor(context.parameter()) + "V";
+		String descriptor = this.getDescriptor(context.parameter()) + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(
@@ -62,6 +61,18 @@ public class ConstructorListener extends MainMethodListener
 			"<init>",
 			"()V",
 			false);
+
+		for (int i = 0; i < this.initialiserCount; i++)
+		{
+			this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			this.methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				this.className,
+				i + "_init_field",
+				"()V",
+				false);
+		}
 
 		this.hasDefaultConstructor = false;
 		this.inConstructor = true;
