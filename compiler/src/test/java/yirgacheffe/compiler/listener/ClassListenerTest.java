@@ -103,8 +103,8 @@ public class ClassListenerTest
 	{
 		String source =
 			"interface\n" +
-				"{\n" +
-				"}";
+			"{\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -212,9 +212,9 @@ public class ClassListenerTest
 		source =
 			"package tis.that;\n" +
 			"interface AnotherInterface\n" +
-				"{\n" +
+			"{\n" +
 				"MyInterface myMethod();\n" +
-				"}";
+			"}";
 
 		compiler = new Compiler("tis/that/AnotherInterface.yg", source);
 		CompilationResult result = compiler.compile(classes);
@@ -237,9 +237,9 @@ public class ClassListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
-					"String myMethod();\n" +
-				"}";
+			"{\n" +
+				"String myMethod();\n" +
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -253,9 +253,9 @@ public class ClassListenerTest
 	{
 		String source =
 			"interface MyInterface\n" +
-				"{\n" +
+			"{\n" +
 				"public String myMethod() {}\n" +
-				"}";
+			"}";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());

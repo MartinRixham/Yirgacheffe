@@ -19,12 +19,22 @@ public class Compiler
 {
 	private String sourceFile;
 
-	private String source;
+	private ParseTree tree;
+
+	private List<Error> errors;
 
 	public Compiler(String sourceFile, String source)
 	{
 		this.sourceFile = sourceFile;
-		this.source = source;
+		this.errors = new ArrayList<>();
+
+		ParseErrorListener errorListener = new ParseErrorListener(this.errors);
+		YirgacheffeParser parser = new Source(source).parse();
+		parser.removeErrorListeners();
+		parser.addErrorListener(errorListener);
+		parser.setErrorHandler(new ParseErrorStrategy());
+
+		this.tree = parser.compilationUnit();
 	}
 
 	public void compileClassDeclaration(Classes classes)
@@ -65,18 +75,10 @@ public class Compiler
 
 	private List<Error> execute(YirgacheffeListener listener)
 	{
-		List<Error> errors = new ArrayList<>();
-		ParseErrorListener errorListener = new ParseErrorListener(errors);
-		YirgacheffeParser parser = new Source(this.source).parse();
-		parser.removeErrorListeners();
-		parser.addErrorListener(errorListener);
-		parser.setErrorHandler(new ParseErrorStrategy());
-
-		ParseTree tree = parser.compilationUnit();
-
 		ParseTreeWalker walker = new ParseTreeWalker();
-		walker.walk(listener, tree);
 
-		return errors;
+		walker.walk(listener, this.tree);
+
+		return this.errors;
 	}
 }
