@@ -73,4 +73,20 @@ public class StatementListener extends FieldListener
 			this.errors.add(new Error(context, message));
 		}
 	}
+
+	@Override
+	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
+	{
+		Type expressionType = this.typeStack.pop();
+
+		if (!expressionType.isAssignableTo(this.returnType))
+		{
+			String message =
+				"Mismatched return type: Cannot return expression of type " +
+				expressionType + " from method of return type " +
+				this.returnType + ".";
+
+			this.errors.add(new Error(context, message));
+		}
+	}
 }

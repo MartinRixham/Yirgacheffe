@@ -105,7 +105,7 @@ public class ParameterisedType implements Type
 		}
 		else
 		{
-			return false;
+			return this.primaryType.isAssignableTo(other);
 		}
 	}
 

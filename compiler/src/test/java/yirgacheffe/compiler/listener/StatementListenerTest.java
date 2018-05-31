@@ -429,4 +429,26 @@ public class StatementListenerTest
 
 		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
 	}
+
+	@Test
+	public void testMismatchedReturnType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return \"thingy\";\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 4:0 Mismatched return type: " +
+			"Cannot return expression of type " +
+			"java.lang.String from method of return type Num.\n",
+			result.getErrors());
+	}
 }
