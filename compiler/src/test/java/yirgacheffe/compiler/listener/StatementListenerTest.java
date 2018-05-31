@@ -387,4 +387,46 @@ public class StatementListenerTest
 				"yirgacheffe.lang.MutableReference<yirgacheffe.lang.System>.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 1000000;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(2, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1000000.0, firstInstruction.cst);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
+	}
 }
