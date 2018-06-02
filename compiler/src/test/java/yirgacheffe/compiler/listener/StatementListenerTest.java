@@ -451,4 +451,25 @@ public class StatementListenerTest
 			"java.lang.String from method of return type Num.\n",
 			result.getErrors());
 	}
+
+
+	@Test
+	public void testMissingReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public String method()" +
+				"{\n" +
+					"new String(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 5:0 No return statement in method.\n",
+			result.getErrors());
+	}
 }
