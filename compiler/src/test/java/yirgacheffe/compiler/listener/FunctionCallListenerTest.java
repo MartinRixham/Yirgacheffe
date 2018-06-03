@@ -412,7 +412,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:0 Constructor java.lang.String(java.lang.Double) not found.\n",
+			"line 4:0 Constructor java.lang.String(Num) not found.\n",
 			result.getErrors());
 	}
 
@@ -568,7 +568,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:9 Method java.lang.String.split(java.lang.Boolean) not found.\n",
+			"line 4:9 Method java.lang.String.split(Bool) not found.\n",
 			result.getErrors());
 	}
 
@@ -591,5 +591,41 @@ public class FunctionCallListenerTest
 		assertEquals(
 			"line 4:9 Method java.lang.String.notAMethod() not found.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testPrintABoolean()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new System().getOut().println(true);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(9, instructions.size());
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
+		assertEquals("java/io/PrintStream", eighthInstruction.owner);
+		assertEquals("println", eighthInstruction.name);
+		assertEquals("(Z)V", eighthInstruction.desc);
 	}
 }

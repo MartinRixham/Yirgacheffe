@@ -4,21 +4,32 @@ import org.objectweb.asm.Opcodes;
 
 public enum PrimitiveType implements Type
 {
-	VOID("Void", "V", "Void", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD),
+	VOID(
+		"Void", "V", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD, void.class),
 
-	BOOLEAN("Bool", "Z", "Boolean", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
+	BOOLEAN(
+		"Bool", "Z", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD, boolean.class),
 
-	CHAR("Char", "C", "Character", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD),
+	CHAR(
+		"Char", "C", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD, char.class),
 
-	DOUBLE("Num", "D", "Double", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD);
+	INT(
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+
+	LONG(
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+
+	FLOAT(
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+
+	DOUBLE(
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class);
 
 	private String name;
 
 	private Class<?> reflectionClass;
 
 	private String jvmType;
-
-	private String fullyQualifiedType;
 
 	private int width;
 
@@ -31,31 +42,19 @@ public enum PrimitiveType implements Type
 	PrimitiveType(
 		String name,
 		String jvmType,
-		String wrapperClass,
 		int width,
 		int returnInstruction,
 		int storeInstruction,
-		int loadInstruction)
+		int loadInstruction,
+		Class<?> reflectionClass)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
-		this.fullyQualifiedType = "java.lang." + wrapperClass;
 		this.width = width;
 		this.returnInstruction = returnInstruction;
 		this.storeInstruction = storeInstruction;
 		this.loadInstruction = loadInstruction;
-
-		try
-		{
-			this.reflectionClass =
-				Thread.currentThread()
-					.getContextClassLoader()
-					.loadClass(this.fullyQualifiedType);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
+		this.reflectionClass = reflectionClass;
 	}
 
 	@Override
@@ -73,7 +72,7 @@ public enum PrimitiveType implements Type
 	@Override
 	public String toFullyQualifiedType()
 	{
-		return this.fullyQualifiedType;
+		return this.reflectionClass.getName();
 	}
 
 	@Override

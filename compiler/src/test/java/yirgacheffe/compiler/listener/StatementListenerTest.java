@@ -452,7 +452,6 @@ public class StatementListenerTest
 			result.getErrors());
 	}
 
-
 	@Test
 	public void testMissingReturnStatement()
 	{

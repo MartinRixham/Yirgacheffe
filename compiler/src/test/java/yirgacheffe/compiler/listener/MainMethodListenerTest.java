@@ -112,4 +112,32 @@ public class MainMethodListenerTest
 
 		assertEquals(Opcodes.RETURN, ninthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testMainMethodInstantiatesItself()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main myMainMethod(Array<String> args)" +
+				"{" +
+					"MyClass myClass = new MyClass();" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

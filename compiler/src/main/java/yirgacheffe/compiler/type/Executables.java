@@ -18,30 +18,15 @@ public class Executables<T extends Executable>
 	{
 		for (T executable: this.executables)
 		{
-			Class<?>[] parameterTypes = executable.getParameterTypes();
+			Type[] parameterTypes = this.getTypes(executable.getParameterTypes());
 
 			if (argumentClasses.matches(parameterTypes))
 			{
 				argumentDescriptor.append("(");
 
-				for (Class<?> parameterType: parameterTypes)
+				for (Type parameterType: parameterTypes)
 				{
-					if (parameterType.isPrimitive())
-					{
-						argumentDescriptor.append(
-							PrimitiveType.valueOf(parameterType.getName().toUpperCase())
-								.toJVMType());
-					}
-					else if (parameterType.isArray())
-					{
-						argumentDescriptor.append(
-							new ArrayType(parameterType.getName()).toJVMType());
-					}
-					else
-					{
-						argumentDescriptor.append(
-							new ReferenceType(parameterType).toJVMType());
-					}
+						argumentDescriptor.append(parameterType.toJVMType());
 				}
 
 				argumentDescriptor.append(")");
@@ -51,5 +36,28 @@ public class Executables<T extends Executable>
 		}
 
 		return null;
+	}
+
+	private Type[] getTypes(Class<?>[] classes)
+	{
+		Type[] types = new Type[classes.length];
+
+		for (int i = 0; i < classes.length; i++)
+		{
+			if (classes[i].isArray())
+			{
+				types[i] = new ArrayType(classes[i].getName());
+			}
+			else if (classes[i].isPrimitive())
+			{
+				types[i] = PrimitiveType.valueOf(classes[i].getName().toUpperCase());
+			}
+			else
+			{
+				types[i] = new ReferenceType(classes[i]);
+			}
+		}
+
+		return types;
 	}
 }

@@ -161,11 +161,11 @@ public class FunctionCallListener extends ExpressionListener
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
 		int argumentCount = context.expression().size();
-		Class<?>[] arguments = new Class<?>[argumentCount];
+		Type[] arguments = new Type[argumentCount];
 
 		for (int i =  0; i < context.expression().size(); i++)
 		{
-			arguments[i] = this.typeStack.pop().reflectionClass();
+			arguments[i] = this.typeStack.pop();
 		}
 
 		this.argumentClasses = new ArgumentClasses(arguments, this.errors);

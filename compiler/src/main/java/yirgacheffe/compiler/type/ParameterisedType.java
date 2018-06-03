@@ -109,7 +109,7 @@ public class ParameterisedType implements Type
 		}
 	}
 
-	public boolean hasTypeParameter(String typeName, Class<?> genericParameterType)
+	public boolean hasTypeParameter(String typeName, Type genericParameterType)
 	{
 		Type type = this.typeParameters.get(typeName);
 
@@ -118,7 +118,7 @@ public class ParameterisedType implements Type
 			return true;
 		}
 
-		return type.reflectionClass().isAssignableFrom(genericParameterType);
+		return genericParameterType.isAssignableTo(type);
 	}
 
 	public String getTypeParameterName(String typeName)

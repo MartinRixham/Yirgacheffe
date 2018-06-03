@@ -14,7 +14,7 @@ public class ExecutablesTest
 	@Test
 	public void testGettingCorrectPrintlnMethod()
 	{
-		Class<?>[] stringClass = new Class<?>[] {String.class};
+		Type[] stringClass = new Type[] {new ReferenceType(String.class)};
 		ArgumentClasses argumentClasses =
 			new ArgumentClasses(stringClass, new ArrayList<>());
 

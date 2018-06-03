@@ -10,11 +10,11 @@ import java.util.List;
 
 public class ArgumentClasses
 {
-	private Class<?>[] argumentClasses;
+	private Type[] argumentClasses;
 
 	private List<Error> errors;
 
-	public ArgumentClasses(Class<?>[] argumentClasses, List<Error> errors)
+	public ArgumentClasses(Type[] argumentClasses, List<Error> errors)
 	{
 		this.argumentClasses = argumentClasses;
 		this.errors = errors;
@@ -47,7 +47,7 @@ public class ArgumentClasses
 				if (!hasTypeParameter)
 				{
 					String message =
-						"Argument of type " + this.argumentClasses[i].getName() +
+						"Argument of type " + this.argumentClasses[i] +
 						" cannot be assigned to generic parameter of type " +
 						type.getTypeParameterName(typeVariable.getName()) + ".";
 
@@ -57,7 +57,7 @@ public class ArgumentClasses
 		}
 	}
 
-	public boolean matches(Class<?>[] parameterTypes)
+	public boolean matches(Type[] parameterTypes)
 	{
 		if (parameterTypes.length != this.argumentClasses.length)
 		{
@@ -66,8 +66,7 @@ public class ArgumentClasses
 
 		for (int i = 0; i < parameterTypes.length; i++)
 		{
-			if (!parameterTypes[i].isAssignableFrom(this.argumentClasses[i]) &&
-				!this.isAssignable(parameterTypes[i], this.argumentClasses[i]))
+			if (!this.argumentClasses[i].isAssignableTo(parameterTypes[i]))
 			{
 				return false;
 			}
@@ -76,19 +75,14 @@ public class ArgumentClasses
 		return true;
 	}
 
-	private boolean isAssignable(Class<?> first, Class<?> second)
-	{
-		return first.getSimpleName().equals(second.getSimpleName().toLowerCase());
-	}
-
 	@Override
 	public String toString()
 	{
 		List<String> arguments = new ArrayList<>();
 
-		for (Class<?> argumentClass : this.argumentClasses)
+		for (Type argumentClass : this.argumentClasses)
 		{
-			arguments.add(argumentClass.getName());
+			arguments.add(argumentClass.toString());
 		}
 
 		return String.join(",", arguments) + ")";
