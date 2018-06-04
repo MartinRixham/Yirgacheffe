@@ -134,7 +134,10 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public Num myMethod(String param1, Num param2) {}\n" +
+				"public Num myMethod(String param1, Num param2)" +
+				"{" +
+					"return 1;" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -164,7 +167,10 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"private Num myMethod(String param1, Num param2) {}\n" +
+				"private Num myMethod(String param1, Num param2)" +
+				"{" +
+					"return 1;" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -194,7 +200,10 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"Num myMethod(String param1, Num param2) {}\n" +
+				"Num myMethod(String param1, Num param2)" +
+				"{" +
+					"return 1;" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -213,8 +222,15 @@ public class MethodListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public Num myMethod(String param1, Num param2) {}\n" +
-				"public String buildString(StringBuilder builder) {}\n" +
+				"public Num myMethod(String param1, Num param2)" +
+				"{" +
+					"return 1;" +
+				"}\n" +
+
+				"public String buildString(StringBuilder builder)" +
+				"{" +
+					"return \"\";" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -251,9 +267,13 @@ public class MethodListenerTest
 		String source =
 			"import java.util.List;\n" +
 			"import java.util.Set;\n" +
+			"import java.util.HashSet;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"public Set<String> myMethod(List<String> param1) {}\n" +
+				"public Set<String> myMethod(List<String> param1)" +
+				"{" +
+					"return new HashSet<String>();" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

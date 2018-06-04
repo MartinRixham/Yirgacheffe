@@ -88,5 +88,7 @@ public class StatementListener extends FieldListener
 
 			this.errors.add(new Error(context, message));
 		}
+
+		this.hasReturnStatement = true;
 	}
 }

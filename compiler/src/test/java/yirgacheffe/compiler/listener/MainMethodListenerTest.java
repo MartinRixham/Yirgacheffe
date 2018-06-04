@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -113,6 +114,7 @@ public class MainMethodListenerTest
 		assertEquals(Opcodes.RETURN, ninthInstruction.getOpcode());
 	}
 
+	@Ignore
 	@Test
 	public void testMainMethodInstantiatesItself()
 	{

@@ -403,7 +403,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Object method()" +
 				"{\n" +
-					"new String(1);\n" +
+					"return new String(1);\n" +
 				"}\n" +
 			"}";
 
@@ -412,7 +412,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:0 Constructor java.lang.String(Num) not found.\n",
+			"line 4:7 Constructor java.lang.String(Num) not found.\n",
 			result.getErrors());
 	}
 

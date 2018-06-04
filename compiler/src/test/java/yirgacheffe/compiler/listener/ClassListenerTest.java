@@ -254,7 +254,10 @@ public class ClassListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"public String myMethod() {}\n" +
+				"public String myMethod()" +
+				"{" +
+					"return \"\";" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

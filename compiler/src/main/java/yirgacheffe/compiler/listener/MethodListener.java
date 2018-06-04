@@ -27,6 +27,8 @@ public class MethodListener extends TypeListener
 
 	protected MethodVisitor methodVisitor;
 
+	protected boolean hasReturnStatement = false;
+
 	public MethodListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -162,6 +164,15 @@ public class MethodListener extends TypeListener
 		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 
 		this.localVariables = new HashMap<>();
+
+		if (!this.hasReturnStatement && this.returnType != PrimitiveType.VOID)
+		{
+			String message = "No return statement in method.";
+
+			this.errors.add(new Error(context.stop, message));
+		}
+
+		this.hasReturnStatement = false;
 		this.inConstructor = false;
 	}
 }
