@@ -79,8 +79,16 @@ public class TypeListener extends ClassListener
 
 			try
 			{
-				type =
-					this.classes.loadClass(this.packageName + "." + context.getText());
+				if (this.packageName == null)
+				{
+					type = this.classes.loadClass(context.getText());
+				}
+				else
+				{
+					type =
+						this.classes.loadClass(
+							this.packageName + "." + context.getText());
+				}
 			}
 			catch (ClassNotFoundException e)
 			{
