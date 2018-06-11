@@ -13,7 +13,7 @@
   <dependencies>
     <dependency>
       <groupId>yirgacheffe</groupId>
-      <artifactId>yirgacheffe-compiler</artifactId>
+      <artifactId>yirgacheffe-repl</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
   </dependencies>
