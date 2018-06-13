@@ -101,11 +101,14 @@ public class FunctionCallListener extends ExpressionListener
 
 		if (owner instanceof PrimitiveType)
 		{
+			String typeWithSlashes =
+				owner.toFullyQualifiedType().replace(".", "/");
+
 			this.methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
-				"java/lang/Double",
+				typeWithSlashes,
 				"valueOf",
-				"(D)Ljava/lang/Double;",
+				"(" + owner.toJVMType() + ")L" + typeWithSlashes + ";",
 				false);
 		}
 

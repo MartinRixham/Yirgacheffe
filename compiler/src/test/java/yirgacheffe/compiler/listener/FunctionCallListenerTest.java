@@ -667,4 +667,58 @@ public class FunctionCallListenerTest
 		assertEquals("()Ljava/lang/String;", thirdInstruction.desc);
 		assertFalse(thirdInstruction.itf);
 	}
+
+	@Test
+	public void testBooleanToString()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"true.toString();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(1, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(5, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.cst);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("java/lang/Boolean", secondInstruction.owner);
+		assertEquals("valueOf", secondInstruction.name);
+		assertEquals("(Z)Ljava/lang/Boolean;", secondInstruction.desc);
+		assertFalse(secondInstruction.itf);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Boolean", thirdInstruction.owner);
+		assertEquals("toString", thirdInstruction.name);
+		assertEquals("()Ljava/lang/String;", thirdInstruction.desc);
+		assertFalse(thirdInstruction.itf);
+	}
 }
