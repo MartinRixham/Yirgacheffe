@@ -592,4 +592,79 @@ public class FunctionCallListenerTest
 			"line 4:9 Method java.lang.String.notAMethod() not found.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testUndefinedFunctionCallOnNumber()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"123.notAMethod();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:4 Method Num.notAMethod() not found.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testNumberToString()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"123.toString();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(5, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(123.0, firstInstruction.cst);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("java/lang/Double", secondInstruction.owner);
+		assertEquals("valueOf", secondInstruction.name);
+		assertEquals("(D)Ljava/lang/Double;", secondInstruction.desc);
+		assertFalse(secondInstruction.itf);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Double", thirdInstruction.owner);
+		assertEquals("toString", thirdInstruction.name);
+		assertEquals("()Ljava/lang/String;", thirdInstruction.desc);
+		assertFalse(thirdInstruction.itf);
+	}
 }

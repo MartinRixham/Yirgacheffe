@@ -5,25 +5,32 @@ import org.objectweb.asm.Opcodes;
 public enum PrimitiveType implements Type
 {
 	VOID(
-		"Void", "V", 0, Opcodes.RETURN, Opcodes.ASTORE, Opcodes.ALOAD, void.class),
+		"Void", "V", 0, Opcodes.RETURN, Opcodes.ASTORE,
+		Opcodes.ALOAD, java.lang.Void.class),
 
 	BOOLEAN(
-		"Bool", "Z", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD, boolean.class),
+		"Bool", "Z", 1, Opcodes.IRETURN, Opcodes.ISTORE,
+		Opcodes.ILOAD, java.lang.Boolean.class),
 
 	CHAR(
-		"Char", "C", 1, Opcodes.IRETURN, Opcodes.ISTORE, Opcodes.ILOAD, char.class),
+		"Char", "C", 1, Opcodes.IRETURN, Opcodes.ISTORE,
+		Opcodes.ILOAD, java.lang.Character.class),
 
 	INT(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		Opcodes.DLOAD, java.lang.Double.class),
 
 	LONG(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		Opcodes.DLOAD, java.lang.Double.class),
 
 	FLOAT(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class),
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		Opcodes.DLOAD, java.lang.Double.class),
 
 	DOUBLE(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE, Opcodes.DLOAD, double.class);
+		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		Opcodes.DLOAD, java.lang.Double.class);
 
 	private String name;
 

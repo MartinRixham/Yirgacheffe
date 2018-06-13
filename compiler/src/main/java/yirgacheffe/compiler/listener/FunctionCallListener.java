@@ -95,6 +95,24 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
+	public void enterMethodCall(YirgacheffeParser.MethodCallContext context)
+	{
+		Type owner = this.typeStack.pop();
+
+		if (owner instanceof PrimitiveType)
+		{
+			this.methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"java/lang/Double",
+				"valueOf",
+				"(D)Ljava/lang/Double;",
+				false);
+		}
+
+		this.typeStack.push(owner);
+	}
+
+	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
 		String methodName = context.Identifier().getText();
@@ -118,7 +136,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		if (matchedMethod == null)
 		{
-			String method = owner.toFullyQualifiedType() + "." + methodName + "(";
+			String method = owner + "." + methodName + "(";
 			String message = "Method " + method + this.argumentClasses + " not found.";
 
 			this.errors.add(
