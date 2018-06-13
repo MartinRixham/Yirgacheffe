@@ -140,4 +140,46 @@ public class MainMethodListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testMainMethodMissingArguments()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main myMainMethod()" +
+				"{" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Main method must have exactly one parameter of type " +
+			"yirgacheffe.lang.Array<java.lang.String>.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMainMethodWrongArgument()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main myMainMethod(String args)" +
+				"{" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Main method must have exactly one parameter of type " +
+			"yirgacheffe.lang.Array<java.lang.String>.\n",
+			result.getErrors());
+	}
 }
