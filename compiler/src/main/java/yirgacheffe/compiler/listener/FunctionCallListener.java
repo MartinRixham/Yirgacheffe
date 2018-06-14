@@ -120,7 +120,17 @@ public class FunctionCallListener extends ExpressionListener
 	{
 		String methodName = context.Identifier().getText();
 		Type owner = this.typeStack.pop();
-		Method[] methods = owner.reflectionClass().getDeclaredMethods();
+		Method[] methods;
+
+		if (owner.toFullyQualifiedType().equals(this.className))
+		{
+			methods = owner.reflectionClass().getDeclaredMethods();
+		}
+		else
+		{
+			methods = owner.reflectionClass().getMethods();
+		}
+
 		Type returnType = new NullType();
 		StringBuilder argumentDescriptor = new StringBuilder();
 		ArrayList<Method> namedMethods = new ArrayList<>();

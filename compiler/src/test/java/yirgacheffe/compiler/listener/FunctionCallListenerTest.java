@@ -812,4 +812,45 @@ public class FunctionCallListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testFailToCallPrivateMethod()
+	{
+		String first =
+			"package thingy;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"private Void nothing() {}" +
+			"}";
+
+		String second =
+			"package thingy;\n" +
+			"class NotherClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{" +
+					"new MyClass().nothing();" +
+				"}" +
+			"}";
+
+		Compiler my = new Compiler("thingy/MyClass.java", first);
+		Compiler nother = new Compiler("thingy/NotherClass.java", second);
+		Classes classes = new Classes();
+
+		my.compileClassDeclaration(classes);
+		nother.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		my.compileInterface(classes);
+		nother.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result1 = my.compile(classes);
+		CompilationResult result2 = nother.compile(classes);
+
+		assertTrue(result1.isSuccessful());
+		assertFalse(result2.isSuccessful());
+	}
 }
