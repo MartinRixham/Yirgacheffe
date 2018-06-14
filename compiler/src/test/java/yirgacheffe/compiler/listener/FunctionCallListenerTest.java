@@ -785,6 +785,92 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testLongToNumber()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 1.23.longValue();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Double", thirdInstruction.owner);
+		assertEquals("longValue", thirdInstruction.name);
+		assertEquals("()L", thirdInstruction.desc);
+		assertFalse(thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.L2D, fourthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFloatToNumber()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 1.23.floatValue();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Double", thirdInstruction.owner);
+		assertEquals("floatValue", thirdInstruction.name);
+		assertEquals("()F", thirdInstruction.desc);
+		assertFalse(thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.F2D, fourthInstruction.getOpcode());
+	}
+
+	@Test
 	public void testCallPrivateMethod()
 	{
 		String source =

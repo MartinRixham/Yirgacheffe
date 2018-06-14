@@ -187,6 +187,16 @@ public class FunctionCallListener extends ExpressionListener
 			this.methodVisitor.visitInsn(Opcodes.I2D);
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
+		else if (returnType.equals(PrimitiveType.LONG))
+		{
+			this.methodVisitor.visitInsn(Opcodes.L2D);
+			this.typeStack.push(PrimitiveType.DOUBLE);
+		}
+		else if (returnType.equals(PrimitiveType.FLOAT))
+		{
+			this.methodVisitor.visitInsn(Opcodes.F2D);
+			this.typeStack.push(PrimitiveType.DOUBLE);
+		}
 		else if (!returnType.equals(PrimitiveType.VOID))
 		{
 			this.typeStack.push(returnType);
