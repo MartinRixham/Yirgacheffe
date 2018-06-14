@@ -783,4 +783,33 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.DRETURN, fifthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testCallPrivateMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"this.nothing();\n" +
+				"}\n" +
+				"private Void nothing() {}" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }
