@@ -721,4 +721,66 @@ public class FunctionCallListenerTest
 		assertEquals("()Ljava/lang/String;", thirdInstruction.desc);
 		assertFalse(thirdInstruction.itf);
 	}
+
+	@Test
+	public void testIntToNumber()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 1.23.intValue();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+
+		assertEquals(2, firstMethod.maxStack);
+		assertEquals(1, firstMethod.maxLocals);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(5, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1.23, firstInstruction.cst);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("java/lang/Double", secondInstruction.owner);
+		assertEquals("valueOf", secondInstruction.name);
+		assertEquals("(D)Ljava/lang/Double;", secondInstruction.desc);
+		assertFalse(secondInstruction.itf);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Double", thirdInstruction.owner);
+		assertEquals("intValue", thirdInstruction.name);
+		assertEquals("()I", thirdInstruction.desc);
+		assertFalse(thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.I2D, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DRETURN, fifthInstruction.getOpcode());
+	}
 }

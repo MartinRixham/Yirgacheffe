@@ -17,15 +17,15 @@ public enum PrimitiveType implements Type
 		Opcodes.ILOAD, java.lang.Character.class),
 
 	INT(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		"Num", "I", 2, Opcodes.DRETURN, Opcodes.DSTORE,
 		Opcodes.DLOAD, java.lang.Double.class),
 
 	LONG(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		"Num", "L", 2, Opcodes.DRETURN, Opcodes.DSTORE,
 		Opcodes.DLOAD, java.lang.Double.class),
 
 	FLOAT(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		"Num", "F", 2, Opcodes.DRETURN, Opcodes.DSTORE,
 		Opcodes.DLOAD, java.lang.Double.class),
 
 	DOUBLE(

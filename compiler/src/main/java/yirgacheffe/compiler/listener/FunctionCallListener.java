@@ -172,7 +172,12 @@ public class FunctionCallListener extends ExpressionListener
 			argumentDescriptor + returnType.toJVMType(),
 			false);
 
-		if (!returnType.equals(PrimitiveType.VOID))
+		if (returnType.equals(PrimitiveType.INT))
+		{
+			this.methodVisitor.visitInsn(Opcodes.I2D);
+			this.typeStack.push(PrimitiveType.DOUBLE);
+		}
+		else if (!returnType.equals(PrimitiveType.VOID))
 		{
 			this.typeStack.push(returnType);
 		}
