@@ -75,10 +75,11 @@ public class ParameterisedType implements Type
 	public String toString()
 	{
 		List<String> typeNames = new ArrayList<>();
+		Class<?> primaryClass = this.primaryType.reflectionClass();
 
-		for (String key: this.typeParameters.keySet())
+		for (TypeVariable type: primaryClass.getTypeParameters())
 		{
-			typeNames.add(this.typeParameters.get(key).toString());
+			typeNames.add(this.typeParameters.get(type.getName()).toString());
 		}
 
 		return this.toFullyQualifiedType() +

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,24 +12,14 @@ import static org.junit.Assert.assertFalse;
 public class ParameterisedTypeTest
 {
 	@Test
-	public void testTypeFromPackageAndIdentifier() throws Exception
+	public void testTypeWithOneParameter()
 	{
-		Class<?> list =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.util.List");
-
-		Class<?> string =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
-
-		ReferenceType referenceType = new ReferenceType(list);
-		Type typeParameter = new ReferenceType(string);
+		ReferenceType referenceType = new ReferenceType(java.util.List.class);
+		Type typeParameter = new ReferenceType(java.lang.String.class);
 		Type type = new ParameterisedType(referenceType, Arrays.asList(typeParameter));
 
 		assertEquals("java.util.List<java.lang.String>", type.toString());
-		assertEquals(list, type.reflectionClass());
+		assertEquals(java.util.List.class, type.reflectionClass());
 		assertEquals("java.util.List", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/List;", type.toJVMType());
 		assertEquals(1, type.width());
@@ -38,26 +29,25 @@ public class ParameterisedTypeTest
 	}
 
 	@Test
-	public void testStringIsNotAssignableToSystem() throws Exception
+	public void testTypeWithTwoParameters()
 	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
+		ReferenceType referenceType = new ReferenceType(java.util.Map.class);
+		Type firstParameter = new ReferenceType(java.lang.String.class);
+		Type secondParameter = PrimitiveType.DOUBLE;
+		List<Type> parameters = Arrays.asList(firstParameter, secondParameter);
+		Type type = new ParameterisedType(referenceType, parameters);
 
-		Class<?> systemClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("yirgacheffe.lang.System");
+		assertEquals("java.util.Map<java.lang.String,Num>", type.toString());
+	}
 
-		Class<?> mutableReferenceClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("yirgacheffe.lang.MutableReference");
+	@Test
+	public void testStringIsNotAssignableToSystem()
+	{
+		ReferenceType reference =
+			new ReferenceType(yirgacheffe.lang.MutableReference.class);
 
-		ReferenceType reference = new ReferenceType(mutableReferenceClass);
-		Type string = new ReferenceType(stringClass);
-		Type system = new ReferenceType(systemClass);
+		Type string = new ReferenceType(java.lang.String.class);
+		Type system = new ReferenceType(java.lang.System.class);
 
 		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
 		Type systemReference = new ParameterisedType(reference, Arrays.asList(system));
@@ -66,23 +56,15 @@ public class ParameterisedTypeTest
 	}
 
 	@Test
-	public void testNotAssignableToReferenceType() throws Exception
+	public void testNotAssignableToReferenceType()
 	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
 
-		Class<?> mutableReferenceClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("yirgacheffe.lang.MutableReference");
-
-		ReferenceType reference = new ReferenceType(mutableReferenceClass);
-		Type string = new ReferenceType(stringClass);
+		ReferenceType reference =
+			new ReferenceType(yirgacheffe.lang.MutableReference.class);
+		Type string = new ReferenceType(java.lang.String.class);
 
 		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
 
-		assertFalse(stringReference.isAssignableTo(new ReferenceType(stringClass)));
+		assertFalse(stringReference.isAssignableTo(string));
 	}
 }
