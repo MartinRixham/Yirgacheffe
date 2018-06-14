@@ -552,6 +552,28 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testNumberMap()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"Map<Num, Num> map = new HashMap<Num, Num>();\n" +
+					"map.put(456, 1.23);\n" +
+					"Num thingy = map.get(456);" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testFunctionCallWithArgumentOfWrongType()
 	{
 		String source =

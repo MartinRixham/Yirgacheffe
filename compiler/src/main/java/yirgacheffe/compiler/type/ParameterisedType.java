@@ -78,7 +78,7 @@ public class ParameterisedType implements Type
 
 		for (String key: this.typeParameters.keySet())
 		{
-			typeNames.add(this.typeParameters.get(key).toFullyQualifiedType());
+			typeNames.add(this.typeParameters.get(key).toString());
 		}
 
 		return this.toFullyQualifiedType() +
