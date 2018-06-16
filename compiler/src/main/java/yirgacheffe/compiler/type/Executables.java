@@ -1,6 +1,9 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.compiler.MatchResult;
+
 import java.lang.reflect.Executable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Executables<T extends Executable>
@@ -12,30 +15,54 @@ public class Executables<T extends Executable>
 		this.executables = executables;
 	}
 
-	public T getExecutable(
-		ArgumentClasses argumentClasses,
-		StringBuilder argumentDescriptor)
+	public MatchResult<T> getMatchingExecutable(ArgumentClasses argumentClasses)
 	{
+		List<T> matched = new ArrayList<>();
+		int highestExactMatches = 0;
+		String argumentDescriptor = "()";
+
 		for (T executable: this.executables)
 		{
 			Type[] parameterTypes = this.getTypes(executable.getParameterTypes());
+			int exactMatches = argumentClasses.matches(parameterTypes);
 
-			if (argumentClasses.matches(parameterTypes))
+			if (exactMatches > highestExactMatches)
 			{
-				argumentDescriptor.append("(");
+				matched = new ArrayList<>();
+				highestExactMatches = exactMatches;
+			}
 
-				for (Type parameterType: parameterTypes)
-				{
-						argumentDescriptor.append(parameterType.toJVMType());
-				}
-
-				argumentDescriptor.append(")");
-
-				return executable;
+			if (exactMatches == highestExactMatches)
+			{
+				matched.add(executable);
+				argumentDescriptor = this.getDescriptor(parameterTypes);
 			}
 		}
 
-		return null;
+		if (matched.size() == 1)
+		{
+			return new MatchResult<>(matched.get(0), argumentDescriptor);
+		}
+		else
+		{
+			return new MatchResult<>();
+		}
+	}
+
+	private String getDescriptor(Type[] parameterTypes)
+	{
+		StringBuilder descriptor = new StringBuilder();
+
+		descriptor.append("(");
+
+		for (Type parameterType: parameterTypes)
+		{
+			descriptor.append(parameterType.toJVMType());
+		}
+
+		descriptor.append(")");
+
+		return descriptor.toString();
 	}
 
 	private Type[] getTypes(Class<?>[] classes)

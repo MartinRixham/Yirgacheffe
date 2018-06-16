@@ -57,22 +57,30 @@ public class ArgumentClasses
 		}
 	}
 
-	public boolean matches(Type[] parameterTypes)
+	public int matches(Type[] parameterTypes)
 	{
+		int exactMatches = 0;
+
 		if (parameterTypes.length != this.argumentClasses.length)
 		{
-			return false;
+			return -1;
 		}
 
 		for (int i = 0; i < parameterTypes.length; i++)
 		{
 			if (!this.argumentClasses[i].isAssignableTo(parameterTypes[i]))
 			{
-				return false;
+				return -1;
+			}
+
+			if (this.argumentClasses[i].toFullyQualifiedType()
+				.equals(parameterTypes[i].toFullyQualifiedType()))
+			{
+				exactMatches++;
 			}
 		}
 
-		return true;
+		return exactMatches;
 	}
 
 	@Override

@@ -1,18 +1,21 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
+import yirgacheffe.compiler.MatchResult;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class ExecutablesTest
 {
 	@Test
-	public void testGettingObjectPrintlnMethod()
+	public void testGettingStringPrintlnMethod()
 	{
 		Type[] stringClass = new Type[] {new ReferenceType(String.class)};
 		ArgumentClasses argumentClasses =
@@ -20,7 +23,6 @@ public class ExecutablesTest
 
 		Class<?> printStreamClass = PrintStream.class;
 		Method[] methods = printStreamClass.getMethods();
-		StringBuilder stringBuilder = new StringBuilder();
 		List<Method> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -32,10 +34,12 @@ public class ExecutablesTest
 		}
 
 		Executables<Method> executables = new Executables<>(printlnMethods);
-		Method matchedMethod = executables.getExecutable(argumentClasses, stringBuilder);
+		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
+		Method matchedMethod = result.getExecutable();
 
-		assertEquals(Object.class, matchedMethod.getParameterTypes()[0]);
-		assertEquals("(Ljava/lang/Object;)", stringBuilder.toString());
+		assertTrue(result.isSuccessful());
+		assertEquals(String.class, matchedMethod.getParameterTypes()[0]);
+		assertEquals("(Ljava/lang/String;)", result.getDescriptor());
 	}
 
 	@Test
@@ -47,7 +51,6 @@ public class ExecutablesTest
 
 		Class<?> printStreamClass = PrintStream.class;
 		Method[] methods = printStreamClass.getMethods();
-		StringBuilder stringBuilder = new StringBuilder();
 		List<Method> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -59,9 +62,46 @@ public class ExecutablesTest
 		}
 
 		Executables<Method> executables = new Executables<>(printlnMethods);
-		Method matchedMethod = executables.getExecutable(argumentClasses, stringBuilder);
+		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
+		Method matchedMethod = result.getExecutable();
 
+		assertTrue(result.isSuccessful());
 		assertEquals(boolean.class, matchedMethod.getParameterTypes()[0]);
-		assertEquals("(Z)", stringBuilder.toString());
+		assertEquals("(Z)", result.getDescriptor());
+	}
+
+	@Test
+	public void testAmbiguousMatchingOfBoxedAndUnboxedType()
+	{
+		Type[] bool = new Type[] {PrimitiveType.CHAR};
+		ArgumentClasses argumentClasses =
+			new ArgumentClasses(bool, new ArrayList<>());
+
+		Class<?> testClass = ExecutablesTest.class;
+		Method[] methods = testClass.getMethods();
+		List<Method> printlnMethods = new ArrayList<>();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals("testMethod"))
+			{
+				printlnMethods.add(method);
+			}
+		}
+
+		Executables<Method> executables = new Executables<>(printlnMethods);
+		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
+
+		assertFalse(result.isSuccessful());
+	}
+
+	// The order of these method declarations is important.
+	public void testMethod(char character)
+	{
+	}
+
+	// This one must come second.
+	public void testMethod(Character character)
+	{
 	}
 }

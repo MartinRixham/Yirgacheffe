@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.MatchResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.ArrayType;
@@ -58,20 +59,20 @@ public class FunctionCallListener extends ExpressionListener
 		Constructor<?>[] constructors =
 			this.constructorType.reflectionClass().getConstructors();
 
-		StringBuilder argumentDescriptor = new StringBuilder();
-
-		Constructor matchedConstructor =
+		MatchResult<Constructor> matchResult =
 			new Executables<Constructor>(Arrays.asList(constructors))
-				.getExecutable(this.argumentClasses, argumentDescriptor);
+				.getMatchingExecutable(this.argumentClasses);
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			this.constructorType.toFullyQualifiedType().replace(".", "/"),
 			"<init>",
-			argumentDescriptor + "V",
+			matchResult.getDescriptor() + "V",
 			false);
 
 		this.typeStack.endInstantiation();
+
+		Constructor matchedConstructor = matchResult.getExecutable();
 
 		if (matchedConstructor == null)
 		{
@@ -132,7 +133,6 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		Type returnType = new NullType();
-		StringBuilder argumentDescriptor = new StringBuilder();
 		ArrayList<Method> namedMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -143,9 +143,9 @@ public class FunctionCallListener extends ExpressionListener
 			}
 		}
 
-		Method matchedMethod =
-			new Executables<>(namedMethods)
-				.getExecutable(this.argumentClasses, argumentDescriptor);
+		MatchResult<Method> matchResult =
+			new Executables<>(namedMethods).getMatchingExecutable(this.argumentClasses);
+		Method matchedMethod = matchResult.getExecutable();
 
 		if (matchedMethod == null)
 		{
@@ -179,7 +179,7 @@ public class FunctionCallListener extends ExpressionListener
 			Opcodes.INVOKEVIRTUAL,
 			owner.toFullyQualifiedType().replace(".", "/"),
 			methodName,
-			argumentDescriptor + returnType.toJVMType(),
+			matchResult.getDescriptor() + returnType.toJVMType(),
 			false);
 
 		if (returnType.equals(PrimitiveType.INT))

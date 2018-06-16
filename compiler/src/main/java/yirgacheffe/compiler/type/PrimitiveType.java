@@ -115,6 +115,7 @@ public enum PrimitiveType implements Type
 	@Override
 	public boolean isAssignableTo(Type other)
 	{
-		return this == other;
+		return this == other ||
+			other.reflectionClass().isAssignableFrom(this.reflectionClass);
 	}
 }
