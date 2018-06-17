@@ -1,21 +1,30 @@
 package yirgacheffe.compiler;
 
-import java.lang.reflect.Executable;
+import yirgacheffe.compiler.type.Function;
+import yirgacheffe.compiler.type.MismatchedTypes;
 
-public class MatchResult<T extends Executable>
+import java.util.List;
+
+public class MatchResult
 {
-	private T executable;
+	private Function executable;
 
 	private String descriptor;
+
+	private List<MismatchedTypes> mismatchedParameters;
 
 	public MatchResult()
 	{
 	}
 
-	public MatchResult(T executable, String descriptor)
+	public MatchResult(
+		Function executable,
+		String descriptor,
+		List<MismatchedTypes> mismatchedParameters)
 	{
 		this.executable = executable;
 		this.descriptor = descriptor;
+		this.mismatchedParameters = mismatchedParameters;
 	}
 
 	public boolean isSuccessful()
@@ -23,7 +32,7 @@ public class MatchResult<T extends Executable>
 		return this.executable != null;
 	}
 
-	public T getExecutable()
+	public Function getExecutable()
 	{
 		return this.executable;
 	}
@@ -31,5 +40,10 @@ public class MatchResult<T extends Executable>
 	public String getDescriptor()
 	{
 		return this.descriptor;
+	}
+
+	public List<MismatchedTypes> getMismatchedParameters()
+	{
+		return this.mismatchedParameters;
 	}
 }

@@ -34,6 +34,11 @@ public class TypeStack
 		return this.stack.pop();
 	}
 
+	public Type peak()
+	{
+		return this.stack.peek();
+	}
+
 	public int reset()
 	{
 		int maxSize = this.maxSize;

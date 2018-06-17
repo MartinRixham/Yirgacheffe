@@ -1,8 +1,5 @@
 package yirgacheffe.compiler.type;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import yirgacheffe.compiler.error.Error;
-
 import java.lang.reflect.Executable;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -12,25 +9,24 @@ public class ArgumentClasses
 {
 	private Type[] argumentClasses;
 
-	private List<Error> errors;
+	private Type owner;
 
-	public ArgumentClasses(Type[] argumentClasses, List<Error> errors)
+	public ArgumentClasses(Type[] argumentClasses, Type owner)
 	{
 		this.argumentClasses = argumentClasses;
-		this.errors = errors;
+		this.owner = owner;
 	}
 
-	public void checkTypeParameter(
-		Executable executable,
-		Type owner,
-		ParserRuleContext context)
+	public List<MismatchedTypes> checkTypeParameter(Executable executable)
 	{
-		if (!(owner instanceof ParameterisedType))
+		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
+
+		if (!(this.owner instanceof ParameterisedType))
 		{
-			return;
+			return mismatchedParameters;
 		}
 
-		ParameterisedType type = (ParameterisedType) owner;
+		ParameterisedType type = (ParameterisedType) this.owner;
 		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
 
 		for (int i = 0; i < parameters.length; i++)
@@ -46,15 +42,17 @@ public class ArgumentClasses
 
 				if (!hasTypeParameter)
 				{
-					String message =
-						"Argument of type " + this.argumentClasses[i] +
-						" cannot be assigned to generic parameter of type " +
-						type.getTypeParameterName(typeVariable.getName()) + ".";
+					MismatchedTypes mismatchedTypes =
+						new MismatchedTypes(
+							this.argumentClasses[i].toString(),
+							type.getTypeParameterName(typeVariable.getName()));
 
-					this.errors.add(new Error(context, message));
+					mismatchedParameters.add(mismatchedTypes);
 				}
 			}
 		}
+
+		return mismatchedParameters;
 	}
 
 	public int matches(Type[] parameterTypes)
@@ -93,6 +91,6 @@ public class ArgumentClasses
 			arguments.add(argumentClass.toString());
 		}
 
-		return String.join(",", arguments) + ")";
+		return "(" + String.join(",", arguments) + ")";
 	}
 }

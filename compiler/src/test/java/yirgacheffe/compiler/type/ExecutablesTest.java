@@ -18,11 +18,10 @@ public class ExecutablesTest
 	public void testGettingStringPrintlnMethod()
 	{
 		Type[] stringClass = new Type[] {new ReferenceType(String.class)};
-		ArgumentClasses argumentClasses =
-			new ArgumentClasses(stringClass, new ArrayList<>());
+		Type printStream = new ReferenceType(PrintStream.class);
+		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass, printStream);
 
-		Class<?> printStreamClass = PrintStream.class;
-		Method[] methods = printStreamClass.getMethods();
+		Method[] methods = printStream.reflectionClass().getMethods();
 		List<Method> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -33,12 +32,12 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables<Method> executables = new Executables<>(printlnMethods);
-		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
-		Method matchedMethod = result.getExecutable();
+		Executables executables = new Executables(printlnMethods);
+		MatchResult result = executables.getMatchingExecutable(argumentClasses);
+		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
-		assertEquals(String.class, matchedMethod.getParameterTypes()[0]);
+		assertEquals(0, mismatchedParameters.size());
 		assertEquals("(Ljava/lang/String;)", result.getDescriptor());
 	}
 
@@ -46,11 +45,10 @@ public class ExecutablesTest
 	public void testGettingBooleanPrintlnMethod()
 	{
 		Type[] bool = new Type[] {PrimitiveType.BOOLEAN};
-		ArgumentClasses argumentClasses =
-			new ArgumentClasses(bool, new ArrayList<>());
+		Type printStream = new ReferenceType(PrintStream.class);
+		ArgumentClasses argumentClasses = new ArgumentClasses(bool, printStream);
 
-		Class<?> printStreamClass = PrintStream.class;
-		Method[] methods = printStreamClass.getMethods();
+		Method[] methods = printStream.reflectionClass().getMethods();
 		List<Method> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -61,12 +59,12 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables<Method> executables = new Executables<>(printlnMethods);
-		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
-		Method matchedMethod = result.getExecutable();
+		Executables executables = new Executables(printlnMethods);
+		MatchResult result = executables.getMatchingExecutable(argumentClasses);
+		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
-		assertEquals(boolean.class, matchedMethod.getParameterTypes()[0]);
+		assertEquals(0, mismatchedParameters.size());
 		assertEquals("(Z)", result.getDescriptor());
 	}
 
@@ -74,11 +72,10 @@ public class ExecutablesTest
 	public void testAmbiguousMatchingOfBoxedAndUnboxedType()
 	{
 		Type[] bool = new Type[] {PrimitiveType.CHAR};
-		ArgumentClasses argumentClasses =
-			new ArgumentClasses(bool, new ArrayList<>());
+		Type testClass = new ReferenceType(ExecutablesTest.class);
+		ArgumentClasses argumentClasses = new ArgumentClasses(bool, testClass);
 
-		Class<?> testClass = ExecutablesTest.class;
-		Method[] methods = testClass.getMethods();
+		Method[] methods = testClass.reflectionClass().getMethods();
 		List<Method> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
@@ -89,8 +86,8 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables<Method> executables = new Executables<>(printlnMethods);
-		MatchResult<Method> result = executables.getMatchingExecutable(argumentClasses);
+		Executables executables = new Executables(printlnMethods);
+		MatchResult result = executables.getMatchingExecutable(argumentClasses);
 
 		assertFalse(result.isSuccessful());
 	}

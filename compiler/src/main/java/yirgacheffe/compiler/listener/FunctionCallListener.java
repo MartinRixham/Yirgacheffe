@@ -4,12 +4,11 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.MatchResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.ArgumentClasses;
-import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Executables;
+import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -21,8 +20,6 @@ import java.util.Arrays;
 public class FunctionCallListener extends ExpressionListener
 {
 	private ArgumentClasses argumentClasses;
-
-	private Type constructorType;
 
 	public FunctionCallListener(String sourceFile, Classes classes)
 	{
@@ -47,58 +44,63 @@ public class FunctionCallListener extends ExpressionListener
 		this.methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		this.methodVisitor.visitInsn(Opcodes.DUP);
 
-		this.constructorType = type;
-
 		this.typeStack.beginInstantiation();
-		this.typeStack.push(this.constructorType);
+		this.typeStack.push(type);
 	}
 
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
-		Constructor<?>[] constructors =
-			this.constructorType.reflectionClass().getConstructors();
+		Type owner = this.typeStack.peak();
 
-		MatchResult<Constructor> matchResult =
-			new Executables<Constructor>(Arrays.asList(constructors))
+		Constructor<?>[] constructors =
+			owner.reflectionClass().getConstructors();
+
+		MatchResult matchResult =
+			new Executables(Arrays.asList(constructors))
 				.getMatchingExecutable(this.argumentClasses);
 
 		this.methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
-			this.constructorType.toFullyQualifiedType().replace(".", "/"),
+			owner.toFullyQualifiedType().replace(".", "/"),
 			"<init>",
 			matchResult.getDescriptor() + "V",
 			false);
 
 		this.typeStack.endInstantiation();
 
-		Constructor matchedConstructor = matchResult.getExecutable();
-
-		if (matchedConstructor == null)
+		if (matchResult.isSuccessful())
 		{
-			if (this.constructorType.reflectionClass().isPrimitive())
+			for (MismatchedTypes types: matchResult.getMismatchedParameters())
+			{
+				String message =
+					"Argument of type " + types.from() +
+						" cannot be assigned to generic parameter of type " +
+						types.to() + ".";
+
+				this.errors.add(new Error(context, message));
+			}
+		}
+		else
+		{
+			if (owner.reflectionClass().isPrimitive())
 			{
 				return;
 			}
 
-			String constructor = this.constructorType.toFullyQualifiedType() + "(";
+			String constructor = owner.toFullyQualifiedType();
 
 			String message =
 				"Constructor " + constructor + this.argumentClasses + " not found.";
 
 			this.errors.add(new Error(context.getStart(), message));
 		}
-		else
-		{
-			this.argumentClasses
-				.checkTypeParameter(matchedConstructor, this.constructorType, context);
-		}
 	}
 
 	@Override
 	public void enterMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		Type owner = this.typeStack.pop();
+		Type owner = this.typeStack.peak();
 
 		if (owner instanceof PrimitiveType)
 		{
@@ -112,15 +114,14 @@ public class FunctionCallListener extends ExpressionListener
 				"(" + owner.toJVMType() + ")L" + typeWithSlashes + ";",
 				false);
 		}
-
-		this.typeStack.push(owner);
 	}
 
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		String methodName = context.Identifier().getText();
 		Type owner = this.typeStack.pop();
+
+		String methodName = context.Identifier().getText();
 		Method[] methods;
 
 		if (owner.toFullyQualifiedType().equals(this.className))
@@ -143,36 +144,31 @@ public class FunctionCallListener extends ExpressionListener
 			}
 		}
 
-		MatchResult<Method> matchResult =
-			new Executables<>(namedMethods).getMatchingExecutable(this.argumentClasses);
-		Method matchedMethod = matchResult.getExecutable();
+		MatchResult matchResult =
+			new Executables(namedMethods).getMatchingExecutable(this.argumentClasses);
 
-		if (matchedMethod == null)
+
+		if (matchResult.isSuccessful())
 		{
-			String method = owner + "." + methodName + "(";
+			returnType = matchResult.getExecutable().getReturnType(owner);
+
+			for (MismatchedTypes types: matchResult.getMismatchedParameters())
+			{
+				String message =
+					"Argument of type " + types.from() +
+						" cannot be assigned to generic parameter of type " +
+						types.to() + ".";
+
+				this.errors.add(new Error(context, message));
+			}
+		}
+		else
+		{
+			String method = owner + "." + methodName;
 			String message = "Method " + method + this.argumentClasses + " not found.";
 
 			this.errors.add(
 				new Error(context.Identifier().getSymbol(), message));
-		}
-		else
-		{
-			Class<?> returnClass = matchedMethod.getReturnType();
-
-			if (returnClass.isArray())
-			{
-				returnType = new ArrayType(returnClass.getName());
-			}
-			else if (returnClass.isPrimitive())
-			{
-				returnType = PrimitiveType.valueOf(returnClass.getName().toUpperCase());
-			}
-			else
-			{
-				returnType = new ReferenceType(returnClass);
-			}
-
-			this.argumentClasses.checkTypeParameter(matchedMethod, owner, context);
 		}
 
 		this.methodVisitor.visitMethodInsn(
@@ -214,7 +210,11 @@ public class FunctionCallListener extends ExpressionListener
 			arguments[i] = this.typeStack.pop();
 		}
 
-		this.argumentClasses = new ArgumentClasses(arguments, this.errors);
+		Type owner = this.typeStack.pop();
+
+		this.argumentClasses = new ArgumentClasses(arguments, owner);
+
+		this.typeStack.push(owner);
 	}
 
 	@Override

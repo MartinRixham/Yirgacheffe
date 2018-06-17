@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -552,7 +551,6 @@ public class FunctionCallListenerTest
 			result.getErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testNumberMap()
 	{

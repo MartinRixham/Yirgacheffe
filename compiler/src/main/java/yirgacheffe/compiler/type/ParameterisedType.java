@@ -126,7 +126,13 @@ public class ParameterisedType implements Type
 	{
 		return this.typeParameters
 			.get(typeName)
-			.reflectionClass()
-			.getName();
+			.toString();
+	}
+
+	public Class<?> getTypeParameterClass(String typeName)
+	{
+		return this.typeParameters
+			.get(typeName)
+			.reflectionClass();
 	}
 }

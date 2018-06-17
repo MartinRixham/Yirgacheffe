@@ -6,22 +6,22 @@ import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Executables<T extends Executable>
+public class Executables
 {
-	private List<T> executables;
+	private List<? extends Executable> executables;
 
-	public Executables(List<T> executables)
+	public Executables(List<? extends Executable> executables)
 	{
 		this.executables = executables;
 	}
 
-	public MatchResult<T> getMatchingExecutable(ArgumentClasses argumentClasses)
+	public MatchResult getMatchingExecutable(ArgumentClasses argumentClasses)
 	{
-		List<T> matched = new ArrayList<>();
+		List<Executable> matched = new ArrayList<>();
 		int highestExactMatches = 0;
 		String argumentDescriptor = "()";
 
-		for (T executable: this.executables)
+		for (Executable executable: this.executables)
 		{
 			Type[] parameterTypes = this.getTypes(executable.getParameterTypes());
 			int exactMatches = argumentClasses.matches(parameterTypes);
@@ -41,11 +41,18 @@ public class Executables<T extends Executable>
 
 		if (matched.size() == 1)
 		{
-			return new MatchResult<>(matched.get(0), argumentDescriptor);
+			List<MismatchedTypes> mismatchedParameters =
+				argumentClasses
+					.checkTypeParameter(matched.get(0));
+
+			return new MatchResult(
+				new Function(matched.get(0)),
+				argumentDescriptor,
+				mismatchedParameters);
 		}
 		else
 		{
-			return new MatchResult<>();
+			return new MatchResult();
 		}
 	}
 
