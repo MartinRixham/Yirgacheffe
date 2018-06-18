@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
@@ -571,6 +572,46 @@ public class FunctionCallListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode firstMethod = methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/util/HashMap", thirdInstruction.owner);
+		assertEquals("()V", thirdInstruction.desc);
+		assertEquals("<init>", thirdInstruction.name);
+		assertFalse(thirdInstruction.itf);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ASTORE, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ALOAD, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
+
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals(new Double("456"), sixthInstruction.cst);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESTATIC, seventhInstruction.getOpcode());
+		assertEquals("java/lang/Double", seventhInstruction.owner);
+		assertEquals("(D)Ljava/lang/Double;", seventhInstruction.desc);
+		assertEquals("valueOf", seventhInstruction.name);
+		assertEquals(false, seventhInstruction.itf);
 	}
 
 	@Test

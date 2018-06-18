@@ -81,13 +81,8 @@ public class FunctionCallListener extends ExpressionListener
 				this.errors.add(new Error(context, message));
 			}
 		}
-		else
+		else if (!owner.reflectionClass().isPrimitive())
 		{
-			if (owner.reflectionClass().isPrimitive())
-			{
-				return;
-			}
-
 			String constructor = owner.toFullyQualifiedType();
 
 			String message =
@@ -146,7 +141,6 @@ public class FunctionCallListener extends ExpressionListener
 
 		MatchResult matchResult =
 			new Executables(namedMethods).getMatchingExecutable(this.argumentClasses);
-
 
 		if (matchResult.isSuccessful())
 		{
@@ -210,11 +204,9 @@ public class FunctionCallListener extends ExpressionListener
 			arguments[i] = this.typeStack.pop();
 		}
 
-		Type owner = this.typeStack.pop();
+		Type owner = this.typeStack.peak();
 
 		this.argumentClasses = new ArgumentClasses(arguments, owner);
-
-		this.typeStack.push(owner);
 	}
 
 	@Override
