@@ -2,13 +2,20 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FieldListener extends FieldDeclarationListener
 {
+	protected List<Expression> expressions = new ArrayList<>();
+
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -37,6 +44,11 @@ public class FieldListener extends FieldDeclarationListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
+
+		for (Expression expression: this.expressions)
+		{
+			expression.compile(this.methodVisitor);
+		}
 
 		this.methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,
@@ -81,11 +93,13 @@ public class FieldListener extends FieldDeclarationListener
 
 		this.typeStack.push(fieldType);
 
-		this.methodVisitor.visitFieldInsn(
-			Opcodes.GETFIELD,
-			ownerType.toFullyQualifiedType(),
-			fieldName,
-			fieldType.toJVMType());
+		Expression fieldRead =
+			new FieldRead(
+				ownerType.toFullyQualifiedType(),
+				fieldName,
+				fieldType.toJVMType());
+
+		this.expressions.add(fieldRead);
 	}
 
 	@Override
@@ -122,6 +136,11 @@ public class FieldListener extends FieldDeclarationListener
 		catch (NoSuchFieldException e)
 		{
 			throw new RuntimeException(e);
+		}
+
+		for (Expression expression: this.expressions)
+		{
+			expression.compile(this.methodVisitor);
 		}
 
 		this.methodVisitor.visitFieldInsn(

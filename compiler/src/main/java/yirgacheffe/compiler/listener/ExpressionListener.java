@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -26,7 +28,7 @@ public class ExpressionListener extends StatementListener
 			Type type = variable.getType();
 			int index = variable.getIndex();
 
-			this.methodVisitor.visitVarInsn(type.getLoadInstruction(), index);
+			this.expressions.add(new VariableRead(type.getLoadInstruction(), index));
 
 			this.typeStack.push(type);
 		}
@@ -59,7 +61,7 @@ public class ExpressionListener extends StatementListener
 			throw new RuntimeException(e);
 		}
 
-		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		this.expressions.add(new This());
 	}
 
 	@Override
@@ -92,6 +94,6 @@ public class ExpressionListener extends StatementListener
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 
-		this.methodVisitor.visitLdcInsn(value);
+		this.expressions.add(new Literal(value));
 	}
 }

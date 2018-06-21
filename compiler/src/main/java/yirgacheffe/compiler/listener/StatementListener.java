@@ -1,10 +1,13 @@
 package yirgacheffe.compiler.listener;
 
+import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.parser.YirgacheffeParser;
+
+import java.util.ArrayList;
 
 public class StatementListener extends FieldListener
 {
@@ -13,6 +16,12 @@ public class StatementListener extends FieldListener
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
+	}
+
+	@Override
+	public void enterStatement(YirgacheffeParser.StatementContext context)
+	{
+		this.expressions = new ArrayList<>();
 	}
 
 	@Override
@@ -61,6 +70,11 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
+		for (Expression expression: this.expressions)
+		{
+			expression.compile(this.methodVisitor);
+		}
+
 		this.methodVisitor.visitVarInsn(type.getStoreInstruction(), index);
 
 		if (this.currentVariable != null &&
@@ -90,5 +104,10 @@ public class StatementListener extends FieldListener
 		}
 
 		this.hasReturnStatement = true;
+
+		for (Expression expression: this.expressions)
+		{
+			expression.compile(this.methodVisitor);
+		}
 	}
 }

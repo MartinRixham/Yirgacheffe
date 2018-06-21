@@ -3,6 +3,9 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.MatchResult;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvokeConstructor;
+import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Executables;
@@ -60,13 +63,12 @@ public class FunctionCallListener extends ExpressionListener
 			new Executables(Arrays.asList(constructors))
 				.getMatchingExecutable(this.argumentClasses);
 
-		this.methodVisitor.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			owner.toFullyQualifiedType().replace(".", "/"),
-			"<init>",
-			matchResult.getDescriptor() + "V",
-			false);
+		Expression invoke =
+			new InvokeConstructor(
+				owner.toFullyQualifiedType().replace(".", "/"),
+				matchResult.getDescriptor() + "V");
 
+		this.expressions.add(invoke);
 		this.typeStack.endInstantiation();
 
 		if (matchResult.isSuccessful())
@@ -89,25 +91,6 @@ public class FunctionCallListener extends ExpressionListener
 				"Constructor " + constructor + this.argumentClasses + " not found.";
 
 			this.errors.add(new Error(context.getStart(), message));
-		}
-	}
-
-	@Override
-	public void enterMethodCall(YirgacheffeParser.MethodCallContext context)
-	{
-		Type owner = this.typeStack.peak();
-
-		if (owner instanceof PrimitiveType)
-		{
-			String typeWithSlashes =
-				owner.toFullyQualifiedType().replace(".", "/");
-
-			this.methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				typeWithSlashes,
-				"valueOf",
-				"(" + owner.toJVMType() + ")L" + typeWithSlashes + ";",
-				false);
 		}
 	}
 
@@ -165,26 +148,25 @@ public class FunctionCallListener extends ExpressionListener
 				new Error(context.Identifier().getSymbol(), message));
 		}
 
-		this.methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
-			owner.toFullyQualifiedType().replace(".", "/"),
-			methodName,
-			matchResult.getDescriptor() + returnType.toJVMType(),
-			false);
+		Expression invoke =
+			new InvokeMethod(
+				owner,
+				methodName,
+				matchResult.getDescriptor() + returnType.toJVMType(),
+				returnType);
+
+		this.expressions.add(invoke);
 
 		if (returnType.equals(PrimitiveType.INT))
 		{
-			this.methodVisitor.visitInsn(Opcodes.I2D);
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 		else if (returnType.equals(PrimitiveType.LONG))
 		{
-			this.methodVisitor.visitInsn(Opcodes.L2D);
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 		else if (returnType.equals(PrimitiveType.FLOAT))
 		{
-			this.methodVisitor.visitInsn(Opcodes.F2D);
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 		else if (!returnType.equals(PrimitiveType.VOID))
@@ -212,6 +194,11 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitFunctionCall(YirgacheffeParser.FunctionCallContext context)
 	{
+		for (Expression expression: this.expressions)
+		{
+			expression.compile(this.methodVisitor);
+		}
+
 		if (!this.typeStack.isEmpty())
 		{
 			this.methodVisitor.visitInsn(Opcodes.POP);
