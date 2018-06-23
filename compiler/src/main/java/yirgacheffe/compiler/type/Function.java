@@ -17,31 +17,34 @@ public class Function
 		Method method = (Method) this.executable;
 		java.lang.reflect.Type returned = method.getGenericReturnType();
 
-		Class<?> returnClass;
-
 		if (returned instanceof Class)
 		{
-			returnClass = (Class) returned;
+			return this.getType((Class) returned);
 		}
 		else
 		{
 			ParameterisedType parameterisedOwner = (ParameterisedType) owner;
 
-			returnClass =
+			Class<?> returnClass =
 				parameterisedOwner.getTypeParameterClass(returned.getTypeName());
-		}
 
-		if (returnClass.isArray())
-		{
-			return new ArrayType(returnClass.getName());
+			return new GenericType(this.getType(returnClass));
 		}
-		else if (returnClass.isPrimitive())
+	}
+
+	private Type getType(Class<?> clazz)
+	{
+		if (clazz.isArray())
 		{
-			return PrimitiveType.valueOf(returnClass.getName().toUpperCase());
+			return new ArrayType(clazz.getName());
+		}
+		else if (clazz.isPrimitive())
+		{
+			return PrimitiveType.valueOf(clazz.getName().toUpperCase());
 		}
 		else
 		{
-			return new ReferenceType(returnClass);
+			return new ReferenceType(clazz);
 		}
 	}
 }

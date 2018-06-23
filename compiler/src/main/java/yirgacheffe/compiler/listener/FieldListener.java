@@ -11,6 +11,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class FieldListener extends FieldDeclarationListener
 {
@@ -32,6 +33,8 @@ public class FieldListener extends FieldDeclarationListener
 				"()V",
 				null,
 				null);
+
+		this.expressions = new Stack<>();
 
 		this.enterThisRead(null);
 

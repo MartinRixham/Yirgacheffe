@@ -1,5 +1,6 @@
-package yirgacheffe.lang;
+package yirgacheffe;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -13,28 +14,36 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MutableReferenceTest
+public class MultipleDispatchTest
 {
+	@Ignore
 	@Test
-	public void testMutableReference() throws Exception
+	public void testMultipleDispatch() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"MutableReference<String> myString =" +
-					"new MutableReference<String>(\"Hello world.\");\n" +
-				"public Void hello()" +
+				"main hello(Array<String> args)" +
 				"{\n" +
-					"new System().getOut().println(this.myString.get());\n" +
-					"this.myString.set(\"Eh up, planet.\");\n" +
-					"new System().getOut().println(this.myString.get());\n" +
+					"Object myClass = this;" +
+					"Bool equal = myClass.equals(\"thingy\");" +
+					"new System().getOut().println(equal);" +
 				"}\n" +
+
+				"public Bool equals(String other)" +
+				"{" +
+					"return true;" +
+				"}" +
 			"}";
 
-		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
 
 		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
 
 		classes.clearCache();
 
@@ -53,12 +62,12 @@ public class MutableReferenceTest
 		java.lang.System.setOut(out);
 
 		Class<?> myClass = classLoader.loadClass("MyClass");
-		Object my = myClass.getConstructor().newInstance();
-		Method hello = myClass.getMethod("hello");
+		Method hello = myClass.getMethod("main", String[].class);
+		String[] args = {};
 
-		hello.invoke(my);
+		hello.invoke(null, (Object) args);
 
-		assertEquals("Hello world.\nEh up, planet.\n", spyOut.toString());
+		assertEquals("true\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

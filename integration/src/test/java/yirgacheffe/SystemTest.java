@@ -1,4 +1,4 @@
-package yirgacheffe.lang;
+package yirgacheffe;
 
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
@@ -13,17 +13,17 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MainTest
+public class SystemTest
 {
 	@Test
-	public void testMainMethod() throws Exception
+	public void testOut() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main hello(Array<String> args)" +
+				"public Void hello()" +
 				"{\n" +
-					"new System().getOut().println(args.get(0));" +
+					"new System().getOut().println(\"Eh up, planet.\");" +
 				"}\n" +
 			"}";
 
@@ -43,10 +43,10 @@ public class MainTest
 		java.lang.System.setOut(out);
 
 		Class<?> myClass = classLoader.loadClass("MyClass");
-		Method hello = myClass.getMethod("main", String[].class);
-		String[] args = {"Eh up, planet."};
+		Object my = myClass.getConstructor().newInstance();
+		Method hello = myClass.getMethod("hello");
 
-		hello.invoke(null, (Object) args);
+		hello.invoke(my);
 
 		assertEquals("Eh up, planet.\n", spyOut.toString());
 

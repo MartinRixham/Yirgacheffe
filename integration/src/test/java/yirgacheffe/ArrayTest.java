@@ -1,6 +1,5 @@
-package yirgacheffe.lang;
+package yirgacheffe;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -14,40 +13,24 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MultipleDispatchTest
+public class ArrayTest
 {
-	@Ignore
 	@Test
-	public void testMultipleDispatch() throws Exception
+	public void testCreateArrayFromReturnValue() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main hello(Array<String> args)" +
+				"public Void hello()" +
 				"{\n" +
-					"Object myClass = this;" +
-					"Bool equal = myClass.equals(\"thingy\");" +
-					"new System().getOut().println(equal);" +
+					"Array<String> numbers = " +
+						"new Array<String>(\"1,2,3,4,5\".split(\",\"));" +
+					"new System().getOut().println(numbers);" +
 				"}\n" +
-
-				"public Bool equals(String other)" +
-				"{" +
-					"return true;" +
-				"}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		Classes classes = new Classes();
-
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
-
-		compiler.compileInterface(classes);
-
-		classes.clearCache();
-
-		CompilationResult result = compiler.compile(classes);
+		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
 
@@ -62,12 +45,12 @@ public class MultipleDispatchTest
 		java.lang.System.setOut(out);
 
 		Class<?> myClass = classLoader.loadClass("MyClass");
-		Method hello = myClass.getMethod("main", String[].class);
-		String[] args = {};
+		Object my = myClass.getConstructor().newInstance();
+		Method hello = myClass.getMethod("hello");
 
-		hello.invoke(null, (Object) args);
+		hello.invoke(my);
 
-		assertEquals("true\n", spyOut.toString());
+		assertEquals("[1, 2, 3, 4, 5]\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

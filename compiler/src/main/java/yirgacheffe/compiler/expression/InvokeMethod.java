@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 
@@ -46,6 +47,12 @@ public class InvokeMethod implements Expression
 			this.descriptor,
 			false);
 
+		if (this.returnType instanceof GenericType)
+		{
+			methodVisitor.visitTypeInsn(
+				Opcodes.CHECKCAST,
+				this.returnType.toFullyQualifiedType().replace(".", "/"));
+		}
 		if (this.returnType.equals(PrimitiveType.INT))
 		{
 			methodVisitor.visitInsn(Opcodes.I2D);

@@ -10,12 +10,9 @@ import static org.junit.Assert.assertFalse;
 public class ReferenceTypeTest
 {
 	@Test
-	public void testTypeFromPackageAndIdentifier() throws Exception
+	public void testTypeFromPackageAndIdentifier()
 	{
-		Class<?> loadedClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
+		Class<?> loadedClass = java.lang.String.class;
 
 		Type type = new ReferenceType(loadedClass);
 
@@ -30,17 +27,10 @@ public class ReferenceTypeTest
 	}
 
 	@Test
-	public void testStringIsAssignableToObject() throws Exception
+	public void testStringIsAssignableToObject()
 	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
-
-		Class<?> objectClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.Object");
+		Class<?> stringClass = java.lang.String.class;
+		Class<?> objectClass = java.lang.Object.class;
 
 		Type string = new ReferenceType(stringClass);
 		Type object = new ReferenceType(objectClass);
@@ -49,17 +39,10 @@ public class ReferenceTypeTest
 	}
 
 	@Test
-	public void testStringIsNotAssignableToSystem() throws Exception
+	public void testStringIsNotAssignableToSystem()
 	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
-
-		Class<?> systemClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("yirgacheffe.lang.System");
+		Class<?> stringClass = java.lang.String.class;
+		Class<?> systemClass = java.lang.System.class;
 
 		Type string = new ReferenceType(stringClass);
 		Type system = new ReferenceType(systemClass);

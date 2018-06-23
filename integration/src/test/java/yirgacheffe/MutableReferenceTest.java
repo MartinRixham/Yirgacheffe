@@ -1,4 +1,4 @@
-package yirgacheffe.lang;
+package yirgacheffe;
 
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
@@ -13,24 +13,32 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ArrayTest
+public class MutableReferenceTest
 {
 	@Test
-	public void testCreateArrayFromReturnValue() throws Exception
+	public void testMutableReference() throws Exception
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
+				"MutableReference<String> myString =" +
+					"new MutableReference<String>(\"Hello world.\");\n" +
 				"public Void hello()" +
 				"{\n" +
-					"Array<String> numbers = " +
-						"new Array<String>(\"1,2,3,4,5\".split(\",\"));" +
-					"new System().getOut().println(numbers);" +
+					"new System().getOut().println(this.myString.get());\n" +
+					"this.myString.set(\"Eh up, planet.\");\n" +
+					"new System().getOut().println(this.myString.get());\n" +
 				"}\n" +
 			"}";
 
+		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -50,7 +58,7 @@ public class ArrayTest
 
 		hello.invoke(my);
 
-		assertEquals("[1, 2, 3, 4, 5]\n", spyOut.toString());
+		assertEquals("Hello world.\nEh up, planet.\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

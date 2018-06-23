@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
+import yirgacheffe.compiler.expression.New;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Executables;
@@ -44,8 +45,7 @@ public class FunctionCallListener extends ExpressionListener
 		Type type = this.types.getType(context.type());
 		String typeWithSlashes = type.toFullyQualifiedType().replace(".", "/");
 
-		this.methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
-		this.methodVisitor.visitInsn(Opcodes.DUP);
+		this.expressions.add(new New(typeWithSlashes));
 
 		this.typeStack.beginInstantiation();
 		this.typeStack.push(type);
