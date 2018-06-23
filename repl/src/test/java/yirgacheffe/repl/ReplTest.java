@@ -43,7 +43,7 @@ public class ReplTest
 
 		repl.read(in);
 
-		assertEquals("yirgacheffe> \"thingy\"\nyirgacheffe> ", out.toString());
+		assertEquals("yirgacheffe> thingy\nyirgacheffe> ", out.toString());
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> \"thingy\"\nyirgacheffe> \"sumpt\"\nyirgacheffe> ",
+			"yirgacheffe> thingy\nyirgacheffe> sumpt\nyirgacheffe> ",
 			out.toString());
 	}
 
@@ -74,5 +74,39 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals("yirgacheffe> yirgacheffe> ", out.toString());
+	}
+
+	@Test
+	public void testAssigningAndPrintingVariable()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream("String thingy = \"thingy\";\nthingy".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals("yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ", out.toString());
+	}
+
+	@Test
+	public void testInvalidStatement()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream("String thingy = \"thingy\"".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> line 3:50 Missing ';'.\nyirgacheffe> ",
+			out.toString());
 	}
 }
