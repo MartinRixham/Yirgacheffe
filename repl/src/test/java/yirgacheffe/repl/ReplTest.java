@@ -125,7 +125,7 @@ public class ReplTest
 	}
 
 	@Test
-	public void testMultipleAssingments()
+	public void testMultipleAssignments()
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(out);
@@ -142,6 +142,47 @@ public class ReplTest
 
 		assertEquals(
 			"yirgacheffe> yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ",
+			out.toString());
+	}
+
+	@Test
+	public void testImportArray()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				("import java.util.ArrayList;\n" +
+					"new ArrayList<String>()").getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> yirgacheffe> []\nyirgacheffe> ",
+			out.toString());
+	}
+
+	@Test
+	public void testUnknownImport()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				("import java.lang.ArrayList;").getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> " +
+				"line 1:7 Unrecognised type: java.lang.ArrayList is not a type.\n" +
+				"yirgacheffe> ",
 			out.toString());
 	}
 }

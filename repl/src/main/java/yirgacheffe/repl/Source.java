@@ -8,12 +8,15 @@ import java.util.List;
 
 public class Source
 {
+	private List<String> imports;
+
 	private List<String> statements;
 
 	private String expression;
 
-	public Source(List<String> statements, String expression)
+	public Source(List<String> imports, List<String> statements, String expression)
 	{
+		this.imports = imports;
 		this.statements = statements;
 		this.expression = expression;
 	}
@@ -21,6 +24,7 @@ public class Source
 	public CompilationResult compile()
 	{
 		String source =
+			String.join("\n", this.imports) +
 			"class Source\n" +
 			"{\n" +
 				"public String evaluate()" +

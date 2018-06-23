@@ -29,6 +29,7 @@ public final class Repl
 	public void read(InputStream in)
 	{
 		List<String> statements = new ArrayList<>();
+		List<String> imports = new ArrayList<>();
 
 		Scanner scanner = new Scanner(in);
 
@@ -38,31 +39,33 @@ public final class Repl
 		{
 			String line = scanner.nextLine();
 
-			if (line.length() == 0)
+			if (line.contains("import"))
 			{
-				this.out.print(PROMPT);
+				imports.add(line);
+
+				this.out.print(this.evaluate(imports, statements, "\"\""));
 			}
-			else
+			else if (line.contains("="))
 			{
-				if (line.contains("="))
-				{
-					statements.add(line);
+				statements.add(line);
 
-					this.out.print(this.evaluate(statements, "\"\""));
-				}
-				else
-				{
-					this.out.println(this.evaluate(statements, line));
-				}
-
-				this.out.print(PROMPT);
+				this.out.print(this.evaluate(imports, statements, "\"\""));
 			}
+			else if (line.length() > 0)
+			{
+				this.out.println(this.evaluate(imports, statements, line));
+			}
+
+			this.out.print(PROMPT);
 		}
 	}
 
-	private String evaluate(List<String> statements, String expression)
+	private String evaluate(
+		List<String> imports,
+		List<String> statements,
+		String expression)
 	{
-		Source source = new Source(statements, expression);
+		Source source = new Source(imports, statements, expression);
 		CompilationResult result = source.compile();
 
 		if (result.isSuccessful())
