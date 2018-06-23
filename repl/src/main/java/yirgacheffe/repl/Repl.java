@@ -6,6 +6,8 @@ import yirgacheffe.compiler.type.BytecodeClassLoader;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public final class Repl
@@ -26,7 +28,7 @@ public final class Repl
 
 	public void read(InputStream in)
 	{
-		String statement = "";
+		List<String> statements = new ArrayList<>();
 
 		Scanner scanner = new Scanner(in);
 
@@ -44,13 +46,13 @@ public final class Repl
 			{
 				if (line.contains("="))
 				{
-					statement = line;
+					statements.add(line);
 
-					this.out.print(this.evaluate(line, "\"\""));
+					this.out.print(this.evaluate(statements, "\"\""));
 				}
 				else
 				{
-					this.out.println(this.evaluate(statement, line));
+					this.out.println(this.evaluate(statements, line));
 				}
 
 				this.out.print(PROMPT);
@@ -58,9 +60,9 @@ public final class Repl
 		}
 	}
 
-	private String evaluate(String statement, String expression)
+	private String evaluate(List<String> statements, String expression)
 	{
-		Source source = new Source(statement, expression);
+		Source source = new Source(statements, expression);
 		CompilationResult result = source.compile();
 
 		if (result.isSuccessful())

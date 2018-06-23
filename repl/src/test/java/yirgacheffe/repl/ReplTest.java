@@ -109,4 +109,25 @@ public class ReplTest
 			"yirgacheffe> line 3:50 Missing ';'.\nyirgacheffe> ",
 			out.toString());
 	}
+
+	@Test
+	public void testMultipleAssingments()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				("String thingy = \"thingy\";\n" +
+					"String sumpt = \"sumpt\";\n" +
+					"thingy").getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ",
+			out.toString());
+	}
 }

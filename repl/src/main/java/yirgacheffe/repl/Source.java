@@ -4,15 +4,17 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
+import java.util.List;
+
 public class Source
 {
-	private String statement;
+	private List<String> statements;
 
 	private String expression;
 
-	public Source(String statement, String expression)
+	public Source(List<String> statements, String expression)
 	{
-		this.statement = statement;
+		this.statements = statements;
 		this.expression = expression;
 	}
 
@@ -23,7 +25,7 @@ public class Source
 			"{\n" +
 				"public String evaluate()" +
 				"{" +
-					this.statement +
+					String.join(" ", this.statements) +
 					" return " + this.expression + ";" +
 				"}" +
 			"}";
