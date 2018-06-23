@@ -47,6 +47,20 @@ public class ReplTest
 	}
 
 	@Test
+	public void testPrintNumber()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+		InputStream in = new ByteArrayInputStream("12.34".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals("yirgacheffe> 12.34\nyirgacheffe> ", out.toString());
+	}
+
+	@Test
 	public void testPrintingTwoStrings()
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -26,7 +26,7 @@ public class Source
 				"public String evaluate()" +
 				"{" +
 					String.join(" ", this.statements) +
-					" return " + this.expression + ";" +
+					" return " + this.expression + ".toString();" +
 				"}" +
 			"}";
 
