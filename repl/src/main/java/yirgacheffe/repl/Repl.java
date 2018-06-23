@@ -1,30 +1,44 @@
 package yirgacheffe.repl;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public final class Repl
 {
-	private Scanner scanner = new Scanner(System.in);
+	private PrintStream out;
+
+	private static final String PROMPT = "yirgacheffe> ";
 
 	public static void main(String[] args)
 	{
-		new Repl().read();
+		new Repl(System.out).read(System.in);
 	}
 
-	private Repl()
+	public Repl(PrintStream out)
 	{
+		this.out = out;
 	}
 
-	private void read()
+	public void read(InputStream in)
 	{
-		do
+		Scanner scanner = new Scanner(in);
+
+		this.out.print(PROMPT);
+
+		while (scanner.hasNextLine())
 		{
-			System.out.print("yirgacheffe> ");
+			String line = scanner.nextLine();
 
-			String line = this.scanner.nextLine();
-
-			System.out.println(line);
+			if (line.length() == 0)
+			{
+				this.out.print(PROMPT);
+			}
+			else
+			{
+				this.out.println(line);
+				this.out.print(PROMPT);
+			}
 		}
-		while (this.scanner.hasNextLine());
 	}
 }

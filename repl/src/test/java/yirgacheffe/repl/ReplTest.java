@@ -21,12 +21,12 @@ public class ReplTest
 
 		System.setOut(out);
 
-		InputStream in = new ByteArrayInputStream("\n".getBytes());
+		InputStream in = new ByteArrayInputStream("".getBytes());
 		System.setIn(in);
 
 		Repl.main(null);
 
-		assertEquals("yirgacheffe> \n", spyOut.toString());
+		assertEquals("yirgacheffe> ", spyOut.toString());
 
 		System.setOut(originalOut);
 		System.setIn(originalIn);
@@ -35,44 +35,44 @@ public class ReplTest
 	@Test
 	public void testPrintString()
 	{
-		PrintStream originalOut = System.out;
-		InputStream originalIn = System.in;
-		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
-		PrintStream out = new PrintStream(spyOut);
-
-		System.setOut(out);
-
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
 		InputStream in = new ByteArrayInputStream("\"thingy\"".getBytes());
-		System.setIn(in);
 
-		Repl.main(null);
+		Repl repl = new Repl(stream);
 
-		assertEquals("yirgacheffe> \"thingy\"\n", spyOut.toString());
+		repl.read(in);
 
-		System.setOut(originalOut);
-		System.setIn(originalIn);
+		assertEquals("yirgacheffe> \"thingy\"\nyirgacheffe> ", out.toString());
 	}
 
 	@Test
 	public void testPrintingTwoStrings()
 	{
-		PrintStream originalOut = System.out;
-		InputStream originalIn = System.in;
-		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
-		PrintStream out = new PrintStream(spyOut);
-
-		System.setOut(out);
-
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
 		InputStream in = new ByteArrayInputStream("\"thingy\"\n\"sumpt\"".getBytes());
-		System.setIn(in);
 
-		Repl.main(null);
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> \"thingy\"\nyirgacheffe> \"sumpt\"\n",
-			spyOut.toString());
+			"yirgacheffe> \"thingy\"\nyirgacheffe> \"sumpt\"\nyirgacheffe> ",
+			out.toString());
+	}
 
-		System.setOut(originalOut);
-		System.setIn(originalIn);
+	@Test
+	public void testPrintingEmptyLine()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+		InputStream in = new ByteArrayInputStream("\n".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals("yirgacheffe> yirgacheffe> ", out.toString());
 	}
 }
