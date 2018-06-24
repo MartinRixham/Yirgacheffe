@@ -162,19 +162,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		this.expressions.add(invoke);
 
-		if (returnType.equals(PrimitiveType.INT))
-		{
-			this.typeStack.push(PrimitiveType.DOUBLE);
-		}
-		else if (returnType.equals(PrimitiveType.LONG))
-		{
-			this.typeStack.push(PrimitiveType.DOUBLE);
-		}
-		else if (returnType.equals(PrimitiveType.FLOAT))
-		{
-			this.typeStack.push(PrimitiveType.DOUBLE);
-		}
-		else if (!returnType.equals(PrimitiveType.VOID))
+		if (!returnType.equals(PrimitiveType.VOID))
 		{
 			this.typeStack.push(returnType);
 		}
