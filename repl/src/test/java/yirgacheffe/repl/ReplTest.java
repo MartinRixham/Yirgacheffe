@@ -125,6 +125,25 @@ public class ReplTest
 	}
 
 	@Test
+	public void testCorrectedStatement()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				"String thingy = \"thingy\"\nString thingy = \"thingy\";".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> line 3:50 Missing ';'.\nyirgacheffe> yirgacheffe> ",
+			out.toString());
+	}
+
+	@Test
 	public void testMultipleAssignments()
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

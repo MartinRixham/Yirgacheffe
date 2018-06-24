@@ -43,24 +43,40 @@ public final class Repl
 			{
 				imports.add(line);
 
-				this.out.print(this.evaluate(imports, statements, "\"\""));
+				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
+
+				this.out.print(result.getResult());
+
+				if (!result.isSuccessful())
+				{
+					imports.remove(imports.size() - 1);
+				}
 			}
 			else if (line.contains("="))
 			{
 				statements.add(line);
 
-				this.out.print(this.evaluate(imports, statements, "\"\""));
+				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
+
+				this.out.print(result.getResult());
+
+				if (!result.isSuccessful())
+				{
+					statements.remove(statements.size() - 1);
+				}
 			}
 			else if (line.length() > 0)
 			{
-				this.out.println(this.evaluate(imports, statements, line));
+				EvaluationResult result = this.evaluate(imports, statements, line);
+
+				this.out.println(result.getResult());
 			}
 
 			this.out.print(PROMPT);
 		}
 	}
 
-	private String evaluate(
+	private EvaluationResult evaluate(
 		List<String> imports,
 		List<String> statements,
 		String expression)
@@ -80,7 +96,9 @@ public final class Repl
 				Object instance = sourceClass.getConstructor().newInstance();
 				Method evaluate = sourceClass.getMethod("evaluate");
 
-				return (String) evaluate.invoke(instance);
+				String evaluated = (String) evaluate.invoke(instance);
+
+				return new EvaluationResult(evaluated, true);
 			}
 			catch (Exception e)
 			{
@@ -89,7 +107,7 @@ public final class Repl
 		}
 		else
 		{
-			return result.getErrors();
+			return new EvaluationResult(result.getErrors(), false);
 		}
 	}
 }
