@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.type;
 
-import java.lang.reflect.Executable;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +16,10 @@ public class ArgumentClasses
 		this.owner = owner;
 	}
 
-	public List<MismatchedTypes> checkTypeParameter(Executable executable)
+	public List<MismatchedTypes> checkTypeParameters(java.lang.reflect.Type[] parameters)
 	{
-		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
-
-		if (!(this.owner instanceof ParameterisedType))
-		{
-			return mismatchedParameters;
-		}
-
 		ParameterisedType type = (ParameterisedType) this.owner;
-		java.lang.reflect.Type[] parameters = executable.getGenericParameterTypes();
+		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
 
 		for (int i = 0; i < parameters.length; i++)
 		{
@@ -55,24 +47,24 @@ public class ArgumentClasses
 		return mismatchedParameters;
 	}
 
-	public int matches(Type[] parameterTypes)
+	public int matches(List<Type> parameterTypes)
 	{
 		int exactMatches = 0;
 
-		if (parameterTypes.length != this.argumentClasses.length)
+		if (parameterTypes.size() != this.argumentClasses.length)
 		{
 			return -1;
 		}
 
-		for (int i = 0; i < parameterTypes.length; i++)
+		for (int i = 0; i < parameterTypes.size(); i++)
 		{
-			if (!this.argumentClasses[i].isAssignableTo(parameterTypes[i]))
+			if (!this.argumentClasses[i].isAssignableTo(parameterTypes.get(i)))
 			{
 				return -1;
 			}
 
 			if (this.argumentClasses[i].toFullyQualifiedType()
-				.equals(parameterTypes[i].toFullyQualifiedType()))
+				.equals(parameterTypes.get(i).toFullyQualifiedType()))
 			{
 				exactMatches++;
 			}

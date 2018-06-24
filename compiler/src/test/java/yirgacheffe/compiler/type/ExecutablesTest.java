@@ -22,13 +22,13 @@ public class ExecutablesTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass, printStream);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Method> printlnMethods = new ArrayList<>();
+		List<Function> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				printlnMethods.add(method);
+				printlnMethods.add(new Function(printStream, method));
 			}
 		}
 
@@ -49,13 +49,13 @@ public class ExecutablesTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool, printStream);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Method> printlnMethods = new ArrayList<>();
+		List<Function> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				printlnMethods.add(method);
+				printlnMethods.add(new Function(printStream, method));
 			}
 		}
 
@@ -76,13 +76,13 @@ public class ExecutablesTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool, testClass);
 
 		Method[] methods = testClass.reflectionClass().getMethods();
-		List<Method> printlnMethods = new ArrayList<>();
+		List<Function> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("testMethod"))
 			{
-				printlnMethods.add(method);
+				printlnMethods.add(new Function(testClass, method));
 			}
 		}
 

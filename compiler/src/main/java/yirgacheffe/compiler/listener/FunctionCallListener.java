@@ -10,6 +10,7 @@ import yirgacheffe.compiler.expression.New;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Executables;
+import yirgacheffe.compiler.type.Function;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -19,7 +20,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class FunctionCallListener extends ExpressionListener
 {
@@ -55,12 +56,16 @@ public class FunctionCallListener extends ExpressionListener
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
 		Type owner = this.typeStack.peak();
+		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
+		List<Function> functions = new ArrayList<>();
 
-		Constructor<?>[] constructors =
-			owner.reflectionClass().getConstructors();
+		for (Constructor<?> constructor: constructors)
+		{
+			functions.add(new Function(owner, constructor));
+		}
 
 		MatchResult matchResult =
-			new Executables(Arrays.asList(constructors))
+			new Executables(functions)
 				.getMatchingExecutable(this.argumentClasses);
 
 		Expression invoke =
@@ -112,13 +117,13 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		Type returnType = new NullType();
-		ArrayList<Method> namedMethods = new ArrayList<>();
+		ArrayList<Function> namedMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals(methodName))
 			{
-				namedMethods.add(method);
+				namedMethods.add(new Function(owner, method));
 			}
 		}
 
@@ -127,7 +132,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		if (matchResult.isSuccessful())
 		{
-			returnType = matchResult.getExecutable().getReturnType(owner);
+			returnType = matchResult.getExecutable().getReturnType();
 
 			for (MismatchedTypes types: matchResult.getMismatchedParameters())
 			{

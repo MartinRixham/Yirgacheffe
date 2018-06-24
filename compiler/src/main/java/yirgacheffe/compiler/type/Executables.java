@@ -2,28 +2,27 @@ package yirgacheffe.compiler.type;
 
 import yirgacheffe.compiler.MatchResult;
 
-import java.lang.reflect.Executable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Executables
 {
-	private List<? extends Executable> executables;
+	private List<Function> executables;
 
-	public Executables(List<? extends Executable> executables)
+	public Executables(List<Function> executables)
 	{
 		this.executables = executables;
 	}
 
 	public MatchResult getMatchingExecutable(ArgumentClasses argumentClasses)
 	{
-		List<Executable> matched = new ArrayList<>();
+		List<Function> matched = new ArrayList<>();
 		int highestExactMatches = 0;
 		String argumentDescriptor = "()";
 
-		for (Executable executable: this.executables)
+		for (Function executable: this.executables)
 		{
-			Type[] parameterTypes = this.getTypes(executable.getParameterTypes());
+			List<Type> parameterTypes = executable.getParameterTypes();
 			int exactMatches = argumentClasses.matches(parameterTypes);
 
 			if (exactMatches > highestExactMatches)
@@ -42,11 +41,10 @@ public class Executables
 		if (matched.size() == 1)
 		{
 			List<MismatchedTypes> mismatchedParameters =
-				argumentClasses
-					.checkTypeParameter(matched.get(0));
+				matched.get(0).checkTypeParameter(argumentClasses);
 
 			return new MatchResult(
-				new Function(matched.get(0)),
+				matched.get(0),
 				argumentDescriptor,
 				mismatchedParameters);
 		}
@@ -56,7 +54,7 @@ public class Executables
 		}
 	}
 
-	private String getDescriptor(Type[] parameterTypes)
+	private String getDescriptor(List<Type> parameterTypes)
 	{
 		StringBuilder descriptor = new StringBuilder();
 
@@ -70,28 +68,5 @@ public class Executables
 		descriptor.append(")");
 
 		return descriptor.toString();
-	}
-
-	private Type[] getTypes(Class<?>[] classes)
-	{
-		Type[] types = new Type[classes.length];
-
-		for (int i = 0; i < classes.length; i++)
-		{
-			if (classes[i].isArray())
-			{
-				types[i] = new ArrayType(classes[i].getName());
-			}
-			else if (classes[i].isPrimitive())
-			{
-				types[i] = PrimitiveType.valueOf(classes[i].getName().toUpperCase());
-			}
-			else
-			{
-				types[i] = new ReferenceType(classes[i]);
-			}
-		}
-
-		return types;
 	}
 }
