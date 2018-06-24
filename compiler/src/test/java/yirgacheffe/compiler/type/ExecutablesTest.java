@@ -19,7 +19,7 @@ public class ExecutablesTest
 	{
 		Type[] stringClass = new Type[] {new ReferenceType(String.class)};
 		Type printStream = new ReferenceType(PrintStream.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass, printStream);
+		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
 		List<Function> printlnMethods = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ExecutablesTest
 	{
 		Type[] bool = new Type[] {PrimitiveType.BOOLEAN};
 		Type printStream = new ReferenceType(PrintStream.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(bool, printStream);
+		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
 		List<Function> printlnMethods = new ArrayList<>();
@@ -73,7 +73,7 @@ public class ExecutablesTest
 	{
 		Type[] bool = new Type[] {PrimitiveType.CHAR};
 		Type testClass = new ReferenceType(ExecutablesTest.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(bool, testClass);
+		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = testClass.reflectionClass().getMethods();
 		List<Function> printlnMethods = new ArrayList<>();

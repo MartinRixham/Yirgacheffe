@@ -8,17 +8,15 @@ public class ArgumentClasses
 {
 	private Type[] argumentClasses;
 
-	private Type owner;
-
-	public ArgumentClasses(Type[] argumentClasses, Type owner)
+	public ArgumentClasses(Type[] argumentClasses)
 	{
 		this.argumentClasses = argumentClasses;
-		this.owner = owner;
 	}
 
-	public List<MismatchedTypes> checkTypeParameters(java.lang.reflect.Type[] parameters)
+	public List<MismatchedTypes> checkTypeParameters(
+		java.lang.reflect.Type[] parameters,
+		ParameterisedType owner)
 	{
-		ParameterisedType type = (ParameterisedType) this.owner;
 		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
 
 		for (int i = 0; i < parameters.length; i++)
@@ -28,7 +26,7 @@ public class ArgumentClasses
 				TypeVariable typeVariable = (TypeVariable) parameters[i];
 
 				boolean hasTypeParameter =
-					type.hasTypeParameter(
+					owner.hasTypeParameter(
 						typeVariable.getName(),
 						this.argumentClasses[i]);
 
@@ -37,7 +35,7 @@ public class ArgumentClasses
 					MismatchedTypes mismatchedTypes =
 						new MismatchedTypes(
 							this.argumentClasses[i].toString(),
-							type.getTypeParameterName(typeVariable.getName()));
+							owner.getTypeParameterName(typeVariable.getName()));
 
 					mismatchedParameters.add(mismatchedTypes);
 				}

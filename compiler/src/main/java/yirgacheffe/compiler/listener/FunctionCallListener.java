@@ -179,9 +179,7 @@ public class FunctionCallListener extends ExpressionListener
 			arguments[i] = this.typeStack.pop();
 		}
 
-		Type owner = this.typeStack.peak();
-
-		this.argumentClasses = new ArgumentClasses(arguments, owner);
+		this.argumentClasses = new ArgumentClasses(arguments);
 	}
 
 	@Override

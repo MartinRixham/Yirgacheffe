@@ -70,13 +70,16 @@ public class Function
 	{
 		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
 
-		if (!(this.owner instanceof ParameterisedType))
+		if (this.owner instanceof ParameterisedType)
+		{
+			ParameterisedType type = (ParameterisedType) this.owner;
+
+			return argumentClasses.checkTypeParameters(
+				this.executable.getGenericParameterTypes(), type);
+		}
+		else
 		{
 			return mismatchedParameters;
 		}
-
-		java.lang.reflect.Type[] parameters = this.executable.getGenericParameterTypes();
-
-		return argumentClasses.checkTypeParameters(parameters);
 	}
 }
