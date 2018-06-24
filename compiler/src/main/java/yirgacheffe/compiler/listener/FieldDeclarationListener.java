@@ -21,6 +21,19 @@ public class FieldDeclarationListener extends ConstructorListener
 	@Override
 	public void exitFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
 	{
+		String identifier = context.Identifier().getText();
+
+		if (this.members.contains(identifier))
+		{
+			String message = "Duplicate field '" + identifier + "'.";
+
+			this.errors.add(new Error(context, message));
+		}
+		else
+		{
+			this.members.add(identifier);
+		}
+
 		if (context.type() == null)
 		{
 			Error error =

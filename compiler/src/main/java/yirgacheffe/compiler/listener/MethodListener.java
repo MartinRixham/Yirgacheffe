@@ -12,8 +12,10 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MethodListener extends TypeListener
 {
@@ -28,6 +30,8 @@ public class MethodListener extends TypeListener
 	protected MethodVisitor methodVisitor;
 
 	protected boolean hasReturnStatement = false;
+
+	protected Set<String> members = new HashSet<>();
 
 	public MethodListener(String sourceFile, Classes classes)
 	{

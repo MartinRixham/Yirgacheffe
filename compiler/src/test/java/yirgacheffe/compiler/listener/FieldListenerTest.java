@@ -155,6 +155,31 @@ public class FieldListenerTest
 	}
 
 	@Test
+	public void testDuplicateField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String myField;\n" +
+				"String myField = \"thingy\";\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Duplicate field 'myField'.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testFieldWithUnknownType()
 	{
 		String source =
