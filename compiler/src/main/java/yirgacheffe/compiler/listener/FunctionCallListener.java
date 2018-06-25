@@ -140,6 +140,13 @@ public class FunctionCallListener extends ExpressionListener
 				this.errors.add(new Error(context, message));
 			}
 		}
+		else if (matchResult.isAmbiguous())
+		{
+			String method = owner + "." + methodName;
+			String message = "Ambiguous call to method " + method + ".";
+
+			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+		}
 		else
 		{
 			String method = owner + "." + methodName;

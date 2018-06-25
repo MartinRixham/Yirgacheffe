@@ -1004,4 +1004,33 @@ public class FunctionCallListenerTest
 		assertTrue(result1.isSuccessful());
 		assertFalse(result2.isSuccessful());
 	}
+
+	@Test
+	public void testAmbiguousFunctionCall()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"this.setCharacter('a');\n" +
+				"}\n" +
+				"public Void setCharacter(Char char) {}\n" +
+				"public Void setCharacter(Character char) {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:5 Ambiguous call to method MyClass.setCharacter.\n",
+			result.getErrors());
+	}
 }

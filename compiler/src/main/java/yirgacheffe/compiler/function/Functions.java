@@ -47,7 +47,7 @@ public class Functions
 		}
 		else
 		{
-			return new MatchResult();
+			return new MatchResult(!matched.isEmpty());
 		}
 	}
 }

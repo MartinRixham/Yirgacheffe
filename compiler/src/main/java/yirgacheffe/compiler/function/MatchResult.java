@@ -11,10 +11,13 @@ public class MatchResult
 
 	private List<MismatchedTypes> mismatchedParameters;
 
-	public MatchResult()
+	private boolean ambiguous;
+
+	public MatchResult(boolean ambiguous)
 	{
 		this.function = new NullFunction();
 		this.mismatchedParameters = new ArrayList<>();
+		this.ambiguous = ambiguous;
 	}
 
 	public MatchResult(Callable functions, List<MismatchedTypes> mismatchedParameters)
@@ -36,5 +39,10 @@ public class MatchResult
 	public List<MismatchedTypes> getMismatchedParameters()
 	{
 		return this.mismatchedParameters;
+	}
+
+	public boolean isAmbiguous()
+	{
+		return this.ambiguous;
 	}
 }
