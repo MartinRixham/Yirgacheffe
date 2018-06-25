@@ -2,17 +2,15 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.function.Callable;
 
 public class InvokeConstructor implements Expression
 {
-	private String owner;
+	private Callable function;
 
-	private String descriptor;
-
-	public InvokeConstructor(String owner, String descriptor)
+	public InvokeConstructor(Callable function)
 	{
-		this.owner = owner;
-		this.descriptor = descriptor;
+		this.function = function;
 	}
 
 	@Override
@@ -20,9 +18,9 @@ public class InvokeConstructor implements Expression
 	{
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
-			this.owner,
+			this.function.getOwner().toFullyQualifiedType().replace(".", "/"),
 			"<init>",
-			this.descriptor,
+			this.function.getDescriptor(),
 			false);
 	}
 }

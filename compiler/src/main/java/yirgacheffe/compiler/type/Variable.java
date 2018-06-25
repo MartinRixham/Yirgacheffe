@@ -14,7 +14,7 @@ public class Variable
 
 	public int getIndex()
 	{
-		return  this.index;
+		return this.index;
 	}
 
 	public Type getType()

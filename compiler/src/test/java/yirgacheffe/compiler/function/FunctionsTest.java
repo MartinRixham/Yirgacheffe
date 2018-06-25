@@ -1,18 +1,22 @@
-package yirgacheffe.compiler.type;
+package yirgacheffe.compiler.function;
 
 import org.junit.Test;
-import yirgacheffe.compiler.MatchResult;
+import yirgacheffe.compiler.type.ArgumentClasses;
+import yirgacheffe.compiler.type.MismatchedTypes;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class ExecutablesTest
+public class FunctionsTest
 {
 	@Test
 	public void testGettingStringPrintlnMethod()
@@ -22,7 +26,7 @@ public class ExecutablesTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Function> printlnMethods = new ArrayList<>();
+		List<Callable> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
@@ -32,13 +36,13 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables executables = new Executables(printlnMethods);
-		MatchResult result = executables.getMatchingExecutable(argumentClasses);
+		Functions functions = new Functions(printlnMethods);
+		MatchResult result = functions.getMatchingExecutable(argumentClasses);
 		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
 		assertEquals(0, mismatchedParameters.size());
-		assertEquals("(Ljava/lang/String;)", result.getDescriptor());
+		assertEquals("(Ljava/lang/String;)V", result.getExecutable().getDescriptor());
 	}
 
 	@Test
@@ -49,7 +53,7 @@ public class ExecutablesTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Function> printlnMethods = new ArrayList<>();
+		List<Callable> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
@@ -59,24 +63,24 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables executables = new Executables(printlnMethods);
-		MatchResult result = executables.getMatchingExecutable(argumentClasses);
+		Functions functions = new Functions(printlnMethods);
+		MatchResult result = functions.getMatchingExecutable(argumentClasses);
 		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
 		assertEquals(0, mismatchedParameters.size());
-		assertEquals("(Z)", result.getDescriptor());
+		assertEquals("(Z)V", result.getExecutable().getDescriptor());
 	}
 
 	@Test
 	public void testAmbiguousMatchingOfBoxedAndUnboxedType()
 	{
 		Type[] bool = new Type[] {PrimitiveType.CHAR};
-		Type testClass = new ReferenceType(ExecutablesTest.class);
+		Type testClass = new ReferenceType(FunctionsTest.class);
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = testClass.reflectionClass().getMethods();
-		List<Function> printlnMethods = new ArrayList<>();
+		List<Callable> printlnMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
@@ -86,8 +90,8 @@ public class ExecutablesTest
 			}
 		}
 
-		Executables executables = new Executables(printlnMethods);
-		MatchResult result = executables.getMatchingExecutable(argumentClasses);
+		Functions functions = new Functions(printlnMethods);
+		MatchResult result = functions.getMatchingExecutable(argumentClasses);
 
 		assertFalse(result.isSuccessful());
 	}

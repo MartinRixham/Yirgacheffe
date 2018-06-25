@@ -1,18 +1,18 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.MatchResult;
+import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.New;
+import yirgacheffe.compiler.function.Callable;
+import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.Executables;
-import yirgacheffe.compiler.type.Function;
 import yirgacheffe.compiler.type.MismatchedTypes;
-import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -57,7 +57,7 @@ public class FunctionCallListener extends ExpressionListener
 	{
 		Type owner = this.typeStack.peak();
 		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
-		List<Function> functions = new ArrayList<>();
+		List<Callable> functions = new ArrayList<>();
 
 		for (Constructor<?> constructor: constructors)
 		{
@@ -65,13 +65,10 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		MatchResult matchResult =
-			new Executables(functions)
-				.getMatchingExecutable(this.argumentClasses);
+			new Functions(functions).getMatchingExecutable(this.argumentClasses);
 
 		Expression invoke =
-			new InvokeConstructor(
-				owner.toFullyQualifiedType().replace(".", "/"),
-				matchResult.getDescriptor() + "V");
+			new InvokeConstructor(matchResult.getExecutable());
 
 		this.expressions.add(invoke);
 		this.typeStack.endInstantiation();
@@ -116,8 +113,7 @@ public class FunctionCallListener extends ExpressionListener
 			methods = owner.reflectionClass().getMethods();
 		}
 
-		Type returnType = new NullType();
-		ArrayList<Function> namedMethods = new ArrayList<>();
+		ArrayList<Callable> namedMethods = new ArrayList<>();
 
 		for (Method method: methods)
 		{
@@ -128,12 +124,12 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		MatchResult matchResult =
-			new Executables(namedMethods).getMatchingExecutable(this.argumentClasses);
+			new Functions(namedMethods).getMatchingExecutable(this.argumentClasses);
+
+		Type returnType = matchResult.getExecutable().getReturnType();
 
 		if (matchResult.isSuccessful())
 		{
-			returnType = matchResult.getExecutable().getReturnType();
-
 			for (MismatchedTypes types: matchResult.getMismatchedParameters())
 			{
 				String message =
@@ -149,18 +145,10 @@ public class FunctionCallListener extends ExpressionListener
 			String method = owner + "." + methodName;
 			String message = "Method " + method + this.argumentClasses + " not found.";
 
-			this.errors.add(
-				new Error(context.Identifier().getSymbol(), message));
+			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
-		Expression invoke =
-			new InvokeMethod(
-				owner,
-				methodName,
-				matchResult.getDescriptor() + returnType.toJVMType(),
-				returnType);
-
-		this.expressions.add(invoke);
+		this.expressions.add(new InvokeMethod(matchResult.getExecutable()));
 
 		if (!returnType.equals(PrimitiveType.VOID))
 		{

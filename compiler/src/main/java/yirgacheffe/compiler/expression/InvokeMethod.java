@@ -2,68 +2,66 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 
 public class InvokeMethod implements Expression
 {
-	private Type owner;
+	private Callable function;
 
-	private String name;
-
-	private String descriptor;
-
-	private Type returnType;
-
-	public InvokeMethod(Type owner, String name, String descriptor, Type returnType)
+	public InvokeMethod(Callable function)
 	{
-		this.owner = owner;
-		this.name = name;
-		this.descriptor = descriptor;
-		this.returnType = returnType;
+		this.function = function;
 	}
 
 	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
-		if (this.owner instanceof PrimitiveType)
-		{
-			String typeWithSlashes =
-				this.owner.toFullyQualifiedType().replace(".", "/");
+		Type owner = this.function.getOwner();
 
+		if (owner instanceof PrimitiveType)
+		{
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
-				typeWithSlashes,
+				this.withSlashes(owner),
 				"valueOf",
-				"(" + this.owner.toJVMType() + ")L" + typeWithSlashes + ";",
+				"(" + owner.toJVMType() + ")L" + this.withSlashes(owner) + ";",
 				false);
 		}
 
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
-			this.owner.toFullyQualifiedType().replace(".", "/"),
-			this.name,
-			this.descriptor,
+			this.withSlashes(owner),
+			this.function.getName(),
+			this.function.getDescriptor(),
 			false);
 
-		if (this.returnType instanceof GenericType)
+		Type returnType = this.function.getReturnType();
+
+		if (returnType instanceof GenericType)
 		{
 			methodVisitor.visitTypeInsn(
 				Opcodes.CHECKCAST,
-				this.returnType.toFullyQualifiedType().replace(".", "/"));
+				this.withSlashes(returnType));
 		}
-		if (this.returnType.equals(PrimitiveType.INT))
+		if (returnType.equals(PrimitiveType.INT))
 		{
 			methodVisitor.visitInsn(Opcodes.I2D);
 		}
-		else if (this.returnType.equals(PrimitiveType.LONG))
+		else if (returnType.equals(PrimitiveType.LONG))
 		{
 			methodVisitor.visitInsn(Opcodes.L2D);
 		}
-		else if (this.returnType.equals(PrimitiveType.FLOAT))
+		else if (returnType.equals(PrimitiveType.FLOAT))
 		{
 			methodVisitor.visitInsn(Opcodes.F2D);
 		}
+	}
+
+	private String withSlashes(Type type)
+	{
+		return type.toFullyQualifiedType().replace(".", "/");
 	}
 }
