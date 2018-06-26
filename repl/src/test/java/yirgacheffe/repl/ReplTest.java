@@ -79,6 +79,11 @@ public class ReplTest
 	@Test
 	public void testPrintingEmptyLine()
 	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream err = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(err);
+		System.setErr(error);
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(out);
 		InputStream in = new ByteArrayInputStream("\n".getBytes());
@@ -88,6 +93,9 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals("yirgacheffe> yirgacheffe> ", out.toString());
+		assertEquals("", err.toString());
+
+		System.setErr(originalError);
 	}
 
 	@Test
@@ -120,7 +128,7 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> line 3:50 Missing ';'.\nyirgacheffe> ",
+			"yirgacheffe> line 4:50 Missing ';'.\nyirgacheffe> ",
 			out.toString());
 	}
 
@@ -139,7 +147,7 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> line 3:50 Missing ';'.\nyirgacheffe> yirgacheffe> ",
+			"yirgacheffe> line 4:50 Missing ';'.\nyirgacheffe> yirgacheffe> ",
 			out.toString());
 	}
 
@@ -154,6 +162,25 @@ public class ReplTest
 				("String thingy = \"thingy\";\n" +
 					"String sumpt = \"sumpt\";\n" +
 					"thingy").getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals(
+			"yirgacheffe> yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ",
+			out.toString());
+	}
+
+	@Test
+	public void testVariableDeclarationAndAssignment()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				("String thingy;\nthingy = \"thingy\";\nthingy").getBytes());
 
 		Repl repl = new Repl(stream);
 

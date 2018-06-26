@@ -1,7 +1,11 @@
 package yirgacheffe.repl;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import yirgacheffe.compiler.CompilationResult;
+import yirgacheffe.compiler.Source;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.parser.YirgacheffeParser;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -37,11 +41,11 @@ public final class Repl
 
 		while (scanner.hasNextLine())
 		{
-			String line = scanner.nextLine();
+			YirgacheffeParser.ReplLineContext line = this.parseLine(scanner.nextLine());
 
-			if (line.contains("import"))
+			if (line.importStatement() != null)
 			{
-				imports.add(line);
+				imports.add(this.getText(line));
 
 				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
 
@@ -52,9 +56,9 @@ public final class Repl
 					imports.remove(imports.size() - 1);
 				}
 			}
-			else if (line.contains("="))
+			else if (line.statement() != null)
 			{
-				statements.add(line);
+				statements.add(this.getText(line));
 
 				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
 
@@ -65,9 +69,10 @@ public final class Repl
 					statements.remove(statements.size() - 1);
 				}
 			}
-			else if (line.length() > 0)
+			else if (line.expression() != null)
 			{
-				EvaluationResult result = this.evaluate(imports, statements, line);
+				EvaluationResult result =
+					this.evaluate(imports, statements, this.getText(line));
 
 				this.out.println(result.getResult());
 			}
@@ -76,13 +81,26 @@ public final class Repl
 		}
 	}
 
+	private String getText(ParserRuleContext line)
+	{
+		return line.start.getInputStream().getText(
+			new Interval(line.start.getStartIndex(), line.stop.getStopIndex()));
+	}
+
+	private YirgacheffeParser.ReplLineContext parseLine(String line)
+	{
+		YirgacheffeParser parser = new Source(line).parse();
+
+		return parser.replLine();
+	}
+
 	private EvaluationResult evaluate(
 		List<String> imports,
 		List<String> statements,
 		String expression)
 	{
-		Source source = new Source(imports, statements, expression);
-		CompilationResult result = source.compile();
+		Evaluator evaluator = new Evaluator(imports, statements, expression);
+		CompilationResult result = evaluator.compile();
 
 		if (result.isSuccessful())
 		{

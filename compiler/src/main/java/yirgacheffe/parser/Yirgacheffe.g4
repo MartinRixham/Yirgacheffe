@@ -6,6 +6,8 @@ compilationUnit:
 	(classDeclaration | interfaceDeclaration)*
 	EOF;
 
+replLine: (importStatement | expression | statement)?;
+
 packageDeclaration: (Package packageName semicolon)?;
 
 packageName: Identifier ('.' Identifier)*;
@@ -27,7 +29,7 @@ interfaceDeclaration:
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
 	'{'
-		(statement semicolon)*
+		statement*
 	'}';
 
 classMethodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
@@ -45,7 +47,9 @@ fieldInitialisation: fieldDeclaration '=' expression;
 
 fieldDeclaration: type? Identifier;
 
-statement: fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement;
+statement:
+	(fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
+	semicolon;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
