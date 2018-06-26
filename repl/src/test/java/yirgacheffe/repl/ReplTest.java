@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReplTest
 {
@@ -115,6 +116,24 @@ public class ReplTest
 	}
 
 	@Test
+	public void testTwoStatements()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in =
+			new ByteArrayInputStream(
+				("String thingy = \"thingy\";String sumpt = \"sumpt\";\n" +
+				"sumpt").getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertEquals("yirgacheffe> yirgacheffe> sumpt\nyirgacheffe> ", out.toString());
+	}
+
+	@Test
 	public void testInvalidStatement()
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -128,7 +147,7 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> line 4:50 Missing ';'.\nyirgacheffe> ",
+			"yirgacheffe> Missing ';'.\nyirgacheffe> ",
 			out.toString());
 	}
 
@@ -147,7 +166,7 @@ public class ReplTest
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> line 4:50 Missing ';'.\nyirgacheffe> yirgacheffe> ",
+			"yirgacheffe> Missing ';'.\nyirgacheffe> yirgacheffe> ",
 			out.toString());
 	}
 
@@ -160,8 +179,8 @@ public class ReplTest
 		InputStream in =
 			new ByteArrayInputStream(
 				("String thingy = \"thingy\";\n" +
-					"String sumpt = \"sumpt\";\n" +
-					"thingy").getBytes());
+				"String sumpt = \"sumpt\";\n" +
+				"thingy").getBytes());
 
 		Repl repl = new Repl(stream);
 
@@ -227,8 +246,31 @@ public class ReplTest
 
 		assertEquals(
 			"yirgacheffe> " +
-				"line 1:7 Unrecognised type: java.lang.ArrayList is not a type.\n" +
+				"Unrecognised type: java.lang.ArrayList is not a type.\n" +
 				"yirgacheffe> ",
 			out.toString());
+	}
+
+	@Test
+	public void testNonsenseInput()
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream err = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(err);
+		System.setErr(error);
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PrintStream stream = new PrintStream(out);
+
+		InputStream in = new ByteArrayInputStream("What's going on?".getBytes());
+
+		Repl repl = new Repl(stream);
+
+		repl.read(in);
+
+		assertTrue(out.toString().length() > 0);
+		assertEquals("", err.toString());
+
+		System.setErr(originalError);
 	}
 }

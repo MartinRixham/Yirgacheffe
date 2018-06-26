@@ -6,7 +6,7 @@ compilationUnit:
 	(classDeclaration | interfaceDeclaration)*
 	EOF;
 
-replLine: (importStatement | expression | statement)?;
+replLine: expression? | importStatement* | statement*;
 
 packageDeclaration: (Package packageName semicolon)?;
 

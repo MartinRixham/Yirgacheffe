@@ -7,6 +7,7 @@ import yirgacheffe.compiler.Source;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -28,6 +29,7 @@ public final class Repl
 	public Repl(PrintStream out)
 	{
 		this.out = out;
+		System.setErr(new PrintStream(new ByteArrayOutputStream()));
 	}
 
 	public void read(InputStream in)
@@ -42,38 +44,42 @@ public final class Repl
 		while (scanner.hasNextLine())
 		{
 			YirgacheffeParser.ReplLineContext line = this.parseLine(scanner.nextLine());
+			String expression = "\"\"";
 
-			if (line.importStatement() != null)
+			for (YirgacheffeParser.ImportStatementContext importStatement:
+				line.importStatement())
 			{
-				imports.add(this.getText(line));
+				imports.add(this.getText(importStatement));
+			}
 
-				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
+			for (YirgacheffeParser.StatementContext statement: line.statement())
+			{
+				statements.add(this.getText(statement));
+			}
 
-				this.out.print(result.getResult());
+			if (line.expression() != null)
+			{
+				expression = this.getText(line.expression());
+			}
 
-				if (!result.isSuccessful())
+			EvaluationResult result = this.evaluate(imports, statements, expression);
+
+			if (!result.isSuccessful())
+			{
+				for (int i = 0; i < line.importStatement().size(); i++)
 				{
 					imports.remove(imports.size() - 1);
 				}
-			}
-			else if (line.statement() != null)
-			{
-				statements.add(this.getText(line));
 
-				EvaluationResult result = this.evaluate(imports, statements, "\"\"");
-
-				this.out.print(result.getResult());
-
-				if (!result.isSuccessful())
+				for (int i = 0; i < line.statement().size(); i++)
 				{
 					statements.remove(statements.size() - 1);
 				}
-			}
-			else if (line.expression() != null)
-			{
-				EvaluationResult result =
-					this.evaluate(imports, statements, this.getText(line));
 
+				this.out.print(this.removeLineNumbers(result.getResult()));
+			}
+			else if (result.getResult().length() > 0)
+			{
 				this.out.println(result.getResult());
 			}
 
@@ -83,8 +89,15 @@ public final class Repl
 
 	private String getText(ParserRuleContext line)
 	{
-		return line.start.getInputStream().getText(
-			new Interval(line.start.getStartIndex(), line.stop.getStopIndex()));
+		try
+		{
+			return line.start.getInputStream().getText(
+				new Interval(line.start.getStartIndex(), line.stop.getStopIndex()));
+		}
+		catch (StringIndexOutOfBoundsException e)
+		{
+			return null;
+		}
 	}
 
 	private YirgacheffeParser.ReplLineContext parseLine(String line)
@@ -127,5 +140,26 @@ public final class Repl
 		{
 			return new EvaluationResult(result.getErrors(), false);
 		}
+	}
+
+	private String removeLineNumbers(String in)
+	{
+		String[] errors = in.split("\n");
+		StringBuilder out = new StringBuilder();
+
+		for (int i = 0; i < errors.length; i++)
+		{
+			String[] parts = errors[i].split(" ");
+			String[] remaining = new String[parts.length - 2];
+
+			for (int j = 0; j < remaining.length; j++)
+			{
+				remaining[j] = parts[j + 2];
+			}
+
+			out.append(String.join(" ", remaining)).append("\n");
+		}
+
+		return out.toString();
 	}
 }
