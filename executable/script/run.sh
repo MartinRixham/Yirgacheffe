@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
 
 if [ $1 = --run ];then
-    java -cp .:$0 $2
+    shift 1
+    java -cp .:$0 $*
 elif [ $1 = --repl ];then
     java -cp $0 yirgacheffe.repl.Repl
 else
