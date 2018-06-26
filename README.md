@@ -15,3 +15,7 @@ Compile classes:
 Execute:
 
     yirgacheffe --run MyClass
+    
+Repl:
+
+    yirgacheffe --repl
