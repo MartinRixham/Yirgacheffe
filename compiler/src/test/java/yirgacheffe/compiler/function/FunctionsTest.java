@@ -42,7 +42,7 @@ public class FunctionsTest
 
 		assertTrue(result.isSuccessful());
 		assertEquals(0, mismatchedParameters.size());
-		assertEquals("(Ljava/lang/String;)V", result.getExecutable().getDescriptor());
+		assertEquals("(Ljava/lang/String;)V", result.getFunction().getDescriptor());
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class FunctionsTest
 
 		assertTrue(result.isSuccessful());
 		assertEquals(0, mismatchedParameters.size());
-		assertEquals("(Z)V", result.getExecutable().getDescriptor());
+		assertEquals("(Z)V", result.getFunction().getDescriptor());
 	}
 
 	@Test

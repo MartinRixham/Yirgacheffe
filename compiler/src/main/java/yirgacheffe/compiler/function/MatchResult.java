@@ -31,7 +31,7 @@ public class MatchResult
 		return !(this.function instanceof NullFunction);
 	}
 
-	public Callable getExecutable()
+	public Callable getFunction()
 	{
 		return this.function;
 	}

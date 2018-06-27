@@ -109,8 +109,6 @@ public class Function implements Callable
 	@Override
 	public List<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
 	{
-		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
-
 		if (this.owner instanceof ParameterisedType)
 		{
 			ParameterisedType type = (ParameterisedType) this.owner;
@@ -120,7 +118,7 @@ public class Function implements Callable
 		}
 		else
 		{
-			return mismatchedParameters;
+			return new ArrayList<>();
 		}
 	}
 

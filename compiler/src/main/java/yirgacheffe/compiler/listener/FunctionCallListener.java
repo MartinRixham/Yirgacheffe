@@ -6,7 +6,6 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
-import yirgacheffe.compiler.expression.New;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
@@ -26,6 +25,8 @@ public class FunctionCallListener extends ExpressionListener
 {
 	private ArgumentClasses argumentClasses;
 
+	private Expression[] arguments;
+
 	public FunctionCallListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -44,9 +45,6 @@ public class FunctionCallListener extends ExpressionListener
 		}
 
 		Type type = this.types.getType(context.type());
-		String typeWithSlashes = type.toFullyQualifiedType().replace(".", "/");
-
-		this.expressions.add(new New(typeWithSlashes));
 
 		this.typeStack.beginInstantiation();
 		this.typeStack.push(type);
@@ -59,16 +57,16 @@ public class FunctionCallListener extends ExpressionListener
 		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
 		List<Callable> functions = new ArrayList<>();
 
-		for (Constructor<?> constructor: constructors)
+		for (Constructor<?> constructor : constructors)
 		{
 			functions.add(new Function(owner, constructor));
 		}
 
 		MatchResult matchResult =
 			new Functions(functions).getMatchingExecutable(this.argumentClasses);
+		Callable function = matchResult.getFunction();
 
-		Expression invoke =
-			new InvokeConstructor(matchResult.getExecutable());
+		Expression invoke = new InvokeConstructor(function, this.arguments);
 
 		this.expressions.add(invoke);
 		this.typeStack.endInstantiation();
@@ -79,8 +77,8 @@ public class FunctionCallListener extends ExpressionListener
 			{
 				String message =
 					"Argument of type " + types.from() +
-						" cannot be assigned to generic parameter of type " +
-						types.to() + ".";
+					" cannot be assigned to generic parameter of type " +
+					types.to() + ".";
 
 				this.errors.add(new Error(context, message));
 			}
@@ -99,34 +97,11 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
-		Type owner = this.typeStack.pop();
-
 		String methodName = context.Identifier().getText();
-		Method[] methods;
-
-		if (owner.toFullyQualifiedType().equals(this.className))
-		{
-			methods = owner.reflectionClass().getDeclaredMethods();
-		}
-		else
-		{
-			methods = owner.reflectionClass().getMethods();
-		}
-
-		ArrayList<Callable> namedMethods = new ArrayList<>();
-
-		for (Method method: methods)
-		{
-			if (method.getName().equals(methodName))
-			{
-				namedMethods.add(new Function(owner, method));
-			}
-		}
-
-		MatchResult matchResult =
-			new Functions(namedMethods).getMatchingExecutable(this.argumentClasses);
-
-		Type returnType = matchResult.getExecutable().getReturnType();
+		Type owner = typeStack.pop();
+		MatchResult matchResult = this.getMatchResult(owner, methodName);
+		Callable function = matchResult.getFunction();
+		Type returnType = function.getReturnType();
 
 		if (matchResult.isSuccessful())
 		{
@@ -155,7 +130,8 @@ public class FunctionCallListener extends ExpressionListener
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
-		this.expressions.add(new InvokeMethod(matchResult.getExecutable()));
+		this.expressions.add(
+			new InvokeMethod(function, this.expressions.pop(), this.arguments));
 
 		if (!returnType.equals(PrimitiveType.VOID))
 		{
@@ -163,15 +139,44 @@ public class FunctionCallListener extends ExpressionListener
 		}
 	}
 
+	private MatchResult getMatchResult(Type owner, String methodName)
+	{
+		Method[] methods;
+
+		if (owner.toFullyQualifiedType().equals(this.className))
+		{
+			methods = owner.reflectionClass().getDeclaredMethods();
+		}
+		else
+		{
+			methods = owner.reflectionClass().getMethods();
+		}
+
+		ArrayList<Callable> namedMethods = new ArrayList<>();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals(methodName))
+			{
+				namedMethods.add(new Function(owner, method));
+			}
+		}
+
+		return new Functions(namedMethods)
+			.getMatchingExecutable(this.argumentClasses);
+	}
+
 	@Override
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
 		int argumentCount = context.expression().size();
 		Type[] arguments = new Type[argumentCount];
+		this.arguments = new Expression[argumentCount];
 
-		for (int i =  0; i < context.expression().size(); i++)
+		for (int i =  context.expression().size() - 1; i >= 0; i--)
 		{
 			arguments[i] = this.typeStack.pop();
+			this.arguments[i] = this.expressions.pop();
 		}
 
 		this.argumentClasses = new ArgumentClasses(arguments);

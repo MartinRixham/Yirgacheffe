@@ -11,14 +11,27 @@ public class InvokeMethod implements Expression
 {
 	private Callable function;
 
-	public InvokeMethod(Callable function)
+	private Expression owner;
+
+	private Expression[] arguments;
+
+	public InvokeMethod(Callable function, Expression owner, Expression[] arguments)
 	{
 		this.function = function;
+		this.owner = owner;
+		this.arguments = arguments;
 	}
 
 	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
+		this.owner.compile(methodVisitor);
+
+		for (Expression expression: this.arguments)
+		{
+			expression.compile(methodVisitor);
+		}
+
 		Type owner = this.function.getOwner();
 
 		if (owner instanceof PrimitiveType)

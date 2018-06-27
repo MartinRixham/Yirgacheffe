@@ -9,13 +9,11 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class FieldListener extends FieldDeclarationListener
 {
-	protected List<Expression> expressions = new ArrayList<>();
+	protected Stack<Expression> expressions = new Stack<>();
 
 	public FieldListener(String sourceFile, Classes classes)
 	{
@@ -67,7 +65,7 @@ public class FieldListener extends FieldDeclarationListener
 
 		this.methodVisitor.visitMaxs(this.typeStack.reset(), 1);
 
-		if (!fieldType.toJVMType().equals(expressionType.toJVMType()))
+		if (!expressionType.isAssignableTo(fieldType))
 		{
 			String message =
 				"Cannot assign " + expressionType.toString() +

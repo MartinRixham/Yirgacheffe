@@ -7,7 +7,7 @@ import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 public class StatementListener extends FieldListener
 {
@@ -21,7 +21,7 @@ public class StatementListener extends FieldListener
 	@Override
 	public void enterStatement(YirgacheffeParser.StatementContext context)
 	{
-		this.expressions = new ArrayList<>();
+		this.expressions = new Stack<>();
 	}
 
 	@Override
