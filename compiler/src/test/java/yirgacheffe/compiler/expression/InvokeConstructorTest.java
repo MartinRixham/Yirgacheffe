@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
@@ -21,7 +22,8 @@ public class InvokeConstructorTest
 		Type owner = new ReferenceType(Double.class);
 		Callable function =
 			new Function(owner, Double.class.getConstructor(double.class));
-		Expression[] arguments = new Expression[] {new Literal(1)};
+		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression[] arguments = new Expression[] {one};
 
 		InvokeConstructor invokeMethod = new InvokeConstructor(function, arguments);
 

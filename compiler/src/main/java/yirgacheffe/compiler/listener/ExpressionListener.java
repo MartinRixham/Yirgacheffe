@@ -67,33 +67,33 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void enterLiteral(YirgacheffeParser.LiteralContext context)
 	{
-		Object value;
+		Type type;
 
 		if (context.StringLiteral() != null)
 		{
-			value = context.getText().replace("\"", "");
+			type = new ReferenceType(String.class);
 
 			this.typeStack.push(new ReferenceType(String.class));
 		}
 		else if (context.CharacterLiteral() != null)
 		{
-			value = context.getText().charAt(1);
+			type = PrimitiveType.CHAR;
 
 			this.typeStack.push(PrimitiveType.CHAR);
 		}
 		else if (context.BooleanLiteral() != null)
 		{
-			value = context.getText().equals("true");
+			type = PrimitiveType.BOOLEAN;
 
 			this.typeStack.push(PrimitiveType.BOOLEAN);
 		}
 		else
 		{
-			value = new Double(context.getText());
+			type = PrimitiveType.DOUBLE;
 
 			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 
-		this.expressions.add(new Literal(value));
+		this.expressions.add(new Literal(type, context.getText()));
 	}
 }

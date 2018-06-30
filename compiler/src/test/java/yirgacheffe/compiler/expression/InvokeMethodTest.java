@@ -27,10 +27,10 @@ public class InvokeMethodTest
 	public void testCompilingToStringInvocation() throws Exception
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Type owner = new ReferenceType(String.class);
+		Type stringType = new ReferenceType(String.class);
 		Callable function =
-			new Function(owner, String.class.getMethod("toString"));
-		Expression expression = new Literal("thingy");
+			new Function(stringType, String.class.getMethod("toString"));
+		Expression expression = new Literal(stringType, "\"thingy\"");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(function, expression, new Expression[0]);
@@ -62,11 +62,11 @@ public class InvokeMethodTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 
-		Type owner = new ReferenceType(String.class);
+		Type stringType = new ReferenceType(String.class);
 		Function function =
-			new Function(owner, String.class.getMethod("concat", String.class));
-		Expression expression = new Literal("thingy");
-		Expression[] arguments = new Expression[] {new Literal("sumpt")};
+			new Function(stringType, String.class.getMethod("concat", String.class));
+		Expression expression = new Literal(stringType, "\"thingy\"");
+		Expression[] arguments = new Expression[] {new Literal(stringType, "\"sumpt\"")};
 
 		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
 
@@ -108,7 +108,8 @@ public class InvokeMethodTest
 			new Function(owner, Map.class.getMethod("get", Object.class));
 		Callable constructor = new Function(owner, HashMap.class.getConstructor());
 		Expression expression = new InvokeConstructor(constructor, new Expression[0]);
-		Expression[] arguments = new Expression[] {new Literal(1)};
+		Expression[] arguments =
+			new Expression[] {new Literal(PrimitiveType.DOUBLE, "1")};
 
 		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
 
