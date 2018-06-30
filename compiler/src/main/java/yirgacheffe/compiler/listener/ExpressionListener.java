@@ -26,9 +26,8 @@ public class ExpressionListener extends StatementListener
 		{
 			Variable variable = this.localVariables.get(context.getText());
 			Type type = variable.getType();
-			int index = variable.getIndex();
 
-			this.expressions.add(new VariableRead(type.getLoadInstruction(), index));
+			this.expressions.add(new VariableRead(variable));
 
 			this.typeStack.push(type);
 		}

@@ -1,28 +1,28 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.type.Variable;
 
 public class VariableRead implements Expression
 {
-	private int loadInstruction;
+	private Variable variable;
 
-	private int index;
-
-	public VariableRead(int loadInstruction, int index)
+	public VariableRead(Variable variable)
 	{
-		this.loadInstruction = loadInstruction;
-		this.index = index;
+		this.variable = variable;
 	}
 
 	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
-		methodVisitor.visitVarInsn(this.loadInstruction, this.index);
+		methodVisitor.visitVarInsn(
+			this.variable.getType().getLoadInstruction(),
+			this.variable.getIndex());
 	}
 
 	@Override
 	public int getStackHeight()
 	{
-		return 0;
+		return this.variable.getType().width();
 	}
 }
