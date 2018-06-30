@@ -29,6 +29,8 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
+
+		assertEquals("java.lang.String", literal.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -48,6 +50,8 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thi\"ngy", firstInstruction.cst);
+
+		assertEquals("java.lang.String", literal.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -67,6 +71,8 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(1.0, firstInstruction.cst);
+
+		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -86,6 +92,8 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(0.5, firstInstruction.cst);
+
+		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -105,6 +113,8 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(true, firstInstruction.cst);
+
+		assertEquals("java.lang.Boolean", literal.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -124,5 +134,7 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals('r', firstInstruction.cst);
+
+		assertEquals("java.lang.Character", literal.getType().toFullyQualifiedType());
 	}
 }

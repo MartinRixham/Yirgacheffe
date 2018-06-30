@@ -88,11 +88,7 @@ public class FieldListener extends FieldDeclarationListener
 
 		this.typeStack.push(fieldType);
 
-		Expression fieldRead =
-			new FieldRead(
-				ownerType,
-				fieldName,
-				fieldType.toJVMType());
+		Expression fieldRead = new FieldRead(ownerType, fieldName, fieldType);
 
 		this.expressions.add(fieldRead);
 	}

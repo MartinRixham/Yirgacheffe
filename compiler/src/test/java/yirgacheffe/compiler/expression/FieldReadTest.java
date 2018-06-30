@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
@@ -18,7 +19,8 @@ public class FieldReadTest
 		MethodNode methodVisitor = new MethodNode();
 
 		Type owner = new ReferenceType(String.class);
-		FieldRead fieldRead = new FieldRead(owner, "length", "I");
+		Type type = PrimitiveType.DOUBLE;
+		FieldRead fieldRead = new FieldRead(owner, "length", type);
 
 		fieldRead.compile(methodVisitor);
 
@@ -31,6 +33,8 @@ public class FieldReadTest
 		assertEquals(Opcodes.GETFIELD, firstInstruction.getOpcode());
 		assertEquals("java/lang/String", firstInstruction.owner);
 		assertEquals("length", firstInstruction.name);
-		assertEquals("I", firstInstruction.desc);
+		assertEquals("D", firstInstruction.desc);
+
+		assertEquals("java.lang.Double", fieldRead.getType().toFullyQualifiedType());
 	}
 }

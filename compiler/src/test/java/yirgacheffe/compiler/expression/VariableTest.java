@@ -8,11 +8,10 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variable;
 
 import static org.junit.Assert.assertEquals;
 
-public class VariableReadTest
+public class VariableTest
 {
 	@Test
 	public void testCompilingStringRead()
@@ -21,9 +20,7 @@ public class VariableReadTest
 		Type owner = new ReferenceType(String.class);
 		Variable variable = new Variable(1, owner);
 
-		VariableRead variableRead = new VariableRead(variable);
-
-		variableRead.compile(methodVisitor);
+		variable.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -33,6 +30,8 @@ public class VariableReadTest
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
+
+		assertEquals("java.lang.String", variable.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -42,9 +41,7 @@ public class VariableReadTest
 		Type owner = PrimitiveType.DOUBLE;
 		Variable variable = new Variable(1, owner);
 
-		VariableRead variableRead = new VariableRead(variable);
-
-		variableRead.compile(methodVisitor);
+		variable.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -54,5 +51,7 @@ public class VariableReadTest
 
 		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
+
+		assertEquals("java.lang.Double", variable.getType().toFullyQualifiedType());
 	}
 }

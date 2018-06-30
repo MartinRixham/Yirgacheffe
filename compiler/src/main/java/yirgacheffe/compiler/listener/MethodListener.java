@@ -6,7 +6,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;

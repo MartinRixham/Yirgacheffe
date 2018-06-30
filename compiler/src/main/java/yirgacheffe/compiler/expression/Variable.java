@@ -1,25 +1,31 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Type;
 
-public class This implements Expression
+public class Variable implements Expression
 {
+	private int index;
+
 	private Type type;
 
-	public This(Type type)
+	public Variable(int index, Type type)
 	{
+		this.index = index;
 		this.type = type;
 	}
 
 	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitVarInsn(this.type.getLoadInstruction(), this.index);
 	}
 
-	@Override
+	public int getIndex()
+	{
+		return this.index;
+	}
+
 	public Type getType()
 	{
 		return this.type;

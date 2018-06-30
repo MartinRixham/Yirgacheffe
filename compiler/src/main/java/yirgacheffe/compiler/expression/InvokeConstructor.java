@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.function.Callable;
+import yirgacheffe.compiler.type.Type;
 
 public class InvokeConstructor implements Expression
 {
@@ -36,5 +37,11 @@ public class InvokeConstructor implements Expression
 			"<init>",
 			this.function.getDescriptor(),
 			false);
+	}
+
+	@Override
+	public Type getType()
+	{
+		return this.function.getOwner();
 	}
 }

@@ -73,6 +73,12 @@ public class InvokeMethod implements Expression
 		}
 	}
 
+	@Override
+	public Type getType()
+	{
+		return this.function.getReturnType();
+	}
+
 	private String withSlashes(Type type)
 	{
 		return type.toFullyQualifiedType().replace(".", "/");

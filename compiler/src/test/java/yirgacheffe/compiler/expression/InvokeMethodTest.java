@@ -53,6 +53,8 @@ public class InvokeMethodTest
 		assertEquals("toString", secondInstruction.name);
 		assertEquals("()Ljava/lang/String;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
+
+		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -91,6 +93,8 @@ public class InvokeMethodTest
 		assertEquals("(Ljava/lang/String;)Ljava/lang/String;", thirdInstruction.desc);
 		assertEquals("concat", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
+
+		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());
 	}
 
 	@Test
@@ -114,5 +118,7 @@ public class InvokeMethodTest
 		InsnList instructions = methodVisitor.instructions;
 
 		assertEquals(6, instructions.size());
+
+		assertEquals("java.lang.Double", invokeMethod.getType().toFullyQualifiedType());
 	}
 }

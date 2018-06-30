@@ -3,13 +3,12 @@ package yirgacheffe.compiler.listener;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
-import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ExpressionListener extends StatementListener
@@ -27,7 +26,7 @@ public class ExpressionListener extends StatementListener
 			Variable variable = this.localVariables.get(context.getText());
 			Type type = variable.getType();
 
-			this.expressions.add(new VariableRead(variable));
+			this.expressions.add(variable);
 
 			this.typeStack.push(type);
 		}
@@ -44,6 +43,8 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void enterThisRead(YirgacheffeParser.ThisReadContext context)
 	{
+		Type thisType;
+
 		try
 		{
 			String fullyQualifiedType =
@@ -51,16 +52,16 @@ public class ExpressionListener extends StatementListener
 					this.className :
 					this.packageName + "." + this.className;
 
-			Type thisType = this.classes.loadClass(fullyQualifiedType);
+			thisType = this.classes.loadClass(fullyQualifiedType);
 
 			this.typeStack.push(thisType);
+
+			this.expressions.add(new This(thisType));
 		}
 		catch (ClassNotFoundException e)
 		{
 			throw new RuntimeException(e);
 		}
-
-		this.expressions.add(new This());
 	}
 
 	@Override

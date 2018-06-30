@@ -37,4 +37,10 @@ public class Literal implements Expression
 			methodVisitor.visitLdcInsn(new Double(this.text));
 		}
 	}
+
+	@Override
+	public Type getType()
+	{
+		return this.type;
+	}
 }

@@ -3,7 +3,7 @@ package yirgacheffe.compiler.listener;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.parser.YirgacheffeParser;
 

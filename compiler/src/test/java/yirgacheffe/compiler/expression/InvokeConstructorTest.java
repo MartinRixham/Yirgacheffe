@@ -58,5 +58,9 @@ public class InvokeConstructorTest
 		assertEquals("<init>", fourthInstruction.name);
 		assertEquals("(D)V", fourthInstruction.desc);
 		assertFalse(fourthInstruction.itf);
+
+		assertEquals(
+			"java.lang.Double",
+			invokeConstructor.getType().toFullyQualifiedType());
 	}
 }

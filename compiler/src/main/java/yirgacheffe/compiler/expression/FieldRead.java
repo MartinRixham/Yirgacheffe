@@ -10,13 +10,13 @@ public class FieldRead implements Expression
 
 	private String name;
 
-	private String descriptor;
+	private Type type;
 
-	public FieldRead(Type owner, String name, String descriptor)
+	public FieldRead(Type owner, String name, Type type)
 	{
 		this.owner = owner;
 		this.name = name;
-		this.descriptor = descriptor;
+		this.type = type;
 	}
 
 	@Override
@@ -26,6 +26,12 @@ public class FieldRead implements Expression
 			Opcodes.GETFIELD,
 			this.owner.toFullyQualifiedType().replace(".", "/"),
 			this.name,
-			this.descriptor);
+			this.type.toJVMType());
+	}
+
+	@Override
+	public Type getType()
+	{
+		return this.type;
 	}
 }
