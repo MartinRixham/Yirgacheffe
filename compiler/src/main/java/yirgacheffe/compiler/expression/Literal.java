@@ -16,4 +16,10 @@ public class Literal implements Expression
 	{
 		methodVisitor.visitLdcInsn(this.value);
 	}
+
+	@Override
+	public int getStackHeight()
+	{
+		return 1;
+	}
 }

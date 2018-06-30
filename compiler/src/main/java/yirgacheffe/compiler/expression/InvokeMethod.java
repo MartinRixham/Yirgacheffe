@@ -77,4 +77,17 @@ public class InvokeMethod implements Expression
 	{
 		return type.toFullyQualifiedType().replace(".", "/");
 	}
+
+	@Override
+	public int getStackHeight()
+	{
+		int stackHeight = this.owner.getStackHeight();
+
+		for (Expression expression: this.arguments)
+		{
+			stackHeight += expression.getStackHeight();
+		}
+
+		return stackHeight;
+	}
 }

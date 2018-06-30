@@ -19,4 +19,10 @@ public class VariableRead implements Expression
 	{
 		methodVisitor.visitVarInsn(this.loadInstruction, this.index);
 	}
+
+	@Override
+	public int getStackHeight()
+	{
+		return 0;
+	}
 }

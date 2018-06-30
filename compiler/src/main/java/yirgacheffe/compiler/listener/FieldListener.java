@@ -96,7 +96,7 @@ public class FieldListener extends FieldDeclarationListener
 
 		Expression fieldRead =
 			new FieldRead(
-				ownerType.toFullyQualifiedType(),
+				ownerType,
 				fieldName,
 				fieldType.toJVMType());
 

@@ -96,12 +96,10 @@ public class FunctionsTest
 		assertFalse(result.isSuccessful());
 	}
 
-	// The order of these method declarations is important.
 	public void testMethod(char character)
 	{
 	}
 
-	// This one must come second.
 	public void testMethod(Character character)
 	{
 	}

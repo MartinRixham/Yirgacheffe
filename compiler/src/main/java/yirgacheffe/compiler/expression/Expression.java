@@ -5,4 +5,6 @@ import org.objectweb.asm.MethodVisitor;
 public interface Expression
 {
 	void compile(MethodVisitor methodVisitor);
+
+	int getStackHeight();
 }

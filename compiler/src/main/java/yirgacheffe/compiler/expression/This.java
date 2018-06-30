@@ -10,4 +10,10 @@ public class This implements Expression
 	{
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 	}
+
+	@Override
+	public int getStackHeight()
+	{
+		return 1;
+	}
 }

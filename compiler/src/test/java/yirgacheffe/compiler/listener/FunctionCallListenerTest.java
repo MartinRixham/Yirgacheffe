@@ -302,65 +302,6 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testFunctionCallWithArgument()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"\"thingy\".concat(\"sumpt\");\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
-
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(1, firstMethod.maxLocals);
-
-		InsnList instructions = firstMethod.instructions;
-
-		assertEquals(5, instructions.size());
-
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals("thingy", firstInstruction.cst);
-
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals("sumpt", secondInstruction.cst);
-
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
-		assertEquals("java/lang/String", thirdInstruction.owner);
-		assertEquals("(Ljava/lang/String;)Ljava/lang/String;", thirdInstruction.desc);
-		assertEquals("concat", thirdInstruction.name);
-		assertFalse(thirdInstruction.itf);
-
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
-
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
-	}
-
-	@Test
 	public void testFunctionCallWithSubtypeArgument()
 	{
 		String source =
