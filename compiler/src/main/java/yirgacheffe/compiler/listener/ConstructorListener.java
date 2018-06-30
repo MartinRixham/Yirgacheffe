@@ -17,13 +17,15 @@ public class ConstructorListener extends MainMethodListener
 	public void exitConstructorDeclaration(
 		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
-		if (!context.Identifier().getText().equals(this.className))
+		YirgacheffeParser.SignatureContext signature = context.signature();
+
+		if (!signature.Identifier().getText().equals(this.className))
 		{
 			String message =
-				"Constructor of incorrect type " + context.Identifier().getText() +
+				"Constructor of incorrect type " + signature.Identifier().getText() +
 					": expected " + this.className + ".";
 
-			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+			this.errors.add(new Error(signature.Identifier().getSymbol(), message));
 		}
 
 		boolean isPrivate = false;
@@ -43,7 +45,7 @@ public class ConstructorListener extends MainMethodListener
 
 		this.returnType = PrimitiveType.VOID;
 
-		String descriptor = this.getDescriptor(context.parameter()) + "V";
+		String descriptor = this.descriptor + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

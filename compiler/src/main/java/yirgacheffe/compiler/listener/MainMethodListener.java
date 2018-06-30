@@ -22,13 +22,15 @@ public class MainMethodListener extends MethodListener
 	public void exitMainMethodDeclaration(
 		YirgacheffeParser.MainMethodDeclarationContext context)
 	{
-		if (context.parameter().size() != 1)
+		YirgacheffeParser.SignatureContext signature = context.signature();
+
+		if (signature.parameter().size() != 1)
 		{
 			this.addError(context);
 		}
 		else
 		{
-			Type parameterType = this.types.getType(context.parameter().get(0).type());
+			Type parameterType = this.types.getType(signature.parameter().get(0).type());
 			ReferenceType arrayType = new ReferenceType(yirgacheffe.lang.Array.class);
 			Type stringType = new ReferenceType(java.lang.String.class);
 			Type argsType =
@@ -40,9 +42,9 @@ public class MainMethodListener extends MethodListener
 			}
 		}
 
-		this.mainMethodName = context.Identifier().getText();
+		this.mainMethodName = signature.Identifier().getText();
 
-		String descriptor = this.getDescriptor(context.parameter()) + "V";
+		String descriptor = this.descriptor + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

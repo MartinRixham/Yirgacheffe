@@ -32,14 +32,16 @@ function:
 		statement*
 	'}';
 
-classMethodDeclaration: Modifier? type Identifier '(' parameter? (',' parameter)* ')';
+classMethodDeclaration: Modifier? type signature;
 
-mainMethodDeclaration: Modifier? type? Main Identifier '(' parameter? (',' parameter)* ')';
+mainMethodDeclaration: Modifier? type? Main signature;
 
-constructorDeclaration: Modifier? Identifier '(' parameter? (',' parameter)* ')';
+constructorDeclaration: Modifier? signature;
 
 interfaceMethodDeclaration:
-	Modifier? type Identifier '(' parameter? (',' parameter)* ')' semicolon;
+	Modifier? type signature semicolon;
+
+signature: Identifier '(' parameter? (',' parameter)* ')';
 
 field: (fieldInitialisation | fieldDeclaration) semicolon;
 

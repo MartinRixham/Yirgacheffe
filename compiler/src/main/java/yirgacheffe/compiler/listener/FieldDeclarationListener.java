@@ -7,11 +7,15 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class FieldDeclarationListener extends ConstructorListener
 {
 	protected Map<String, Type> fieldTypes = new HashMap<>();
+
+	private Set<String> fields = new HashSet<>();
 
 	public FieldDeclarationListener(String sourceFile, Classes classes)
 	{
@@ -23,7 +27,7 @@ public class FieldDeclarationListener extends ConstructorListener
 	{
 		String identifier = context.Identifier().getText();
 
-		if (this.members.contains(identifier))
+		if (this.fields.contains(identifier))
 		{
 			String message = "Duplicate field '" + identifier + "'.";
 
@@ -31,7 +35,7 @@ public class FieldDeclarationListener extends ConstructorListener
 		}
 		else
 		{
-			this.members.add(identifier);
+			this.fields.add(identifier);
 		}
 
 		if (context.type() == null)

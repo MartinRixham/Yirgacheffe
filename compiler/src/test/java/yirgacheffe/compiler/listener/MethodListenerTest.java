@@ -366,4 +366,24 @@ public class MethodListenerTest
 
 		assertEquals("()C", firstMethod.desc);
 	}
+
+	@Test
+	public void testDuplicateMethod()
+	{
+		String source =
+			"package thingy;" +
+			"interface MyInterface\n" +
+			"{\n" +
+				"Char myMethod(String string);\n" +
+				"Void myMethod(String string);\n" +
+			"}";
+
+		Compiler compiler = new Compiler("thingy/MyInterface.yg", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:5 Duplicate declaration of method myMethod(java.lang.String).\n",
+			result.getErrors());
+	}
 }

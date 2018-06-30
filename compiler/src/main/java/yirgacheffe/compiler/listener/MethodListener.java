@@ -11,6 +11,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,9 @@ public class MethodListener extends TypeListener
 
 	protected boolean hasReturnStatement = false;
 
-	protected Set<String> members = new HashSet<>();
+	private Set<String> methods = new HashSet<>();
+
+	protected String descriptor;
 
 	public MethodListener(String sourceFile, Classes classes)
 	{
@@ -52,14 +55,11 @@ public class MethodListener extends TypeListener
 		}
 
 		this.returnType = this.types.getType(context.type());
-
-		String descriptor =
-			this.getDescriptor(context.parameter()) +
-				this.returnType.toJVMType();
+		String descriptor = this.descriptor + this.returnType.toJVMType();
 
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-			context.Identifier().getText(),
+			context.signature().Identifier().getText(),
 			descriptor,
 			null,
 			null);
@@ -86,16 +86,13 @@ public class MethodListener extends TypeListener
 
 		String name = null;
 
-		if (context.Identifier() != null)
+		if (context.signature().Identifier() != null)
 		{
-			name = context.Identifier().getText();
+			name = context.signature().Identifier().getText();
 		}
 
 		this.returnType = this.types.getType(context.type());
-
-		String descriptor =
-			this.getDescriptor(context.parameter()) +
-				this.returnType.toJVMType();
+		String descriptor = this.descriptor + this.returnType.toJVMType();
 
 		this.methodVisitor =
 			this.writer.visitMethod(
@@ -104,22 +101,6 @@ public class MethodListener extends TypeListener
 				descriptor,
 				null,
 				null);
-	}
-
-	protected String getDescriptor(List<YirgacheffeParser.ParameterContext> parameters)
-	{
-		StringBuilder descriptor = new StringBuilder("(");
-
-		for (YirgacheffeParser.ParameterContext parameter : parameters)
-		{
-			Type type = this.types.getType(parameter.type());
-
-			descriptor.append(type.toJVMType());
-		}
-
-		descriptor.append(")");
-
-		return descriptor.toString();
 	}
 
 	@Override
@@ -167,5 +148,40 @@ public class MethodListener extends TypeListener
 
 		this.hasReturnStatement = false;
 		this.inConstructor = false;
+	}
+
+	@Override
+	public void exitSignature(YirgacheffeParser.SignatureContext context)
+	{
+		List<String> parameters = new ArrayList<>();
+		StringBuilder descriptor = new StringBuilder("(");
+
+		for (YirgacheffeParser.ParameterContext parameter : context.parameter())
+		{
+			Type type = this.types.getType(parameter.type());
+
+			descriptor.append(type.toJVMType());
+			parameters.add(type.toString());
+		}
+
+		descriptor.append(")");
+
+		this.descriptor = descriptor.toString();
+
+		String signature = context.Identifier() + this.descriptor;
+
+		if (this.methods.contains(signature))
+		{
+			String message =
+				"Duplicate declaration of method " +
+				context.Identifier() + "(" +
+				String.join(",", parameters) + ").";
+
+			this.errors.add(new Error(context, message));
+		}
+		else
+		{
+			this.methods.add(signature);
+		}
 	}
 }
