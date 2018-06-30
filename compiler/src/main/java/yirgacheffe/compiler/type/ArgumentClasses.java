@@ -61,8 +61,8 @@ public class ArgumentClasses
 				return -1;
 			}
 
-			if (this.argumentClasses[i].toFullyQualifiedType()
-				.equals(parameterTypes.get(i).toFullyQualifiedType()))
+			if (this.argumentClasses[i].toJVMType()
+				.equals(parameterTypes.get(i).toJVMType()))
 			{
 				exactMatches++;
 			}

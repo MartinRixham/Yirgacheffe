@@ -14,7 +14,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class FunctionsTest
 {
@@ -93,7 +92,7 @@ public class FunctionsTest
 		Functions functions = new Functions(printlnMethods);
 		MatchResult result = functions.getMatchingExecutable(argumentClasses);
 
-		assertFalse(result.isSuccessful());
+		assertTrue(result.isSuccessful());
 	}
 
 	public void testMethod(char character)

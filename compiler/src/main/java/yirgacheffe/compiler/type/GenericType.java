@@ -62,4 +62,9 @@ public class GenericType implements Type
 	{
 		return this.type.isAssignableTo(other);
 	}
+
+	public Type unwrap()
+	{
+		return this.type;
+	}
 }

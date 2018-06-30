@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.ParameterisedType;
@@ -103,7 +104,8 @@ public class InvokeMethodTest
 		MethodNode methodVisitor = new MethodNode();
 		List<Type> typeParameters =
 			Arrays.asList(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
-		Type owner = new ParameterisedType(new ReferenceType(Map.class), typeParameters);
+		Type owner =
+			new ParameterisedType(new ReferenceType(HashMap.class), typeParameters);
 		Callable function =
 			new Function(owner, Map.class.getMethod("get", Object.class));
 		Callable constructor = new Function(owner, HashMap.class.getConstructor());
@@ -117,8 +119,49 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(6, instructions.size());
-
+		assertEquals(8, instructions.size());
 		assertEquals("java.lang.Double", invokeMethod.getType().toFullyQualifiedType());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/util/HashMap", thirdInstruction.owner);
+		assertEquals("()V", thirdInstruction.desc);
+		assertEquals("<init>", thirdInstruction.name);
+		assertFalse(thirdInstruction.itf);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(new Double("1"), fourthInstruction.cst);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKESTATIC, fifthInstruction.getOpcode());
+		assertEquals("java/lang/Double", fifthInstruction.owner);
+		assertEquals("(D)Ljava/lang/Double;", fifthInstruction.desc);
+		assertEquals("valueOf", fifthInstruction.name);
+		assertEquals(false, fifthInstruction.itf);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, sixthInstruction.getOpcode());
+		assertEquals("java/util/HashMap", sixthInstruction.owner);
+		assertEquals("get", sixthInstruction.name);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", sixthInstruction.desc);
+		assertFalse(sixthInstruction.itf);
+
+		TypeInsnNode seventhInstruction = (TypeInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.CHECKCAST, seventhInstruction.getOpcode());
+		assertEquals("java/lang/Double", seventhInstruction.desc);
+
+		MethodInsnNode eightInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKESTATIC, eightInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Boxer", eightInstruction.owner);
+		assertEquals("(Ljava/lang/Double;)D", eightInstruction.desc);
+		assertEquals("ofValue", eightInstruction.name);
+		assertEquals(false, eightInstruction.itf);
 	}
 }

@@ -5,7 +5,10 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+
+import java.util.List;
 
 public class InvokeMethod implements Expression
 {
@@ -27,9 +30,29 @@ public class InvokeMethod implements Expression
 	{
 		this.owner.compile(methodVisitor);
 
-		for (Expression expression: this.arguments)
+		List<Type> parameters = this.function.getParameterTypes();
+
+		for (int i = 0; i < this.arguments.length; i++)
 		{
-			expression.compile(methodVisitor);
+			this.arguments[i].compile(methodVisitor);
+			Type argumentType = this.arguments[i].getType();
+
+			if (parameters.size() >= i + 1 &&
+				argumentType instanceof PrimitiveType &&
+				parameters.get(i) instanceof ReferenceType)
+			{
+
+				String descriptor =
+					"(" + argumentType.toJVMType() + ")L" +
+					this.withSlashes(argumentType) + ";";
+
+				methodVisitor.visitMethodInsn(
+					Opcodes.INVOKESTATIC,
+					this.withSlashes(argumentType),
+					"valueOf",
+					descriptor,
+					false);
+			}
 		}
 
 		Type owner = this.function.getOwner();
@@ -58,6 +81,18 @@ public class InvokeMethod implements Expression
 			methodVisitor.visitTypeInsn(
 				Opcodes.CHECKCAST,
 				this.withSlashes(returnType));
+
+			Type type = ((GenericType) returnType).unwrap();
+
+			if (type instanceof PrimitiveType)
+			{
+				methodVisitor.visitMethodInsn(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Boxer",
+					"ofValue",
+					"(L" + this.withSlashes(type) + ";)" + type.toJVMType(),
+					false);
+			}
 		}
 		else if (returnType.equals(PrimitiveType.INT))
 		{

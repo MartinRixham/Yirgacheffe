@@ -12,7 +12,6 @@ import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.MismatchedTypes;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -178,9 +177,15 @@ public class FunctionCallListener extends ExpressionListener
 			expression.compile(this.methodVisitor);
 		}
 
-		if (this.expressions.peek().getType() != PrimitiveType.VOID)
+		int width = this.expressions.peek().getType().width();
+
+		if (width == 1)
 		{
 			this.methodVisitor.visitInsn(Opcodes.POP);
+		}
+		else if (width == 2)
+		{
+			this.methodVisitor.visitInsn(Opcodes.POP2);
 		}
 	}
 }

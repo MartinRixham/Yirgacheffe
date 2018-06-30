@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -495,69 +494,6 @@ public class FunctionCallListenerTest
 			result.getErrors());
 	}
 
-	@Ignore
-	@Test
-	public void testNumberMap()
-	{
-		String source =
-			"import java.util.Map;\n" +
-			"import java.util.HashMap;\n" +
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"Map<Num, Num> map = new HashMap<Num, Num>();\n" +
-					"map.put(456, 1.23);\n" +
-					"Num thingy = map.get(456);" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
-		InsnList instructions = firstMethod.instructions;
-
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
-		assertEquals("java/util/HashMap", thirdInstruction.owner);
-		assertEquals("()V", thirdInstruction.desc);
-		assertEquals("<init>", thirdInstruction.name);
-		assertFalse(thirdInstruction.itf);
-
-		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.ASTORE, fourthInstruction.getOpcode());
-		assertEquals(1, fourthInstruction.var);
-
-		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.ALOAD, fifthInstruction.getOpcode());
-		assertEquals(1, fifthInstruction.var);
-
-		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
-
-		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
-		assertEquals(new Double("456"), sixthInstruction.cst);
-
-		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
-
-		assertEquals(Opcodes.INVOKESTATIC, seventhInstruction.getOpcode());
-		assertEquals("java/lang/Double", seventhInstruction.owner);
-		assertEquals("(D)Ljava/lang/Double;", seventhInstruction.desc);
-		assertEquals("valueOf", seventhInstruction.name);
-		assertEquals(false, seventhInstruction.itf);
-	}
-
 	@Test
 	public void testFunctionCallWithArgumentOfWrongType()
 	{
@@ -951,14 +887,16 @@ public class FunctionCallListenerTest
 	public void testAmbiguousFunctionCall()
 	{
 		String source =
+			"import java.util.HashMap;" +
+			"import java.util.Map;" +
 			"class MyClass\n" +
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"this.setCharacter('a');\n" +
+					"this.mapIt(new HashMap<String,String>());\n" +
 				"}\n" +
-				"public Void setCharacter(Char char) {}\n" +
-				"public Void setCharacter(Character char) {}\n" +
+				"public Void mapIt(Map<String,String> map) {}\n" +
+				"public Void mapIt(Object map) {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -972,7 +910,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:5 Ambiguous call to method MyClass.setCharacter.\n",
+			"line 4:5 Ambiguous call to method MyClass.mapIt.\n",
 			result.getErrors());
 	}
 

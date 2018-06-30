@@ -69,10 +69,10 @@ public class Function implements Callable
 		{
 			ParameterisedType parameterisedOwner = (ParameterisedType) this.owner;
 
-			Class<?> returnClass =
+			Type returnType =
 				parameterisedOwner.getTypeParameterClass(returned.getTypeName());
 
-			return new GenericType(this.getType(returnClass));
+			return new GenericType(returnType);
 		}
 	}
 
