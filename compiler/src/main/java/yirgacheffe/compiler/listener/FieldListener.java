@@ -54,8 +54,7 @@ public class FieldListener extends FieldDeclarationListener
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 
 		Type fieldType = this.types.getType(declaration.type());
-		Type expressionType = this.typeStack.pop();
-		this.typeStack.pop();
+		Type expressionType = this.expressions.peek().getType();
 
 		this.methodVisitor.visitMaxs(0, 0);
 
@@ -84,11 +83,9 @@ public class FieldListener extends FieldDeclarationListener
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
-		Type ownerType = this.typeStack.pop();
+		Expression owner = this.expressions.pop();
 
-		this.typeStack.push(fieldType);
-
-		Expression fieldRead = new FieldRead(ownerType, fieldName, fieldType);
+		Expression fieldRead = new FieldRead(owner, fieldName, fieldType);
 
 		this.expressions.add(fieldRead);
 	}
@@ -104,8 +101,12 @@ public class FieldListener extends FieldDeclarationListener
 		}
 
 		String fieldName = context.Identifier().getText();
-		Type expressionType = this.typeStack.pop();
-		Type ownerType = this.typeStack.pop();
+		Expression exp = this.expressions.pop();
+		Type expressionType = exp.getType();
+
+		Type ownerType = this.expressions.peek().getType();
+
+		this.expressions.push(exp);
 
 		try
 		{

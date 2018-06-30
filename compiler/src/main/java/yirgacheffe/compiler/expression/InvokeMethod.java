@@ -59,7 +59,7 @@ public class InvokeMethod implements Expression
 				Opcodes.CHECKCAST,
 				this.withSlashes(returnType));
 		}
-		if (returnType.equals(PrimitiveType.INT))
+		else if (returnType.equals(PrimitiveType.INT))
 		{
 			methodVisitor.visitInsn(Opcodes.I2D);
 		}

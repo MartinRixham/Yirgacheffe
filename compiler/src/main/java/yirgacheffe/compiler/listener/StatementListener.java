@@ -62,7 +62,8 @@ public class StatementListener extends FieldListener
 	public void exitVariableAssignment(
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
-		Type type = this.typeStack.pop();
+		Type type = this.expressions.peek().getType();
+
 		int index = 0;
 
 		if (this.currentVariable != null)
@@ -91,7 +92,7 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
 	{
-		Type expressionType = this.typeStack.pop();
+		Type expressionType = this.expressions.peek().getType();
 
 		if (!expressionType.isAssignableTo(this.returnType))
 		{

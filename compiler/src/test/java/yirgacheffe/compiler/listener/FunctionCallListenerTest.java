@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -973,5 +974,63 @@ public class FunctionCallListenerTest
 		assertEquals(
 			"line 4:5 Ambiguous call to method MyClass.setCharacter.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testVoidMethodCall()
+	{
+		String source =
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"HashMap<String,String> map = new HashMap<String,String>();" +
+				"public Void method()" +
+				"{\n" +
+					"this.map.clear();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List<MethodNode> methods = classNode.methods;
+		MethodNode method = methods.get(1);
+
+		assertEquals(1, method.maxStack);
+		assertEquals(1, method.maxLocals);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(4, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
 }

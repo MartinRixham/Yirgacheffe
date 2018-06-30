@@ -6,13 +6,13 @@ import yirgacheffe.compiler.type.Type;
 
 public class FieldRead implements Expression
 {
-	private Type owner;
+	private Expression owner;
 
 	private String name;
 
 	private Type type;
 
-	public FieldRead(Type owner, String name, Type type)
+	public FieldRead(Expression owner, String name, Type type)
 	{
 		this.owner = owner;
 		this.name = name;
@@ -22,9 +22,11 @@ public class FieldRead implements Expression
 	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
+		this.owner.compile(methodVisitor);
+
 		methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
-			this.owner.toFullyQualifiedType().replace(".", "/"),
+			this.owner.getType().toFullyQualifiedType().replace(".", "/"),
 			this.name,
 			this.type.toJVMType());
 	}

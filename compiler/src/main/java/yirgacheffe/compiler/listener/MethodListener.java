@@ -24,8 +24,6 @@ public class MethodListener extends TypeListener
 
 	protected Type returnType = new NullType();
 
-	protected Stack<Type> typeStack = new Stack<>();
-
 	protected Stack<Expression> expressions = new Stack<>();
 
 	protected Map<String, Variable> localVariables = new HashMap<>();

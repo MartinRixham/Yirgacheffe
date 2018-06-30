@@ -43,16 +43,12 @@ public class FunctionCallListener extends ExpressionListener
 
 			this.errors.add(new Error(context.type(), message));
 		}
-
-		Type type = this.types.getType(context.type());
-
-		this.typeStack.push(type);
 	}
 
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
-		Type owner = this.typeStack.peek();
+		Type owner = this.types.getType(context.constructor().type());
 		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
 		List<Callable> functions = new ArrayList<>();
 
@@ -96,10 +92,10 @@ public class FunctionCallListener extends ExpressionListener
 	public void exitMethodCall(YirgacheffeParser.MethodCallContext context)
 	{
 		String methodName = context.Identifier().getText();
-		Type owner = typeStack.pop();
+		Expression expression = this.expressions.pop();
+		Type owner = expression.getType();
 		MatchResult matchResult = this.getMatchResult(owner, methodName);
 		Callable function = matchResult.getFunction();
-		Type returnType = function.getReturnType();
 
 		if (matchResult.isSuccessful())
 		{
@@ -107,8 +103,8 @@ public class FunctionCallListener extends ExpressionListener
 			{
 				String message =
 					"Argument of type " + types.from() +
-						" cannot be assigned to generic parameter of type " +
-						types.to() + ".";
+					" cannot be assigned to generic parameter of type " +
+					types.to() + ".";
 
 				this.errors.add(new Error(context, message));
 			}
@@ -128,13 +124,7 @@ public class FunctionCallListener extends ExpressionListener
 			this.errors.add(new Error(context.Identifier().getSymbol(), message));
 		}
 
-		this.expressions.add(
-			new InvokeMethod(function, this.expressions.pop(), this.arguments));
-
-		if (!returnType.equals(PrimitiveType.VOID))
-		{
-			this.typeStack.push(returnType);
-		}
+		this.expressions.add(new InvokeMethod(function, expression, this.arguments));
 	}
 
 	private MatchResult getMatchResult(Type owner, String methodName)
@@ -171,10 +161,10 @@ public class FunctionCallListener extends ExpressionListener
 		Type[] arguments = new Type[argumentCount];
 		this.arguments = new Expression[argumentCount];
 
-		for (int i =  context.expression().size() - 1; i >= 0; i--)
+		for (int i = context.expression().size() - 1; i >= 0; i--)
 		{
-			arguments[i] = this.typeStack.pop();
 			this.arguments[i] = this.expressions.pop();
+			arguments[i] = this.arguments[i].getType();
 		}
 
 		this.argumentClasses = new ArgumentClasses(arguments);
@@ -188,7 +178,7 @@ public class FunctionCallListener extends ExpressionListener
 			expression.compile(this.methodVisitor);
 		}
 
-		if (!this.typeStack.isEmpty())
+		if (this.expressions.peek().getType() != PrimitiveType.VOID)
 		{
 			this.methodVisitor.visitInsn(Opcodes.POP);
 		}

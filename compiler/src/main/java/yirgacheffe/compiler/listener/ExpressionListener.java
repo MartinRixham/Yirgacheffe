@@ -21,14 +21,11 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void enterVariableRead(YirgacheffeParser.VariableReadContext context)
 	{
+		Variable variable;
+
 		if (this.localVariables.containsKey(context.getText()))
 		{
-			Variable variable = this.localVariables.get(context.getText());
-			Type type = variable.getType();
-
-			this.expressions.add(variable);
-
-			this.typeStack.push(type);
+			variable = this.localVariables.get(context.getText());
 		}
 		else
 		{
@@ -36,8 +33,10 @@ public class ExpressionListener extends StatementListener
 
 			this.errors.add(new Error(context, message));
 
-			this.typeStack.push(new NullType());
+			variable = new Variable(-1, new NullType());
 		}
+
+		this.expressions.add(variable);
 	}
 
 	@Override
@@ -53,8 +52,6 @@ public class ExpressionListener extends StatementListener
 					this.packageName + "." + this.className;
 
 			thisType = this.classes.loadClass(fullyQualifiedType);
-
-			this.typeStack.push(thisType);
 
 			this.expressions.add(new This(thisType));
 		}
@@ -72,26 +69,18 @@ public class ExpressionListener extends StatementListener
 		if (context.StringLiteral() != null)
 		{
 			type = new ReferenceType(String.class);
-
-			this.typeStack.push(new ReferenceType(String.class));
 		}
 		else if (context.CharacterLiteral() != null)
 		{
 			type = PrimitiveType.CHAR;
-
-			this.typeStack.push(PrimitiveType.CHAR);
 		}
 		else if (context.BooleanLiteral() != null)
 		{
 			type = PrimitiveType.BOOLEAN;
-
-			this.typeStack.push(PrimitiveType.BOOLEAN);
 		}
 		else
 		{
 			type = PrimitiveType.DOUBLE;
-
-			this.typeStack.push(PrimitiveType.DOUBLE);
 		}
 
 		this.expressions.add(new Literal(type, context.getText()));
