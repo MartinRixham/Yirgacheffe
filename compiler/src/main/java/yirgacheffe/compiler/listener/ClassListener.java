@@ -8,8 +8,6 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ClassListener extends PackageListener
 {
-	private static final int MAIN_METHOD_STACK_SIZE = 4;
-
 	protected boolean hasDefaultConstructor = true;
 
 	protected String mainMethodName;
@@ -145,7 +143,7 @@ public class ClassListener extends PackageListener
 			false);
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(MAIN_METHOD_STACK_SIZE, 1);
+		methodVisitor.visitMaxs(0, 0);
 	}
 
 	private void makeDefaultConstructor()
@@ -180,6 +178,6 @@ public class ClassListener extends PackageListener
 		}
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(1, 1);
+		methodVisitor.visitMaxs(0, 0);
 	}
 }

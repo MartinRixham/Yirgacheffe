@@ -825,7 +825,7 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
 		assertEquals("java/lang/Double", thirdInstruction.owner);
 		assertEquals("longValue", thirdInstruction.name);
-		assertEquals("()L", thirdInstruction.desc);
+		assertEquals("()J", thirdInstruction.desc);
 		assertFalse(thirdInstruction.itf);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);

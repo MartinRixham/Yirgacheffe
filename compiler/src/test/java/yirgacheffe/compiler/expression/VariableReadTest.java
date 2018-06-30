@@ -33,7 +33,6 @@ public class VariableReadTest
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
-		assertEquals(1, variableRead.getStackHeight());
 	}
 
 	@Test
@@ -55,6 +54,5 @@ public class VariableReadTest
 
 		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
-		assertEquals(2, variableRead.getStackHeight());
 	}
 }

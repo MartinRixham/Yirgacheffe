@@ -9,12 +9,8 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.Stack;
-
 public class FieldListener extends FieldDeclarationListener
 {
-	protected Stack<Expression> expressions = new Stack<>();
-
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -31,8 +27,6 @@ public class FieldListener extends FieldDeclarationListener
 				"()V",
 				null,
 				null);
-
-		this.expressions = new Stack<>();
 
 		this.enterThisRead(null);
 
@@ -63,7 +57,7 @@ public class FieldListener extends FieldDeclarationListener
 		Type expressionType = this.typeStack.pop();
 		this.typeStack.pop();
 
-		this.methodVisitor.visitMaxs(this.typeStack.reset(), 1);
+		this.methodVisitor.visitMaxs(0, 0);
 
 		if (!expressionType.isAssignableTo(fieldType))
 		{

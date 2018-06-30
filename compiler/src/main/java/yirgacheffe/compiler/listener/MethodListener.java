@@ -2,10 +2,10 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.TypeStack;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 public class MethodListener extends TypeListener
 {
@@ -23,7 +24,9 @@ public class MethodListener extends TypeListener
 
 	protected Type returnType = new NullType();
 
-	protected TypeStack typeStack = new TypeStack();
+	protected Stack<Type> typeStack = new Stack<>();
+
+	protected Stack<Expression> expressions = new Stack<>();
 
 	protected Map<String, Variable> localVariables = new HashMap<>();
 
@@ -147,24 +150,12 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
-		int maxSize = this.typeStack.reset();
-		int localVariablesSize = 1;
-
-		for (Variable variable: this.localVariables.values())
-		{
-			localVariablesSize += variable.getType().width();
-		}
-
-		if (this.returnType != PrimitiveType.VOID && maxSize == 0)
+		if (this.returnType != PrimitiveType.VOID && this.expressions.empty())
 		{
 			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
-			this.methodVisitor.visitMaxs(this.returnType.width(), localVariablesSize);
-		}
-		else
-		{
-			this.methodVisitor.visitMaxs(Math.max(maxSize, 1), localVariablesSize);
 		}
 
+		this.methodVisitor.visitMaxs(0, 0);
 		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 
 		this.localVariables = new HashMap<>();

@@ -46,14 +46,13 @@ public class FunctionCallListener extends ExpressionListener
 
 		Type type = this.types.getType(context.type());
 
-		this.typeStack.beginInstantiation();
 		this.typeStack.push(type);
 	}
 
 	@Override
 	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
-		Type owner = this.typeStack.peak();
+		Type owner = this.typeStack.peek();
 		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
 		List<Callable> functions = new ArrayList<>();
 
@@ -69,7 +68,6 @@ public class FunctionCallListener extends ExpressionListener
 		Expression invoke = new InvokeConstructor(function, this.arguments);
 
 		this.expressions.add(invoke);
-		this.typeStack.endInstantiation();
 
 		if (matchResult.isSuccessful())
 		{

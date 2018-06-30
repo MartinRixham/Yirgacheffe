@@ -17,7 +17,7 @@ public class NullFunction implements Callable
 
 	public String getDescriptor()
 	{
-		return "()";
+		return "()V";
 	}
 
 	public Type getReturnType()

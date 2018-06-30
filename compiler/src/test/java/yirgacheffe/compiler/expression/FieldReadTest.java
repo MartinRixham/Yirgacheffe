@@ -32,6 +32,5 @@ public class FieldReadTest
 		assertEquals("java/lang/String", firstInstruction.owner);
 		assertEquals("length", firstInstruction.name);
 		assertEquals("I", firstInstruction.desc);
-		assertEquals(1, fieldRead.getStackHeight());
 	}
 }

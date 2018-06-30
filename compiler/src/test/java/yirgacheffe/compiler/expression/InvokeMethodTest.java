@@ -53,8 +53,6 @@ public class InvokeMethodTest
 		assertEquals("toString", secondInstruction.name);
 		assertEquals("()Ljava/lang/String;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
-
-		assertEquals(1, invokeMethod.getStackHeight());
 	}
 
 	@Test
@@ -93,8 +91,6 @@ public class InvokeMethodTest
 		assertEquals("(Ljava/lang/String;)Ljava/lang/String;", thirdInstruction.desc);
 		assertEquals("concat", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
-
-		assertEquals(2, invokeMethod.getStackHeight());
 	}
 
 	@Test

@@ -28,10 +28,4 @@ public class FieldRead implements Expression
 			this.name,
 			this.descriptor);
 	}
-
-	@Override
-	public int getStackHeight()
-	{
-		return 1;
-	}
 }

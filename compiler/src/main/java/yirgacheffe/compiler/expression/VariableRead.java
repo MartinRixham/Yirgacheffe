@@ -19,10 +19,4 @@ public class VariableRead implements Expression
 			this.variable.getType().getLoadInstruction(),
 			this.variable.getIndex());
 	}
-
-	@Override
-	public int getStackHeight()
-	{
-		return this.variable.getType().width();
-	}
 }

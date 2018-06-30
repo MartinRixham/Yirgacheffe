@@ -15,7 +15,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	private String sourceFile;
 
-	protected ClassWriter writer = new ClassWriter(0);
+	protected ClassWriter writer =
+		new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
 	protected List<Error> errors = new ArrayList<>();
 

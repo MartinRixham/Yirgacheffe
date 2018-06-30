@@ -37,17 +37,4 @@ public class InvokeConstructor implements Expression
 			this.function.getDescriptor(),
 			false);
 	}
-
-	@Override
-	public int getStackHeight()
-	{
-		int stackHeight = 0;
-
-		for (Expression expression: this.arguments)
-		{
-			stackHeight += expression.getStackHeight();
-		}
-
-		return stackHeight + 2;
-	}
 }

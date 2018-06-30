@@ -21,7 +21,7 @@ public enum PrimitiveType implements Type
 		Opcodes.DLOAD, java.lang.Double.class),
 
 	LONG(
-		"Num", "L", 2, Opcodes.DRETURN, Opcodes.DSTORE,
+		"Num", "J", 2, Opcodes.DRETURN, Opcodes.DSTORE,
 		Opcodes.DLOAD, java.lang.Double.class),
 
 	FLOAT(

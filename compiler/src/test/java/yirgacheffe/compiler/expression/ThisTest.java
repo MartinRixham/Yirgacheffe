@@ -27,6 +27,5 @@ public class ThisTest
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
-		assertEquals(1, thisRead.getStackHeight());
 	}
 }

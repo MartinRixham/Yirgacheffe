@@ -37,17 +37,4 @@ public class Literal implements Expression
 			methodVisitor.visitLdcInsn(new Double(this.text));
 		}
 	}
-
-	@Override
-	public int getStackHeight()
-	{
-		if (this.type == PrimitiveType.DOUBLE)
-		{
-			return 2;
-		}
-		else
-		{
-			return 1;
-		}
-	}
 }

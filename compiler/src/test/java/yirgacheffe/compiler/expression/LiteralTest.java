@@ -29,7 +29,6 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
-		assertEquals(1, literal.getStackHeight());
 	}
 
 	@Test
@@ -49,7 +48,6 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thi\"ngy", firstInstruction.cst);
-		assertEquals(1, literal.getStackHeight());
 	}
 
 	@Test
@@ -69,7 +67,6 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(1.0, firstInstruction.cst);
-		assertEquals(2, literal.getStackHeight());
 	}
 
 	@Test
@@ -89,7 +86,6 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(0.5, firstInstruction.cst);
-		assertEquals(2, literal.getStackHeight());
 	}
 
 	@Test
@@ -109,7 +105,6 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(true, firstInstruction.cst);
-		assertEquals(1, literal.getStackHeight());
 	}
 
 	@Test
@@ -129,6 +124,5 @@ public class LiteralTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals('r', firstInstruction.cst);
-		assertEquals(1, literal.getStackHeight());
 	}
 }
