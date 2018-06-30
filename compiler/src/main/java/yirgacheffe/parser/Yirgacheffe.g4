@@ -17,13 +17,13 @@ importStatement: Import packageName '.' Identifier semicolon;
 classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
-		(field | function | interfaceMethodDeclaration)*
+		(function | interfaceMethodDeclaration | field)*
 	'}';
 
 interfaceDeclaration:
 	Interface Identifier?
 	'{'
-		(field | function | interfaceMethodDeclaration)*
+		(function | interfaceMethodDeclaration | field)*
 	'}';
 
 function:
@@ -45,7 +45,7 @@ field: (fieldInitialisation | fieldDeclaration) semicolon;
 
 fieldInitialisation: fieldDeclaration '=' expression;
 
-fieldDeclaration: type? Identifier;
+fieldDeclaration: Modifier? type? Identifier;
 
 statement:
 	(fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)

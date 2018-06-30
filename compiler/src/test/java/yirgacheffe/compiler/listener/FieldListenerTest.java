@@ -660,6 +660,30 @@ public class FieldListenerTest
 	}
 
 	@Test
+	public void testPublicField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num myField;\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Field cannot be declared with access modifier.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testReadFromStringField()
 	{
 		String source =

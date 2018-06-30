@@ -34,6 +34,17 @@ public class FieldListener extends FieldDeclarationListener
 	}
 
 	@Override
+	public void enterFieldDeclaration(YirgacheffeParser.FieldDeclarationContext context)
+	{
+		if (context.Modifier() != null)
+		{
+			String message = "Field cannot be declared with access modifier.";
+
+			this.errors.add(new Error(context, message));
+		}
+	}
+
+	@Override
 	public void exitFieldInitialisation(
 		YirgacheffeParser.FieldInitialisationContext context)
 	{
