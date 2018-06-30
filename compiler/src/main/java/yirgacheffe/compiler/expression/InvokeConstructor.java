@@ -41,6 +41,13 @@ public class InvokeConstructor implements Expression
 	@Override
 	public int getStackHeight()
 	{
-		return 0;
+		int stackHeight = 0;
+
+		for (Expression expression: this.arguments)
+		{
+			stackHeight += expression.getStackHeight();
+		}
+
+		return stackHeight + 2;
 	}
 }

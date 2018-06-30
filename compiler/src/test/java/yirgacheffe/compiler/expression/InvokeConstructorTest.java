@@ -3,6 +3,9 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.function.Callable;
@@ -12,6 +15,7 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class InvokeConstructorTest
 {
@@ -25,9 +29,9 @@ public class InvokeConstructorTest
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
 		Expression[] arguments = new Expression[] {one};
 
-		InvokeConstructor invokeMethod = new InvokeConstructor(function, arguments);
+		InvokeConstructor invokeConstructor = new InvokeConstructor(function, arguments);
 
-		invokeMethod.compile(methodVisitor);
+		invokeConstructor.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -37,5 +41,24 @@ public class InvokeConstructorTest
 
 		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
 		assertEquals("java/lang/Double", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(1.0, thirdInstruction.cst);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
+		assertEquals("java/lang/Double", fourthInstruction.owner);
+		assertEquals("<init>", fourthInstruction.name);
+		assertEquals("(D)V", fourthInstruction.desc);
+		assertFalse(fourthInstruction.itf);
+
+		assertEquals(4, invokeConstructor.getStackHeight());
 	}
 }
