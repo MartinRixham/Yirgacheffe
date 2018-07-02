@@ -21,11 +21,12 @@ public class NumberMapTest
 	{
 		String source =
 			"import java.util.HashMap;\n" +
+			"import java.util.Map;\n" +
 			"class MyClass\n" +
 			"{\n" +
 				"main map(Array<String> args)" +
 				"{\n" +
-					"HashMap<Num,Num> map = new HashMap<Num,Num>();\n" +
+					"Map<Num,Num> map = new HashMap<Num,Num>();\n" +
 					"map.put(1, 2);\n" +
 					"Num two = map.get(1);\n" +
 					"new System().getOut().println(two);\n" +

@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.ParameterisedType;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InvokeMethodTest
 {
@@ -163,5 +165,37 @@ public class InvokeMethodTest
 		assertEquals("(Ljava/lang/Double;)D", eightInstruction.desc);
 		assertEquals("ofValue", eightInstruction.name);
 		assertEquals(false, eightInstruction.itf);
+	}
+
+	@Test
+	public void testInterfaceMethodInvocation() throws Exception
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Type owner = new ReferenceType(Runnable.class);
+		Callable function = new Function(owner, Runnable.class.getMethod("run"));
+		Expression expression = new Variable(1, owner);
+		Expression[] arguments = new Expression[0];
+
+		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
+
+		invokeMethod.compile(methodVisitor);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2, instructions.size());
+		assertEquals("java.lang.Void", invokeMethod.getType().toFullyQualifiedType());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKEINTERFACE, secondInstruction.getOpcode());
+		assertEquals("java/lang/Runnable", secondInstruction.owner);
+		assertEquals("run", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
+		assertTrue(secondInstruction.itf);
 	}
 }

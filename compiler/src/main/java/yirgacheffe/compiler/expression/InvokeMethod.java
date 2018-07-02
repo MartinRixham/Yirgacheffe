@@ -67,12 +67,14 @@ public class InvokeMethod implements Expression
 				false);
 		}
 
+		boolean isInterface = owner.reflectionClass().isInterface();
+
 		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
+			isInterface ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,
 			this.withSlashes(owner),
 			this.function.getName(),
 			this.function.getDescriptor(),
-			false);
+			isInterface);
 
 		Type returnType = this.function.getReturnType();
 
