@@ -29,7 +29,7 @@ interfaceDeclaration:
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
 	'{'
-		statement*
+		block?
 	'}';
 
 classMethodDeclaration: Modifier? type signature;
@@ -42,6 +42,10 @@ interfaceMethodDeclaration:
 	Modifier? type signature semicolon;
 
 signature: Identifier '(' parameter? (',' parameter)* ')';
+
+block: statement+ | condition?  '{' block? '}' block?;
+
+condition: If '(' expression ')' | Else If '(' expression ')' | Else;
 
 field: (fieldInitialisation | fieldDeclaration) semicolon;
 
@@ -114,6 +118,8 @@ New: 'new';
 This: 'this';
 Return: 'return';
 Main: 'main';
+If: 'if';
+Else: 'else';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 
