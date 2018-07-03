@@ -181,10 +181,9 @@ public class StatementListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(1.0, firstInstruction.cst);
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
 
 		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
 
@@ -284,10 +283,9 @@ public class StatementListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(1.0, firstInstruction.cst);
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
 
 		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
 

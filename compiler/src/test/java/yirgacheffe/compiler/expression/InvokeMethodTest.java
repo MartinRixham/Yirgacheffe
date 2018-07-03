@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -132,10 +133,9 @@ public class InvokeMethodTest
 		assertEquals("<init>", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
-		assertEquals(new Double("1"), fourthInstruction.cst);
+		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
 
 		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
 

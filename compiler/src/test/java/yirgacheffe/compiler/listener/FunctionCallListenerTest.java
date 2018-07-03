@@ -173,10 +173,9 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
 		assertEquals("java/lang/Double", firstInstruction.desc);
 
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(1.0, thirdInstruction.cst);
+		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
 
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 

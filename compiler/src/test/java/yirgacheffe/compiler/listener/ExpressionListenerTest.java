@@ -6,7 +6,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -144,10 +143,9 @@ public class ExpressionListenerTest
 
 		assertEquals(2, instructions.size());
 
-		LdcInsnNode first = (LdcInsnNode) instructions.get(0);
+		InsnNode first = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, first.getOpcode());
-		assertEquals(1.0, first.cst);
+		assertEquals(Opcodes.DCONST_1, first.getOpcode());
 
 		InsnNode second = (InsnNode) instructions.get(1);
 

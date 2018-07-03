@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -46,10 +45,9 @@ public class InvokeConstructorTest
 
 		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(1.0, thirdInstruction.cst);
+		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
 
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 

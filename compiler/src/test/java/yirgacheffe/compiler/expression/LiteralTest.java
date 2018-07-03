@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -55,7 +56,26 @@ public class LiteralTest
 	}
 
 	@Test
-	public void testCompilingInteger()
+	public void testCompilingZero()
+	{
+		MethodNode methodVisitor = new MethodNode();
+
+		Literal literal = new Literal(PrimitiveType.DOUBLE, "0");
+
+		literal.compile(methodVisitor);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
+		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());
+	}
+
+	@Test
+	public void testCompilingOne()
 	{
 		MethodNode methodVisitor = new MethodNode();
 
@@ -67,10 +87,29 @@ public class LiteralTest
 
 		assertEquals(1, instructions.size());
 
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());
+	}
+
+	@Test
+	public void testCompilingInteger()
+	{
+		MethodNode methodVisitor = new MethodNode();
+
+		Literal literal = new Literal(PrimitiveType.DOUBLE, "2");
+
+		literal.compile(methodVisitor);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(1.0, firstInstruction.cst);
+		assertEquals(2.0, firstInstruction.cst);
 
 		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());
 	}
