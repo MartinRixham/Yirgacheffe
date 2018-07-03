@@ -136,6 +136,26 @@ public class LiteralTest
 	}
 
 	@Test
+	public void testCompilingFalse()
+	{
+		MethodNode methodVisitor = new MethodNode();
+
+		Literal literal = new Literal(PrimitiveType.BOOLEAN, "false");
+
+		literal.compile(methodVisitor);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		assertEquals("java.lang.Boolean", literal.getType().toFullyQualifiedType());
+	}
+
+	@Test
 	public void testCompilingTrue()
 	{
 		MethodNode methodVisitor = new MethodNode();
@@ -148,10 +168,9 @@ public class LiteralTest
 
 		assertEquals(1, instructions.size());
 
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(true, firstInstruction.cst);
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
 		assertEquals("java.lang.Boolean", literal.getType().toFullyQualifiedType());
 	}

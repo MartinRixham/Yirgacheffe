@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -490,9 +491,10 @@ public class FieldListenerTest
 		List<MethodNode> methods = classNode.methods;
 		MethodNode initialiser = methods.get(0);
 		InsnList instructions = initialiser.instructions;
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(1, secondInstruction.cst);
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
 
 		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
 

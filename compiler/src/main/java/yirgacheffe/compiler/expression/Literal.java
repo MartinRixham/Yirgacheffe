@@ -27,7 +27,14 @@ public class Literal implements Expression
 		}
 		else if (this.type == PrimitiveType.BOOLEAN)
 		{
-			methodVisitor.visitLdcInsn(this.text.equals("true"));
+			if (this.text.equals("true"))
+			{
+				methodVisitor.visitInsn(Opcodes.ICONST_1);
+			}
+			else
+			{
+				methodVisitor.visitInsn(Opcodes.ICONST_0);
+			}
 		}
 		else if (this.type == PrimitiveType.CHAR)
 		{

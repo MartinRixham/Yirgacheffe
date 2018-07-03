@@ -642,10 +642,9 @@ public class FunctionCallListenerTest
 
 		assertEquals(5, instructions.size());
 
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(1, firstInstruction.cst);
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
 		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
 

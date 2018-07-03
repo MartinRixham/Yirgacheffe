@@ -190,10 +190,9 @@ public class StatementListenerTest
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
 
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(0, thirdInstruction.cst);
+		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
 
 		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
