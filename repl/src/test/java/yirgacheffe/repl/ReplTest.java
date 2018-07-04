@@ -218,8 +218,9 @@ public class ReplTest
 
 		InputStream in =
 			new ByteArrayInputStream(
-				("import java.util.ArrayList;\n" +
-					"new ArrayList<String>()").getBytes());
+				("import java.util.List;" +
+				"import java.util.ArrayList;\n" +
+				"new ArrayList<String>()").getBytes());
 
 		Repl repl = new Repl(stream);
 
@@ -238,7 +239,7 @@ public class ReplTest
 
 		InputStream in =
 			new ByteArrayInputStream(
-				("import java.lang.ArrayList;").getBytes());
+				("import java.lang.List;").getBytes());
 
 		Repl repl = new Repl(stream);
 
@@ -246,7 +247,7 @@ public class ReplTest
 
 		assertEquals(
 			"yirgacheffe> " +
-				"Unrecognised type: java.lang.ArrayList is not a type.\n" +
+				"Unrecognised type: java.lang.List is not a type.\n" +
 				"yirgacheffe> ",
 			out.toString());
 	}

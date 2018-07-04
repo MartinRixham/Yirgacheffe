@@ -5,14 +5,13 @@ import org.antlr.v4.runtime.misc.Interval;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Source;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public final class Repl
@@ -34,8 +33,8 @@ public final class Repl
 
 	public void read(InputStream in)
 	{
-		List<String> statements = new ArrayList<>();
-		List<String> imports = new ArrayList<>();
+		Array<String> statements = new Array<>();
+		Array<String> imports = new Array<>();
 
 		Scanner scanner = new Scanner(in);
 
@@ -49,12 +48,12 @@ public final class Repl
 			for (YirgacheffeParser.ImportStatementContext importStatement:
 				line.importStatement())
 			{
-				imports.add(this.getText(importStatement));
+				imports.push(this.getText(importStatement));
 			}
 
 			for (YirgacheffeParser.StatementContext statement: line.statement())
 			{
-				statements.add(this.getText(statement));
+				statements.push(this.getText(statement));
 			}
 
 			if (line.expression() != null)
@@ -68,12 +67,12 @@ public final class Repl
 			{
 				for (int i = 0; i < line.importStatement().size(); i++)
 				{
-					imports.remove(imports.size() - 1);
+					imports.pop();
 				}
 
 				for (int i = 0; i < line.statement().size(); i++)
 				{
-					statements.remove(statements.size() - 1);
+					statements.pop();
 				}
 
 				this.out.print(this.removeLineNumbers(result.getResult()));
@@ -108,8 +107,8 @@ public final class Repl
 	}
 
 	private EvaluationResult evaluate(
-		List<String> imports,
-		List<String> statements,
+		Array<String> imports,
+		Array<String> statements,
 		String expression)
 	{
 		Evaluator evaluator = new Evaluator(imports, statements, expression);

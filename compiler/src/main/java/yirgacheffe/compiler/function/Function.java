@@ -8,12 +8,11 @@ import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Function implements Callable
 {
@@ -77,14 +76,14 @@ public class Function implements Callable
 	}
 
 	@Override
-	public List<Type> getParameterTypes()
+	public Array<Type> getParameterTypes()
 	{
 		Class<?>[] classes = this.executable.getParameterTypes();
-		List<Type> types = new ArrayList<>();
+		Array<Type> types = new Array<>();
 
 		for (Class<?> clazz: classes)
 		{
-			types.add(this.getType(clazz));
+			types.push(this.getType(clazz));
 		}
 
 		return types;
@@ -107,7 +106,7 @@ public class Function implements Callable
 	}
 
 	@Override
-	public List<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
+	public Array<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
 	{
 		if (this.owner instanceof ParameterisedType)
 		{
@@ -118,7 +117,7 @@ public class Function implements Callable
 		}
 		else
 		{
-			return new ArrayList<>();
+			return new Array<>();
 		}
 	}
 

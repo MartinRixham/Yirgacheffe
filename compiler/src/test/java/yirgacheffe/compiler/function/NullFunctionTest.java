@@ -13,7 +13,7 @@ public class NullFunctionTest
 
 		assertEquals("", function.getName());
 		assertEquals("()V", function.getDescriptor());
-		assertEquals(0, function.getParameterTypes().size());
-		assertEquals(0, function.checkTypeParameters(null).size());
+		assertEquals(0, function.getParameterTypes().length());
+		assertEquals(0, function.checkTypeParameters(null).length());
 	}
 }

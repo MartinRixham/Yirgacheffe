@@ -3,14 +3,13 @@ package yirgacheffe.compiler.error;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class ParseErrorListener extends BaseErrorListener
 {
-	private List<Error> errors;
+	private Array<Error> errors;
 
-	public ParseErrorListener(List<Error> errors)
+	public ParseErrorListener(Array<Error> errors)
 	{
 		this.errors = errors;
 	}
@@ -24,6 +23,6 @@ public class ParseErrorListener extends BaseErrorListener
 		String message,
 		RecognitionException e)
 	{
-		this.errors.add(new Error(line, charPosition, message + "."));
+		this.errors.push(new Error(line, charPosition, message + "."));
 	}
 }

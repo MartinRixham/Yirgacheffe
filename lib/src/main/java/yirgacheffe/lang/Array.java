@@ -1,8 +1,9 @@
 package yirgacheffe.lang;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class Array<T>
+public class Array<T> implements Iterable<T>
 {
 	private static final int LOG_THIRTY_TWO = 5;
 
@@ -252,5 +253,28 @@ public class Array<T>
 		{
 			this.array = Arrays.copyOf(this.array, length);
 		}
+	}
+
+	@Override
+	public Iterator<T> iterator()
+	{
+		final Object[] array = Arrays.copyOf(this.array, this.length);
+
+		return new Iterator<T>()
+		{
+			private int index = 0;
+
+			@Override
+			public boolean hasNext()
+			{
+				return this.index < array.length;
+			}
+
+			@Override
+			public T next()
+			{
+				return (T) array[this.index++];
+			}
+		};
 	}
 }

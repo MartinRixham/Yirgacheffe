@@ -24,13 +24,13 @@ public class ClassListener extends PackageListener
 	{
 		if (context.Class() == null)
 		{
-			this.errors.add(
+			this.errors.push(
 				new Error(context, "Expected declaration of class or interface."));
 		}
 
 		if (context.Identifier().size() == 0)
 		{
-			this.errors.add(new Error(context, "Class identifier expected."));
+			this.errors.push(new Error(context, "Class identifier expected."));
 		}
 		else
 		{
@@ -42,7 +42,7 @@ public class ClassListener extends PackageListener
 		{
 			String message = "Method requires method body.";
 
-			this.errors.add(new Error(interfaceMethod, message));
+			this.errors.push(new Error(interfaceMethod, message));
 		}
 
 		this.writer.visit(
@@ -60,7 +60,7 @@ public class ClassListener extends PackageListener
 	{
 		if (context.Identifier() == null)
 		{
-			this.errors.add(new Error(context, "Interface identifier expected."));
+			this.errors.push(new Error(context, "Interface identifier expected."));
 		}
 		else
 		{
@@ -71,14 +71,14 @@ public class ClassListener extends PackageListener
 		{
 			String message = "Interface cannot contain field.";
 
-			this.errors.add(new Error(context.field(0), message));
+			this.errors.push(new Error(context.field(0), message));
 		}
 
 		for (YirgacheffeParser.FunctionContext interfaceMethod: context.function())
 		{
 			String message = "Method body not permitted for interface method.";
 
-			this.errors.add(new Error(interfaceMethod, message));
+			this.errors.push(new Error(interfaceMethod, message));
 		}
 
 		this.writer.visit(

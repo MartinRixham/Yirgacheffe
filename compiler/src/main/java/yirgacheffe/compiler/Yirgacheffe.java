@@ -1,14 +1,13 @@
 package yirgacheffe.compiler;
 
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.lang.Array;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Yirgacheffe
 {
@@ -27,7 +26,7 @@ public final class Yirgacheffe
 	private void execute() throws IOException
 	{
 		Classes classes = new Classes();
-		List<Compiler> compilers = new ArrayList<>();
+		Array<Compiler> compilers = new Array<>();
 
 		for (String sourceFile : this.sourceFiles)
 		{
@@ -35,7 +34,7 @@ public final class Yirgacheffe
 			String source = new String(encoded, "UTF-8");
 			Compiler compiler = new Compiler(sourceFile, source);
 
-			compilers.add(compiler);
+			compilers.push(compiler);
 		}
 
 		for (Compiler compiler: compilers)
@@ -52,11 +51,11 @@ public final class Yirgacheffe
 
 		classes.clearCache();
 
-		List<CompilationResult> results = new ArrayList<>();
+		Array<CompilationResult> results = new Array<>();
 
 		for (Compiler compiler: compilers)
 		{
-			results.add(compiler.compile(classes));
+			results.push(compiler.compile(classes));
 		}
 
 		for (CompilationResult result: results)

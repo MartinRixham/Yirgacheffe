@@ -31,7 +31,7 @@ public class FieldDeclarationListener extends ConstructorListener
 		{
 			String message = "Duplicate field '" + identifier + "'.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{
@@ -43,7 +43,7 @@ public class FieldDeclarationListener extends ConstructorListener
 			Error error =
 				new Error(context, "Field declaration should start with type.");
 
-			this.errors.add(error);
+			this.errors.push(error);
 		}
 
 		String fieldName = context.Identifier().getText();

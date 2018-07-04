@@ -3,51 +3,49 @@ package yirgacheffe.compiler.function;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.Type;
-
-import java.util.ArrayList;
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class Functions
 {
-	private List<Callable> functions;
+	private Array<Callable> functions;
 
-	public Functions(List<Callable> functions)
+	public Functions(Array<Callable> functions)
 	{
 		this.functions = functions;
 	}
 
 	public MatchResult getMatchingExecutable(ArgumentClasses argumentClasses)
 	{
-		List<Callable> matched = new ArrayList<>();
+		Array<Callable> matched = new Array<>();
 		int highestExactMatches = 0;
 
 		for (Callable function: this.functions)
 		{
-			List<Type> parameterTypes = function.getParameterTypes();
+			Array<Type> parameterTypes = function.getParameterTypes();
 			int exactMatches = argumentClasses.matches(parameterTypes);
 
 			if (exactMatches > highestExactMatches)
 			{
-				matched = new ArrayList<>();
+				matched = new Array<>();
 				highestExactMatches = exactMatches;
 			}
 
 			if (exactMatches == highestExactMatches)
 			{
-				matched.add(function);
+				matched.push(function);
 			}
 		}
 
-		if (matched.size() == 1)
+		if (matched.length() == 1)
 		{
-			List<MismatchedTypes> mismatchedParameters =
+			Array<MismatchedTypes> mismatchedParameters =
 				matched.get(0).checkTypeParameters(argumentClasses);
 
 			return new MatchResult(matched.get(0), mismatchedParameters);
 		}
 		else
 		{
-			return new MatchResult(!matched.isEmpty());
+			return new MatchResult(matched.length() > 0);
 		}
 	}
 }

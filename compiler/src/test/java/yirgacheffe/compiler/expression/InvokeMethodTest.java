@@ -15,10 +15,9 @@ import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -105,8 +104,8 @@ public class InvokeMethodTest
 	public void testCompilingInvocationWithGenericReturnType() throws Exception
 	{
 		MethodNode methodVisitor = new MethodNode();
-		List<Type> typeParameters =
-			Arrays.asList(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
+		Array<Type> typeParameters =
+			new Array<>(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
 		Type owner =
 			new ParameterisedType(new ReferenceType(HashMap.class), typeParameters);
 		Callable function =

@@ -6,12 +6,10 @@ import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
@@ -25,22 +23,22 @@ public class FunctionsTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Callable> printlnMethods = new ArrayList<>();
+		Array<Callable> printlnMethods = new Array<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				printlnMethods.add(new Function(printStream, method));
+				printlnMethods.push(new Function(printStream, method));
 			}
 		}
 
 		Functions functions = new Functions(printlnMethods);
 		MatchResult result = functions.getMatchingExecutable(argumentClasses);
-		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
+		Array<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
-		assertEquals(0, mismatchedParameters.size());
+		assertEquals(0, mismatchedParameters.length());
 		assertEquals("(Ljava/lang/String;)V", result.getFunction().getDescriptor());
 	}
 
@@ -52,22 +50,22 @@ public class FunctionsTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = printStream.reflectionClass().getMethods();
-		List<Callable> printlnMethods = new ArrayList<>();
+		Array<Callable> printlnMethods = new Array<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				printlnMethods.add(new Function(printStream, method));
+				printlnMethods.push(new Function(printStream, method));
 			}
 		}
 
 		Functions functions = new Functions(printlnMethods);
 		MatchResult result = functions.getMatchingExecutable(argumentClasses);
-		List<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
+		Array<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
-		assertEquals(0, mismatchedParameters.size());
+		assertEquals(0, mismatchedParameters.length());
 		assertEquals("(Z)V", result.getFunction().getDescriptor());
 	}
 
@@ -79,13 +77,13 @@ public class FunctionsTest
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
 		Method[] methods = testClass.reflectionClass().getMethods();
-		List<Callable> printlnMethods = new ArrayList<>();
+		Array<Callable> printlnMethods = new Array<>();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals("testMethod"))
 			{
-				printlnMethods.add(new Function(testClass, method));
+				printlnMethods.push(new Function(testClass, method));
 			}
 		}
 

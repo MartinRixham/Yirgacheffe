@@ -3,18 +3,17 @@ package yirgacheffe.repl;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
-
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class Evaluator
 {
-	private List<String> imports;
+	private Array<String> imports;
 
-	private List<String> statements;
+	private Array<String> statements;
 
 	private String expression;
 
-	public Evaluator(List<String> imports, List<String> statements, String expression)
+	public Evaluator(Array<String> imports, Array<String> statements, String expression)
 	{
 		this.imports = imports;
 		this.statements = statements;

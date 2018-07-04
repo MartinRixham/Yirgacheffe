@@ -2,9 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-
-import java.util.Arrays;
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -16,7 +14,7 @@ public class ParameterisedTypeTest
 	{
 		ReferenceType referenceType = new ReferenceType(java.util.List.class);
 		Type typeParameter = new ReferenceType(java.lang.String.class);
-		Type type = new ParameterisedType(referenceType, Arrays.asList(typeParameter));
+		Type type = new ParameterisedType(referenceType, new Array<>(typeParameter));
 
 		assertEquals("java.util.List<java.lang.String>", type.toString());
 		assertEquals(java.util.List.class, type.reflectionClass());
@@ -34,7 +32,7 @@ public class ParameterisedTypeTest
 		ReferenceType referenceType = new ReferenceType(java.util.Map.class);
 		Type firstParameter = new ReferenceType(java.lang.String.class);
 		Type secondParameter = PrimitiveType.DOUBLE;
-		List<Type> parameters = Arrays.asList(firstParameter, secondParameter);
+		Array<Type> parameters = new Array<>(firstParameter, secondParameter);
 		Type type = new ParameterisedType(referenceType, parameters);
 
 		assertEquals("java.util.Map<java.lang.String,Num>", type.toString());
@@ -49,8 +47,8 @@ public class ParameterisedTypeTest
 		Type string = new ReferenceType(java.lang.String.class);
 		Type system = new ReferenceType(java.lang.System.class);
 
-		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
-		Type systemReference = new ParameterisedType(reference, Arrays.asList(system));
+		Type stringReference = new ParameterisedType(reference, new Array<>(string));
+		Type systemReference = new ParameterisedType(reference, new Array<>(system));
 
 		assertFalse(stringReference.isAssignableTo(systemReference));
 	}
@@ -63,7 +61,7 @@ public class ParameterisedTypeTest
 			new ReferenceType(yirgacheffe.lang.MutableReference.class);
 		Type string = new ReferenceType(java.lang.String.class);
 
-		Type stringReference = new ParameterisedType(reference, Arrays.asList(string));
+		Type stringReference = new ParameterisedType(reference, new Array<>(string));
 
 		assertFalse(stringReference.isAssignableTo(string));
 	}

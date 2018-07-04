@@ -7,9 +7,8 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Arrays;
 
 public class MainMethodListener extends MethodListener
 {
@@ -34,7 +33,7 @@ public class MainMethodListener extends MethodListener
 			ReferenceType arrayType = new ReferenceType(yirgacheffe.lang.Array.class);
 			Type stringType = new ReferenceType(java.lang.String.class);
 			Type argsType =
-				new ParameterisedType(arrayType, Arrays.asList(stringType));
+				new ParameterisedType(arrayType, new Array<>(stringType));
 
 			if (!argsType.isAssignableTo(parameterType))
 			{
@@ -63,6 +62,6 @@ public class MainMethodListener extends MethodListener
 			"Main method must have exactly one parameter of " +
 			"type yirgacheffe.lang.Array<java.lang.String>.";
 
-		this.errors.add(new Error(context, message));
+		this.errors.push(new Error(context, message));
 	}
 }

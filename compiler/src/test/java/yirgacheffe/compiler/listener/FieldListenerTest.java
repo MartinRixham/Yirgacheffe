@@ -202,6 +202,7 @@ public class FieldListenerTest
 	public void testFieldWithFullyQualifiedType()
 	{
 		String source =
+			"import java.util.List;\n" +
 			"class MyClass\n" +
 			"{\n" +
 				"java.util.List<String> myListField;\n" +

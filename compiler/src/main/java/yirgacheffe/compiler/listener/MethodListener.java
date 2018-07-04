@@ -9,15 +9,14 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 public class MethodListener extends TypeListener
 {
@@ -25,7 +24,7 @@ public class MethodListener extends TypeListener
 
 	protected Type returnType = new NullType();
 
-	protected Stack<Expression> expressions = new Stack<>();
+	protected Array<Expression> expressions = new Array<>();
 
 	protected Map<String, Variable> localVariables = new HashMap<>();
 
@@ -51,7 +50,7 @@ public class MethodListener extends TypeListener
 			String message =
 				"Access modifier is not required for interface method declaration.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 
 		this.returnType = this.types.getType(context.type());
@@ -77,7 +76,7 @@ public class MethodListener extends TypeListener
 				"Expected public or private access modifier " +
 				"at start of method declaration.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{
@@ -113,7 +112,7 @@ public class MethodListener extends TypeListener
 			Error error =
 				new Error(context, "Expected type before parameter identifier.");
 
-			this.errors.add(error);
+			this.errors.push(error);
 		}
 		else
 		{
@@ -129,7 +128,7 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
-		if (this.returnType != PrimitiveType.VOID && this.expressions.empty())
+		if (this.returnType != PrimitiveType.VOID && this.expressions.length() == 0)
 		{
 			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
 		}
@@ -143,7 +142,7 @@ public class MethodListener extends TypeListener
 		{
 			String message = "No return statement in method.";
 
-			this.errors.add(new Error(context.stop, message));
+			this.errors.push(new Error(context.stop, message));
 		}
 
 		this.hasReturnStatement = false;
@@ -153,7 +152,7 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitSignature(YirgacheffeParser.SignatureContext context)
 	{
-		List<String> parameters = new ArrayList<>();
+		Array<String> parameters = new Array<>();
 		StringBuilder descriptor = new StringBuilder("(");
 
 		for (YirgacheffeParser.ParameterContext parameter : context.parameter())
@@ -161,7 +160,7 @@ public class MethodListener extends TypeListener
 			Type type = this.types.getType(parameter.type());
 
 			descriptor.append(type.toJVMType());
-			parameters.add(type.toString());
+			parameters.push(type.toString());
 		}
 
 		descriptor.append(")");
@@ -177,7 +176,7 @@ public class MethodListener extends TypeListener
 				context.Identifier() + "(" +
 				String.join(",", parameters) + ").";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{

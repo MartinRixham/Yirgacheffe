@@ -31,12 +31,12 @@ public class ExpressionListener extends StatementListener
 		{
 			String message = "Unknown local variable '" + context.getText() + "'.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 
 			variable = new Variable(-1, new NullType());
 		}
 
-		this.expressions.add(variable);
+		this.expressions.push(variable);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class ExpressionListener extends StatementListener
 
 			thisType = this.classes.loadClass(fullyQualifiedType);
 
-			this.expressions.add(new This(thisType));
+			this.expressions.push(new This(thisType));
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -83,6 +83,6 @@ public class ExpressionListener extends StatementListener
 			type = PrimitiveType.DOUBLE;
 		}
 
-		this.expressions.add(new Literal(type, context.getText()));
+		this.expressions.push(new Literal(type, context.getText()));
 	}
 }

@@ -33,7 +33,7 @@ public class TypeListener extends ClassListener
 			String message =
 				"Unrecognised type: " + className + " is not a type.";
 
-			this.errors.add(new Error(context.packageName(), message));
+			this.errors.push(new Error(context.packageName(), message));
 		}
 	}
 
@@ -51,7 +51,7 @@ public class TypeListener extends ClassListener
 					"Missing type parameters for type " +
 					type.toFullyQualifiedType() + ".";
 
-				this.errors.add(new Error(context, message));
+				this.errors.push(new Error(context, message));
 			}
 		}
 		else if (typeParameters.length != context.typeParameters().type().size())
@@ -61,7 +61,7 @@ public class TypeListener extends ClassListener
 				typeParameters.length + " parameter(s) but found " +
 				context.typeParameters().type().size() + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 
@@ -108,7 +108,7 @@ public class TypeListener extends ClassListener
 						String message =
 							"Unrecognised type: " + context.getText() + " is not a type.";
 
-						this.errors.add(new Error(context, message));
+						this.errors.push(new Error(context, message));
 					}
 				}
 			}
@@ -137,7 +137,7 @@ public class TypeListener extends ClassListener
 			String message =
 				"Unrecognised type: " + context.getText() + " is not a type.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 }

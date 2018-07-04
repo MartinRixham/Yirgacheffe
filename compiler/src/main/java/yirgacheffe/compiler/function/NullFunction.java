@@ -4,9 +4,7 @@ import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
-
-import java.util.ArrayList;
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class NullFunction implements Callable
 {
@@ -25,14 +23,14 @@ public class NullFunction implements Callable
 		return new NullType();
 	}
 
-	public List<Type> getParameterTypes()
+	public Array<Type> getParameterTypes()
 	{
-		return new ArrayList<>();
+		return new Array<>();
 	}
 
-	public List<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
+	public Array<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
 	{
-		return new ArrayList<>();
+		return new Array<>();
 	}
 
 	public Type getOwner()

@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.lang.Array;
+
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ArgumentClasses
 {
@@ -13,11 +13,11 @@ public class ArgumentClasses
 		this.argumentClasses = argumentClasses;
 	}
 
-	public List<MismatchedTypes> checkTypeParameters(
+	public Array<MismatchedTypes> checkTypeParameters(
 		java.lang.reflect.Type[] parameters,
 		ParameterisedType owner)
 	{
-		List<MismatchedTypes> mismatchedParameters = new ArrayList<>();
+		Array<MismatchedTypes> mismatchedParameters = new Array<>();
 
 		for (int i = 0; i < parameters.length; i++)
 		{
@@ -37,7 +37,7 @@ public class ArgumentClasses
 							this.argumentClasses[i].toString(),
 							owner.getTypeParameterName(typeVariable.getName()));
 
-					mismatchedParameters.add(mismatchedTypes);
+					mismatchedParameters.push(mismatchedTypes);
 				}
 			}
 		}
@@ -45,16 +45,16 @@ public class ArgumentClasses
 		return mismatchedParameters;
 	}
 
-	public int matches(List<Type> parameterTypes)
+	public int matches(Array<Type> parameterTypes)
 	{
 		int exactMatches = 0;
 
-		if (parameterTypes.size() != this.argumentClasses.length)
+		if (parameterTypes.length() != this.argumentClasses.length)
 		{
 			return -1;
 		}
 
-		for (int i = 0; i < parameterTypes.size(); i++)
+		for (int i = 0; i < parameterTypes.length(); i++)
 		{
 			if (!this.argumentClasses[i].isAssignableTo(parameterTypes.get(i)))
 			{
@@ -74,11 +74,11 @@ public class ArgumentClasses
 	@Override
 	public String toString()
 	{
-		List<String> arguments = new ArrayList<>();
+		Array<String> arguments = new Array<>();
 
 		for (Type argumentClass : this.argumentClasses)
 		{
-			arguments.add(argumentClass.toString());
+			arguments.push(argumentClass.toString());
 		}
 
 		return "(" + String.join(",", arguments) + ")";

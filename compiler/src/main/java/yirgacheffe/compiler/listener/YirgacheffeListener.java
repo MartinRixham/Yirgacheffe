@@ -5,11 +5,9 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
@@ -18,7 +16,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	protected ClassWriter writer =
 		new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
-	protected List<Error> errors = new ArrayList<>();
+	protected Array<Error> errors = new Array<>();
 
 	protected String packageName;
 
@@ -65,7 +63,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	public CompilationResult getCompilationResult()
 	{
-		if (this.errors.size() > 0)
+		if (this.errors.length() > 0)
 		{
 			return new CompilationResult(this.sourceFile, this.errors);
 		}
@@ -83,7 +81,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	{
 		if (context.SEMI_COLON() == null)
 		{
-			this.errors.add(new Error(context, "Missing ';'."));
+			this.errors.push(new Error(context, "Missing ';'."));
 		}
 	}
 }

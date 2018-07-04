@@ -1,26 +1,24 @@
 package yirgacheffe.compiler.function;
 
 import yirgacheffe.compiler.type.MismatchedTypes;
-
-import java.util.ArrayList;
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class MatchResult
 {
 	private Callable function;
 
-	private List<MismatchedTypes> mismatchedParameters;
+	private Array<MismatchedTypes> mismatchedParameters;
 
 	private boolean ambiguous;
 
 	public MatchResult(boolean ambiguous)
 	{
 		this.function = new NullFunction();
-		this.mismatchedParameters = new ArrayList<>();
+		this.mismatchedParameters = new Array<>();
 		this.ambiguous = ambiguous;
 	}
 
-	public MatchResult(Callable functions, List<MismatchedTypes> mismatchedParameters)
+	public MatchResult(Callable functions, Array<MismatchedTypes> mismatchedParameters)
 	{
 		this.function = functions;
 		this.mismatchedParameters = mismatchedParameters;
@@ -36,7 +34,7 @@ public class MatchResult
 		return this.function;
 	}
 
-	public List<MismatchedTypes> getMismatchedParameters()
+	public Array<MismatchedTypes> getMismatchedParameters()
 	{
 		return this.mismatchedParameters;
 	}

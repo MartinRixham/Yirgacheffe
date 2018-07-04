@@ -1,9 +1,7 @@
 package yirgacheffe.compiler;
 
 import yirgacheffe.compiler.error.Error;
-
-import java.util.Collections;
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class CompilationResult
 {
@@ -13,7 +11,7 @@ public class CompilationResult
 
 	private byte[] bytecode;
 
-	private List<Error> errors;
+	private Array<Error> errors;
 
 	public CompilationResult(String classFileName, byte[] bytecode)
 	{
@@ -21,7 +19,7 @@ public class CompilationResult
 		this.bytecode = bytecode;
 	}
 
-	public CompilationResult(String sourceFileName, List<Error> errors)
+	public CompilationResult(String sourceFileName, Array<Error> errors)
 	{
 		this.sourceFileName = sourceFileName;
 		this.errors = errors;
@@ -49,7 +47,7 @@ public class CompilationResult
 
 	public String getErrors()
 	{
-		Collections.sort(this.errors);
+		this.errors.sort();
 
 		StringBuilder errors = new StringBuilder();
 

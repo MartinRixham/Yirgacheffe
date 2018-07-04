@@ -5,9 +5,8 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.Stack;
 
 public class StatementListener extends FieldListener
 {
@@ -21,7 +20,7 @@ public class StatementListener extends FieldListener
 	@Override
 	public void enterStatement(YirgacheffeParser.StatementContext context)
 	{
-		this.expressions = new Stack<>();
+		this.expressions = new Array<>();
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class StatementListener extends FieldListener
 			String message =
 				"Assignment to uninitialised variable '" + context.getText() + "'.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 
@@ -62,7 +61,7 @@ public class StatementListener extends FieldListener
 	public void exitVariableAssignment(
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
-		Type type = this.expressions.peek().getType();
+		Type type = this.expressions.get(this.expressions.length() - 1).getType();
 
 		int index = 0;
 
@@ -85,14 +84,15 @@ public class StatementListener extends FieldListener
 				"Cannot assign expression of type " + type +
 				" to variable of type " + this.currentVariable.getType() + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 
 	@Override
 	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
 	{
-		Type expressionType = this.expressions.peek().getType();
+		Type expressionType =
+			this.expressions.get(this.expressions.length() - 1).getType();
 
 		if (!expressionType.isAssignableTo(this.returnType))
 		{
@@ -101,7 +101,7 @@ public class StatementListener extends FieldListener
 				expressionType + " from method of return type " +
 				this.returnType + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 
 		this.hasReturnStatement = true;

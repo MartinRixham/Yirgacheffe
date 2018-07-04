@@ -3,8 +3,7 @@ package yirgacheffe.compiler.function;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.Type;
-
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public interface Callable
 {
@@ -14,9 +13,9 @@ public interface Callable
 
 	Type getReturnType();
 
-	List<Type> getParameterTypes();
+	Array<Type> getParameterTypes();
 
-	List<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses);
+	Array<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses);
 
 	Type getOwner();
 }

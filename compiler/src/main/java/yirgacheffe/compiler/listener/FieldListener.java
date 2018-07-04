@@ -40,7 +40,7 @@ public class FieldListener extends FieldDeclarationListener
 		{
 			String message = "Field cannot be declared with access modifier.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 
@@ -65,7 +65,8 @@ public class FieldListener extends FieldDeclarationListener
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 
 		Type fieldType = this.types.getType(declaration.type());
-		Type expressionType = this.expressions.peek().getType();
+		Type expressionType =
+			this.expressions.get(this.expressions.length() - 1).getType();
 
 		this.methodVisitor.visitMaxs(0, 0);
 
@@ -75,7 +76,7 @@ public class FieldListener extends FieldDeclarationListener
 				"Cannot assign " + expressionType.toString() +
 				" to field of type " + fieldType.toString() + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 	}
 
@@ -91,14 +92,14 @@ public class FieldListener extends FieldDeclarationListener
 
 			String message = "Unknown field '" + fieldName + "'.";
 
-			this.errors.add(new Error(context.Identifier().getSymbol(), message));
+			this.errors.push(new Error(context.Identifier().getSymbol(), message));
 		}
 
 		Expression owner = this.expressions.pop();
 
 		Expression fieldRead = new FieldRead(owner, fieldName, fieldType);
 
-		this.expressions.add(fieldRead);
+		this.expressions.push(fieldRead);
 	}
 
 	@Override
@@ -108,14 +109,14 @@ public class FieldListener extends FieldDeclarationListener
 		{
 			String message = "Fields must be assigned in initialisers or constructors.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 
 		String fieldName = context.Identifier().getText();
 		Expression exp = this.expressions.pop();
 		Type expressionType = exp.getType();
 
-		Type ownerType = this.expressions.peek().getType();
+		Type ownerType = this.expressions.get(this.expressions.length() - 1).getType();
 
 		this.expressions.push(exp);
 
@@ -133,7 +134,7 @@ public class FieldListener extends FieldDeclarationListener
 					"Cannot assign expression of type " + expressionType +
 					" to field of type " + fieldClass.getName() + ".";
 
-				this.errors.add(new Error(context, message));
+				this.errors.push(new Error(context, message));
 			}
 		}
 		catch (NoSuchFieldException e)

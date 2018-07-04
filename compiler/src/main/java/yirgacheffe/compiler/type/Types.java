@@ -1,10 +1,9 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Types
@@ -35,12 +34,12 @@ public class Types
 
 		if (context.typeParameters() != null)
 		{
-			List<Type> typeParameters = new ArrayList<>();
+			Array<Type> typeParameters = new Array<>();
 
 			for (YirgacheffeParser.TypeContext typeParameter:
 				context.typeParameters().type())
 			{
-				typeParameters.add(this.getType(typeParameter));
+				typeParameters.push(this.getType(typeParameter));
 			}
 
 			return new ParameterisedType((ReferenceType) type, typeParameters);

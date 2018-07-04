@@ -7,8 +7,7 @@ import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-
-import java.util.List;
+import yirgacheffe.lang.Array;
 
 public class InvokeMethod implements Expression
 {
@@ -30,14 +29,14 @@ public class InvokeMethod implements Expression
 	{
 		this.owner.compile(methodVisitor);
 
-		List<Type> parameters = this.function.getParameterTypes();
+		Array<Type> parameters = this.function.getParameterTypes();
 
 		for (int i = 0; i < this.arguments.length; i++)
 		{
 			this.arguments[i].compile(methodVisitor);
 			Type argumentType = this.arguments[i].getType();
 
-			if (parameters.size() >= i + 1 &&
+			if (parameters.length() >= i + 1 &&
 				argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
 			{

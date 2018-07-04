@@ -21,7 +21,7 @@ public class PackageListener extends YirgacheffeListener
 		{
 			String message = "File contains multiple class declarations.";
 
-			this.errors.add(new Error(1, 0, message));
+			this.errors.push(new Error(1, 0, message));
 		}
 	}
 
@@ -34,7 +34,7 @@ public class PackageListener extends YirgacheffeListener
 			String message =
 				"Missing package declaration for file path " + this.directory + ".";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 		else if (context.packageName() != null)
 		{
@@ -48,7 +48,7 @@ public class PackageListener extends YirgacheffeListener
 					"Package name " + this.packageName +
 						" does not correspond to the file path " + this.directory + ".";
 
-				this.errors.add(new Error(context.packageName(), message));
+				this.errors.push(new Error(context.packageName(), message));
 			}
 		}
 	}

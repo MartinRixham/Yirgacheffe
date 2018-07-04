@@ -25,7 +25,7 @@ public class ConstructorListener extends MainMethodListener
 				"Constructor of incorrect type " + signature.Identifier().getText() +
 					": expected " + this.className + ".";
 
-			this.errors.add(new Error(signature.Identifier().getSymbol(), message));
+			this.errors.push(new Error(signature.Identifier().getSymbol(), message));
 		}
 
 		boolean isPrivate = false;
@@ -36,7 +36,7 @@ public class ConstructorListener extends MainMethodListener
 				"Expected public or private access modifier " +
 					"at start of constructor declaration.";
 
-			this.errors.add(new Error(context, message));
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{

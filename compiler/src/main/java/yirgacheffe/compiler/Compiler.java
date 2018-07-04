@@ -10,10 +10,8 @@ import yirgacheffe.compiler.listener.FieldDeclarationListener;
 import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Compiler
 {
@@ -21,12 +19,12 @@ public class Compiler
 
 	private ParseTree tree;
 
-	private List<Error> errors;
+	private Array<Error> errors;
 
 	public Compiler(String sourceFile, String source)
 	{
 		this.sourceFile = sourceFile;
-		this.errors = new ArrayList<>();
+		this.errors = new Array<>();
 
 		ParseErrorListener errorListener = new ParseErrorListener(this.errors);
 		YirgacheffeParser parser = new Source(source).parse();
@@ -61,9 +59,9 @@ public class Compiler
 		YirgacheffeListener listener =
 			new FunctionCallListener(this.sourceFile, classes);
 
-		List<Error> errors = this.execute(listener);
+		Array<Error> errors = this.execute(listener);
 
-		if (errors.size() > 0)
+		if (errors.length() > 0)
 		{
 			return new CompilationResult(this.sourceFile, errors);
 		}
@@ -73,7 +71,7 @@ public class Compiler
 		}
 	}
 
-	private List<Error> execute(YirgacheffeListener listener)
+	private Array<Error> execute(YirgacheffeListener listener)
 	{
 		ParseTreeWalker walker = new ParseTreeWalker();
 

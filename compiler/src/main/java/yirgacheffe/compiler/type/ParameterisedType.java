@@ -1,12 +1,11 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.lang.Array;
 
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 public class ParameterisedType implements Type
 {
@@ -14,14 +13,14 @@ public class ParameterisedType implements Type
 
 	private Map<String, Type> typeParameters;
 
-	public ParameterisedType(ReferenceType primaryType, List<Type> typeParameters)
+	public ParameterisedType(ReferenceType primaryType, Array<Type> typeParameters)
 	{
 		this.primaryType = primaryType;
 
 		TypeVariable[] genericTypes = primaryType.reflectionClass().getTypeParameters();
 		Map<String, Type> types = new HashMap<>();
 
-		for (int i = 0; i < typeParameters.size(); i++)
+		for (int i = 0; i < typeParameters.length(); i++)
 		{
 			types.put(genericTypes[i].getName(), typeParameters.get(i));
 		}
@@ -74,12 +73,12 @@ public class ParameterisedType implements Type
 	@Override
 	public String toString()
 	{
-		List<String> typeNames = new ArrayList<>();
+		Array<String> typeNames = new Array<>();
 		Class<?> primaryClass = this.primaryType.reflectionClass();
 
 		for (TypeVariable type: primaryClass.getTypeParameters())
 		{
-			typeNames.add(this.typeParameters.get(type.getName()).toString());
+			typeNames.push(this.typeParameters.get(type.getName()).toString());
 		}
 
 		return this.toFullyQualifiedType() +
