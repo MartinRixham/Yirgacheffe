@@ -23,7 +23,7 @@ public class FunctionCallListener extends ExpressionListener
 {
 	private ArgumentClasses argumentClasses;
 
-	private Expression[] arguments;
+	private Array<Expression> arguments;
 
 	public FunctionCallListener(String sourceFile, Classes classes)
 	{
@@ -155,14 +155,13 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
-		int argumentCount = context.expression().size();
-		Type[] arguments = new Type[argumentCount];
-		this.arguments = new Expression[argumentCount];
+		Array<Type> arguments = new Array<>();
+		this.arguments = new Array<>();
 
 		for (int i = context.expression().size() - 1; i >= 0; i--)
 		{
-			this.arguments[i] = this.expressions.pop();
-			arguments[i] = this.arguments[i].getType();
+			this.arguments.set(i, this.expressions.pop());
+			arguments.set(i, this.arguments.get(i).getType());
 		}
 
 		this.argumentClasses = new ArgumentClasses(arguments);

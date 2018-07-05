@@ -111,9 +111,10 @@ public class Function implements Callable
 		if (this.owner instanceof ParameterisedType)
 		{
 			ParameterisedType type = (ParameterisedType) this.owner;
+			Array<java.lang.reflect.Type> parameters =
+				new Array<>(this.executable.getGenericParameterTypes());
 
-			return argumentClasses.checkTypeParameters(
-				this.executable.getGenericParameterTypes(), type);
+			return argumentClasses.checkTypeParameters(parameters, type);
 		}
 		else
 		{

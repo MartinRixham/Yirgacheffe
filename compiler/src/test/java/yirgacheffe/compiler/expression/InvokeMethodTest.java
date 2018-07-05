@@ -36,7 +36,7 @@ public class InvokeMethodTest
 		Expression expression = new Literal(stringType, "\"thingy\"");
 
 		InvokeMethod invokeMethod =
-			new InvokeMethod(function, expression, new Expression[0]);
+			new InvokeMethod(function, expression, new Array<>());
 
 		invokeMethod.compile(methodVisitor);
 
@@ -69,7 +69,7 @@ public class InvokeMethodTest
 		Function function =
 			new Function(stringType, String.class.getMethod("concat", String.class));
 		Expression expression = new Literal(stringType, "\"thingy\"");
-		Expression[] arguments = new Expression[] {new Literal(stringType, "\"sumpt\"")};
+		Array<Expression> arguments = new Array<>(new Literal(stringType, "\"sumpt\""));
 
 		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
 
@@ -111,9 +111,9 @@ public class InvokeMethodTest
 		Callable function =
 			new Function(owner, Map.class.getMethod("get", Object.class));
 		Callable constructor = new Function(owner, HashMap.class.getConstructor());
-		Expression expression = new InvokeConstructor(constructor, new Expression[0]);
-		Expression[] arguments =
-			new Expression[] {new Literal(PrimitiveType.DOUBLE, "1")};
+		Expression expression = new InvokeConstructor(constructor, new Array<>());
+		Array<Expression> arguments =
+			new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));
 
 		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
 
@@ -173,7 +173,7 @@ public class InvokeMethodTest
 		Type owner = new ReferenceType(Runnable.class);
 		Callable function = new Function(owner, Runnable.class.getMethod("run"));
 		Expression expression = new Variable(1, owner);
-		Expression[] arguments = new Expression[0];
+		Array<Expression> arguments = new Array<>();
 
 		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
 

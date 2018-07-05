@@ -4,14 +4,15 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 public class InvokeConstructor implements Expression
 {
 	private Callable function;
 
-	private Expression[] arguments;
+	private Array<Expression> arguments;
 
-	public InvokeConstructor(Callable function, Expression[] arguments)
+	public InvokeConstructor(Callable function, Array<Expression> arguments)
 	{
 		this.function = function;
 		this.arguments = arguments;

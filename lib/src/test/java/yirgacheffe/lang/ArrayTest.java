@@ -102,6 +102,50 @@ public class ArrayTest
 	}
 
 	@Test
+	public void testSetFirstItem()
+	{
+		Array<String> numbers = new Array<>();
+
+		numbers.set(0, "zero");
+
+		assertEquals(1, numbers.length());
+		assertEquals("zero", numbers.get(0));
+	}
+
+	@Test
+	public void testSetSecondItem()
+	{
+		Array<String> numbers = new Array<>();
+
+		numbers.set(1, "one");
+
+		assertEquals(2, numbers.length());
+		assertEquals("one", numbers.get(1));
+	}
+
+	@Test
+	public void testSetThirtyThirdItem()
+	{
+		Array<String> numbers = new Array<>();
+
+		numbers.set(32, "item");
+
+		assertEquals(33, numbers.length());
+		assertEquals("item", numbers.get(32));
+	}
+
+	@Test
+	public void testReplaceFirstItem()
+	{
+		Array<String> numbers = new Array<>("zero", "one");
+
+		numbers.set(0, "replaced");
+
+		assertEquals(2, numbers.length());
+		assertEquals("replaced", numbers.get(0));
+	}
+
+	@Test
 	public void testPushOneItemToEmptyArray()
 	{
 		Array<Integer> numbers = new Array<>();

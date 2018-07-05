@@ -54,6 +54,18 @@ public class Array<T> implements Iterable<T>
 		return (T) this.array[intIndex];
 	}
 
+	public void set(int i, T item)
+	{
+		if (i >= this.length)
+		{
+			this.grow(i + 1);
+
+			this.length = i + 1;
+		}
+
+		this.array[i] = item;
+	}
+
 	public void push(T... items)
 	{
 		this.grow(this.length + items.length);

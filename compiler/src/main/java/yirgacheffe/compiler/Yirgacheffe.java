@@ -11,14 +11,14 @@ import java.nio.file.Paths;
 
 public final class Yirgacheffe
 {
-	private String[] sourceFiles;
+	private Array<String> sourceFiles;
 
 	public static void main(String[] args) throws IOException
 	{
-		new Yirgacheffe(args).execute();
+		new Yirgacheffe(new Array<String>(args)).execute();
 	}
 
-	private Yirgacheffe(String[] sourceFiles)
+	private Yirgacheffe(Array<String> sourceFiles)
 	{
 		this.sourceFiles = sourceFiles;
 	}

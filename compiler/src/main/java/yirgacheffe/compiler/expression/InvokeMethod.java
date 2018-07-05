@@ -15,9 +15,9 @@ public class InvokeMethod implements Expression
 
 	private Expression owner;
 
-	private Expression[] arguments;
+	private Array<Expression> arguments;
 
-	public InvokeMethod(Callable function, Expression owner, Expression[] arguments)
+	public InvokeMethod(Callable function, Expression owner, Array<Expression> arguments)
 	{
 		this.function = function;
 		this.owner = owner;
@@ -31,10 +31,10 @@ public class InvokeMethod implements Expression
 
 		Array<Type> parameters = this.function.getParameterTypes();
 
-		for (int i = 0; i < this.arguments.length; i++)
+		for (int i = 0; i < this.arguments.length(); i++)
 		{
-			this.arguments[i].compile(methodVisitor);
-			Type argumentType = this.arguments[i].getType();
+			this.arguments.get(i).compile(methodVisitor);
+			Type argumentType = this.arguments.get(i).getType();
 
 			if (parameters.length() >= i + 1 &&
 				argumentType instanceof PrimitiveType &&

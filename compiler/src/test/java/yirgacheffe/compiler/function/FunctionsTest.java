@@ -18,7 +18,7 @@ public class FunctionsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Type[] stringClass = new Type[] {new ReferenceType(String.class)};
+		Array<Type> stringClass = new Array<>(new ReferenceType(String.class));
 		Type printStream = new ReferenceType(PrintStream.class);
 		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass);
 
@@ -45,7 +45,7 @@ public class FunctionsTest
 	@Test
 	public void testGettingBooleanPrintlnMethod()
 	{
-		Type[] bool = new Type[] {PrimitiveType.BOOLEAN};
+		Array<Type> bool = new Array<>(PrimitiveType.BOOLEAN);
 		Type printStream = new ReferenceType(PrintStream.class);
 		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
 
@@ -72,9 +72,9 @@ public class FunctionsTest
 	@Test
 	public void testAmbiguousMatchingOfBoxedAndUnboxedType()
 	{
-		Type[] bool = new Type[] {PrimitiveType.CHAR};
+		Array<Type> character = new Array<>(PrimitiveType.CHAR);
 		Type testClass = new ReferenceType(FunctionsTest.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
+		ArgumentClasses argumentClasses = new ArgumentClasses(character);
 
 		Method[] methods = testClass.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();

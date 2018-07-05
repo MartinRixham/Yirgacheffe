@@ -12,6 +12,7 @@ import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +27,7 @@ public class InvokeConstructorTest
 		Callable function =
 			new Function(owner, Double.class.getConstructor(double.class));
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
-		Expression[] arguments = new Expression[] {one};
+		Array<Expression> arguments = new Array<Expression>(one);
 
 		InvokeConstructor invokeConstructor = new InvokeConstructor(function, arguments);
 
