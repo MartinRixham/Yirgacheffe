@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -9,6 +8,7 @@ import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
+import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.type.ArgumentClasses;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.MismatchedTypes;
@@ -31,7 +31,7 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
-	public void exitConstructor(YirgacheffeParser.ConstructorContext context)
+	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
 	{
 		if (context.type().primaryType().simpleType() != null &&
 			context.type().primaryType().simpleType().PrimitiveType() != null)
@@ -41,12 +41,8 @@ public class FunctionCallListener extends ExpressionListener
 
 			this.errors.push(new Error(context.type(), message));
 		}
-	}
 
-	@Override
-	public void exitInstantiation(YirgacheffeParser.InstantiationContext context)
-	{
-		Type owner = this.types.getType(context.constructor().type());
+		Type owner = this.types.getType(context.type());
 		Constructor<?>[] constructors = owner.reflectionClass().getConstructors();
 		Array<Callable> functions = new Array<>();
 
@@ -170,20 +166,8 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitFunctionCall(YirgacheffeParser.FunctionCallContext context)
 	{
-		for (Expression expression: this.expressions)
-		{
-			expression.compile(this.methodVisitor);
-		}
+		Expression expression = this.expressions.pop();
 
-		int width = this.expressions.get(this.expressions.length() - 1).getType().width();
-
-		if (width == 1)
-		{
-			this.methodVisitor.visitInsn(Opcodes.POP);
-		}
-		else if (width == 2)
-		{
-			this.methodVisitor.visitInsn(Opcodes.POP2);
-		}
+		new FunctionCall(expression).compile(this.methodVisitor);
 	}
 }

@@ -79,9 +79,7 @@ functionCall: instantiation | (expression methodCall);
 
 methodCall: '.' Identifier arguments;
 
-instantiation: constructor arguments;
-
-constructor: New type;
+instantiation: New type arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 
