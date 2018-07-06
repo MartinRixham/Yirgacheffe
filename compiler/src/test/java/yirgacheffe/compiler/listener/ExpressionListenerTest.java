@@ -44,8 +44,8 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode method = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
 
 		InsnList instructions = method.instructions;
 
@@ -106,8 +106,8 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals("method", firstMethod.name);
 		assertEquals(2, firstMethod.maxStack);
@@ -133,7 +133,7 @@ public class ExpressionListenerTest
 		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
 		assertEquals(1, thirdInstruction.var);
 
-		MethodNode secondMethod = methods.get(1);
+		MethodNode secondMethod = (MethodNode) methods.get(1);
 
 		assertEquals("getOne", secondMethod.name);
 		assertEquals(2, secondMethod.maxStack);
@@ -176,8 +176,8 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(2, firstMethod.maxLocals);
@@ -205,8 +205,8 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(5, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);

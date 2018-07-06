@@ -41,17 +41,17 @@ public class MainMethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(3, methods.size());
 
-		MethodNode method = methods.get(0);
+		MethodNode method = (MethodNode) methods.get(0);
 
 		assertEquals("(Lyirgacheffe/lang/Array;)V", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
 		assertEquals("myMainMethod", method.name);
 
-		MethodNode mainMethod = methods.get(1);
+		MethodNode mainMethod = (MethodNode) methods.get(1);
 
 		assertEquals("([Ljava/lang/String;)V", mainMethod.desc);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, mainMethod.access);

@@ -86,8 +86,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(3, firstMethod.maxLocals);
@@ -127,8 +127,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(5, firstMethod.maxLocals);
@@ -173,8 +173,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(4, firstMethod.maxLocals);
@@ -223,8 +223,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(4, firstMethod.maxLocals);
@@ -274,8 +274,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(3, firstMethod.maxLocals);
@@ -407,8 +407,8 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode firstMethod = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);

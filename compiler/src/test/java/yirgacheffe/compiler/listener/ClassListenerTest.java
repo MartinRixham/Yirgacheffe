@@ -226,8 +226,8 @@ public class ClassListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode method = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
 
 		assertEquals("()Ltis/that/MyInterface;", method.desc);
 	}

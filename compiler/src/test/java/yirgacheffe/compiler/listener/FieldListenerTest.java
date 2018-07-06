@@ -43,11 +43,11 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
+		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
 
-		FieldNode firstField = fields.get(0);
+		FieldNode firstField = (FieldNode) fields.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
 		assertEquals("D", firstField.desc);
@@ -73,11 +73,11 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
+		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
 
-		FieldNode firstField = fields.get(0);
+		FieldNode firstField = (FieldNode) fields.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
 		assertEquals("Ljava/lang/String;", firstField.desc);
@@ -104,16 +104,16 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
+		List fields = classNode.fields;
 
 		assertEquals(2, fields.size());
 
-		FieldNode firstField = fields.get(0);
+		FieldNode firstField = (FieldNode) fields.get(0);
 
 		assertEquals("D", firstField.desc);
 		assertEquals("myNumberField", firstField.name);
 
-		FieldNode secondField = fields.get(1);
+		FieldNode secondField = (FieldNode) fields.get(1);
 
 		assertEquals("Ljava/lang/String;", secondField.desc);
 		assertEquals("myStringField", secondField.name);
@@ -218,8 +218,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
-		String descriptor = fields.get(0).desc;
+		List fields = classNode.fields;
+		String descriptor = ((FieldNode) fields.get(0)).desc;
 
 		assertEquals("Ljava/util/List;", descriptor);
 	}
@@ -262,8 +262,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
-		String descriptor = fields.get(0).desc;
+		List fields = classNode.fields;
+		String descriptor = ((FieldNode) fields.get(0)).desc;
 
 		assertEquals("Ljava/util/List;", descriptor);
 	}
@@ -293,11 +293,11 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(2, methods.size());
 
-		MethodNode initialiser = methods.get(0);
+		MethodNode initialiser = (MethodNode) methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
 		assertEquals("0_init_field", initialiser.name);
@@ -327,7 +327,7 @@ public class FieldListenerTest
 
 		assertEquals(Opcodes.RETURN, instructions.get(3).getOpcode());
 
-		MethodNode constructor = methods.get(1);
+		MethodNode constructor = (MethodNode) methods.get(1);
 
 		assertEquals("<init>", constructor.name);
 
@@ -372,8 +372,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode initialiser = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode initialiser = (MethodNode) methods.get(0);
 		InsnList instructions = initialiser.instructions;
 
 		assertEquals(4, instructions.size());
@@ -415,8 +415,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode initialiser = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode initialiser = (MethodNode) methods.get(0);
 		InsnList instructions = initialiser.instructions;
 
 		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
@@ -449,8 +449,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode initialiser = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode initialiser = (MethodNode) methods.get(0);
 		InsnList instructions = initialiser.instructions;
 		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
@@ -489,8 +489,8 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
-		MethodNode initialiser = methods.get(0);
+		List methods = classNode.methods;
+		MethodNode initialiser = (MethodNode) methods.get(0);
 		InsnList instructions = initialiser.instructions;
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
@@ -530,11 +530,11 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(2, methods.size());
 
-		MethodNode initialiser = methods.get(0);
+		MethodNode initialiser = (MethodNode) methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
 		assertEquals("0_init_field", initialiser.name);
@@ -551,7 +551,7 @@ public class FieldListenerTest
 		assertEquals("myObject", fifthInstruction.name);
 		assertEquals("Ljava/lang/Object;", fifthInstruction.desc);
 
-		MethodNode constructor = methods.get(1);
+		MethodNode constructor = (MethodNode) methods.get(1);
 
 		instructions = constructor.instructions;
 
@@ -595,21 +595,21 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(3, methods.size());
 
-		MethodNode first = methods.get(0);
+		MethodNode first = (MethodNode) methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, first.access);
 		assertEquals("0_init_field", first.name);
 
-		MethodNode second = methods.get(1);
+		MethodNode second = (MethodNode) methods.get(1);
 
 		assertEquals(Opcodes.ACC_PRIVATE, second.access);
 		assertEquals("1_init_field", second.name);
 
-		MethodNode constructor = methods.get(2);
+		MethodNode constructor = (MethodNode) methods.get(2);
 
 		InsnList instructions = constructor.instructions;
 
@@ -715,15 +715,15 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
+		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(2, methods.size());
 
-		MethodNode method = methods.get(0);
+		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(4, instructions.size());
@@ -838,15 +838,15 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<FieldNode> fields = classNode.fields;
+		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(1, methods.size());
 
-		MethodNode constructor = methods.get(0);
+		MethodNode constructor = (MethodNode) methods.get(0);
 
 		assertEquals("<init>", constructor.name);
 

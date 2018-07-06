@@ -34,11 +34,11 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(1, methods.size());
 
-		MethodNode constructor = methods.get(0);
+		MethodNode constructor = (MethodNode) methods.get(0);
 
 		assertEquals("()V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
@@ -84,11 +84,11 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(1, methods.size());
 
-		MethodNode constructor = methods.get(0);
+		MethodNode constructor = (MethodNode) methods.get(0);
 
 		assertEquals("(D)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
@@ -165,11 +165,11 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List<MethodNode> methods = classNode.methods;
+		List methods = classNode.methods;
 
 		assertEquals(1, methods.size());
 
-		MethodNode constructor = methods.get(0);
+		MethodNode constructor = (MethodNode) methods.get(0);
 
 		assertEquals("(Ljava/lang/String;)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PRIVATE, constructor.access);
