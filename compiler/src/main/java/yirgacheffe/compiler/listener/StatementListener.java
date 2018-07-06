@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.statement.VariableAssignment;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.expression.Variable;
@@ -61,7 +62,8 @@ public class StatementListener extends FieldListener
 	public void exitVariableAssignment(
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
-		Type type = this.expressions.get(this.expressions.length() - 1).getType();
+		Expression expression = this.expressions.pop();
+		Type type = expression.getType();
 
 		int index = 0;
 
@@ -70,12 +72,7 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
-		for (Expression expression: this.expressions)
-		{
-			expression.compile(this.methodVisitor);
-		}
-
-		this.methodVisitor.visitVarInsn(type.getStoreInstruction(), index);
+		new VariableAssignment(index, expression).compile(this.methodVisitor);
 
 		if (this.currentVariable != null &&
 			!type.isAssignableTo(this.currentVariable.getType()))
