@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
+import yirgacheffe.compiler.statement.FieldWrite;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -113,25 +114,23 @@ public class FieldListener extends FieldDeclarationListener
 		}
 
 		String fieldName = context.Identifier().getText();
-		Expression exp = this.expressions.pop();
-		Type expressionType = exp.getType();
-
-		Type ownerType = this.expressions.get(this.expressions.length() - 1).getType();
-
-		this.expressions.push(exp);
+		Expression value = this.expressions.pop();
+		Type type = value.getType();
+		Expression owner = this.expressions.pop();
+		Type ownerType = owner.getType();
 
 		try
 		{
 			Class<?> fieldClass =
 				ownerType.reflectionClass().getDeclaredField(fieldName).getType();
-			Class<?> expressionClass = expressionType.reflectionClass();
+			Class<?> expressionClass = type.reflectionClass();
 
 			if (!fieldClass.isAssignableFrom(expressionClass) &&
 				!fieldClass.getSimpleName()
 					.equals(expressionClass.getSimpleName().toLowerCase()))
 			{
 				String message =
-					"Cannot assign expression of type " + expressionType +
+					"Cannot assign expression of type " + type +
 					" to field of type " + fieldClass.getName() + ".";
 
 				this.errors.push(new Error(context, message));
@@ -142,15 +141,6 @@ public class FieldListener extends FieldDeclarationListener
 			throw new RuntimeException(e);
 		}
 
-		for (Expression expression: this.expressions)
-		{
-			expression.compile(this.methodVisitor);
-		}
-
-		this.methodVisitor.visitFieldInsn(
-			Opcodes.PUTFIELD,
-			ownerType.toFullyQualifiedType(),
-			fieldName,
-			expressionType.toJVMType());
+		new FieldWrite(fieldName, owner, value).compile(this.methodVisitor);
 	}
 }

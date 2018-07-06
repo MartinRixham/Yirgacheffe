@@ -4,13 +4,13 @@ import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Type;
 
-public class VariableAssignment implements Statement
+public class VariableWrite implements Statement
 {
 	private int index;
 
 	private Expression expression;
 
-	public VariableAssignment(int index, Expression expression)
+	public VariableWrite(int index, Expression expression)
 	{
 		this.index = index;
 		this.expression = expression;
