@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -25,6 +26,8 @@ public class MethodListener extends TypeListener
 	protected Type returnType = new NullType();
 
 	protected Array<Expression> expressions = new Array<>();
+
+	protected Array<Statement> statements = new Array<>();
 
 	protected Map<String, Variable> localVariables = new HashMap<>();
 
@@ -128,7 +131,12 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
-		if (this.returnType != PrimitiveType.VOID && this.expressions.length() == 0)
+		for (Statement statement: this.statements)
+		{
+			statement.compile(this.methodVisitor);
+		}
+
+		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
 		{
 			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
 		}
@@ -182,5 +190,7 @@ public class MethodListener extends TypeListener
 		{
 			this.methods.add(signature);
 		}
+
+		this.statements = new Array<>();
 	}
 }

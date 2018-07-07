@@ -1,12 +1,12 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.statement.Return;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class StatementListener extends FieldListener
@@ -16,12 +16,6 @@ public class StatementListener extends FieldListener
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
-	}
-
-	@Override
-	public void enterStatement(YirgacheffeParser.StatementContext context)
-	{
-		this.expressions = new Array<>();
 	}
 
 	@Override
@@ -72,8 +66,6 @@ public class StatementListener extends FieldListener
 			index = this.currentVariable.getIndex();
 		}
 
-		new VariableWrite(index, expression).compile(this.methodVisitor);
-
 		if (this.currentVariable != null &&
 			!type.isAssignableTo(this.currentVariable.getType()))
 		{
@@ -83,19 +75,21 @@ public class StatementListener extends FieldListener
 
 			this.errors.push(new Error(context, message));
 		}
+
+		this.statements.push(new VariableWrite(index, expression));
 	}
 
 	@Override
 	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
 	{
-		Type expressionType =
-			this.expressions.get(this.expressions.length() - 1).getType();
+		Expression expression = this.expressions.pop();
+		Type type = expression.getType();
 
-		if (!expressionType.isAssignableTo(this.returnType))
+		if (!type.isAssignableTo(this.returnType))
 		{
 			String message =
 				"Mismatched return type: Cannot return expression of type " +
-				expressionType + " from method of return type " +
+				type + " from method of return type " +
 				this.returnType + ".";
 
 			this.errors.push(new Error(context, message));
@@ -103,9 +97,6 @@ public class StatementListener extends FieldListener
 
 		this.hasReturnStatement = true;
 
-		for (Expression expression: this.expressions)
-		{
-			expression.compile(this.methodVisitor);
-		}
+		this.statements.push(new Return(expression));
 	}
 }

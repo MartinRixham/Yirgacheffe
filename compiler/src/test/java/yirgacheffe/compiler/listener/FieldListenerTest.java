@@ -378,6 +378,11 @@ public class FieldListenerTest
 
 		assertEquals(4, instructions.size());
 
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
 		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
 		assertEquals(5.0, secondInstruction.cst);

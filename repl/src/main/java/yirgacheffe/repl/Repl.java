@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Scanner;
+import java.util.UUID;
 
 public final class Repl
 {
@@ -112,17 +113,18 @@ public final class Repl
 		String expression)
 	{
 		Evaluator evaluator = new Evaluator(imports, statements, expression);
-		CompilationResult result = evaluator.compile();
+		String className = "Source" + UUID.randomUUID().toString().replace("-", "");
+		CompilationResult result = evaluator.compile(className);
 
 		if (result.isSuccessful())
 		{
 			BytecodeClassLoader classLoader = new BytecodeClassLoader();
 
-			classLoader.add("Source", result.getBytecode());
+			classLoader.add(className, result.getBytecode());
 
 			try
 			{
-				Class<?> sourceClass = classLoader.loadClass("Source");
+				Class<?> sourceClass = classLoader.loadClass(className);
 				Object instance = sourceClass.getConstructor().newInstance();
 				Method evaluate = sourceClass.getMethod("evaluate");
 

@@ -20,11 +20,11 @@ public class Evaluator
 		this.expression = expression;
 	}
 
-	public CompilationResult compile()
+	public CompilationResult compile(String className)
 	{
 		String source =
 			String.join("\n", this.imports) +
-			"\nclass Source\n" +
+			"\nclass " + className + "\n" +
 			"{\n" +
 				"public String evaluate()" +
 				"{" +

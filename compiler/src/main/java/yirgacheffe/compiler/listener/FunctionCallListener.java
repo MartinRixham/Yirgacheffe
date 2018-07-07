@@ -168,6 +168,6 @@ public class FunctionCallListener extends ExpressionListener
 	{
 		Expression expression = this.expressions.pop();
 
-		new FunctionCall(expression).compile(this.methodVisitor);
+		this.statements.push(new FunctionCall(expression));
 	}
 }

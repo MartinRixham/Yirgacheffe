@@ -136,8 +136,6 @@ public class ExpressionListenerTest
 		MethodNode secondMethod = (MethodNode) methods.get(1);
 
 		assertEquals("getOne", secondMethod.name);
-		assertEquals(2, secondMethod.maxStack);
-		assertEquals(1, secondMethod.maxLocals);
 
 		instructions = secondMethod.instructions;
 

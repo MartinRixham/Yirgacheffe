@@ -51,11 +51,13 @@ public class FieldListener extends FieldDeclarationListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
+		Expression expression = this.expressions.pop();
+		Expression self = this.expressions.pop();
+		Type expressionType = expression.getType();
+		Type fieldType = this.types.getType(declaration.type());
 
-		for (Expression expression: this.expressions)
-		{
-			expression.compile(this.methodVisitor);
-		}
+		self.compile(this.methodVisitor);
+		expression.compile(this.methodVisitor);
 
 		this.methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,
@@ -64,10 +66,6 @@ public class FieldListener extends FieldDeclarationListener
 			this.types.getType(declaration.type()).toJVMType());
 
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
-
-		Type fieldType = this.types.getType(declaration.type());
-		Type expressionType =
-			this.expressions.get(this.expressions.length() - 1).getType();
 
 		this.methodVisitor.visitMaxs(0, 0);
 
@@ -141,6 +139,6 @@ public class FieldListener extends FieldDeclarationListener
 			throw new RuntimeException(e);
 		}
 
-		new FieldWrite(fieldName, owner, value).compile(this.methodVisitor);
+		this.statements.push(new FieldWrite(fieldName, owner, value));
 	}
 }

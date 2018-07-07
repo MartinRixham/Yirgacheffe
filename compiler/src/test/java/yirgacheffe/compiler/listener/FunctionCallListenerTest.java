@@ -688,9 +688,6 @@ public class FunctionCallListenerTest
 		List methods = classNode.methods;
 		MethodNode firstMethod = (MethodNode) methods.get(0);
 
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(1, firstMethod.maxLocals);
-
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(5, instructions.size());
@@ -792,9 +789,6 @@ public class FunctionCallListenerTest
 
 		List methods = classNode.methods;
 		MethodNode firstMethod = (MethodNode) methods.get(0);
-
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(1, firstMethod.maxLocals);
 
 		InsnList instructions = firstMethod.instructions;
 
