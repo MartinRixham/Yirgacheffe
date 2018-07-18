@@ -130,10 +130,9 @@ public class StatementListenerTest
 		List methods = classNode.methods;
 		MethodNode firstMethod = (MethodNode) methods.get(0);
 
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(5, firstMethod.maxLocals);
-
 		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(3, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -290,6 +289,51 @@ public class StatementListenerTest
 
 		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testFailToAssignVariableOutsideOfBlock()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"{" +
+						"Num myVariable;\n" +
+					"}\n" +
+					"myVariable = 50;" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Assignment to uninitialised variable 'myVariable'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testAssignToVariableInParentBlock()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"Num myVariable;\n" +
+					"{" +
+						"myVariable = 50;" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
 	}
 
 	@Test

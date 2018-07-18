@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Return;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
@@ -24,24 +25,17 @@ public class StatementListener extends FieldListener
 	{
 		Type type = this.types.getType(context.type());
 
-		int index = 1;
+		this.currentVariable = new Variable(this.currentBlock.size() + 1, type);
 
-		for (Variable variable: this.localVariables.values())
-		{
-			index += variable.getType().width();
-		}
-
-		this.currentVariable = new Variable(index, type);
-
-		this.localVariables.put(context.Identifier().getText(), this.currentVariable);
+		this.currentBlock.declare(context.Identifier().getText(), this.currentVariable);
 	}
 
 	@Override
 	public void enterVariableWrite(YirgacheffeParser.VariableWriteContext context)
 	{
-		if (this.localVariables.containsKey(context.getText()))
+		if (this.currentBlock.isDeclared(context.getText()))
 		{
-			this.currentVariable = this.localVariables.get(context.getText());
+			this.currentVariable = this.currentBlock.getVariable(context.getText());
 		}
 		else
 		{
@@ -77,6 +71,18 @@ public class StatementListener extends FieldListener
 		}
 
 		this.statements.push(new VariableWrite(index, expression));
+	}
+
+	@Override
+	public void enterBlock(YirgacheffeParser.BlockContext context)
+	{
+		this.currentBlock = new Block(this.currentBlock);
+	}
+
+	@Override
+	public void exitBlock(YirgacheffeParser.BlockContext context)
+	{
+		this.currentBlock = this.currentBlock.unwarap();
 	}
 
 	@Override

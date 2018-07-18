@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
@@ -13,10 +14,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
-import java.util.Map;
 import java.util.Set;
 
 public class MethodListener extends TypeListener
@@ -29,7 +28,7 @@ public class MethodListener extends TypeListener
 
 	protected Array<Statement> statements = new Array<>();
 
-	protected Map<String, Variable> localVariables = new HashMap<>();
+	protected Block currentBlock = new Block();
 
 	protected MethodVisitor methodVisitor;
 
@@ -123,9 +122,9 @@ public class MethodListener extends TypeListener
 		}
 
 		Variable variable =
-			new Variable(this.localVariables.size() + 1, type);
+			new Variable(this.currentBlock.size() + 1, type);
 
-		this.localVariables.put(context.Identifier().getText(), variable);
+		this.currentBlock.declare(context.Identifier().getText(), variable);
 	}
 
 	@Override
@@ -144,8 +143,6 @@ public class MethodListener extends TypeListener
 		this.methodVisitor.visitMaxs(0, 0);
 		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 
-		this.localVariables = new HashMap<>();
-
 		if (!this.hasReturnStatement && this.returnType != PrimitiveType.VOID)
 		{
 			String message = "No return statement in method.";
@@ -153,6 +150,7 @@ public class MethodListener extends TypeListener
 			this.errors.push(new Error(context.stop, message));
 		}
 
+		this.currentBlock = new Block();
 		this.hasReturnStatement = false;
 		this.inConstructor = false;
 	}

@@ -50,8 +50,8 @@ fieldInitialisation: fieldDeclaration '=' expression;
 fieldDeclaration: Modifier? type? Identifier;
 
 statement:
-	(block | fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
-	semicolon;
+	block | ((fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
+	semicolon);
 
 block: condition?  '{' statement* '}';
 

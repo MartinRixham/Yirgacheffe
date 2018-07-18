@@ -23,9 +23,9 @@ public class ExpressionListener extends StatementListener
 	{
 		Variable variable;
 
-		if (this.localVariables.containsKey(context.getText()))
+		if (this.currentBlock.isDeclared(context.getText()))
 		{
-			variable = this.localVariables.get(context.getText());
+			variable = this.currentBlock.getVariable(context.getText());
 		}
 		else
 		{
