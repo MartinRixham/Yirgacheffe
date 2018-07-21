@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -334,6 +335,44 @@ public class StatementListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
+	}
+
+	@Ignore
+	@Test
+	public void testIfStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"if (true)" +
+					"{" +
+						"Num one = 1;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		// assertEquals(4, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 	}
 
 	@Test
