@@ -23,6 +23,6 @@ public class ParseErrorListener extends BaseErrorListener
 		String message,
 		RecognitionException e)
 	{
-		this.errors.push(new Error(line, charPosition, message + "."));
+		this.errors.push(new Error(new Coordinate(line, charPosition), message + "."));
 	}
 }

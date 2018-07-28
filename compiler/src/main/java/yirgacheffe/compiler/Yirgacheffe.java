@@ -15,7 +15,7 @@ public final class Yirgacheffe
 
 	public static void main(String[] args) throws IOException
 	{
-		new Yirgacheffe(new Array<String>(args)).execute();
+		new Yirgacheffe(new Array<>(args)).execute();
 	}
 
 	private Yirgacheffe(Array<String> sourceFiles)
@@ -37,12 +37,12 @@ public final class Yirgacheffe
 			compilers.push(compiler);
 		}
 
-		for (Compiler compiler: compilers)
+		/*for (Compiler compiler: compilers)
 		{
 			compiler.compileClassDeclaration(classes);
 		}
 
-		classes.clearCache();
+		classes.clearCache();*/
 
 		for (Compiler compiler: compilers)
 		{

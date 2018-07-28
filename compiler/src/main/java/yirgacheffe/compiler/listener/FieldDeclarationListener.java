@@ -40,10 +40,9 @@ public class FieldDeclarationListener extends ConstructorListener
 
 		if (context.type() == null)
 		{
-			Error error =
-				new Error(context, "Field declaration should start with type.");
+			String message = "Field declaration should start with type.";
 
-			this.errors.push(error);
+			this.errors.push(new Error(context, message));
 		}
 
 		String fieldName = context.Identifier().getText();

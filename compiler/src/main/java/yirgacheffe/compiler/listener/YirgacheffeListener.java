@@ -1,10 +1,10 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;
 import yirgacheffe.compiler.CompilationResult;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -69,6 +69,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		}
 		else
 		{
+			this.writer.visitSource(this.sourceFile, null);
+
 			String classFileName = this.directory + this.className + ".class";
 			byte[] bytes = this.writer.toByteArray();
 

@@ -9,9 +9,9 @@ public class NullFunctionTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Callable function = new NullFunction();
+		Callable function = new NullFunction("MyClass.method");
 
-		assertEquals("", function.getName());
+		assertEquals("MyClass.method", function.getName());
 		assertEquals("()V", function.getDescriptor());
 		assertEquals(0, function.getParameterTypes().length());
 		assertEquals(0, function.checkTypeParameters(null).length());

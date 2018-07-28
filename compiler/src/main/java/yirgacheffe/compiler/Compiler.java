@@ -2,8 +2,8 @@ package yirgacheffe.compiler;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import yirgacheffe.compiler.error.ParseErrorStrategy;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.error.ParseErrorStrategy;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.ClassListener;
 import yirgacheffe.compiler.listener.FieldDeclarationListener;

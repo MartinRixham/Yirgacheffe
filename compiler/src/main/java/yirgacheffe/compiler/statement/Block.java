@@ -1,77 +1,30 @@
 package yirgacheffe.compiler.statement;
 
-import yirgacheffe.compiler.expression.Variable;
+import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.lang.Array;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class Block
+public class Block implements Statement
 {
-	private Block parent;
+	private Array<Statement> statements;
 
-	private Map<String, Variable> localVariables = new HashMap<>();
-
-	public Block()
+	public Block(Array<Statement> statements)
 	{
+		this.statements = statements;
 	}
 
-	public Block(Block parent)
+	@Override
+	public void compile(MethodVisitor methodVisitor, StatementResult result)
 	{
-		this.parent = parent;
-	}
+		Map<String, Variable> declaredVariables = result.getDeclaredVariables();
 
-	public void declare(String name, Variable variable)
-	{
-		this.localVariables.put(name, variable);
-	}
-
-	public boolean isDeclared(String name)
-	{
-		boolean declared = this.localVariables.containsKey(name);
-
-		if (declared || this.parent == null)
+		for (Statement statement: this.statements)
 		{
-			return declared;
-		}
-		else
-		{
-			return this.parent.isDeclared(name);
-		}
-	}
-
-	public Variable getVariable(String name)
-	{
-		if (this.localVariables.containsKey(name))
-		{
-			return this.localVariables.get(name);
-		}
-		else
-		{
-			return this.parent.getVariable(name);
-		}
-	}
-
-	public int size()
-	{
-		int size = 0;
-
-		for (Variable variable: this.localVariables.values())
-		{
-			size += variable.getType().width();
+			statement.compile(methodVisitor, result);
 		}
 
-		if (this.parent == null)
-		{
-			return size;
-		}
-		else
-		{
-			return size + this.parent.size();
-		}
-	}
-
-	public Block unwarap()
-	{
-		return this.parent;
+		result.setDeclaredVariables(declaredVariables);
 	}
 }

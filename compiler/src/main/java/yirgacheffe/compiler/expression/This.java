@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.Type;
 
 public class This implements Expression
@@ -14,14 +15,14 @@ public class This implements Expression
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public Type check(StatementResult result)
 	{
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		return this.type;
 	}
 
 	@Override
-	public Type getType()
+	public void compile(MethodVisitor methodVisitor)
 	{
-		return this.type;
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 	}
 }

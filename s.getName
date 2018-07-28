@@ -1,0 +1,1138 @@
+[33mcommit 9ef0b5550a6fca7359b20215a5477bc4c5fce232[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Martin Rixham <martin.rixham@gmail.com>
+Date:   Sat Aug 4 23:10:45 2018 +0100
+
+    thingy
+
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/Expression.java b/compiler/src/main/java/yirgacheffe/compiler/expression/Expression.java[m
+[1mindex 3efc945..db5079e 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/Expression.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/Expression.java[m
+[36m@@ -6,7 +6,7 @@[m [mimport yirgacheffe.compiler.type.Type;[m
+ [m
+ public interface Expression[m
+ {[m
+[31m-	void compile(MethodVisitor methodVisitor, StatementResult result);[m
+[32m+[m	[32mType check(StatementResult result);[m
+ [m
+[31m-	Type getType();[m
+[32m+[m	[32mvoid compile(MethodVisitor methodVisitor);[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/FieldRead.java b/compiler/src/main/java/yirgacheffe/compiler/expression/FieldRead.java[m
+[1mindex 5f74ef9..a6c0786 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/FieldRead.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/FieldRead.java[m
+[36m@@ -13,6 +13,8 @@[m [mpublic class FieldRead implements Expression[m
+ [m
+ 	private Type type;[m
+ [m
+[32m+[m	[32mprivate Type ownerType;[m
+[32m+[m
+ 	public FieldRead(Expression owner, String name, Type type)[m
+ 	{[m
+ 		this.owner = owner;[m
+[36m@@ -21,20 +23,22 @@[m [mpublic class FieldRead implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+ 	{[m
+[31m-		this.owner.compile(methodVisitor, result);[m
+[32m+[m		[32mthis.ownerType = this.owner.check(result);[m
+ [m
+[31m-		methodVisitor.visitFieldInsn([m
+[31m-			Opcodes.GETFIELD,[m
+[31m-			this.owner.getType().toFullyQualifiedType().replace(".", "/"),[m
+[31m-			this.name,[m
+[31m-			this.type.toJVMType());[m
+[32m+[m		[32mreturn this.type;[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public Type getType()[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+ 	{[m
+[31m-		return this.type;[m
+[32m+[m		[32mthis.owner.compile(methodVisitor);[m
+[32m+[m
+[32m+[m		[32mmethodVisitor.visitFieldInsn([m
+[32m+[m			[32mOpcodes.GETFIELD,[m
+[32m+[m			[32mthis.ownerType.toFullyQualifiedType().replace(".", "/"),[m
+[32m+[m			[32mthis.name,[m
+[32m+[m			[32mthis.type.toJVMType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeConstructor.java b/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeConstructor.java[m
+[1mindex eeca726..8bdecc5 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeConstructor.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeConstructor.java[m
+[36m@@ -21,12 +21,14 @@[m [mpublic class InvokeConstructor implements Expression[m
+ [m
+ 	private Type owner;[m
+ [m
+[31m-	private Arguments arguments;[m
+[32m+[m	[32mprivate Array<Expression> arguments;[m
+[32m+[m
+[32m+[m	[32mprivate Callable function;[m
+ [m
+ 	public InvokeConstructor([m
+ 		Coordinate coordinate,[m
+ 		Type owner,[m
+[31m-		Arguments arguments)[m
+[32m+[m		[32mArray<Expression> arguments)[m
+ 	{[m
+ 		this.coordinate = coordinate;[m
+ 		this.owner = owner;[m
+[36m@@ -34,23 +36,18 @@[m [mpublic class InvokeConstructor implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+ 	{[m
+[31m-		if (this.owner instanceof NullType)[m
+[32m+[m		[32mArray<Type> argumentTypes = new Array<>();[m
+[32m+[m
+[32m+[m		[32mfor (Expression argument: this.arguments)[m
+ 		{[m
+[31m-			return;[m
+[32m+[m			[32margumentTypes.push(argument.check(result));[m
+ 		}[m
+ [m
+[31m-		String typeWithSlashes =[m
+[31m-			this.owner.toFullyQualifiedType().replace(".", "/");[m
+[31m-[m
+[31m-		methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);[m
+[31m-		methodVisitor.visitInsn(Opcodes.DUP);[m
+[31m-[m
+[31m-		this.arguments.compile(methodVisitor, result);[m
+[31m-[m
+ 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();[m
+ 		Array<Callable> functions = new Array<>();[m
+[32m+[m		[32mArguments arguments = new Arguments(argumentTypes);[m
+ [m
+ 		for (Constructor<?> constructor : constructors)[m
+ 		{[m
+[36m@@ -59,23 +56,39 @@[m [mpublic class InvokeConstructor implements Expression[m
+ [m
+ 		MatchResult matchResult =[m
+ 			new Functions(this.coordinate, this.owner.toFullyQualifiedType(), functions)[m
+[31m-				.getMatchingExecutable(this.arguments);[m
+[31m-[m
+[31m-		Callable function = matchResult.getFunction();[m
+[32m+[m				[32m.getMatchingExecutable(arguments);[m
+ [m
+[31m-		methodVisitor.visitMethodInsn([m
+[31m-			Opcodes.INVOKESPECIAL,[m
+[31m-			typeWithSlashes,[m
+[31m-			"<init>",[m
+[31m-			function.getDescriptor(),[m
+[31m-			false);[m
+[32m+[m		[32mthis.function = matchResult.getFunction();[m
+ [m
+ 		result.matchConstructor(matchResult);[m
+[32m+[m
+[32m+[m		[32mreturn this.owner;[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public Type getType()[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+ 	{[m
+[31m-		return this.owner;[m
+[32m+[m		[32mif (this.owner instanceof NullType)[m
+[32m+[m		[32m{[m
+[32m+[m			[32mreturn;[m
+[32m+[m		[32m}[m
+[32m+[m
+[32m+[m		[32mString typeWithSlashes =[m
+[32m+[m			[32mthis.owner.toFullyQualifiedType().replace(".", "/");[m
+[32m+[m
+[32m+[m		[32mmethodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);[m
+[32m+[m		[32mmethodVisitor.visitInsn(Opcodes.DUP);[m
+[32m+[m
+[32m+[m		[32mfor (Expression argument: this.arguments)[m
+[32m+[m		[32m{[m
+[32m+[m			[32margument.compile(methodVisitor);[m
+[32m+[m		[32m}[m
+[32m+[m
+[32m+[m		[32mmethodVisitor.visitMethodInsn([m
+[32m+[m			[32mOpcodes.INVOKESPECIAL,[m
+[32m+[m			[32mtypeWithSlashes,[m
+[32m+[m			[32m"<init>",[m
+[32m+[m			[32mthis.function.getDescriptor(),[m
+[32m+[m			[32mfalse);[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeMethod.java b/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeMethod.java[m
+[1mindex c9c9dc5..a89088c 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeMethod.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/InvokeMethod.java[m
+[36m@@ -27,7 +27,13 @@[m [mpublic class InvokeMethod implements Expression[m
+ [m
+ 	private Expression owner;[m
+ [m
+[31m-	private Arguments arguments;[m
+[32m+[m	[32mprivate Array<Expression> arguments;[m
+[32m+[m
+[32m+[m	[32mprivate Type ownerType;[m
+[32m+[m
+[32m+[m	[32mprivate Array<Type> argumentTypes = new Array<>();[m
+[32m+[m
+[32m+[m	[32mprivate MatchResult matchResult;[m
+ [m
+ 	private Type returnType;[m
+ [m
+[36m@@ -36,7 +42,7 @@[m [mpublic class InvokeMethod implements Expression[m
+ 		String name,[m
+ 		String caller,[m
+ 		Expression owner,[m
+[31m-		Arguments arguments)[m
+[32m+[m		[32mArray<Expression> arguments)[m
+ 	{[m
+ 		this.coordinate = coordinate;[m
+ 		this.name = name;[m
+[36m@@ -46,17 +52,41 @@[m [mpublic class InvokeMethod implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+ 	{[m
+[31m-		this.owner.compile(methodVisitor, result);[m
+[31m-		Array<Type> argumentTypes = this.arguments.compile(methodVisitor, result);[m
+[31m-		Type owner = this.owner.getType();[m
+[31m-		MatchResult matchResult = this.getMatchResult(owner, this.name);[m
+[31m-		Callable function = matchResult.getFunction();[m
+[32m+[m		[32mthis.ownerType = this.owner.check(result);[m
+[32m+[m
+[32m+[m		[32mfor (Expression argument: this.arguments)[m
+[32m+[m		[32m{[m
+[32m+[m			[32mthis.argumentTypes.push(argument.check(result));[m
+[32m+[m		[32m}[m
+[32m+[m
+[32m+[m		[32mArguments arguments = new Arguments(this.argumentTypes);[m
+[32m+[m
+[32m+[m		[32mthis.matchResult =[m
+[32m+[m			[32mthis.getMatchResult([m
+[32m+[m				[32mthis.ownerType,[m
+[32m+[m				[32mthis.name,[m
+[32m+[m				[32marguments);[m
+[32m+[m
+[32m+[m		[32mresult.matchMethod(this.matchResult);[m
+[32m+[m		[32mCallable function = this.matchResult.getFunction();[m
+[32m+[m		[32mthis.returnType = function.getReturnType();[m
+[32m+[m
+[32m+[m		[32mreturn function.getReturnType();[m
+[32m+[m	[32m}[m
+ [m
+[32m+[m	[32m@Override[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+[32m+[m	[32m{[m
+[32m+[m		[32mCallable function = matchResult.getFunction();[m
+ 		Array<Type> parameters = function.getParameterTypes();[m
+[32m+[m		[32mType owner = this.ownerType;[m
+[32m+[m		[32mType returnType = this.returnType;[m
+ [m
+[31m-		for (int i = 0; i < argumentTypes.length(); i++)[m
+[32m+[m		[32mthis.owner.compile(methodVisitor);[m
+[32m+[m
+[32m+[m		[32mfor (int i = 0; i < this.argumentTypes.length(); i++)[m
+ 		{[m
+ 			Type argumentType = argumentTypes.get(i);[m
+ [m
+[36m@@ -97,8 +127,6 @@[m [mpublic class InvokeMethod implements Expression[m
+ 			function.getDescriptor(),[m
+ 			isInterface);[m
+ [m
+[31m-		Type returnType = function.getReturnType();[m
+[31m-[m
+ 		if (returnType instanceof GenericType)[m
+ 		{[m
+ 			methodVisitor.visitTypeInsn([m
+[36m@@ -129,13 +157,12 @@[m [mpublic class InvokeMethod implements Expression[m
+ 		{[m
+ 			methodVisitor.visitInsn(Opcodes.F2D);[m
+ 		}[m
+[31m-[m
+[31m-		this.returnType = returnType;[m
+[31m-[m
+[31m-		result.matchMethod(matchResult);[m
+ 	}[m
+ [m
+[31m-	private MatchResult getMatchResult(Type owner, String methodName)[m
+[32m+[m	[32mprivate MatchResult getMatchResult([m
+[32m+[m		[32mType owner,[m
+[32m+[m		[32mString methodName,[m
+[32m+[m		[32mArguments arguments)[m
+ 	{[m
+ 		Method[] methods;[m
+ [m
+[36m@@ -161,13 +188,7 @@[m [mpublic class InvokeMethod implements Expression[m
+ 		String method = owner + "." + methodName;[m
+ [m
+ 		return new Functions(this.coordinate, method, namedMethods)[m
+[31m-			.getMatchingExecutable(this.arguments);[m
+[31m-	}[m
+[31m-[m
+[31m-	@Override[m
+[31m-	public Type getType()[m
+[31m-	{[m
+[31m-		return this.returnType;[m
+[32m+[m			[32m.getMatchingExecutable(arguments);[m
+ 	}[m
+ [m
+ 	private String withSlashes(Type type)[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/Literal.java b/compiler/src/main/java/yirgacheffe/compiler/expression/Literal.java[m
+[1mindex 1c43e45..f4a5181 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/Literal.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/Literal.java[m
+[36m@@ -20,7 +20,13 @@[m [mpublic class Literal implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+[32m+[m	[32m{[m
+[32m+[m		[32mreturn this.type;[m
+[32m+[m	[32m}[m
+[32m+[m
+[32m+[m	[32m@Override[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+ 	{[m
+ 		if (this.type instanceof ReferenceType)[m
+ 		{[m
+[36m@@ -59,10 +65,4 @@[m [mpublic class Literal implements Expression[m
+ 			}[m
+ 		}[m
+ 	}[m
+[31m-[m
+[31m-	@Override[m
+[31m-	public Type getType()[m
+[31m-	{[m
+[31m-		return this.type;[m
+[31m-	}[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/This.java b/compiler/src/main/java/yirgacheffe/compiler/expression/This.java[m
+[1mindex 6ec0008..74d265f 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/This.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/This.java[m
+[36m@@ -15,14 +15,14 @@[m [mpublic class This implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+ 	{[m
+[31m-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);[m
+[32m+[m		[32mreturn this.type;[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public Type getType()[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+ 	{[m
+[31m-		return this.type;[m
+[32m+[m		[32mmethodVisitor.visitVarInsn(Opcodes.ALOAD, 0);[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/expression/VariableRead.java b/compiler/src/main/java/yirgacheffe/compiler/expression/VariableRead.java[m
+[1mindex fe5f1bb..12a2741 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/expression/VariableRead.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/expression/VariableRead.java[m
+[36m@@ -10,7 +10,7 @@[m [mpublic class VariableRead implements Expression[m
+ {[m
+ 	private String name;[m
+ [m
+[31m-	private Type type;[m
+[32m+[m	[32mprivate Variable variable;[m
+ [m
+ 	private Coordinate coordinate;[m
+ [m
+[36m@@ -21,22 +21,22 @@[m [mpublic class VariableRead implements Expression[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+[32m+[m	[32mpublic Type check(StatementResult result)[m
+ 	{[m
+[31m-		Variable variable = result.getVariable(this.name);[m
+[31m-		Type type = variable.getType();[m
+[31m-[m
+[31m-		methodVisitor.visitVarInsn(type.getLoadInstruction(), variable.getIndex());[m
+[32m+[m		[32mthis.variable = result.getVariable(this.name);[m
+ [m
+ 		result.read(this);[m
+ [m
+[31m-		this.type = type;[m
+[32m+[m		[32mreturn this.variable.getType();[m
+ 	}[m
+ [m
+ 	@Override[m
+[31m-	public Type getType()[m
+[32m+[m	[32mpublic void compile(MethodVisitor methodVisitor)[m
+ 	{[m
+[31m-		return this.type;[m
+[32m+[m		[32mint loadInstruction = this.variable.getType().getLoadInstruction();[m
+[32m+[m		[32mint index = this.variable.getIndex();[m
+[32m+[m
+[32m+[m		[32mmethodVisitor.visitVarInsn(loadInstruction, index);[m
+ 	}[m
+ [m
+ 	public Coordinate getCoordinate()[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/listener/FieldListener.java b/compiler/src/main/java/yirgacheffe/compiler/listener/FieldListener.java[m
+[1mindex 7bb02c4..711dc2f 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/listener/FieldListener.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/listener/FieldListener.java[m
+[36m@@ -53,14 +53,14 @@[m [mpublic class FieldListener extends FieldDeclarationListener[m
+ 	{[m
+ 		YirgacheffeParser.FieldDeclarationContext declaration =[m
+ 			context.fieldDeclaration();[m
+[32m+[m		[32mStatementResult result = new StatementResult();[m
+ 		Expression expression = this.expressions.pop();[m
+ 		Expression self = this.expressions.pop();[m
+[31m-		Type expressionType = expression.getType();[m
+[32m+[m		[32mType expressionType = expression.check(result);[m
+ 		Type fieldType = this.types.getType(declaration.type());[m
+[31m-		StatementResult result = new StatementResult();[m
+ [m
+[31m-		self.compile(this.methodVisitor, result);[m
+[31m-		expression.compile(this.methodVisitor, result);[m
+[32m+[m		[32mself.compile(this.methodVisitor);[m
+[32m+[m		[32mexpression.compile(this.methodVisitor);[m
+ [m
+ 		this.methodVisitor.visitFieldInsn([m
+ 			Opcodes.PUTFIELD,[m
+[36m@@ -99,7 +99,6 @@[m [mpublic class FieldListener extends FieldDeclarationListener[m
+ 		}[m
+ [m
+ 		Expression owner = this.expressions.pop();[m
+[31m-[m
+ 		Expression fieldRead = new FieldRead(owner, fieldName, fieldType);[m
+ [m
+ 		this.expressions.push(fieldRead);[m
+[36m@@ -117,31 +116,7 @@[m [mpublic class FieldListener extends FieldDeclarationListener[m
+ [m
+ 		String fieldName = context.Identifier().getText();[m
+ 		Expression value = this.expressions.pop();[m
+[31m-		Type type = value.getType();[m
+ 		Expression owner = this.expressions.pop();[m
+[31m-		Type ownerType = owner.getType();[m
+[31m-[m
+[31m-		try[m
+[31m-		{[m
+[31m-			Class<?> fieldClass =[m
+[31m-				ownerType.reflectionClass().getDeclaredField(fieldName).getType();[m
+[31m-			Class<?> expressionClass = type.reflectionClass();[m
+[31m-[m
+[31m-			if (!fieldClass.isAssignableFrom(expressionClass) &&[m
+[31m-				!fieldClass.getSimpleName()[m
+[31m-					.equals(expressionClass.getSimpleName().toLowerCase()))[m
+[31m-			{[m
+[31m-				String message =[m
+[31m-					"Cannot assign expression of type " + type +[m
+[31m-					" to field of type " + fieldClass.getName() + ".";[m
+[31m-[m
+[31m-				this.errors.push(new Error(context, message));[m
+[31m-			}[m
+[31m-		}[m
+[31m-		catch (NoSuchFieldException e)[m
+[31m-		{[m
+[31m-			throw new RuntimeException(e);[m
+[31m-		}[m
+ [m
+ 		this.statements.push(new FieldWrite(fieldName, owner, value));[m
+ 	}[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/listener/FunctionCallListener.java b/compiler/src/main/java/yirgacheffe/compiler/listener/FunctionCallListener.java[m
+[1mindex 169f82a..f8af774 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/listener/FunctionCallListener.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/listener/FunctionCallListener.java[m
+[36m@@ -6,7 +6,6 @@[m [mimport yirgacheffe.compiler.expression.Expression;[m
+ import yirgacheffe.compiler.expression.InvokeConstructor;[m
+ import yirgacheffe.compiler.expression.InvokeMethod;[m
+ import yirgacheffe.compiler.statement.FunctionCall;[m
+[31m-import yirgacheffe.compiler.type.Arguments;[m
+ import yirgacheffe.compiler.type.Classes;[m
+ import yirgacheffe.compiler.type.Type;[m
+ import yirgacheffe.lang.Array;[m
+[36m@@ -14,7 +13,7 @@[m [mimport yirgacheffe.parser.YirgacheffeParser;[m
+ [m
+ public class FunctionCallListener extends ExpressionListener[m
+ {[m
+[31m-	private Arguments arguments;[m
+[32m+[m	[32mprivate Array<Expression> arguments;[m
+ [m
+ 	public FunctionCallListener(String sourceFile, Classes classes)[m
+ 	{[m
+[36m@@ -73,7 +72,7 @@[m [mpublic class FunctionCallListener extends ExpressionListener[m
+ 			arguments.set(i, this.expressions.pop());[m
+ 		}[m
+ [m
+[31m-		this.arguments = new Arguments(arguments);[m
+[32m+[m		[32mthis.arguments = arguments;[m
+ 	}[m
+ [m
+ 	@Override[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/statement/FieldWrite.java b/compiler/src/main/java/yirgacheffe/compiler/statement/FieldWrite.java[m
+[1mindex a944e30..d185aed 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/statement/FieldWrite.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/statement/FieldWrite.java[m
+[36m@@ -3,6 +3,7 @@[m [mpackage yirgacheffe.compiler.statement;[m
+ import org.objectweb.asm.MethodVisitor;[m
+ import org.objectweb.asm.Opcodes;[m
+ import yirgacheffe.compiler.expression.Expression;[m
+[32m+[m[32mimport yirgacheffe.compiler.type.Type;[m
+ [m
+ public class FieldWrite implements Statement[m
+ {[m
+[36m@@ -22,13 +23,16 @@[m [mpublic class FieldWrite implements Statement[m
+ 	@Override[m
+ 	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+ 	{[m
+[31m-		this.owner.compile(methodVisitor, result);[m
+[31m-		this.value.compile(methodVisitor, result);[m
+[32m+[m		[32mType ownerType = this.owner.check(result);[m
+[32m+[m		[32mType type = this.value.check(result);[m
+[32m+[m
+[32m+[m		[32mthis.owner.compile(methodVisitor);[m
+[32m+[m		[32mthis.value.compile(methodVisitor);[m
+ [m
+ 		methodVisitor.visitFieldInsn([m
+ 			Opcodes.PUTFIELD,[m
+[31m-			this.owner.getType().toFullyQualifiedType(),[m
+[32m+[m			[32mownerType.toFullyQualifiedType(),[m
+ 			this.name,[m
+[31m-			this.value.getType().toJVMType());[m
+[32m+[m			[32mtype.toJVMType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/statement/FunctionCall.java b/compiler/src/main/java/yirgacheffe/compiler/statement/FunctionCall.java[m
+[1mindex 020da10..e5dd3c8 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/statement/FunctionCall.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/statement/FunctionCall.java[m
+[36m@@ -3,6 +3,7 @@[m [mpackage yirgacheffe.compiler.statement;[m
+ import org.objectweb.asm.MethodVisitor;[m
+ import org.objectweb.asm.Opcodes;[m
+ import yirgacheffe.compiler.expression.Expression;[m
+[32m+[m[32mimport yirgacheffe.compiler.type.Type;[m
+ [m
+ public class FunctionCall implements Statement[m
+ {[m
+[36m@@ -16,9 +17,11 @@[m [mpublic class FunctionCall implements Statement[m
+ 	@Override[m
+ 	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+ 	{[m
+[31m-		this.expression.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = this.expression.check(result);[m
+ [m
+[31m-		int width = this.expression.getType().width();[m
+[32m+[m		[32mthis.expression.compile(methodVisitor);[m
+[32m+[m
+[32m+[m		[32mint width = type.width();[m
+ [m
+ 		if (width == 1)[m
+ 		{[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/statement/Return.java b/compiler/src/main/java/yirgacheffe/compiler/statement/Return.java[m
+[1mindex d7f42a3..86ef9fc 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/statement/Return.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/statement/Return.java[m
+[36m@@ -25,12 +25,14 @@[m [mpublic class Return implements Statement[m
+ 	@Override[m
+ 	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+ 	{[m
+[31m-		this.expression.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = this.expression.check(result);[m
+ [m
+[31m-		if (!this.expression.getType().isAssignableTo(this.type))[m
+[32m+[m		[32mthis.expression.compile(methodVisitor);[m
+[32m+[m
+[32m+[m		[32mif (!type.isAssignableTo(this.type))[m
+ 		{[m
+ 			ReturnTypeError message =[m
+[31m-				new ReturnTypeError(this.type, this.expression.getType());[m
+[32m+[m				[32mnew ReturnTypeError(this.type, type);[m
+ [m
+ 			result.error(new Error(this.coordinate, message));[m
+ 		}[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/statement/VariableWrite.java b/compiler/src/main/java/yirgacheffe/compiler/statement/VariableWrite.java[m
+[1mindex 1da7b40..a326093 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/statement/VariableWrite.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/statement/VariableWrite.java[m
+[36m@@ -30,12 +30,12 @@[m [mpublic class VariableWrite implements Statement[m
+ 	@Override[m
+ 	public void compile(MethodVisitor methodVisitor, StatementResult result)[m
+ 	{[m
+[31m-		this.expression.compile(methodVisitor, result);[m
+[31m-[m
+[31m-		Type type = this.expression.getType();[m
+[32m+[m		[32mType type = this.expression.check(result);[m
+ 		Variable variable = result.getVariable(this.name);[m
+ 		Type variableType = variable.getType();[m
+ [m
+[32m+[m		[32mthis.expression.compile(methodVisitor);[m
+[32m+[m
+ 		if (!type.isAssignableTo(variableType))[m
+ 		{[m
+ 			ErrorMessage message = new VariableAssignmentError(variableType, type);[m
+[1mdiff --git a/compiler/src/main/java/yirgacheffe/compiler/type/Arguments.java b/compiler/src/main/java/yirgacheffe/compiler/type/Arguments.java[m
+[1mindex ca92baa..1f48fad 100644[m
+[1m--- a/compiler/src/main/java/yirgacheffe/compiler/type/Arguments.java[m
+[1m+++ b/compiler/src/main/java/yirgacheffe/compiler/type/Arguments.java[m
+[36m@@ -1,34 +1,18 @@[m
+ package yirgacheffe.compiler.type;[m
+ [m
+[31m-import org.objectweb.asm.MethodVisitor;[m
+[31m-import yirgacheffe.compiler.expression.Expression;[m
+[31m-import yirgacheffe.compiler.statement.StatementResult;[m
+ import yirgacheffe.lang.Array;[m
+ [m
+ import java.lang.reflect.TypeVariable;[m
+ [m
+ public class Arguments[m
+ {[m
+[31m-	private Array<Expression> arguments;[m
+[32m+[m	[32mprivate Array<Type> arguments;[m
+ [m
+[31m-	public Arguments(Array<Expression> arguments)[m
+[32m+[m	[32mpublic Arguments(Array<Type> arguments)[m
+ 	{[m
+ 		this.arguments = arguments;[m
+ 	}[m
+ [m
+[31m-	public Array<Type> compile(MethodVisitor methodVisitor, StatementResult result)[m
+[31m-	{[m
+[31m-		Array<Type> types = new Array<>();[m
+[31m-[m
+[31m-		for (Expression expression: this.arguments)[m
+[31m-		{[m
+[31m-			expression.compile(methodVisitor, result);[m
+[31m-			types.push(expression.getType());[m
+[31m-		}[m
+[31m-[m
+[31m-		return types;[m
+[31m-	}[m
+[31m-[m
+ 	public Array<MismatchedTypes> checkTypeParameters([m
+ 		Array<java.lang.reflect.Type> parameters,[m
+ 		ParameterisedType owner)[m
+[36m@@ -40,7 +24,7 @@[m [mpublic class Arguments[m
+ 			if (parameters.get(i) instanceof TypeVariable)[m
+ 			{[m
+ 				TypeVariable typeVariable = (TypeVariable) parameters.get(i);[m
+[31m-				Type argumentType = this.arguments.get(i).getType();[m
+[32m+[m				[32mType argumentType = this.arguments.get(i);[m
+ [m
+ 				boolean hasTypeParameter =[m
+ 					owner.hasTypeParameter([m
+[36m@@ -73,7 +57,7 @@[m [mpublic class Arguments[m
+ [m
+ 		for (int i = 0; i < parameterTypes.length(); i++)[m
+ 		{[m
+[31m-			Type argumentType = this.arguments.get(i).getType();[m
+[32m+[m			[32mType argumentType = this.arguments.get(i);[m
+ [m
+ 			if (!argumentType.isAssignableTo(parameterTypes.get(i)))[m
+ 			{[m
+[36m@@ -94,9 +78,9 @@[m [mpublic class Arguments[m
+ 	{[m
+ 		Array<String> arguments = new Array<>();[m
+ [m
+[31m-		for (Expression argument : this.arguments)[m
+[32m+[m		[32mfor (Type argument : this.arguments)[m
+ 		{[m
+[31m-			arguments.push(argument.getType().toString());[m
+[32m+[m			[32marguments.push(argument.toString());[m
+ 		}[m
+ [m
+ 		return "(" + String.join(",", arguments) + ")";[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/FieldReadTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/FieldReadTest.java[m
+[1mindex 71ed283..d76a68d 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/FieldReadTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/FieldReadTest.java[m
+[36m@@ -22,11 +22,16 @@[m [mpublic class FieldReadTest[m
+ 		StatementResult result = new StatementResult();[m
+ [m
+ 		Type owner = new ReferenceType(String.class);[m
+[31m-		Expression string = new This(owner);[m
+[31m-		Type type = PrimitiveType.DOUBLE;[m
+[31m-		FieldRead fieldRead = new FieldRead(string, "length", type);[m
+ [m
+[31m-		fieldRead.compile(methodVisitor, result);[m
+[32m+[m		[32mFieldRead fieldRead =[m
+[32m+[m			[32mnew FieldRead([m
+[32m+[m				[32mnew This(owner),[m
+[32m+[m				[32m"length",[m
+[32m+[m				[32mPrimitiveType.DOUBLE);[m
+[32m+[m
+[32m+[m		[32mType type = fieldRead.check(result);[m
+[32m+[m
+[32m+[m		[32mfieldRead.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -44,6 +49,6 @@[m [mpublic class FieldReadTest[m
+ 		assertEquals("length", secondInstruction.name);[m
+ 		assertEquals("D", secondInstruction.desc);[m
+ [m
+[31m-		assertEquals("java.lang.Double", fieldRead.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeConstructorTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeConstructorTest.java[m
+[1mindex 2b1c3e3..c439238 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeConstructorTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeConstructorTest.java[m
+[36m@@ -34,9 +34,11 @@[m [mpublic class InvokeConstructorTest[m
+ 			new InvokeConstructor([m
+ 				coordinate,[m
+ 				owner,[m
+[31m-				new Arguments(arguments));[m
+[32m+[m				[32marguments);[m
+ [m
+[31m-		invokeConstructor.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = invokeConstructor.check(result);[m
+[32m+[m
+[32m+[m		[32minvokeConstructor.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -63,8 +65,6 @@[m [mpublic class InvokeConstructorTest[m
+ 		assertEquals("(D)V", fourthInstruction.desc);[m
+ 		assertFalse(fourthInstruction.itf);[m
+ [m
+[31m-		assertEquals([m
+[31m-			"java.lang.Double",[m
+[31m-			invokeConstructor.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeMethodTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeMethodTest.java[m
+[1mindex 6b84e63..0224907 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeMethodTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/InvokeMethodTest.java[m
+[36m@@ -34,7 +34,6 @@[m [mpublic class InvokeMethodTest[m
+ 		Coordinate coordinate = new Coordinate(0, 1);[m
+ 		Type stringType = new ReferenceType(String.class);[m
+ 		Expression expression = new Literal(stringType, "\"thingy\"");[m
+[31m-		Arguments arguments = new Arguments(new Array<>());[m
+ [m
+ 		InvokeMethod invokeMethod =[m
+ 			new InvokeMethod([m
+[36m@@ -42,9 +41,11 @@[m [mpublic class InvokeMethodTest[m
+ 				"toString",[m
+ 				"myClass",[m
+ 				expression,[m
+[31m-				arguments);[m
+[32m+[m				[32mnew Array<>());[m
+[32m+[m
+[32m+[m		[32mType type = invokeMethod.check(result);[m
+ [m
+[31m-		invokeMethod.compile(methodVisitor, result);[m
+[32m+[m		[32minvokeMethod.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -63,7 +64,7 @@[m [mpublic class InvokeMethodTest[m
+ 		assertEquals("()Ljava/lang/String;", secondInstruction.desc);[m
+ 		assertFalse(secondInstruction.itf);[m
+ [m
+[31m-		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.String", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -82,9 +83,11 @@[m [mpublic class InvokeMethodTest[m
+ 				"concat",[m
+ 				"myClass",[m
+ 				expression,[m
+[31m-				new Arguments(arguments));[m
+[32m+[m				[32marguments);[m
+[32m+[m
+[32m+[m		[32mType type = invokeMethod.check(result);[m
+ [m
+[31m-		invokeMethod.compile(methodVisitor, result);[m
+[32m+[m		[32minvokeMethod.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -108,7 +111,7 @@[m [mpublic class InvokeMethodTest[m
+ 		assertEquals("concat", thirdInstruction.name);[m
+ 		assertFalse(thirdInstruction.itf);[m
+ [m
+[31m-		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.String", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -126,7 +129,7 @@[m [mpublic class InvokeMethodTest[m
+ 			new InvokeConstructor([m
+ 				coordinate,[m
+ 				owner,[m
+[31m-				new Arguments(new Array<>()));[m
+[32m+[m				[32mnew Array<>());[m
+ [m
+ 		Array<Expression> arguments =[m
+ 			new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));[m
+[36m@@ -137,14 +140,16 @@[m [mpublic class InvokeMethodTest[m
+ 				"get",[m
+ 				"MyClass",[m
+ 				expression,[m
+[31m-				new Arguments(arguments));[m
+[32m+[m				[32marguments);[m
+[32m+[m
+[32m+[m		[32mType type = invokeMethod.check(result);[m
+ [m
+[31m-		invokeMethod.compile(methodVisitor, result);[m
+[32m+[m		[32minvokeMethod.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+ 		assertEquals(8, instructions.size());[m
+[31m-		assertEquals("java.lang.Double", invokeMethod.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ [m
+ 		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);[m
+ [m
+[36m@@ -206,14 +211,16 @@[m [mpublic class InvokeMethodTest[m
+ 				"run",[m
+ 				"MyClass",[m
+ 				expression,[m
+[31m-				new Arguments(new Array<>()));[m
+[32m+[m				[32mnew Array<>());[m
+[32m+[m
+[32m+[m		[32mType type = invokeMethod.check(result);[m
+ [m
+[31m-		invokeMethod.compile(methodVisitor, result);[m
+[32m+[m		[32minvokeMethod.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+ 		assertEquals(2, instructions.size());[m
+[31m-		assertEquals("java.lang.Void", invokeMethod.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Void", type.toFullyQualifiedType());[m
+ [m
+ 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);[m
+ [m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/LiteralTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/LiteralTest.java[m
+[1mindex 66bf9b8..1e178a6 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/LiteralTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/LiteralTest.java[m
+[36m@@ -9,6 +9,7 @@[m [mimport org.objectweb.asm.tree.MethodNode;[m
+ import yirgacheffe.compiler.statement.StatementResult;[m
+ import yirgacheffe.compiler.type.PrimitiveType;[m
+ import yirgacheffe.compiler.type.ReferenceType;[m
+[32m+[m[32mimport yirgacheffe.compiler.type.Type;[m
+ [m
+ import static org.junit.Assert.assertEquals;[m
+ [m
+[36m@@ -22,7 +23,9 @@[m [mpublic class LiteralTest[m
+ 		Literal literal = new Literal(new ReferenceType(String.class), "\"thingy\"");[m
+ 		StatementResult result = new StatementResult();[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -33,7 +36,7 @@[m [mpublic class LiteralTest[m
+ 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());[m
+ 		assertEquals("thingy", firstInstruction.cst);[m
+ [m
+[31m-		assertEquals("java.lang.String", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.String", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -44,7 +47,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(new ReferenceType(String.class), "\"thi\"ngy\"");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -55,7 +60,7 @@[m [mpublic class LiteralTest[m
+ 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());[m
+ 		assertEquals("thi\"ngy", firstInstruction.cst);[m
+ [m
+[31m-		assertEquals("java.lang.String", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.String", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -66,7 +71,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -75,7 +82,7 @@[m [mpublic class LiteralTest[m
+ 		InsnNode firstInstruction = (InsnNode) instructions.get(0);[m
+ [m
+ 		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());[m
+[31m-		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -86,7 +93,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.DOUBLE, "1");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -95,7 +104,7 @@[m [mpublic class LiteralTest[m
+ 		InsnNode firstInstruction = (InsnNode) instructions.get(0);[m
+ [m
+ 		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());[m
+[31m-		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -106,7 +115,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.DOUBLE, "2");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -117,7 +128,7 @@[m [mpublic class LiteralTest[m
+ 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());[m
+ 		assertEquals(2.0, firstInstruction.cst);[m
+ [m
+[31m-		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -128,7 +139,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0.5");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -139,7 +152,7 @@[m [mpublic class LiteralTest[m
+ 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());[m
+ 		assertEquals(0.5, firstInstruction.cst);[m
+ [m
+[31m-		assertEquals("java.lang.Double", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -150,7 +163,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "false");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -160,7 +175,7 @@[m [mpublic class LiteralTest[m
+ [m
+ 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());[m
+ [m
+[31m-		assertEquals("java.lang.Boolean", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Boolean", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -171,7 +186,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "true");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -181,7 +198,7 @@[m [mpublic class LiteralTest[m
+ [m
+ 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());[m
+ [m
+[31m-		assertEquals("java.lang.Boolean", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Boolean", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -192,7 +209,9 @@[m [mpublic class LiteralTest[m
+ [m
+ 		Literal literal = new Literal(PrimitiveType.CHAR, "'r'");[m
+ [m
+[31m-		literal.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = literal.check(result);[m
+[32m+[m
+[32m+[m		[32mliteral.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -203,6 +222,6 @@[m [mpublic class LiteralTest[m
+ 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());[m
+ 		assertEquals('r', firstInstruction.cst);[m
+ [m
+[31m-		assertEquals("java.lang.Character", literal.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Character", type.toFullyQualifiedType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/ThisTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/ThisTest.java[m
+[1mindex cf535f2..88a7321 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/ThisTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/ThisTest.java[m
+[36m@@ -7,6 +7,7 @@[m [mimport org.objectweb.asm.tree.MethodNode;[m
+ import org.objectweb.asm.tree.VarInsnNode;[m
+ import yirgacheffe.compiler.statement.StatementResult;[m
+ import yirgacheffe.compiler.type.ReferenceType;[m
+[32m+[m[32mimport yirgacheffe.compiler.type.Type;[m
+ [m
+ import static org.junit.Assert.assertEquals;[m
+ [m
+[36m@@ -20,7 +21,9 @@[m [mpublic class ThisTest[m
+ [m
+ 		This thisRead = new This(new ReferenceType(this.getClass()));[m
+ [m
+[31m-		thisRead.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = thisRead.check(result);[m
+[32m+[m
+[32m+[m		[32mthisRead.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -33,6 +36,6 @@[m [mpublic class ThisTest[m
+ [m
+ 		assertEquals([m
+ 			"yirgacheffe.compiler.expression.ThisTest",[m
+[31m-			thisRead.getType().toFullyQualifiedType());[m
+[32m+[m			[32mtype.toFullyQualifiedType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/expression/VariableReadTest.java b/compiler/src/test/java/yirgacheffe/compiler/expression/VariableReadTest.java[m
+[1mindex f6e7d06..50b5dd4 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/expression/VariableReadTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/expression/VariableReadTest.java[m
+[36m@@ -27,7 +27,9 @@[m [mpublic class VariableReadTest[m
+ 		Coordinate coordinate = new Coordinate(1, 0);[m
+ 		Expression expression = new VariableRead("myVariable", coordinate);[m
+ [m
+[31m-		expression.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = expression.check(result);[m
+[32m+[m
+[32m+[m		[32mexpression.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -38,7 +40,7 @@[m [mpublic class VariableReadTest[m
+ 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());[m
+ 		assertEquals(1, firstInstruction.var);[m
+ [m
+[31m-		assertEquals("java.lang.String", expression.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.String", type.toFullyQualifiedType());[m
+ 	}[m
+ [m
+ 	@Test[m
+[36m@@ -53,7 +55,9 @@[m [mpublic class VariableReadTest[m
+ 		Coordinate coordinate = new Coordinate(1, 0);[m
+ 		Expression expression = new VariableRead("myVariable", coordinate);[m
+ [m
+[31m-		expression.compile(methodVisitor, result);[m
+[32m+[m		[32mType type = expression.check(result);[m
+[32m+[m
+[32m+[m		[32mexpression.compile(methodVisitor);[m
+ [m
+ 		InsnList instructions = methodVisitor.instructions;[m
+ [m
+[36m@@ -64,6 +68,6 @@[m [mpublic class VariableReadTest[m
+ 		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());[m
+ 		assertEquals(1, firstInstruction.var);[m
+ [m
+[31m-		assertEquals("java.lang.Double", expression.getType().toFullyQualifiedType());[m
+[32m+[m		[32massertEquals("java.lang.Double", type.toFullyQualifiedType());[m
+ 	}[m
+ }[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/function/FunctionsTest.java b/compiler/src/test/java/yirgacheffe/compiler/function/FunctionsTest.java[m
+[1mindex b45a0a4..1f816f2 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/function/FunctionsTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/function/FunctionsTest.java[m
+[36m@@ -21,8 +21,7 @@[m [mpublic class FunctionsTest[m
+ 	@Test[m
+ 	public void testGettingStringPrintlnMethod()[m
+ 	{[m
+[31m-		Expression expression = new Literal(new ReferenceType(String.class), "\"\"");[m
+[31m-		Array<Expression> string = new Array<>(expression);[m
+[32m+[m		[32mArray<Type> string = new Array<>(new ReferenceType(String.class));[m
+ 		Arguments arguments = new Arguments(string);[m
+ 		Type printStream = new ReferenceType(PrintStream.class);[m
+ 		Method[] methods = printStream.reflectionClass().getMethods();[m
+[36m@@ -53,8 +52,7 @@[m [mpublic class FunctionsTest[m
+ 	@Test[m
+ 	public void testGettingBooleanPrintlnMethod()[m
+ 	{[m
+[31m-		Expression expression = new Literal(PrimitiveType.BOOLEAN, "true");[m
+[31m-		Array<Expression> bool = new Array<>(expression);[m
+[32m+[m		[32mArray<Type> bool = new Array<>(PrimitiveType.BOOLEAN);[m
+ 		Arguments arguments = new Arguments(bool);[m
+ 		Type printStream = new ReferenceType(PrintStream.class);[m
+ 		Method[] methods = printStream.reflectionClass().getMethods();[m
+[36m@@ -85,8 +83,7 @@[m [mpublic class FunctionsTest[m
+ 	@Test[m
+ 	public void testAmbiguousMatchingOfBoxedAndUnboxedType()[m
+ 	{[m
+[31m-		Expression expression = new Literal(PrimitiveType.CHAR, "'A'");[m
+[31m-		Array<Expression> character = new Array<>(expression);[m
+[32m+[m		[32mArray<Type> character = new Array<>(PrimitiveType.CHAR);[m
+ 		Arguments arguments = new Arguments(character);[m
+ 		Type testClass = new ReferenceType(FunctionsTest.class);[m
+ 		Method[] methods = testClass.reflectionClass().getMethods();[m
+[1mdiff --git a/compiler/src/test/java/yirgacheffe/compiler/statement/FunctionCallTest.java b/compiler/src/test/java/yirgacheffe/compiler/statement/FunctionCallTest.java[m
+[1mindex a1d0815..c35f112 100644[m
+[1m--- a/compiler/src/test/java/yirgacheffe/compiler/statement/FunctionCallTest.java[m
+[1m+++ b/compiler/src/test/java/yirgacheffe/compiler/statement/FunctionCallTest.java[m
+[36m@@ -12,9 +12,7 @@[m [mimport yirgacheffe.compiler.error.Coordinate;[m
+ import yirgacheffe.compiler.expression.Expression;[m
+ import yirgacheffe.compiler.expression.InvokeConstructor;[m
+ import yirgacheffe.compiler.expression.Literal;[m
+[31m-import yirgacheffe.compiler.type.Arguments;[m
+ import yirgacheffe.compiler.type.PrimitiveType;[m
+[31m-import yirgacheffe.compiler.type.Type;[m
+ import yirgacheffe.lang.Array;[m
+ [m
+ import static org.junit.Assert.assertEquals;[m
+[36m@@ -33,7 +31,7 @@[m [mpublic class FunctionCallTest[m
+ 			new InvokeConstructor([m
+ 				coordinate,[m
+ 				PrimitiveType.DOUBLE,[m
+[31m-				new Arguments(arguments));[m
+[32m+[m				[32marguments);[m
+ [m
+ 		FunctionCall functionCall = new FunctionCall(invoke);[m
+ 		StatementResult result = new StatementResult();[m

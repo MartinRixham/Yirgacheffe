@@ -510,7 +510,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:9 Method java.lang.String.split(Bool) not found.\n",
+			"line 4:8 Method java.lang.String.split(Bool) not found.\n",
 			result.getErrors());
 	}
 
@@ -531,7 +531,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:9 Method java.lang.String.notAMethod() not found.\n",
+			"line 4:8 Method java.lang.String.notAMethod() not found.\n",
 			result.getErrors());
 	}
 
@@ -552,7 +552,7 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:4 Method Num.notAMethod() not found.\n",
+			"line 4:3 Method Num.notAMethod() not found.\n",
 			result.getErrors());
 	}
 
@@ -902,7 +902,8 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:5 Ambiguous call to method MyClass.mapIt.\n",
+			"line 4:4 Ambiguous call to method MyClass.mapIt" +
+				"(java.util.HashMap<java.lang.String,java.lang.String>).\n",
 			result.getErrors());
 	}
 

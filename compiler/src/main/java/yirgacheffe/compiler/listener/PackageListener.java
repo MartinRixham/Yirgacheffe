@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -21,7 +22,7 @@ public class PackageListener extends YirgacheffeListener
 		{
 			String message = "File contains multiple class declarations.";
 
-			this.errors.push(new Error(1, 0, message));
+			this.errors.push(new Error(new Coordinate(1, 0), message));
 		}
 	}
 

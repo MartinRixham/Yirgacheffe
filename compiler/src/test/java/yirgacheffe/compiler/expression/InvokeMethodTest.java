@@ -9,8 +9,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.function.Callable;
-import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -18,7 +18,6 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,16 +26,23 @@ import static org.junit.Assert.assertTrue;
 public class InvokeMethodTest
 {
 	@Test
-	public void testCompilingToStringInvocation() throws Exception
+	public void testCompilingToStringInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
+		Coordinate coordinate = new Coordinate(0, 1);
 		Type stringType = new ReferenceType(String.class);
-		Callable function =
-			new Function(stringType, String.class.getMethod("toString"));
 		Expression expression = new Literal(stringType, "\"thingy\"");
 
 		InvokeMethod invokeMethod =
-			new InvokeMethod(function, expression, new Array<>());
+			new InvokeMethod(
+				coordinate,
+				"toString",
+				"myClass",
+				expression,
+				new Array<>());
+
+		Type type = invokeMethod.check(result);
 
 		invokeMethod.compile(methodVisitor);
 
@@ -57,21 +63,28 @@ public class InvokeMethodTest
 		assertEquals("()Ljava/lang/String;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
 
-		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());
+		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
 
 	@Test
-	public void testInvocationCallWithArgument() throws Exception
+	public void testInvocationCallWithArgument()
 	{
 		MethodNode methodVisitor = new MethodNode();
-
+		StatementResult result = new StatementResult();
+		Coordinate coordinate = new Coordinate(0, 1);
 		Type stringType = new ReferenceType(String.class);
-		Function function =
-			new Function(stringType, String.class.getMethod("concat", String.class));
 		Expression expression = new Literal(stringType, "\"thingy\"");
 		Array<Expression> arguments = new Array<>(new Literal(stringType, "\"sumpt\""));
 
-		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"concat",
+				"myClass",
+				expression,
+				arguments);
+
+		Type type = invokeMethod.check(result);
 
 		invokeMethod.compile(methodVisitor);
 
@@ -97,32 +110,45 @@ public class InvokeMethodTest
 		assertEquals("concat", thirdInstruction.name);
 		assertFalse(thirdInstruction.itf);
 
-		assertEquals("java.lang.String", invokeMethod.getType().toFullyQualifiedType());
+		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
 
 	@Test
-	public void testCompilingInvocationWithGenericReturnType() throws Exception
+	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
+		Coordinate coordinate = new Coordinate(0, 1);
 		Array<Type> typeParameters =
 			new Array<>(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
 		Type owner =
 			new ParameterisedType(new ReferenceType(HashMap.class), typeParameters);
-		Callable function =
-			new Function(owner, Map.class.getMethod("get", Object.class));
-		Callable constructor = new Function(owner, HashMap.class.getConstructor());
-		Expression expression = new InvokeConstructor(constructor, new Array<>());
+
+		Expression expression =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				new Array<>());
+
 		Array<Expression> arguments =
 			new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));
 
-		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"get",
+				"MyClass",
+				expression,
+				arguments);
+
+		Type type = invokeMethod.check(result);
 
 		invokeMethod.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
 		assertEquals(8, instructions.size());
-		assertEquals("java.lang.Double", invokeMethod.getType().toFullyQualifiedType());
+		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 
 		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
@@ -167,22 +193,33 @@ public class InvokeMethodTest
 	}
 
 	@Test
-	public void testInterfaceMethodInvocation() throws Exception
+	public void testInterfaceMethodInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
 		Type owner = new ReferenceType(Runnable.class);
-		Callable function = new Function(owner, Runnable.class.getMethod("run"));
-		Expression expression = new Variable(1, owner);
-		Array<Expression> arguments = new Array<>();
 
-		InvokeMethod invokeMethod = new InvokeMethod(function, expression, arguments);
+		result.declare("myVariable", owner);
+
+		Coordinate coordinate = new Coordinate(0, 1);
+		VariableRead expression = new VariableRead("myVariable", coordinate);
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"run",
+				"MyClass",
+				expression,
+				new Array<>());
+
+		Type type = invokeMethod.check(result);
 
 		invokeMethod.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
 		assertEquals(2, instructions.size());
-		assertEquals("java.lang.Void", invokeMethod.getType().toFullyQualifiedType());
+		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

@@ -5,7 +5,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,8 +17,11 @@ public class ThisTest
 	public void testCompilingThis()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
+
+		Type type = thisRead.check(result);
 
 		thisRead.compile(methodVisitor);
 
@@ -31,6 +36,6 @@ public class ThisTest
 
 		assertEquals(
 			"yirgacheffe.compiler.expression.ThisTest",
-			thisRead.getType().toFullyQualifiedType());
+			type.toFullyQualifiedType());
 	}
 }

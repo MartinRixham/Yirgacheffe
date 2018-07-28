@@ -1,7 +1,8 @@
 package yirgacheffe.compiler.function;
 
 import org.junit.Test;
-import yirgacheffe.compiler.type.ArgumentClasses;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -18,10 +19,9 @@ public class FunctionsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Array<Type> stringClass = new Array<>(new ReferenceType(String.class));
+		Array<Type> string = new Array<>(new ReferenceType(String.class));
+		Arguments arguments = new Arguments(string);
 		Type printStream = new ReferenceType(PrintStream.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(stringClass);
-
 		Method[] methods = printStream.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
 
@@ -33,8 +33,13 @@ public class FunctionsTest
 			}
 		}
 
-		Functions functions = new Functions(printlnMethods);
-		MatchResult result = functions.getMatchingExecutable(argumentClasses);
+		Functions functions =
+			new Functions(
+				new Coordinate(0, 1),
+				"MyClass.thingy",
+				printlnMethods);
+
+		MatchResult result = functions.getMatchingExecutable(arguments);
 		Array<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
@@ -46,9 +51,8 @@ public class FunctionsTest
 	public void testGettingBooleanPrintlnMethod()
 	{
 		Array<Type> bool = new Array<>(PrimitiveType.BOOLEAN);
+		Arguments arguments = new Arguments(bool);
 		Type printStream = new ReferenceType(PrintStream.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(bool);
-
 		Method[] methods = printStream.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
 
@@ -60,8 +64,13 @@ public class FunctionsTest
 			}
 		}
 
-		Functions functions = new Functions(printlnMethods);
-		MatchResult result = functions.getMatchingExecutable(argumentClasses);
+		Functions functions =
+			new Functions(
+				new Coordinate(0, 1),
+				"MyClass.thingy",
+				printlnMethods);
+
+		MatchResult result = functions.getMatchingExecutable(arguments);
 		Array<MismatchedTypes> mismatchedParameters = result.getMismatchedParameters();
 
 		assertTrue(result.isSuccessful());
@@ -73,9 +82,8 @@ public class FunctionsTest
 	public void testAmbiguousMatchingOfBoxedAndUnboxedType()
 	{
 		Array<Type> character = new Array<>(PrimitiveType.CHAR);
+		Arguments arguments = new Arguments(character);
 		Type testClass = new ReferenceType(FunctionsTest.class);
-		ArgumentClasses argumentClasses = new ArgumentClasses(character);
-
 		Method[] methods = testClass.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
 
@@ -87,8 +95,13 @@ public class FunctionsTest
 			}
 		}
 
-		Functions functions = new Functions(printlnMethods);
-		MatchResult result = functions.getMatchingExecutable(argumentClasses);
+		Functions functions =
+			new Functions(
+				new Coordinate(0, 1),
+				"MyClass.thingy",
+				printlnMethods);
+
+		MatchResult result = functions.getMatchingExecutable(arguments);
 
 		assertTrue(result.isSuccessful());
 	}

@@ -5,22 +5,31 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
 import static org.junit.Assert.assertEquals;
 
-public class VariableTest
+public class VariableReadTest
 {
 	@Test
 	public void testCompilingStringRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
 		Type owner = new ReferenceType(String.class);
-		Variable variable = new Variable(1, owner);
 
-		variable.compile(methodVisitor);
+		result.declare("myVariable", owner);
+
+		Coordinate coordinate = new Coordinate(1, 0);
+		Expression expression = new VariableRead("myVariable", coordinate);
+
+		Type type = expression.check(result);
+
+		expression.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -31,17 +40,24 @@ public class VariableTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertEquals("java.lang.String", variable.getType().toFullyQualifiedType());
+		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
 
 	@Test
 	public void testCompilingNumberRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
 		Type owner = PrimitiveType.DOUBLE;
-		Variable variable = new Variable(1, owner);
 
-		variable.compile(methodVisitor);
+		result.declare("myVariable", owner);
+
+		Coordinate coordinate = new Coordinate(1, 0);
+		Expression expression = new VariableRead("myVariable", coordinate);
+
+		Type type = expression.check(result);
+
+		expression.compile(methodVisitor);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -52,6 +68,6 @@ public class VariableTest
 		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertEquals("java.lang.Double", variable.getType().toFullyQualifiedType());
+		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
 }

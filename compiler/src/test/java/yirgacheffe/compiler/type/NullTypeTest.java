@@ -13,12 +13,12 @@ public class NullTypeTest
 	{
 		Type type = new NullType();
 
-		assertEquals("I", type.toJVMType());
-		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+		assertEquals("Ljava/lang/Object;", type.toJVMType());
+		assertEquals("java.lang.Object", type.toFullyQualifiedType());
 		assertEquals(1, type.width());
-		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
-		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
-		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 	}
 
 	@Test

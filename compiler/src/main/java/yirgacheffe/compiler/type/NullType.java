@@ -7,19 +7,19 @@ public class NullType implements Type
 	@Override
 	public Class<?> reflectionClass()
 	{
-		return int.class;
+		return Object.class;
 	}
 
 	@Override
 	public String toJVMType()
 	{
-		return "I";
+		return "Ljava/lang/Object;";
 	}
 
 	@Override
 	public String toFullyQualifiedType()
 	{
-		return "java.lang.Integer";
+		return "java.lang.Object";
 	}
 
 	@Override
@@ -31,19 +31,19 @@ public class NullType implements Type
 	@Override
 	public int getReturnInstruction()
 	{
-		return Opcodes.IRETURN;
+		return Opcodes.ARETURN;
 	}
 
 	@Override
 	public int getStoreInstruction()
 	{
-		return Opcodes.ISTORE;
+		return Opcodes.ASTORE;
 	}
 
 	@Override
 	public int getLoadInstruction()
 	{
-		return Opcodes.ILOAD;
+		return Opcodes.ALOAD;
 	}
 
 	@Override

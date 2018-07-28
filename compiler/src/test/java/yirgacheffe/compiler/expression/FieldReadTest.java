@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -18,11 +19,17 @@ public class FieldReadTest
 	public void testCompilingFieldRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
 
 		Type owner = new ReferenceType(String.class);
-		Expression string = new This(owner);
-		Type type = PrimitiveType.DOUBLE;
-		FieldRead fieldRead = new FieldRead(string, "length", type);
+
+		FieldRead fieldRead =
+			new FieldRead(
+				new This(owner),
+				"length",
+				PrimitiveType.DOUBLE);
+
+		Type type = fieldRead.check(result);
 
 		fieldRead.compile(methodVisitor);
 
@@ -42,6 +49,6 @@ public class FieldReadTest
 		assertEquals("length", secondInstruction.name);
 		assertEquals("D", secondInstruction.desc);
 
-		assertEquals("java.lang.Double", fieldRead.getType().toFullyQualifiedType());
+		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
 }

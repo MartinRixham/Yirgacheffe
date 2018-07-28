@@ -1,9 +1,9 @@
 package yirgacheffe.compiler.listener;
 
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.TypeVariable;

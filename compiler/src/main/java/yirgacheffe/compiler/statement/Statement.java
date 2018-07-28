@@ -4,5 +4,5 @@ import org.objectweb.asm.MethodVisitor;
 
 public interface Statement
 {
-	void compile(MethodVisitor methodVisitor);
+	void compile(MethodVisitor methodVisitor, StatementResult statementResult);
 }

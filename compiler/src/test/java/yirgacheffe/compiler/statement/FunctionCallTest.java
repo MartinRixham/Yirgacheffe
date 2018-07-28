@@ -8,31 +8,35 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Literal;
-import yirgacheffe.compiler.function.Callable;
-import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.lang.Array;
-
-import java.lang.reflect.Constructor;
 
 import static org.junit.Assert.assertEquals;
 
 public class FunctionCallTest
 {
 	@Test
-	public void testFunctionThatReturnsDouble() throws Exception
+	public void testFunctionThatReturnsDouble()
 	{
+		Coordinate coordinate = new Coordinate(1, 0);
 		MethodNode methodVisitor = new MethodNode();
-		Constructor<Double> constructor = Double.class.getConstructor(double.class);
-		Callable function = new Function(PrimitiveType.DOUBLE, constructor);
-		Array<Expression> arguments = new Array<>(new Literal(PrimitiveType.DOUBLE, "3"));
-		InvokeConstructor invoke = new InvokeConstructor(function, arguments);
-		FunctionCall functionCall = new FunctionCall(invoke);
+		Array<Expression> arguments =
+			new Array<>(new Literal(PrimitiveType.DOUBLE, "3"));
 
-		functionCall.compile(methodVisitor);
+		InvokeConstructor invoke =
+			new InvokeConstructor(
+				coordinate,
+				PrimitiveType.DOUBLE,
+				arguments);
+
+		FunctionCall functionCall = new FunctionCall(invoke);
+		StatementResult result = new StatementResult();
+
+		functionCall.compile(methodVisitor, result);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -50,9 +54,9 @@ public class FunctionCallTest
 
 		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
 
-		MethodInsnNode fourthInstructoin = (MethodInsnNode) instructions.get(3);
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstructoin.getOpcode());
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 

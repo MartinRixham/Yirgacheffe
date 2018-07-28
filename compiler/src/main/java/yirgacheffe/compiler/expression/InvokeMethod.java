@@ -2,39 +2,105 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Callable;
+import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.Functions;
+import yirgacheffe.compiler.function.MatchResult;
+import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
+import java.lang.reflect.Method;
+
 public class InvokeMethod implements Expression
 {
-	private Callable function;
+	private Coordinate coordinate;
+
+	private String name;
+
+	private  String caller;
 
 	private Expression owner;
 
 	private Array<Expression> arguments;
 
-	public InvokeMethod(Callable function, Expression owner, Array<Expression> arguments)
+	private Type ownerType;
+
+	private Array<Type> argumentTypes = new Array<>();
+
+	private MatchResult matchResult;
+
+	private Type returnType;
+
+	public InvokeMethod(
+		Coordinate coordinate,
+		String name,
+		String caller,
+		Expression owner,
+		Array<Expression> arguments)
 	{
-		this.function = function;
+		this.coordinate = coordinate;
+		this.name = name;
+		this.caller = caller;
 		this.owner = owner;
 		this.arguments = arguments;
 	}
 
 	@Override
+	public Type check(StatementResult result)
+	{
+		this.ownerType = this.owner.check(result);
+
+		for (Expression argument: this.arguments)
+		{
+			this.argumentTypes.push(argument.check(result));
+		}
+
+		Arguments arguments = new Arguments(this.argumentTypes);
+		this.matchResult =
+			this.getMatchResult(
+				this.ownerType,
+				this.name,
+				arguments);
+
+		result.matchMethod(this.matchResult);
+		Callable function = this.matchResult.getFunction();
+		this.returnType = function.getReturnType();
+
+		return function.getReturnType();
+	}
+
+	@Override
 	public void compile(MethodVisitor methodVisitor)
 	{
+		Callable function = this.matchResult.getFunction();
+		Array<Type> parameters = function.getParameterTypes();
+		Type owner = this.ownerType;
+		Type returnType = this.returnType;
+
 		this.owner.compile(methodVisitor);
 
-		Array<Type> parameters = this.function.getParameterTypes();
+		if (owner instanceof PrimitiveType)
+		{
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				this.withSlashes(owner),
+				"valueOf",
+				"(" + owner.toJVMType() + ")L" + this.withSlashes(owner) + ";",
+				false);
+		}
 
 		for (int i = 0; i < this.arguments.length(); i++)
 		{
-			this.arguments.get(i).compile(methodVisitor);
-			Type argumentType = this.arguments.get(i).getType();
+			Expression argument = this.arguments.get(i);
+			Type argumentType = this.argumentTypes.get(i);
+
+			argument.compile(methodVisitor);
 
 			if (parameters.length() >= i + 1 &&
 				argumentType instanceof PrimitiveType &&
@@ -54,34 +120,18 @@ public class InvokeMethod implements Expression
 			}
 		}
 
-		Type owner = this.function.getOwner();
-
-		if (owner instanceof PrimitiveType)
-		{
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				this.withSlashes(owner),
-				"valueOf",
-				"(" + owner.toJVMType() + ")L" + this.withSlashes(owner) + ";",
-				false);
-		}
-
 		boolean isInterface = owner.reflectionClass().isInterface();
 
 		methodVisitor.visitMethodInsn(
 			isInterface ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,
 			this.withSlashes(owner),
-			this.function.getName(),
-			this.function.getDescriptor(),
+			function.getName(),
+			function.getDescriptor(),
 			isInterface);
-
-		Type returnType = this.function.getReturnType();
 
 		if (returnType instanceof GenericType)
 		{
-			methodVisitor.visitTypeInsn(
-				Opcodes.CHECKCAST,
-				this.withSlashes(returnType));
+			methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, this.withSlashes(returnType));
 
 			Type type = ((GenericType) returnType).unwrap();
 
@@ -109,10 +159,36 @@ public class InvokeMethod implements Expression
 		}
 	}
 
-	@Override
-	public Type getType()
+	private MatchResult getMatchResult(
+		Type owner,
+		String methodName,
+		Arguments arguments)
 	{
-		return this.function.getReturnType();
+		Method[] methods;
+
+		if (owner.toFullyQualifiedType().equals(this.caller))
+		{
+			methods = owner.reflectionClass().getDeclaredMethods();
+		}
+		else
+		{
+			methods = owner.reflectionClass().getMethods();
+		}
+
+		Array<Callable> namedMethods = new Array<>();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals(methodName))
+			{
+				namedMethods.push(new Function(owner, method));
+			}
+		}
+
+		String method = owner + "." + methodName;
+
+		return new Functions(this.coordinate, method, namedMethods)
+			.getMatchingExecutable(arguments);
 	}
 
 	private String withSlashes(Type type)

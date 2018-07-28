@@ -1,10 +1,13 @@
 package yirgacheffe.compiler.listener;
 
+import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.statement.FieldWrite;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -51,9 +54,10 @@ public class FieldListener extends FieldDeclarationListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
+		StatementResult result = new StatementResult();
 		Expression expression = this.expressions.pop();
 		Expression self = this.expressions.pop();
-		Type expressionType = expression.getType();
+		Type expressionType = expression.check(result);
 		Type fieldType = this.types.getType(declaration.type());
 
 		self.compile(this.methodVisitor);
@@ -90,12 +94,12 @@ public class FieldListener extends FieldDeclarationListener
 			fieldType = new NullType();
 
 			String message = "Unknown field '" + fieldName + "'.";
+			Token token = context.Identifier().getSymbol();
 
-			this.errors.push(new Error(context.Identifier().getSymbol(), message));
+			this.errors.push(new Error(token, message));
 		}
 
 		Expression owner = this.expressions.pop();
-
 		Expression fieldRead = new FieldRead(owner, fieldName, fieldType);
 
 		this.expressions.push(fieldRead);
@@ -111,34 +115,11 @@ public class FieldListener extends FieldDeclarationListener
 			this.errors.push(new Error(context, message));
 		}
 
+		Coordinate coordinate = new Coordinate(context);
 		String fieldName = context.Identifier().getText();
 		Expression value = this.expressions.pop();
-		Type type = value.getType();
 		Expression owner = this.expressions.pop();
-		Type ownerType = owner.getType();
 
-		try
-		{
-			Class<?> fieldClass =
-				ownerType.reflectionClass().getDeclaredField(fieldName).getType();
-			Class<?> expressionClass = type.reflectionClass();
-
-			if (!fieldClass.isAssignableFrom(expressionClass) &&
-				!fieldClass.getSimpleName()
-					.equals(expressionClass.getSimpleName().toLowerCase()))
-			{
-				String message =
-					"Cannot assign expression of type " + type +
-					" to field of type " + fieldClass.getName() + ".";
-
-				this.errors.push(new Error(context, message));
-			}
-		}
-		catch (NoSuchFieldException e)
-		{
-			throw new RuntimeException(e);
-		}
-
-		this.statements.push(new FieldWrite(fieldName, owner, value));
+		this.statements.push(new FieldWrite(coordinate, fieldName, owner, value));
 	}
 }

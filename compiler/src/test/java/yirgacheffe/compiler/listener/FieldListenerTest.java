@@ -909,4 +909,37 @@ public class FieldListenerTest
 				"Num to field of type java.lang.String.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testAssignWrongTypeToPrimitiveField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"Num one = 1;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this.one = \"one\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result =  compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Cannot assign expression of type " +
+				"java.lang.String to field of type Num.\n",
+			result.getErrors());
+	}
 }

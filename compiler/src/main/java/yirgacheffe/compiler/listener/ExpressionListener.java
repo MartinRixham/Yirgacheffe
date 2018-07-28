@@ -1,14 +1,13 @@
 package yirgacheffe.compiler.listener;
 
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.expression.Variable;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ExpressionListener extends StatementListener
@@ -21,22 +20,9 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void enterVariableRead(YirgacheffeParser.VariableReadContext context)
 	{
-		Variable variable;
+		String name = context.getText();
 
-		if (this.currentBlock.isDeclared(context.getText()))
-		{
-			variable = this.currentBlock.getVariable(context.getText());
-		}
-		else
-		{
-			String message = "Unknown local variable '" + context.getText() + "'.";
-
-			this.errors.push(new Error(context, message));
-
-			variable = new Variable(-1, new NullType());
-		}
-
-		this.expressions.push(variable);
+		this.expressions.push(new VariableRead(name, new Coordinate(context)));
 	}
 
 	@Override

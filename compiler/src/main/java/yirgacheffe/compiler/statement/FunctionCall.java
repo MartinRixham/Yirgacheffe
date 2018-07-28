@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.type.Type;
 
 public class FunctionCall implements Statement
 {
@@ -14,11 +15,13 @@ public class FunctionCall implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public void compile(MethodVisitor methodVisitor, StatementResult result)
 	{
+		Type type = this.expression.check(result);
+
 		this.expression.compile(methodVisitor);
 
-		int width = this.expression.getType().width();
+		int width = type.width();
 
 		if (width == 1)
 		{

@@ -1,6 +1,6 @@
 package yirgacheffe.compiler.function;
 
-import yirgacheffe.compiler.type.ArgumentClasses;
+import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
@@ -15,7 +15,5 @@ public interface Callable
 
 	Array<Type> getParameterTypes();
 
-	Array<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses);
-
-	Type getOwner();
+	Array<MismatchedTypes> checkTypeParameters(Arguments arguments);
 }

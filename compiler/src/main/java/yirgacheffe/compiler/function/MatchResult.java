@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.function;
 
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.lang.Array;
 
@@ -11,16 +12,23 @@ public class MatchResult
 
 	private boolean ambiguous;
 
-	public MatchResult(boolean ambiguous)
+	private Coordinate coordinate;
+
+	public MatchResult(Coordinate coordinate, String name, boolean ambiguous)
 	{
-		this.function = new NullFunction();
+		this.coordinate = coordinate;
+		this.function = new NullFunction(name);
 		this.mismatchedParameters = new Array<>();
 		this.ambiguous = ambiguous;
 	}
 
-	public MatchResult(Callable functions, Array<MismatchedTypes> mismatchedParameters)
+	public MatchResult(
+		Coordinate coordinate,
+		Callable function,
+		Array<MismatchedTypes> mismatchedParameters)
 	{
-		this.function = functions;
+		this.coordinate = coordinate;
+		this.function = function;
 		this.mismatchedParameters = mismatchedParameters;
 	}
 
@@ -42,5 +50,15 @@ public class MatchResult
 	public boolean isAmbiguous()
 	{
 		return this.ambiguous;
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
+
+	public String getName()
+	{
+		return this.function.getName();
 	}
 }

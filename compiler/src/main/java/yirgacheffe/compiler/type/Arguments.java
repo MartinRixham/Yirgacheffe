@@ -4,13 +4,13 @@ import yirgacheffe.lang.Array;
 
 import java.lang.reflect.TypeVariable;
 
-public class ArgumentClasses
+public class Arguments
 {
-	private Array<Type> argumentClasses;
+	private Array<Type> arguments;
 
-	public ArgumentClasses(Array<Type> argumentClasses)
+	public Arguments(Array<Type> arguments)
 	{
-		this.argumentClasses = argumentClasses;
+		this.arguments = arguments;
 	}
 
 	public Array<MismatchedTypes> checkTypeParameters(
@@ -24,17 +24,18 @@ public class ArgumentClasses
 			if (parameters.get(i) instanceof TypeVariable)
 			{
 				TypeVariable typeVariable = (TypeVariable) parameters.get(i);
+				Type argumentType = this.arguments.get(i);
 
 				boolean hasTypeParameter =
 					owner.hasTypeParameter(
 						typeVariable.getName(),
-						this.argumentClasses.get(i));
+						argumentType);
 
 				if (!hasTypeParameter)
 				{
 					MismatchedTypes mismatchedTypes =
 						new MismatchedTypes(
-							this.argumentClasses.get(i).toString(),
+							argumentType.toString(),
 							owner.getTypeParameterName(typeVariable.getName()));
 
 					mismatchedParameters.push(mismatchedTypes);
@@ -49,20 +50,21 @@ public class ArgumentClasses
 	{
 		int exactMatches = 0;
 
-		if (parameterTypes.length() != this.argumentClasses.length())
+		if (parameterTypes.length() != this.arguments.length())
 		{
 			return -1;
 		}
 
 		for (int i = 0; i < parameterTypes.length(); i++)
 		{
-			if (!this.argumentClasses.get(i).isAssignableTo(parameterTypes.get(i)))
+			Type argumentType = this.arguments.get(i);
+
+			if (!argumentType.isAssignableTo(parameterTypes.get(i)))
 			{
 				return -1;
 			}
 
-			if (this.argumentClasses.get(i).toJVMType()
-				.equals(parameterTypes.get(i).toJVMType()))
+			if (argumentType.toJVMType().equals(parameterTypes.get(i).toJVMType()))
 			{
 				exactMatches++;
 			}
@@ -76,9 +78,9 @@ public class ArgumentClasses
 	{
 		Array<String> arguments = new Array<>();
 
-		for (Type argumentClass : this.argumentClasses)
+		for (Type argument : this.arguments)
 		{
-			arguments.push(argumentClass.toString());
+			arguments.push(argument.toString());
 		}
 
 		return "(" + String.join(",", arguments) + ")";

@@ -7,8 +7,8 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
-import yirgacheffe.compiler.function.Callable;
-import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -20,16 +20,22 @@ import static org.junit.Assert.assertFalse;
 public class InvokeConstructorTest
 {
 	@Test
-	public void testCompilingInvocationWithGenericReturnType() throws Exception
+	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
+		StatementResult result = new StatementResult();
+		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Callable function =
-			new Function(owner, Double.class.getConstructor(double.class));
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
 		Array<Expression> arguments = new Array<Expression>(one);
 
-		InvokeConstructor invokeConstructor = new InvokeConstructor(function, arguments);
+		InvokeConstructor invokeConstructor =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				arguments);
+
+		Type type = invokeConstructor.check(result);
 
 		invokeConstructor.compile(methodVisitor);
 
@@ -58,8 +64,6 @@ public class InvokeConstructorTest
 		assertEquals("(D)V", fourthInstruction.desc);
 		assertFalse(fourthInstruction.itf);
 
-		assertEquals(
-			"java.lang.Double",
-			invokeConstructor.getType().toFullyQualifiedType());
+		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
 }

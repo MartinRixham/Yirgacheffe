@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -16,6 +17,12 @@ public class Literal implements Expression
 	{
 		this.type = type;
 		this.text = text;
+	}
+
+	@Override
+	public Type check(StatementResult result)
+	{
+		return this.type;
 	}
 
 	@Override
@@ -57,11 +64,5 @@ public class Literal implements Expression
 				methodVisitor.visitLdcInsn(dub);
 			}
 		}
-	}
-
-	@Override
-	public Type getType()
-	{
-		return this.type;
 	}
 }

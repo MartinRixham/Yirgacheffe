@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
@@ -25,7 +26,9 @@ public class ConstructorListener extends MainMethodListener
 				"Constructor of incorrect type " + signature.Identifier().getText() +
 					": expected " + this.className + ".";
 
-			this.errors.push(new Error(signature.Identifier().getSymbol(), message));
+			Token token = signature.Identifier().getSymbol();
+
+			this.errors.push(new Error(token, message));
 		}
 
 		boolean isPrivate = false;

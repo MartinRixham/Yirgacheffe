@@ -1,18 +1,20 @@
 package yirgacheffe.compiler.listener;
 
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
+import yirgacheffe.compiler.statement.OpenBlock;
 import yirgacheffe.compiler.statement.Return;
+import yirgacheffe.compiler.statement.Statement;
+import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.expression.Variable;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class StatementListener extends FieldListener
 {
-	private Variable currentVariable;
 
 	public StatementListener(String sourceFile, Classes classes)
 	{
@@ -24,26 +26,9 @@ public class StatementListener extends FieldListener
 		YirgacheffeParser.VariableDeclarationContext context)
 	{
 		Type type = this.types.getType(context.type());
+		String name = context.Identifier().getText();
 
-		this.currentVariable = new Variable(this.currentBlock.size() + 1, type);
-
-		this.currentBlock.declare(context.Identifier().getText(), this.currentVariable);
-	}
-
-	@Override
-	public void enterVariableWrite(YirgacheffeParser.VariableWriteContext context)
-	{
-		if (this.currentBlock.isDeclared(context.getText()))
-		{
-			this.currentVariable = this.currentBlock.getVariable(context.getText());
-		}
-		else
-		{
-			String message =
-				"Assignment to uninitialised variable '" + context.getText() + "'.";
-
-			this.errors.push(new Error(context, message));
-		}
+		this.statements.push(new VariableDeclaration(name, type));
 	}
 
 	@Override
@@ -51,58 +36,59 @@ public class StatementListener extends FieldListener
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
 		Expression expression = this.expressions.pop();
-		Type type = expression.getType();
 
-		int index = 0;
+		String name;
 
-		if (this.currentVariable != null)
+		if (context.variableWrite() == null)
 		{
-			index = this.currentVariable.getIndex();
+			name = context.variableDeclaration().Identifier().getText();
+		}
+		else
+		{
+			name = context.variableWrite().Identifier().getText();
 		}
 
-		if (this.currentVariable != null &&
-			!type.isAssignableTo(this.currentVariable.getType()))
-		{
-			String message =
-				"Cannot assign expression of type " + type +
-				" to variable of type " + this.currentVariable.getType() + ".";
+		Coordinate coordinate = new Coordinate(context.getStart());
 
-			this.errors.push(new Error(context, message));
-		}
-
-		this.statements.push(new VariableWrite(index, expression));
+		this.statements.push(new VariableWrite(name, expression, coordinate));
 	}
 
 	@Override
 	public void enterBlock(YirgacheffeParser.BlockContext context)
 	{
-		this.currentBlock = new Block(this.currentBlock);
+		this.statements.push(new OpenBlock());
 	}
 
 	@Override
 	public void exitBlock(YirgacheffeParser.BlockContext context)
 	{
-		this.currentBlock = this.currentBlock.unwarap();
+		Array<Statement> blockStatements = new Array<>();
+
+		while (true)
+		{
+			Statement statement = this.statements.pop();
+
+			if (statement instanceof OpenBlock)
+			{
+				break;
+			}
+			else
+			{
+				blockStatements.unshift(statement);
+			}
+		}
+
+		this.statements.push(new Block(blockStatements));
 	}
 
 	@Override
 	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
 	{
+		Coordinate coordinate = new Coordinate(context);
 		Expression expression = this.expressions.pop();
-		Type type = expression.getType();
-
-		if (!type.isAssignableTo(this.returnType))
-		{
-			String message =
-				"Mismatched return type: Cannot return expression of type " +
-				type + " from method of return type " +
-				this.returnType + ".";
-
-			this.errors.push(new Error(context, message));
-		}
 
 		this.hasReturnStatement = true;
 
-		this.statements.push(new Return(expression));
+		this.statements.push(new Return(coordinate, this.returnType, expression));
 	}
 }

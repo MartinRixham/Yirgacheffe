@@ -1,6 +1,6 @@
 package yirgacheffe.compiler.function;
 
-import yirgacheffe.compiler.type.ArgumentClasses;
+import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;
@@ -106,7 +106,7 @@ public class Function implements Callable
 	}
 
 	@Override
-	public Array<MismatchedTypes> checkTypeParameters(ArgumentClasses argumentClasses)
+	public Array<MismatchedTypes> checkTypeParameters(Arguments arguments)
 	{
 		if (this.owner instanceof ParameterisedType)
 		{
@@ -114,17 +114,11 @@ public class Function implements Callable
 			Array<java.lang.reflect.Type> parameters =
 				new Array<>(this.executable.getGenericParameterTypes());
 
-			return argumentClasses.checkTypeParameters(parameters, type);
+			return arguments.checkTypeParameters(parameters, type);
 		}
 		else
 		{
 			return new Array<>();
 		}
-	}
-
-	@Override
-	public Type getOwner()
-	{
-		return this.owner;
 	}
 }

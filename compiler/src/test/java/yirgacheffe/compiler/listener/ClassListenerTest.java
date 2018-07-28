@@ -34,7 +34,7 @@ public class ClassListenerTest
 	public void testNamedEmptyInterface()
 	{
 		String source = "interface MyInterface {}";
-		Compiler compiler = new Compiler("", source);
+		Compiler compiler = new Compiler("MyInterface.yg", source);
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
@@ -47,6 +47,7 @@ public class ClassListenerTest
 
 		int access = Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE;
 
+		assertEquals("MyInterface.yg", classNode.sourceFile);
 		assertEquals("MyInterface", classNode.name);
 		assertEquals(access, classNode.access);
 		assertEquals(0, classNode.fields.size());

@@ -24,13 +24,16 @@ public class ClassListener extends PackageListener
 	{
 		if (context.Class() == null)
 		{
-			this.errors.push(
-				new Error(context, "Expected declaration of class or interface."));
+			String message = "Expected declaration of class or interface.";
+
+			this.errors.push(new Error(context, message));
 		}
 
 		if (context.Identifier().size() == 0)
 		{
-			this.errors.push(new Error(context, "Class identifier expected."));
+			String message = "Class identifier expected.";
+
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{
@@ -60,7 +63,9 @@ public class ClassListener extends PackageListener
 	{
 		if (context.Identifier() == null)
 		{
-			this.errors.push(new Error(context, "Interface identifier expected."));
+			String message = "Interface identifier expected.";
+
+			this.errors.push(new Error(context, message));
 		}
 		else
 		{
