@@ -2,16 +2,13 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -136,16 +133,6 @@ public class MethodListener extends TypeListener
 
 		block.compile(this.methodVisitor, result);
 
-		for (MatchResult matchResult: result.getMatchMethodResults())
-		{
-			this.processMatchResult(false, matchResult);
-		}
-
-		for (MatchResult matchResult: result.getMatchConstructorResults())
-		{
-			this.processMatchResult(true, matchResult);
-		}
-
 		for (Error error: result.getErrors())
 		{
 			this.errors.push(error);
@@ -168,40 +155,6 @@ public class MethodListener extends TypeListener
 
 		this.hasReturnStatement = false;
 		this.inConstructor = false;
-	}
-
-	private void processMatchResult(boolean isConstructor, MatchResult matchResult)
-	{
-		if (matchResult.isSuccessful())
-		{
-			for (MismatchedTypes types: matchResult.getMismatchedParameters())
-			{
-				String message =
-					"Argument of type " + types.from() +
-						" cannot be assigned to generic parameter of type " +
-						types.to() + ".";
-
-				Coordinate coordinate = matchResult.getCoordinate();
-
-				this.errors.push(new Error(coordinate, message));
-			}
-		}
-		else if (matchResult.isAmbiguous())
-		{
-			String function = isConstructor ? "constructor" : "method";
-
-			String message =
-				"Ambiguous call to " + function + " " + matchResult.getName() + ".";
-
-			this.errors.push(new Error(matchResult.getCoordinate(), message));
-		}
-		else
-		{
-			String function = isConstructor ? "Constructor" : "Method";
-			String message = function + " " + matchResult.getName() + " not found.";
-
-			this.errors.push(new Error(matchResult.getCoordinate(), message));
-		}
 	}
 
 	@Override

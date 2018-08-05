@@ -14,11 +14,18 @@ public class Functions
 
 	private Array<Callable> functions;
 
-	public Functions(Coordinate coordinate, String name, Array<Callable> functions)
+	private boolean isConstructor;
+
+	public Functions(
+		Coordinate coordinate,
+		String name,
+		Array<Callable> functions,
+		boolean isConstructor)
 	{
 		this.coordinate = coordinate;
 		this.name = name;
 		this.functions = functions;
+		this.isConstructor = isConstructor;
 	}
 
 	public MatchResult getMatchingExecutable(Arguments arguments)
@@ -53,7 +60,10 @@ public class Functions
 		else
 		{
 			return new MatchResult(
-				this.coordinate, this.name + arguments, matched.length() > 0);
+				this.coordinate,
+				this.name + arguments,
+				matched.length() > 0,
+				this.isConstructor);
 		}
 	}
 }

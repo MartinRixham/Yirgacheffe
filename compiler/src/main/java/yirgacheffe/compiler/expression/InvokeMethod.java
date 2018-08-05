@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
@@ -68,9 +69,13 @@ public class InvokeMethod implements Expression
 				this.name,
 				arguments);
 
-		result.matchMethod(this.matchResult);
 		Callable function = this.matchResult.getFunction();
 		this.returnType = function.getReturnType();
+
+		for (Error error: this.matchResult.getErrors())
+		{
+			result.error(error);
+		}
 
 		return function.getReturnType();
 	}
@@ -187,7 +192,7 @@ public class InvokeMethod implements Expression
 
 		String method = owner + "." + methodName;
 
-		return new Functions(this.coordinate, method, namedMethods)
+		return new Functions(this.coordinate, method, namedMethods, false)
 			.getMatchingExecutable(arguments);
 	}
 

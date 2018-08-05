@@ -2,7 +2,6 @@ package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.VariableRead;
-import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -21,16 +20,7 @@ public class StatementResult
 
 	private Array<VariableWrite> variableWrites = new Array<>();
 
-	private Array<MatchResult> matchMethodResults = new Array<>();
-
-	private Array<MatchResult> matchConstructorResults = new Array<>();
-
 	private Array<Error> errors = new Array<>();
-
-	public Array<VariableWrite> getVariableWrites()
-	{
-		return this.variableWrites;
-	}
 
 	public Map<String, Variable> getDeclaredVariables()
 	{
@@ -40,16 +30,6 @@ public class StatementResult
 	public void setDeclaredVariables(Map<String, Variable> declaredVariables)
 	{
 		this.declaredVariables = declaredVariables;
-	}
-
-	public Array<MatchResult> getMatchMethodResults()
-	{
-		return this.matchMethodResults;
-	}
-
-	public Array<MatchResult> getMatchConstructorResults()
-	{
-		return this.matchConstructorResults;
 	}
 
 	public void declare(String name, Type type)
@@ -74,16 +54,6 @@ public class StatementResult
 		{
 			this.variableWrites.push(variableWrite);
 		}
-	}
-
-	public void matchMethod(MatchResult matchResult)
-	{
-		this.matchMethodResults.push(matchResult);
-	}
-
-	public void matchConstructor(MatchResult matchResult)
-	{
-		this.matchConstructorResults.push(matchResult);
 	}
 
 	public Variable getVariable(String name)

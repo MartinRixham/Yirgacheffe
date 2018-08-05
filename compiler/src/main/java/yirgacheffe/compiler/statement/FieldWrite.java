@@ -7,7 +7,6 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ErrorMessage;
 import yirgacheffe.compiler.error.FieldAssignmentError;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -73,11 +72,7 @@ public class FieldWrite implements Statement
 
 	private Type getType(Class<?> clazz)
 	{
-		if (clazz.isArray())
-		{
-			return new ArrayType(clazz.getName());
-		}
-		else if (clazz.isPrimitive())
+		if (clazz.isPrimitive())
 		{
 			return PrimitiveType.valueOf(clazz.getName().toUpperCase());
 		}

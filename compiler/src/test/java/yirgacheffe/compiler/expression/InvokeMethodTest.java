@@ -168,7 +168,7 @@ public class InvokeMethodTest
 		assertEquals("java/lang/Double", fifthInstruction.owner);
 		assertEquals("(D)Ljava/lang/Double;", fifthInstruction.desc);
 		assertEquals("valueOf", fifthInstruction.name);
-		assertEquals(false, fifthInstruction.itf);
+		assertFalse(fifthInstruction.itf);
 
 		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
@@ -189,7 +189,7 @@ public class InvokeMethodTest
 		assertEquals("yirgacheffe/lang/Boxer", eightInstruction.owner);
 		assertEquals("(Ljava/lang/Double;)D", eightInstruction.desc);
 		assertEquals("ofValue", eightInstruction.name);
-		assertEquals(false, eightInstruction.itf);
+		assertFalse(eightInstruction.itf);
 	}
 
 	@Test

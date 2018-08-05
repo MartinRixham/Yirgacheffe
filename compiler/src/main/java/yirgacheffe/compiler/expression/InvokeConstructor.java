@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
@@ -55,12 +56,19 @@ public class InvokeConstructor implements Expression
 		}
 
 		MatchResult matchResult =
-			new Functions(this.coordinate, this.owner.toFullyQualifiedType(), functions)
+			new Functions(
+				this.coordinate,
+				this.owner.toFullyQualifiedType(),
+				functions,
+				true)
 				.getMatchingExecutable(arguments);
 
-		this.function = matchResult.getFunction();
+		for (Error error: matchResult.getErrors())
+		{
+			result.error(error);
+		}
 
-		result.matchConstructor(matchResult);
+		this.function = matchResult.getFunction();
 
 		return this.owner;
 	}

@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.function;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.lang.Array;
 
@@ -14,12 +15,19 @@ public class MatchResult
 
 	private Coordinate coordinate;
 
-	public MatchResult(Coordinate coordinate, String name, boolean ambiguous)
+	private boolean isConstructor;
+
+	public MatchResult(
+		Coordinate coordinate,
+		String name,
+		boolean ambiguous,
+		boolean isConstructor)
 	{
 		this.coordinate = coordinate;
 		this.function = new NullFunction(name);
 		this.mismatchedParameters = new Array<>();
 		this.ambiguous = ambiguous;
+		this.isConstructor = isConstructor;
 	}
 
 	public MatchResult(
@@ -32,33 +40,45 @@ public class MatchResult
 		this.mismatchedParameters = mismatchedParameters;
 	}
 
-	public boolean isSuccessful()
-	{
-		return !(this.function instanceof NullFunction);
-	}
-
 	public Callable getFunction()
 	{
 		return this.function;
 	}
 
-	public Array<MismatchedTypes> getMismatchedParameters()
+	public Array<Error> getErrors()
 	{
-		return this.mismatchedParameters;
-	}
+		Array<Error> errors = new Array<>();
 
-	public boolean isAmbiguous()
-	{
-		return this.ambiguous;
-	}
+		if (this.function instanceof NullFunction)
+		{
+			String function = this.isConstructor ? "Constructor" : "Method";
 
-	public Coordinate getCoordinate()
-	{
-		return this.coordinate;
-	}
+			if (this.ambiguous)
+			{
+				String message =
+					"Ambiguous call to " + function.toLowerCase() + " " +
+					this.function.getName() + ".";
 
-	public String getName()
-	{
-		return this.function.getName();
+				errors.push(new Error(this.coordinate, message));
+			}
+			else
+			{
+				String message =
+					function + " " + this.function.getName() + " not found.";
+
+				errors.push(new Error(this.coordinate, message));
+			}
+		}
+
+		for (MismatchedTypes types: this.mismatchedParameters)
+		{
+			String message =
+				"Argument of type " + types.from() + " cannot be assigned to " +
+				"generic parameter of type " + types.to() + ".";
+
+			errors.push(new Error(this.coordinate, message));
+		}
+
+		return errors;
 	}
 }

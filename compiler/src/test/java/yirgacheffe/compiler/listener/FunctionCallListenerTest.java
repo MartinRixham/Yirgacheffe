@@ -338,27 +338,6 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testConstructorCallWithWrongArgument()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Object method()" +
-				"{\n" +
-					"return new String(1);\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:7 Constructor java.lang.String(Num) not found.\n",
-			result.getErrors());
-	}
-
-	@Test
 	public void testConstructorCallWithTypeParameter()
 	{
 		String source =
@@ -418,30 +397,6 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testMethodCallWithMismatchedTypeParameter()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"MutableReference<String> ref = " +
-						"new MutableReference<String>(\"thingy\");\n" +
-					"ref.set(new Object());" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 5:3 Argument of type java.lang.Object cannot be assigned to " +
-				"generic parameter of type java.lang.String.\n",
-			result.getErrors());
-	}
-
-	@Test
 	public void testConstructorWithMultipleTypeParameters()
 	{
 		String source =
@@ -490,69 +445,6 @@ public class FunctionCallListenerTest
 		assertEquals(
 			"line 7:3 Argument of type java.lang.Object cannot be assigned to " +
 				"generic parameter of type java.lang.String.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testFunctionCallWithArgumentOfWrongType()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"\"thingy\".split(false);\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:8 Method java.lang.String.split(Bool) not found.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testUndefinedFunctionCall()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"\"thingy\".notAMethod();\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:8 Method java.lang.String.notAMethod() not found.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testUndefinedFunctionCallOnNumber()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"123.notAMethod();\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:3 Method Num.notAMethod() not found.\n",
 			result.getErrors());
 	}
 
@@ -873,38 +765,6 @@ public class FunctionCallListenerTest
 
 		assertTrue(result1.isSuccessful());
 		assertFalse(result2.isSuccessful());
-	}
-
-	@Test
-	public void testAmbiguousFunctionCall()
-	{
-		String source =
-			"import java.util.HashMap;" +
-			"import java.util.Map;" +
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"this.mapIt(new HashMap<String,String>());\n" +
-				"}\n" +
-				"public Void mapIt(Map<String,String> map) {}\n" +
-				"public Void mapIt(Object map) {}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		Classes classes = new Classes();
-
-		compiler.compileInterface(classes);
-
-		classes.clearCache();
-
-		CompilationResult result = compiler.compile(classes);
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:4 Ambiguous call to method MyClass.mapIt" +
-				"(java.util.HashMap<java.lang.String,java.lang.String>).\n",
-			result.getErrors());
 	}
 
 	@Test
