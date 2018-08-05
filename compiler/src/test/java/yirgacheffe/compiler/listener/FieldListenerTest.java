@@ -901,7 +901,7 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
-		CompilationResult result =  compiler.compile(classes);
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
@@ -934,7 +934,7 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
-		CompilationResult result =  compiler.compile(classes);
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

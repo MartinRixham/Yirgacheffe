@@ -27,11 +27,6 @@ public class StatementResult
 
 	private Array<Error> errors = new Array<>();
 
-	public Array<VariableRead> getVariableReads()
-	{
-		return this.variableReads;
-	}
-
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return this.variableWrites;
@@ -55,11 +50,6 @@ public class StatementResult
 	public Array<MatchResult> getMatchConstructorResults()
 	{
 		return this.matchConstructorResults;
-	}
-
-	public Array<Error> getErrors()
-	{
-		return this.errors;
 	}
 
 	public void declare(String name, Type type)
@@ -111,5 +101,25 @@ public class StatementResult
 	public void error(Error error)
 	{
 		this.errors.push(error);
+	}
+
+	public Array<Error> getErrors()
+	{
+		for (VariableRead read: this.variableReads)
+		{
+			String message = "Unknown local variable '" + read.getName() + "'.";
+
+			this.errors.push(new Error(read.getCoordinate(), message));
+		}
+
+		for (VariableWrite write: this.variableWrites)
+		{
+			String message =
+				"Assignment to uninitialised variable '" + write.getName() + "'.";
+
+			this.errors.push(new Error(write.getCoordinate(), message));
+		}
+
+		return this.errors;
 	}
 }

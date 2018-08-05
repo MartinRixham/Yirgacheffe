@@ -10,8 +10,6 @@ import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.statement.VariableDeclaration;
-import yirgacheffe.compiler.expression.VariableRead;
-import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
@@ -115,8 +113,8 @@ public class MethodListener extends TypeListener
 
 		if (context.type() == null)
 		{
-			String mesage = "Expected type before parameter identifier.";
-			Error error = new Error(context, mesage);
+			String message = "Expected type before parameter identifier.";
+			Error error = new Error(context, message);
 
 			this.errors.push(error);
 		}
@@ -146,21 +144,6 @@ public class MethodListener extends TypeListener
 		for (MatchResult matchResult: result.getMatchConstructorResults())
 		{
 			this.processMatchResult(true, matchResult);
-		}
-
-		for (VariableRead read: result.getVariableReads())
-		{
-			String message = "Unknown local variable '" + read.getName() + "'.";
-
-			this.errors.push(new Error(read.getCoordinate(), message));
-		}
-
-		for (VariableWrite write: result.getVariableWrites())
-		{
-			String message =
-				"Assignment to uninitialised variable '" + write.getName() + "'.";
-
-			this.errors.push(new Error(write.getCoordinate(), message));
 		}
 
 		for (Error error: result.getErrors())

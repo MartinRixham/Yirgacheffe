@@ -37,7 +37,7 @@ public class ParameterisedType implements Type
 	@Override
 	public String toJVMType()
 	{
-		return "L" + this.toFullyQualifiedType().replace('.', '/')  + ";";
+		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
 	}
 
 	@Override

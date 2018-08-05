@@ -20,7 +20,7 @@ public class ReferenceType implements Type
 	@Override
 	public String toJVMType()
 	{
-		return "L" + this.toFullyQualifiedType().replace('.', '/')  + ";";
+		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
 	}
 
 	@Override
