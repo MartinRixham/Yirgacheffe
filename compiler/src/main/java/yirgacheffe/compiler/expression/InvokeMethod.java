@@ -24,7 +24,7 @@ public class InvokeMethod implements Expression
 
 	private String name;
 
-	private  String caller;
+	private String caller;
 
 	private Expression owner;
 
@@ -63,6 +63,7 @@ public class InvokeMethod implements Expression
 		}
 
 		Arguments arguments = new Arguments(this.argumentTypes);
+
 		this.matchResult =
 			this.getMatchResult(
 				this.ownerType,
@@ -107,7 +108,7 @@ public class InvokeMethod implements Expression
 
 			argument.compile(methodVisitor);
 
-			if (parameters.length() >= i + 1 &&
+			if (parameters.length() > i &&
 				argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
 			{

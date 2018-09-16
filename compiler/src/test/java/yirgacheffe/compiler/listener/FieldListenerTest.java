@@ -779,7 +779,7 @@ public class FieldListenerTest
 	}
 
 	@Test
-	public void testFieldWrite()
+	public void testFieldWriteOutsideOfConstructor()
 	{
 		String source =
 			"class MyClass\n" +
@@ -846,35 +846,6 @@ public class FieldListenerTest
 		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
-
-		List methods = classNode.methods;
-
-		assertEquals(1, methods.size());
-
-		MethodNode constructor = (MethodNode) methods.get(0);
-
-		assertEquals("<init>", constructor.name);
-
-		InsnList instructions = constructor.instructions;
-
-		assertEquals(6, instructions.size());
-
-		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
-		assertEquals(0, thirdInstruction.var);
-
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
-		assertEquals("sumpt", fourthInstruction.cst);
-
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("thingy", fifthInstruction.name);
-		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
 	}
 
 	@Test
@@ -904,42 +875,5 @@ public class FieldListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 6:0 Cannot assign expression of type " +
-				"Num to field of type java.lang.String.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testAssignWrongTypeToPrimitiveField()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"Num one = 1;\n" +
-				"public MyClass()\n" +
-				"{\n" +
-					"this.one = \"one\";\n" +
-				"}\n" +
-			"}";
-
-		Classes classes = new Classes();
-		Compiler compiler = new Compiler("", source);
-
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
-
-		compiler.compileInterface(classes);
-
-		classes.clearCache();
-
-		CompilationResult result = compiler.compile(classes);
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 6:0 Cannot assign expression of type " +
-				"java.lang.String to field of type Num.\n",
-			result.getErrors());
 	}
 }

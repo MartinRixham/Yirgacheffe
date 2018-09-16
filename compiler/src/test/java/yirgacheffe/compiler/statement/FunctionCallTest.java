@@ -43,23 +43,15 @@ public class FunctionCallTest
 		assertEquals(5, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
-
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
-
 		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
 		assertEquals(Opcodes.POP2, fifthInstruction.getOpcode());
 	}
 }
