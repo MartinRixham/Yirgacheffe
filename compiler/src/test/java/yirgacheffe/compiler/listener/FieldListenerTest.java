@@ -875,5 +875,9 @@ public class FieldListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Cannot assign expression of type Num " +
+				"to field of type java.lang.String.\n",
+			result.getErrors());
 	}
 }

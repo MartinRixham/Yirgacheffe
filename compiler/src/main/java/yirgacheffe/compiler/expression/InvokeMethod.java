@@ -108,8 +108,7 @@ public class InvokeMethod implements Expression
 
 			argument.compile(methodVisitor);
 
-			if (parameters.length() > i &&
-				argumentType instanceof PrimitiveType &&
+			if (argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
 			{
 

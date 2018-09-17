@@ -70,7 +70,6 @@ public class FieldListener extends FieldDeclarationListener
 			this.types.getType(declaration.type()).toJVMType());
 
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
-
 		this.methodVisitor.visitMaxs(0, 0);
 
 		if (!expressionType.isAssignableTo(fieldType))

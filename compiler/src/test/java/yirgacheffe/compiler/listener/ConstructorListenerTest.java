@@ -175,4 +175,47 @@ public class ConstructorListenerTest
 		assertEquals(Opcodes.ACC_PRIVATE, constructor.access);
 		assertEquals("<init>", constructor.name);
 	}
+
+	@Test
+	public void testConstructorCallsInitialiser()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy = \"sumpt\";\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+
+		assertEquals(2, methods.size());
+
+		MethodNode constructor = (MethodNode) methods.get(1);
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(5, instructions.size());
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("()V", fourthInstruction.desc);
+	}
 }

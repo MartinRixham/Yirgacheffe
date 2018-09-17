@@ -66,47 +66,6 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testLocalVariableInitialisation()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"Num myVariable = 50;\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(3, firstMethod.maxLocals);
-
-		InsnList instructions = firstMethod.instructions;
-
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(50.0, firstInstruction.cst);
-
-		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
-		assertEquals(1, secondInstruction.var);
-	}
-
-	@Test
 	public void testAssignParameterToLocalVariable()
 	{
 		String source =
@@ -151,56 +110,6 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testTwoVariableInitialisations()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"Num myVariable = 1;\n" +
-					"Bool anotherVariable = false;\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(4, firstMethod.maxLocals);
-
-		InsnList instructions = firstMethod.instructions;
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
-
-		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
-		assertEquals(1, secondInstruction.var);
-
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
-
-		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.ISTORE, fourthInstruction.getOpcode());
-		assertEquals(3, fourthInstruction.var);
-	}
-
-	@Test
 	public void testUninitialisedVariable()
 	{
 		String source =
@@ -219,47 +128,6 @@ public class StatementListenerTest
 		assertEquals(
 			"line 4:0 Assignment to uninitialised variable 'myVariable'.\n",
 			result.getErrors());
-	}
-
-	@Test
-	public void testLocalVariableAssignment()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"Num myVariable;" +
-					"myVariable = 1;\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
-		assertEquals(2, firstMethod.maxStack);
-		assertEquals(3, firstMethod.maxLocals);
-
-		InsnList instructions = firstMethod.instructions;
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
-
-		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
-		assertEquals(1, secondInstruction.var);
 	}
 
 	@Test
@@ -292,30 +160,6 @@ public class StatementListenerTest
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(3, instructions.size());
-	}
-
-	@Test
-	public void testFailToAssignVariableOutsideOfBlock()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()" +
-				"{\n" +
-					"{" +
-						"Num myVariable;\n" +
-					"}\n" +
-					"myVariable = 50;" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 6:0 Assignment to uninitialised variable 'myVariable'.\n",
-			result.getErrors());
 	}
 
 	@Test
