@@ -222,52 +222,6 @@ public class StatementListenerTest
 	}
 
 	@Test
-	public void testMissingConstructorTypeParameter()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"MutableReference<String> ref =" +
-						"new MutableReference(\"thingy\");\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:34 Missing type parameters for type" +
-				" yirgacheffe.lang.MutableReference.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testNotEnoughTypeParameters()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"MutableReference<String> ref =" +
-						"new MutableReference<>(\"thingy\");\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:34 Type yirgacheffe.lang.MutableReference" +
-				" requires 1 parameter(s) but found 0.",
-			result.getErrors().split("\n")[0]);
-	}
-
-	@Test
 	public void testMismatchedTypeAssignment()
 	{
 		String source =
@@ -286,31 +240,6 @@ public class StatementListenerTest
 		assertEquals(
 			"line 4:0 Cannot assign expression of type " +
 				"java.lang.String to variable of type Num.\n",
-			result.getErrors());
-	}
-
-	@Test
-	public void testMismatchedTypeParameters()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public MyClass()" +
-				"{\n" +
-					"MutableReference<System> ref = " +
-						"new MutableReference<String>(\"thingy\");" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 4:0 Cannot assign expression of type " +
-				"yirgacheffe.lang.MutableReference<java.lang.String> " +
-				"to variable of type " +
-				"yirgacheffe.lang.MutableReference<yirgacheffe.lang.System>.\n",
 			result.getErrors());
 	}
 
