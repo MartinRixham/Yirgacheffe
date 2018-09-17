@@ -11,6 +11,8 @@ public class If implements Statement
 
 	private Statement statement;
 
+	private Label label = new Label();
+
 	public If(Expression condition, Statement statement)
 	{
 		this.condition = condition;
@@ -23,12 +25,13 @@ public class If implements Statement
 		this.condition.check(result);
 		this.condition.compile(methodVisitor);
 
-		Label label = new Label();
-
-		methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
+		methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 
 		this.statement.compile(methodVisitor, result);
+	}
 
-		methodVisitor.visitLabel(label);
+	public Label getLabel()
+	{
+		return this.label;
 	}
 }

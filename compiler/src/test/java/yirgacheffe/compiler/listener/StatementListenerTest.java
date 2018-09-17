@@ -185,7 +185,7 @@ public class StatementListenerTest
 
 	@Ignore
 	@Test
-	public void testIfStatement()
+	public void testConditionalStatements()
 	{
 		String source =
 			"class MyClass\n" +
@@ -196,6 +196,10 @@ public class StatementListenerTest
 					"{" +
 						"Num one = 1;\n" +
 					"}\n" +
+					"else" +
+					"{" +
+						"Num two = 2" +
+					"}" +
 				"}\n" +
 			"}";
 

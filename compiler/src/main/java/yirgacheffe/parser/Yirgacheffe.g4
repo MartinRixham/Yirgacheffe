@@ -50,13 +50,15 @@ fieldInitialisation: fieldDeclaration '=' expression;
 fieldDeclaration: Modifier? type? Identifier;
 
 statement:
-	block | anIf |
+	block | ifStatement | elseStatement |
 	((fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
 	semicolon);
 
 block: '{' statement* '}';
 
-anIf: 'if' '(' expression ')' statement;
+ifStatement: 'if' '(' expression ')' statement;
+
+elseStatement: 'else' statement;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
