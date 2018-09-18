@@ -3,6 +3,10 @@ package yirgacheffe.compiler.listener;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
+import yirgacheffe.compiler.statement.Branch;
+import yirgacheffe.compiler.statement.ConditionalStatement;
+import yirgacheffe.compiler.statement.Else;
+import yirgacheffe.compiler.statement.If;
 import yirgacheffe.compiler.statement.OpenBlock;
 import yirgacheffe.compiler.statement.Return;
 import yirgacheffe.compiler.statement.Statement;
@@ -15,7 +19,6 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class StatementListener extends FieldListener
 {
-
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -90,5 +93,36 @@ public class StatementListener extends FieldListener
 		this.hasReturnStatement = true;
 
 		this.statements.push(new Return(coordinate, this.returnType, expression));
+	}
+
+	@Override
+	public void exitIfStatement(YirgacheffeParser.IfStatementContext context)
+	{
+		Expression condition = this.expressions.pop();
+		Statement statement = this.statements.pop();
+
+		If ifStatement = new If(condition, statement);
+
+		this.statements.push(ifStatement);
+	}
+
+	@Override
+	public void exitElseStatement(YirgacheffeParser.ElseStatementContext context)
+	{
+		Statement statement = this.statements.pop();
+		Statement precondition = this.statements.pop();
+
+		Else elseStatement = new Else(precondition, statement);
+
+		this.statements.push(elseStatement);
+	}
+
+	public void exitConditionalStatement(
+		YirgacheffeParser.ConditionalStatementContext context)
+	{
+		ConditionalStatement conditional = (ConditionalStatement) this.statements.pop();
+		Branch branch = new Branch(conditional);
+
+		this.statements.push(branch);
 	}
 }

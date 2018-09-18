@@ -5,7 +5,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
 
-public class If implements Statement
+public class If implements ConditionalStatement
 {
 	private Expression condition;
 

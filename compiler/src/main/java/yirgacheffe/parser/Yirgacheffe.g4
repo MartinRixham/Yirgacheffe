@@ -28,9 +28,7 @@ interfaceDeclaration:
 
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
-	'{'
-		statement*
-	'}';
+	block;
 
 classMethodDeclaration: Modifier? type signature;
 
@@ -50,11 +48,13 @@ fieldInitialisation: fieldDeclaration '=' expression;
 fieldDeclaration: Modifier? type? Identifier;
 
 statement:
-	block | ifStatement | elseStatement |
+	block | conditionalStatement |
 	((fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
 	semicolon);
 
 block: '{' statement* '}';
+
+conditionalStatement: ifStatement elseStatement | ifStatement | elseStatement;
 
 ifStatement: 'if' '(' expression ')' statement;
 

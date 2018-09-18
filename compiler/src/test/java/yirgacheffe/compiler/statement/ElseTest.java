@@ -35,7 +35,7 @@ public class ElseTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(7, instructions.size());
+		assertEquals(6, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -64,10 +64,6 @@ public class ElseTest
 		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.RETURN, sixthInstruction.getOpcode());
-
-		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
-
-		assertEquals(elseLabel, seventhInstruction.getLabel());
 
 		assertNotEquals(ifLabel, elseLabel);
 	}

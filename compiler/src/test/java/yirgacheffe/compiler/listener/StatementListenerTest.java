@@ -1,12 +1,15 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -16,9 +19,10 @@ import yirgacheffe.compiler.Compiler;
 
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 public class StatementListenerTest
 {
@@ -183,7 +187,6 @@ public class StatementListenerTest
 		assertTrue(result.isSuccessful());
 	}
 
-	@Ignore
 	@Test
 	public void testConditionalStatements()
 	{
@@ -196,9 +199,9 @@ public class StatementListenerTest
 					"{" +
 						"Num one = 1;\n" +
 					"}\n" +
-					"else" +
+					"else if (false)" +
 					"{" +
-						"Num two = 2" +
+						"Num two = 2;" +
 					"}" +
 				"}\n" +
 			"}";
@@ -218,11 +221,66 @@ public class StatementListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		// assertEquals(4, instructions.size());
+		assertEquals(14, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+
+		Label ifLabel = secondInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DSTORE, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		Label elseLabel = fifthInstruction.label.getLabel();
+
+		assertNotEquals(ifLabel, elseLabel);
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(ifLabel, sixthInstruction.getLabel());
+
+		assertTrue(instructions.get(6) instanceof FrameNode);
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.ICONST_0, eighthInstruction.getOpcode());
+
+		JumpInsnNode ninthInstruction = (JumpInsnNode) instructions.get(8);
+
+		Label elseIfLabel = ninthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, ninthInstruction.getOpcode());
+
+		LdcInsnNode tenthInstruction = (LdcInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.LDC, tenthInstruction.getOpcode());
+		assertEquals(2.0, tenthInstruction.cst);
+
+		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DSTORE, eleventhInstruction.getOpcode());
+		assertEquals(3, eleventhInstruction.var);
+
+		LabelNode twelfthInstruction = (LabelNode) instructions.get(11);
+
+		assertEquals(elseIfLabel, twelfthInstruction.getLabel());
+		assertNotEquals(ifLabel, elseIfLabel);
+
+		assertTrue(instructions.get(12) instanceof FrameNode);
 	}
 
 	@Test

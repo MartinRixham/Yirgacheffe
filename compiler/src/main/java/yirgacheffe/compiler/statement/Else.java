@@ -4,11 +4,13 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class Else implements Statement
+public class Else implements ConditionalStatement
 {
 	private Statement precondition;
 
 	private Statement statement;
+
+	private Label label = new Label();
 
 	public Else(Statement precondition, Statement statement)
 	{
@@ -21,16 +23,18 @@ public class Else implements Statement
 	{
 		this.precondition.compile(methodVisitor, result);
 
-		Label label = new Label();
-
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, label);
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
 
 		If ifStatement = (If) this.precondition;
 
 		methodVisitor.visitLabel(ifStatement.getLabel());
 
 		this.statement.compile(methodVisitor, result);
+	}
 
-		methodVisitor.visitLabel(label);
+	@Override
+	public Label getLabel()
+	{
+		return this.label;
 	}
 }
