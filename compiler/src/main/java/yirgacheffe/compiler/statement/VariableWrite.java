@@ -28,7 +28,7 @@ public class VariableWrite implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		Type type = this.expression.check(result);
 		Variable variable = result.getVariable(this.name);
@@ -46,6 +46,8 @@ public class VariableWrite implements Statement
 		methodVisitor.visitVarInsn(type.getStoreInstruction(), variable.getIndex());
 
 		result.write(this);
+
+		return false;
 	}
 
 	public Coordinate getCoordinate()

@@ -90,8 +90,6 @@ public class StatementListener extends FieldListener
 		Coordinate coordinate = new Coordinate(context);
 		Expression expression = this.expressions.pop();
 
-		this.hasReturnStatement = true;
-
 		this.statements.push(new Return(coordinate, this.returnType, expression));
 	}
 

@@ -284,6 +284,53 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testBranchWithoutReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"if (true)" +
+					"{" +
+						"return 1;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 6:0 Missing return statement.\n", result.getErrors());
+	}
+
+	@Test
+	public void testBranchWithReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"if (true)" +
+					"{" +
+						"return 1;\n" +
+					"}\n" +
+					"else" +
+					"{" +
+						"return 2;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testMismatchedTypeAssignment()
 	{
 		String source =
@@ -385,7 +432,7 @@ public class StatementListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertFalse(result.isSuccessful());
-		assertEquals("line 5:0 No return statement in method.\n",
+		assertEquals("line 5:0 Missing return statement.\n",
 			result.getErrors());
 	}
 }

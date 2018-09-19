@@ -13,12 +13,14 @@ public class Branch implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult statementResult)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult statementResult)
 	{
 		Label label = this.conditional.getLabel();
 
-		this.conditional.compile(methodVisitor, statementResult);
+		boolean returns = this.conditional.compile(methodVisitor, statementResult);
 
 		methodVisitor.visitLabel(label);
+
+		return returns && (this.conditional instanceof Else);
 	}
 }

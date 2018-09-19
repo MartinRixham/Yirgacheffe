@@ -20,14 +20,14 @@ public class If implements ConditionalStatement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		this.condition.check(result);
 		this.condition.compile(methodVisitor);
 
 		methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 
-		this.statement.compile(methodVisitor, result);
+		return this.statement.compile(methodVisitor, result);
 	}
 
 	public Label getLabel()

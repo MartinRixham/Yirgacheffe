@@ -24,9 +24,9 @@ public class Else implements ConditionalStatement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
-		this.precondition.compile(methodVisitor, result);
+		boolean returns = this.precondition.compile(methodVisitor, result);
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
 
@@ -43,7 +43,7 @@ public class Else implements ConditionalStatement
 			result.error(new Error(this.coordinate, message));
 		}
 
-		this.statement.compile(methodVisitor, result);
+		return this.statement.compile(methodVisitor, result) && returns;
 	}
 
 	@Override

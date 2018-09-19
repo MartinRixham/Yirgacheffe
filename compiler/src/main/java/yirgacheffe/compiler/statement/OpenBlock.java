@@ -5,7 +5,8 @@ import org.objectweb.asm.MethodVisitor;
 public class OpenBlock implements Statement
 {
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
+		return false;
 	}
 }

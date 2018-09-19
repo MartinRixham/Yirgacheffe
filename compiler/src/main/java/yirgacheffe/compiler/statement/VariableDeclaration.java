@@ -16,8 +16,10 @@ public class VariableDeclaration implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		result.declare(this.name, this.type);
+
+		return false;
 	}
 }

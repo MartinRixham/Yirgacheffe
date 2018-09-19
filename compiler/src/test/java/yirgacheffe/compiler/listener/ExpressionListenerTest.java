@@ -94,7 +94,12 @@ public class ExpressionListenerTest
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
 
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
 		compiler.compileInterface(classes);
+
 		classes.clearCache();
 
 		CompilationResult result = compiler.compile(classes);

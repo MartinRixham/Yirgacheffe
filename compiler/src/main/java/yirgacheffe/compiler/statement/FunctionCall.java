@@ -15,7 +15,7 @@ public class FunctionCall implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		Type type = this.expression.check(result);
 
@@ -31,5 +31,7 @@ public class FunctionCall implements Statement
 		{
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
+
+		return false;
 	}
 }

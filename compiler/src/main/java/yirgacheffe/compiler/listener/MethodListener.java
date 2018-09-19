@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
@@ -30,8 +31,6 @@ public class MethodListener extends TypeListener
 	protected Array<Statement> statements = new Array<>();
 
 	protected MethodVisitor methodVisitor;
-
-	protected boolean hasReturnStatement = false;
 
 	private Set<String> methods = new HashSet<>();
 
@@ -93,7 +92,6 @@ public class MethodListener extends TypeListener
 
 		this.returnType = this.types.getType(context.type());
 		String descriptor = this.descriptor + this.returnType.toJVMType();
-
 		this.methodVisitor =
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
@@ -131,29 +129,31 @@ public class MethodListener extends TypeListener
 		Block block = new Block(this.statements);
 		StatementResult result = new StatementResult();
 
-		block.compile(this.methodVisitor, result);
+		boolean returns = block.compile(this.methodVisitor, result);
+
+		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
+		{
+			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
+			this.methodVisitor.visitInsn(Opcodes.DRETURN);
+		}
+		else if (!returns && this.returnType == PrimitiveType.VOID)
+		{
+			this.methodVisitor.visitInsn(Opcodes.RETURN);
+		}
+		else if (!returns && this.returnType != PrimitiveType.VOID)
+		{
+			String message = "Missing return statement.";
+			Coordinate coordinate = new Coordinate(context.stop);
+
+			this.errors.push(new Error(coordinate, message));
+		}
 
 		for (Error error: result.getErrors())
 		{
 			this.errors.push(error);
 		}
 
-		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
-		{
-			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
-		}
-
 		this.methodVisitor.visitMaxs(0, 0);
-		this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
-
-		if (!this.hasReturnStatement && this.returnType != PrimitiveType.VOID)
-		{
-			String message = "No return statement in method.";
-
-			this.errors.push(new Error(context.stop, message));
-		}
-
-		this.hasReturnStatement = false;
 		this.inConstructor = false;
 	}
 
@@ -180,7 +180,6 @@ public class MethodListener extends TypeListener
 		descriptor.append(")");
 
 		this.descriptor = descriptor.toString();
-
 		String signature = context.Identifier() + this.descriptor;
 
 		if (this.methods.contains(signature))

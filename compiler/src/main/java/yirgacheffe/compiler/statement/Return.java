@@ -30,7 +30,7 @@ public class Return implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		Type type = PrimitiveType.VOID;
 
@@ -38,6 +38,8 @@ public class Return implements Statement
 		{
 			type = this.expression.check(result);
 			this.expression.compile(methodVisitor);
+
+			methodVisitor.visitInsn(type.getReturnInstruction());
 		}
 		else
 		{
@@ -51,5 +53,7 @@ public class Return implements Statement
 
 			result.error(new Error(this.coordinate, message));
 		}
+
+		return true;
 	}
 }

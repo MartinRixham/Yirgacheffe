@@ -16,15 +16,18 @@ public class Block implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		Map<String, Variable> declaredVariables = result.getDeclaredVariables();
+		boolean returns = false;
 
 		for (Statement statement: this.statements)
 		{
-			statement.compile(methodVisitor, result);
+			returns = statement.compile(methodVisitor, result) || returns;
 		}
 
 		result.setDeclaredVariables(declaredVariables);
+
+		return returns;
 	}
 }

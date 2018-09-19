@@ -34,7 +34,7 @@ public class FieldWrite implements Statement
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor, StatementResult result)
+	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
 	{
 		Type ownerType = this.owner.check(result);
 		Type type = this.value.check(result);
@@ -68,6 +68,8 @@ public class FieldWrite implements Statement
 			ownerType.toFullyQualifiedType(),
 			this.name,
 			type.toJVMType());
+
+		return false;
 	}
 
 	private Type getType(Class<?> clazz)
