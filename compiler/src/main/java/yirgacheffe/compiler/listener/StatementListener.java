@@ -109,10 +109,11 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitElseStatement(YirgacheffeParser.ElseStatementContext context)
 	{
+		Coordinate coordinate = new Coordinate(context);
 		Statement statement = this.statements.pop();
 		Statement precondition = this.statements.pop();
 
-		Else elseStatement = new Else(precondition, statement);
+		Else elseStatement = new Else(coordinate, precondition, statement);
 
 		this.statements.push(elseStatement);
 	}
