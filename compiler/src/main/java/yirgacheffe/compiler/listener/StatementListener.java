@@ -81,7 +81,8 @@ public class StatementListener extends FieldListener
 			}
 		}
 
-		this.statements.push(new Block(blockStatements));
+		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
+		this.statements.push(new Block(coordinate, blockStatements));
 	}
 
 	@Override

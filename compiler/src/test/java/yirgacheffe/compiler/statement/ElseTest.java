@@ -74,7 +74,7 @@ public class ElseTest
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
-		Statement ifStatement = new Block(new Array<>());
+		Statement ifStatement = new Block(coordinate, new Array<>());
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 		MethodNode methodVisitor = new MethodNode();
 		StatementResult result = new StatementResult();

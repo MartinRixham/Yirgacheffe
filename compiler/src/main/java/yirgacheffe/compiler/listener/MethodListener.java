@@ -126,7 +126,8 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
-		Block block = new Block(this.statements);
+		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
+		Block block = new Block(coordinate, this.statements);
 		StatementResult result = new StatementResult();
 
 		boolean returns = block.compile(this.methodVisitor, result);
@@ -140,10 +141,9 @@ public class MethodListener extends TypeListener
 		{
 			this.methodVisitor.visitInsn(Opcodes.RETURN);
 		}
-		else if (!returns && this.returnType != PrimitiveType.VOID)
+		else if (!returns)
 		{
 			String message = "Missing return statement.";
-			Coordinate coordinate = new Coordinate(context.stop);
 
 			this.errors.push(new Error(coordinate, message));
 		}
