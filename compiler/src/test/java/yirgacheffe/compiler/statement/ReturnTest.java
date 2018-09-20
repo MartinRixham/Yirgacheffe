@@ -12,6 +12,7 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ReturnTest
 {
@@ -23,8 +24,9 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		StatementResult result = new StatementResult();
 
-		returnStatement.compile(methodVisitor, result);
+		boolean returns = returnStatement.compile(methodVisitor, result);
 
+		assertTrue(returns);
 		assertEquals(0, result.getErrors().length());
 
 		InsnList instructions = methodVisitor.instructions;

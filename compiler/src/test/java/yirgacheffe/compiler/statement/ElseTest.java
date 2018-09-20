@@ -15,6 +15,7 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 public class ElseTest
@@ -79,8 +80,9 @@ public class ElseTest
 		MethodNode methodVisitor = new MethodNode();
 		StatementResult result = new StatementResult();
 
-		elseStatement.compile(methodVisitor, result);
+		boolean returns = elseStatement.compile(methodVisitor, result);
 
+		assertFalse(returns);
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",

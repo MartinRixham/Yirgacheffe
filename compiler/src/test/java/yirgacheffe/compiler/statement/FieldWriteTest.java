@@ -15,6 +15,7 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class FieldWriteTest
 {
@@ -70,10 +71,10 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		StatementResult result = new StatementResult();
 
-		fieldWrite.compile(methodVisitor, result);
+		boolean returns = fieldWrite.compile(methodVisitor, result);
 
+		assertFalse(returns);
 		assertEquals(1, result.getErrors().length());
-
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
 				"java.lang.String to field of type Num.",

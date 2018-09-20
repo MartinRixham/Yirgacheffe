@@ -8,6 +8,7 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class BlockTest
 {
@@ -21,13 +22,14 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		StatementResult result = new StatementResult();
 
-		block.compile(methodVisitor, result);
+		boolean returns = block.compile(methodVisitor, result);
 
 		VariableRead variableRead = new VariableRead("myVariable", coordinate);
 
 		variableRead.check(result);
 		variableRead.compile(methodVisitor);
 
+		assertFalse(returns);
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 3:5 Unknown local variable 'myVariable'.",
