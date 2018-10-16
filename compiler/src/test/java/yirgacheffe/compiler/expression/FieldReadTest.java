@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -19,7 +19,7 @@ public class FieldReadTest
 	public void testCompilingFieldRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Type owner = new ReferenceType(String.class);
 
@@ -29,7 +29,7 @@ public class FieldReadTest
 				"length",
 				PrimitiveType.DOUBLE);
 
-		Type type = fieldRead.check(result);
+		Type type = fieldRead.check(variables);
 
 		fieldRead.compile(methodVisitor);
 

@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -23,7 +23,7 @@ public class InvokeConstructorTest
 	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
@@ -35,7 +35,7 @@ public class InvokeConstructorTest
 				owner,
 				arguments);
 
-		Type type = invokeConstructor.check(result);
+		Type type = invokeConstructor.check(variables);
 
 		invokeConstructor.compile(methodVisitor);
 

@@ -1,8 +1,9 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.type.Variables;
 
 public interface Statement
 {
-	boolean compile(MethodVisitor methodVisitor, StatementResult statementResult);
+	StatementResult compile(MethodVisitor methodVisitor, Variables variables);
 }

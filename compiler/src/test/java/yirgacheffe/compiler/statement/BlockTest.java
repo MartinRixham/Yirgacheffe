@@ -5,10 +5,10 @@ import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class BlockTest
 {
@@ -20,20 +20,19 @@ public class BlockTest
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 		Block block = new Block(coordinate, new Array<>(variableDeclaration));
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		boolean returns = block.compile(methodVisitor, result);
+		block.compile(methodVisitor, variables);
 
 		VariableRead variableRead = new VariableRead("myVariable", coordinate);
 
-		variableRead.check(result);
+		variableRead.check(variables);
 		variableRead.compile(methodVisitor);
 
-		assertFalse(returns);
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, variables.getErrors().length());
 		assertEquals(
 			"line 3:5 Unknown local variable 'myVariable'.",
-			result.getErrors().get(0).toString());
+			variables.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -49,9 +48,9 @@ public class BlockTest
 			new Array<>(returnStatement, variableDeclaration, anotherDeclaration);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		block.compile(methodVisitor, result);
+		StatementResult result = block.compile(methodVisitor, variables);
 
 		assertEquals(1, result.getErrors().length());
 		assertEquals("line 4:0 Unreachable code.",

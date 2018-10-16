@@ -1,12 +1,13 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.type.Variables;
 
 public class OpenBlock implements Statement
 {
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		return false;
+		return new StatementResult(false);
 	}
 }

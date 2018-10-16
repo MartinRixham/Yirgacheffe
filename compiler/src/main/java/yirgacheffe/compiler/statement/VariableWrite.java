@@ -8,6 +8,8 @@ import yirgacheffe.compiler.error.VariableAssignmentError;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class VariableWrite implements Statement
 {
@@ -28,11 +30,12 @@ public class VariableWrite implements Statement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type type = this.expression.check(result);
-		Variable variable = result.getVariable(this.name);
+		Type type = this.expression.check(variables);
+		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
+		Array<Error> errors = new Array<>();
 
 		this.expression.compile(methodVisitor);
 
@@ -40,14 +43,14 @@ public class VariableWrite implements Statement
 		{
 			ErrorMessage message = new VariableAssignmentError(variableType, type);
 
-			result.error(new Error(this.coordinate, message));
+			errors.push(new Error(this.coordinate, message));
 		}
 
 		methodVisitor.visitVarInsn(type.getStoreInstruction(), variable.getIndex());
 
-		result.write(this);
+		variables.write(this);
 
-		return false;
+		return new StatementResult(false, errors);
 	}
 
 	public Coordinate getCoordinate()

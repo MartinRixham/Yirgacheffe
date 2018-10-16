@@ -10,6 +10,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class FieldWrite implements Statement
 {
@@ -34,10 +36,11 @@ public class FieldWrite implements Statement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type ownerType = this.owner.check(result);
-		Type type = this.value.check(result);
+		Type ownerType = this.owner.check(variables);
+		Type type = this.value.check(variables);
+		Array<Error> errors = new Array<>();
 
 		try
 		{
@@ -52,7 +55,7 @@ public class FieldWrite implements Statement
 				Type fieldType = this.getType(fieldClass);
 				ErrorMessage message = new FieldAssignmentError(fieldType, type);
 
-				result.error(new Error(this.coordinate, message));
+				errors.push(new Error(this.coordinate, message));
 			}
 		}
 		catch (NoSuchFieldException e)
@@ -69,7 +72,7 @@ public class FieldWrite implements Statement
 			this.name,
 			type.toJVMType());
 
-		return false;
+		return new StatementResult(false, errors);
 	}
 
 	private Type getType(Class<?> clazz)

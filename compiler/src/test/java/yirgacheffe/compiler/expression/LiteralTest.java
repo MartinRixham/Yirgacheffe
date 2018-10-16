@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -21,9 +21,9 @@ public class LiteralTest
 		MethodNode methodVisitor = new MethodNode();
 
 		Literal literal = new Literal(new ReferenceType(String.class), "\"thingy\"");
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -43,11 +43,11 @@ public class LiteralTest
 	public void testCompilingStringWithQuotes()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(new ReferenceType(String.class), "\"thi\"ngy\"");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -67,11 +67,11 @@ public class LiteralTest
 	public void testCompilingZero()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -89,11 +89,11 @@ public class LiteralTest
 	public void testCompilingOne()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "1");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -111,11 +111,11 @@ public class LiteralTest
 	public void testCompilingInteger()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "2");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -135,11 +135,11 @@ public class LiteralTest
 	public void testCompilingDecimal()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0.5");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -159,11 +159,11 @@ public class LiteralTest
 	public void testCompilingFalse()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "false");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -182,11 +182,11 @@ public class LiteralTest
 	public void testCompilingTrue()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "true");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 
@@ -205,11 +205,11 @@ public class LiteralTest
 	public void testCompilingCharacter()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		Literal literal = new Literal(PrimitiveType.CHAR, "'r'");
 
-		Type type = literal.check(result);
+		Type type = literal.check(variables);
 
 		literal.compile(methodVisitor);
 

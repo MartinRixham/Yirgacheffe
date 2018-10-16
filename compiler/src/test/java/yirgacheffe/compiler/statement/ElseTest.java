@@ -12,6 +12,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
@@ -29,9 +30,9 @@ public class ElseTest
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		elseStatement.compile(methodVisitor, result);
+		StatementResult result = elseStatement.compile(methodVisitor, variables);
 
 		assertEquals(0, result.getErrors().length());
 
@@ -78,11 +79,11 @@ public class ElseTest
 		Statement ifStatement = new Block(coordinate, new Array<>());
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		boolean returns = elseStatement.compile(methodVisitor, result);
+		StatementResult result = elseStatement.compile(methodVisitor, variables);
 
-		assertFalse(returns);
+		assertFalse(result.returns());
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",

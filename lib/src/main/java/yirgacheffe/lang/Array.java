@@ -66,13 +66,23 @@ public class Array<T> implements Iterable<T>
 		this.array[i] = item;
 	}
 
-	public void push(T... items)
+	public void push(Array<T> items)
 	{
 		this.grow(this.length + items.length);
 
-		java.lang.System.arraycopy(items, 0, this.array, this.length, items.length);
+		java.lang.System.arraycopy(
+			items.toArray(), 0, this.array, this.length, items.length);
 
 		this.length = this.length + items.length;
+	}
+
+	public void push(T item)
+	{
+		this.grow(this.length + 1);
+
+		this.array[this.length] = item;
+
+		this.length = this.length + 1;
 	}
 
 	public T pop()
@@ -288,5 +298,10 @@ public class Array<T> implements Iterable<T>
 				return (T) array[this.index++];
 			}
 		};
+	}
+
+	public T[] toArray()
+	{
+		return (T[]) Arrays.copyOf(this.array, this.length);
 	}
 }

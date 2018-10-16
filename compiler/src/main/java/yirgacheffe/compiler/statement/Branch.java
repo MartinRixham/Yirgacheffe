@@ -2,6 +2,7 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.type.Variables;
 
 public class Branch implements Statement
 {
@@ -13,14 +14,16 @@ public class Branch implements Statement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult statementResult)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Label label = this.conditional.getLabel();
 
-		boolean returns = this.conditional.compile(methodVisitor, statementResult);
+		StatementResult result = this.conditional.compile(methodVisitor, variables);
 
 		methodVisitor.visitLabel(label);
 
-		return returns && (this.conditional instanceof Else);
+		boolean returns = result.returns() && (this.conditional instanceof Else);
+
+		return new StatementResult(returns, result.getErrors());
 	}
 }

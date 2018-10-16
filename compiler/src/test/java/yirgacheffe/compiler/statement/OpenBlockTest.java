@@ -2,6 +2,7 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertFalse;
 
@@ -12,10 +13,10 @@ public class OpenBlockTest
 	{
 		OpenBlock openBlock = new OpenBlock();
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		boolean returns = openBlock.compile(methodVisitor, result);
+		StatementResult result = openBlock.compile(methodVisitor, variables);
 
-		assertFalse(returns);
+		assertFalse(result.returns());
 	}
 }

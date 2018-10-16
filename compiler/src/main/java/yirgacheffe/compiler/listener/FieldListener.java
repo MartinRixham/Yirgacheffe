@@ -7,7 +7,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.statement.FieldWrite;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -54,10 +54,10 @@ public class FieldListener extends FieldDeclarationListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Expression expression = this.expressions.pop();
 		Expression self = this.expressions.pop();
-		Type expressionType = expression.check(result);
+		Type expressionType = expression.check(variables);
 		Type fieldType = this.types.getType(declaration.type());
 
 		self.compile(this.methodVisitor);

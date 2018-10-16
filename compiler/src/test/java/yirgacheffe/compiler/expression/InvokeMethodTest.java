@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -29,7 +29,7 @@ public class InvokeMethodTest
 	public void testCompilingToStringInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type stringType = new ReferenceType(String.class);
 		Expression expression = new Literal(stringType, "\"thingy\"");
@@ -42,7 +42,7 @@ public class InvokeMethodTest
 				expression,
 				new Array<>());
 
-		Type type = invokeMethod.check(result);
+		Type type = invokeMethod.check(variables);
 
 		invokeMethod.compile(methodVisitor);
 
@@ -70,7 +70,7 @@ public class InvokeMethodTest
 	public void testInvocationCallWithArgument()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type stringType = new ReferenceType(String.class);
 		Expression expression = new Literal(stringType, "\"thingy\"");
@@ -84,7 +84,7 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Type type = invokeMethod.check(result);
+		Type type = invokeMethod.check(variables);
 
 		invokeMethod.compile(methodVisitor);
 
@@ -117,7 +117,7 @@ public class InvokeMethodTest
 	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
 		Array<Type> typeParameters =
 			new Array<>(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
@@ -141,7 +141,7 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Type type = invokeMethod.check(result);
+		Type type = invokeMethod.check(variables);
 
 		invokeMethod.compile(methodVisitor);
 
@@ -196,10 +196,10 @@ public class InvokeMethodTest
 	public void testInterfaceMethodInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Type owner = new ReferenceType(Runnable.class);
 
-		result.declare("myVariable", owner);
+		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(0, 1);
 		VariableRead expression = new VariableRead("myVariable", coordinate);
@@ -212,7 +212,7 @@ public class InvokeMethodTest
 				expression,
 				new Array<>());
 
-		Type type = invokeMethod.check(result);
+		Type type = invokeMethod.check(variables);
 
 		invokeMethod.compile(methodVisitor);
 

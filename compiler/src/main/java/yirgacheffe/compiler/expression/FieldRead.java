@@ -2,7 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
 
 public class FieldRead implements Expression
@@ -23,7 +23,7 @@ public class FieldRead implements Expression
 	}
 
 	@Override
-	public Type check(StatementResult result)
+	public Type check(Variables result)
 	{
 		this.ownerType = this.owner.check(result);
 
@@ -31,14 +31,16 @@ public class FieldRead implements Expression
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public ExpressionResult compile(MethodVisitor methodVisitor)
 	{
-		this.owner.compile(methodVisitor);
+		ExpressionResult result = this.owner.compile(methodVisitor);
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
 			this.ownerType.toFullyQualifiedType().replace(".", "/"),
 			this.name,
 			this.type.toJVMType());
+
+		return result;
 	}
 }

@@ -5,6 +5,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class Else implements ConditionalStatement
 {
@@ -24,9 +26,10 @@ public class Else implements ConditionalStatement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		boolean returns = this.precondition.compile(methodVisitor, result);
+		StatementResult ifResult = this.precondition.compile(methodVisitor, variables);
+		Array<Error> errors = new Array<>();
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
 
@@ -40,10 +43,15 @@ public class Else implements ConditionalStatement
 		{
 			String message = "Else not preceded by if statement.";
 
-			result.error(new Error(this.coordinate, message));
+			errors.push(new Error(this.coordinate, message));
 		}
 
-		return this.statement.compile(methodVisitor, result) && returns;
+		StatementResult blockResult = this.statement.compile(methodVisitor, variables);
+		boolean returns = ifResult.returns() && blockResult.returns();
+
+		errors = errors.concat(ifResult.getErrors()).concat(blockResult.getErrors());
+
+		return new StatementResult(returns, errors);
 	}
 
 	@Override

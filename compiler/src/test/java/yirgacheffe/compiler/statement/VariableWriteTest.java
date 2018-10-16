@@ -10,6 +10,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,10 +25,10 @@ public class VariableWriteTest
 			new VariableWrite("myVariable", value, coordinate);
 		MethodNode methodVisitor = new MethodNode();
 
-		StatementResult result = new StatementResult();
-		result.declare("myVariable", new ReferenceType(String.class));
+		Variables variables = new Variables();
+		variables.declare("myVariable", new ReferenceType(String.class));
 
-		variableWrite.compile(methodVisitor, result);
+		StatementResult result = variableWrite.compile(methodVisitor, variables);
 
 		assertEquals(0, result.getErrors().length());
 

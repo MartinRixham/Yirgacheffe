@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.type.Variables;
 
 public class If implements ConditionalStatement
 {
@@ -20,14 +21,14 @@ public class If implements ConditionalStatement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		this.condition.check(result);
+		this.condition.check(variables);
 		this.condition.compile(methodVisitor);
 
 		methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 
-		return this.statement.compile(methodVisitor, result);
+		return this.statement.compile(methodVisitor, variables);
 	}
 
 	public Label getLabel()

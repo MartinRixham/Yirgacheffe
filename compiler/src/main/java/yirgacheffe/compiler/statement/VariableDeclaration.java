@@ -2,6 +2,7 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 
 public class VariableDeclaration implements Statement
 {
@@ -16,10 +17,10 @@ public class VariableDeclaration implements Statement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		result.declare(this.name, this.type);
+		variables.declare(this.name, this.type);
 
-		return false;
+		return new StatementResult(false);
 	}
 }

@@ -8,7 +8,7 @@ import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -38,6 +38,8 @@ public class InvokeMethod implements Expression
 
 	private Type returnType;
 
+	private Array<Error> errors;
+
 	public InvokeMethod(
 		Coordinate coordinate,
 		String name,
@@ -53,7 +55,7 @@ public class InvokeMethod implements Expression
 	}
 
 	@Override
-	public Type check(StatementResult result)
+	public Type check(Variables result)
 	{
 		this.ownerType = this.owner.check(result);
 
@@ -71,25 +73,22 @@ public class InvokeMethod implements Expression
 				arguments);
 
 		Callable function = this.matchResult.getFunction();
-		this.returnType = function.getReturnType();
 
-		for (Error error: this.matchResult.getErrors())
-		{
-			result.error(error);
-		}
+		this.returnType = function.getReturnType();
+		this.errors = this.matchResult.getErrors();
 
 		return function.getReturnType();
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public ExpressionResult compile(MethodVisitor methodVisitor)
 	{
 		Callable function = this.matchResult.getFunction();
 		Array<Type> parameters = function.getParameterTypes();
 		Type owner = this.ownerType;
 		Type returnType = this.returnType;
 
-		this.owner.compile(methodVisitor);
+		ExpressionResult result = this.owner.compile(methodVisitor);
 
 		if (owner instanceof PrimitiveType)
 		{
@@ -106,7 +105,7 @@ public class InvokeMethod implements Expression
 			Expression argument = this.arguments.get(i);
 			Type argumentType = this.argumentTypes.get(i);
 
-			argument.compile(methodVisitor);
+			result = result.add(argument.compile(methodVisitor));
 
 			if (argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
@@ -162,6 +161,8 @@ public class InvokeMethod implements Expression
 		{
 			methodVisitor.visitInsn(Opcodes.F2D);
 		}
+
+		return result.add(new ExpressionResult(this.errors));
 	}
 
 	private MatchResult getMatchResult(

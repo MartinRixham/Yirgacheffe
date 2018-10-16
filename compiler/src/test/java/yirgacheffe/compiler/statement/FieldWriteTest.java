@@ -13,6 +13,7 @@ import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,9 +32,9 @@ public class FieldWriteTest
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		fieldWrite.compile(methodVisitor, result);
+		StatementResult result = fieldWrite.compile(methodVisitor, variables);
 
 		assertEquals(0, result.getErrors().length());
 
@@ -69,11 +70,11 @@ public class FieldWriteTest
 		Expression value = new Literal(new ReferenceType(String.class), "\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		boolean returns = fieldWrite.compile(methodVisitor, result);
+		StatementResult result = fieldWrite.compile(methodVisitor, variables);
 
-		assertFalse(returns);
+		assertFalse(result.returns());
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
@@ -89,9 +90,9 @@ public class FieldWriteTest
 		Expression value = new Literal(PrimitiveType.DOUBLE, "1");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		fieldWrite.compile(methodVisitor, result);
+		StatementResult result = fieldWrite.compile(methodVisitor, variables);
 
 		assertEquals(1, result.getErrors().length());
 

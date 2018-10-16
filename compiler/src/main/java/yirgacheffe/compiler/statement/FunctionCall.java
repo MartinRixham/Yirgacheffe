@@ -3,7 +3,9 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.ExpressionResult;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 
 public class FunctionCall implements Statement
 {
@@ -15,11 +17,11 @@ public class FunctionCall implements Statement
 	}
 
 	@Override
-	public boolean compile(MethodVisitor methodVisitor, StatementResult result)
+	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type type = this.expression.check(result);
+		Type type = this.expression.check(variables);
 
-		this.expression.compile(methodVisitor);
+		ExpressionResult result = this.expression.compile(methodVisitor);
 
 		int width = type.width();
 
@@ -32,6 +34,6 @@ public class FunctionCall implements Statement
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
 
-		return false;
+		return new StatementResult(false, result.getErrors());
 	}
 }

@@ -1,12 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
 
 public interface Expression
 {
-	Type check(StatementResult result);
+	Type check(Variables result);
 
-	void compile(MethodVisitor methodVisitor);
+	ExpressionResult compile(MethodVisitor methodVisitor);
 }

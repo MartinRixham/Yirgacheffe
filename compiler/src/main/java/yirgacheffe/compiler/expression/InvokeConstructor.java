@@ -8,7 +8,7 @@ import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -26,6 +26,8 @@ public class InvokeConstructor implements Expression
 
 	private Callable function;
 
+	private Array<Error> errors;
+
 	public InvokeConstructor(
 		Coordinate coordinate,
 		Type owner,
@@ -37,7 +39,7 @@ public class InvokeConstructor implements Expression
 	}
 
 	@Override
-	public Type check(StatementResult result)
+	public Type check(Variables result)
 	{
 		Array<Type> argumentTypes = new Array<>();
 
@@ -63,22 +65,18 @@ public class InvokeConstructor implements Expression
 				true)
 				.getMatchingExecutable(arguments);
 
-		for (Error error: matchResult.getErrors())
-		{
-			result.error(error);
-		}
-
+		this.errors = matchResult.getErrors();
 		this.function = matchResult.getFunction();
 
 		return this.owner;
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public ExpressionResult compile(MethodVisitor methodVisitor)
 	{
 		if (this.owner instanceof NullType)
 		{
-			return;
+			return new ExpressionResult(this.errors);
 		}
 
 		String typeWithSlashes =
@@ -87,9 +85,11 @@ public class InvokeConstructor implements Expression
 		methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		methodVisitor.visitInsn(Opcodes.DUP);
 
+		ExpressionResult result = new ExpressionResult(this.errors);
+
 		for (Expression argument: this.arguments)
 		{
-			argument.compile(methodVisitor);
+			result = result.add(argument.compile(methodVisitor));
 		}
 
 		methodVisitor.visitMethodInsn(
@@ -98,5 +98,7 @@ public class InvokeConstructor implements Expression
 			"<init>",
 			this.function.getDescriptor(),
 			false);
+
+		return result;
 	}
 }

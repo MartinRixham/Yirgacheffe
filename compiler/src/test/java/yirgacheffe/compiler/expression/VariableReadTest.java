@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -19,15 +19,15 @@ public class VariableReadTest
 	public void testCompilingStringRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Type owner = new ReferenceType(String.class);
 
-		result.declare("myVariable", owner);
+		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(1, 0);
 		Expression expression = new VariableRead("myVariable", coordinate);
 
-		Type type = expression.check(result);
+		Type type = expression.check(variables);
 
 		expression.compile(methodVisitor);
 
@@ -47,15 +47,15 @@ public class VariableReadTest
 	public void testCompilingNumberRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Type owner = PrimitiveType.DOUBLE;
 
-		result.declare("myVariable", owner);
+		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(1, 0);
 		Expression expression = new VariableRead("myVariable", coordinate);
 
-		Type type = expression.check(result);
+		Type type = expression.check(variables);
 
 		expression.compile(methodVisitor);
 

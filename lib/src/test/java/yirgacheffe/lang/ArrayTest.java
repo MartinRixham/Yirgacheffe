@@ -161,7 +161,7 @@ public class ArrayTest
 	{
 		Array<Integer> numbers = new Array<>();
 
-		numbers.push(1, 2);
+		numbers.push(new Array<>(1, 2));
 
 		assertEquals("[1, 2]", numbers.toString());
 		assertEquals(2, numbers.length());
@@ -188,7 +188,7 @@ public class ArrayTest
 				21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
 				31);
 
-		numbers.push(32, 33);
+		numbers.push(new Array<>(32, 33));
 
 		assertEquals(33, numbers.length());
 	}

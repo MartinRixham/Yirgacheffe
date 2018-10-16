@@ -10,6 +10,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,11 +23,11 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		boolean returns = returnStatement.compile(methodVisitor, result);
+		StatementResult result = returnStatement.compile(methodVisitor, variables);
 
-		assertTrue(returns);
+		assertTrue(result.returns());
 		assertEquals(0, result.getErrors().length());
 
 		InsnList instructions = methodVisitor.instructions;
@@ -46,9 +47,9 @@ public class ReturnTest
 		Expression expression = new Literal(returnType, "1");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		returnStatement.compile(methodVisitor, result);
+		StatementResult result = returnStatement.compile(methodVisitor, variables);
 
 		assertEquals(0, result.getErrors().length());
 

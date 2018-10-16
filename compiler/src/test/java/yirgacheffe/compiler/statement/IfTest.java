@@ -11,6 +11,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,9 +25,9 @@ public class IfTest
 		Statement statement = new Return(coordinate);
 		If ifStatement = new If(condition, statement);
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		ifStatement.compile(methodVisitor, result);
+		StatementResult result = ifStatement.compile(methodVisitor, variables);
 
 		assertEquals(0, result.getErrors().length());
 

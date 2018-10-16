@@ -7,36 +7,37 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
 
-public class StatementResultTest
+public class VariablesTest
 {
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead("myVariable", coordinate);
 
-		result.declare("myVariable", PrimitiveType.DOUBLE);
-		result.read(read);
+		variables.declare("myVariable", PrimitiveType.DOUBLE);
+		variables.read(read);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, variables.getErrors().length());
 	}
 
 	@Test
 	public void testReadUndeclaredVariable()
 	{
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead("myVariable", coordinate);
 
-		result.read(read);
+		variables.read(read);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, variables.getErrors().length());
 
-		Error error = result.getErrors().get(0);
+		Error error = variables.getErrors().get(0);
 
 		assertEquals("line 1:0 Unknown local variable 'myVariable'.", error.toString());
 	}
@@ -44,30 +45,30 @@ public class StatementResultTest
 	@Test
 	public void testWriteDeclaredVariable()
 	{
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite("myVariable", expression, coordinate);
 
-		result.declare("myVariable", PrimitiveType.DOUBLE);
-		result.write(write);
+		variables.declare("myVariable", PrimitiveType.DOUBLE);
+		variables.write(write);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, variables.getErrors().length());
 	}
 
 	@Test
 	public void testWriteUndeclaredVariable()
 	{
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite("myVariable", expression, coordinate);
 
-		result.write(write);
+		variables.write(write);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, variables.getErrors().length());
 
-		Error error = result.getErrors().get(0);
+		Error error = variables.getErrors().get(0);
 
 		assertEquals(
 			"line 1:0 Assignment to uninitialised variable 'myVariable'.",

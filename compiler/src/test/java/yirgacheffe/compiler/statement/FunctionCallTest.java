@@ -13,6 +13,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
@@ -34,9 +35,9 @@ public class FunctionCallTest
 				arguments);
 
 		FunctionCall functionCall = new FunctionCall(invoke);
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
-		functionCall.compile(methodVisitor, result);
+		functionCall.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

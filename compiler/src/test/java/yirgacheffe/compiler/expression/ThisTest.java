@@ -5,7 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
@@ -17,11 +17,11 @@ public class ThisTest
 	public void testCompilingThis()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		StatementResult result = new StatementResult();
+		Variables variables = new Variables();
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
 
-		Type type = thisRead.check(result);
+		Type type = thisRead.check(variables);
 
 		thisRead.compile(methodVisitor);
 

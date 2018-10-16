@@ -2,7 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.statement.StatementResult;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -20,13 +20,13 @@ public class Literal implements Expression
 	}
 
 	@Override
-	public Type check(StatementResult result)
+	public Type check(Variables result)
 	{
 		return this.type;
 	}
 
 	@Override
-	public void compile(MethodVisitor methodVisitor)
+	public ExpressionResult compile(MethodVisitor methodVisitor)
 	{
 		if (this.type instanceof ReferenceType)
 		{
@@ -64,5 +64,7 @@ public class Literal implements Expression
 				methodVisitor.visitLdcInsn(dub);
 			}
 		}
+
+		return new ExpressionResult();
 	}
 }
