@@ -86,13 +86,22 @@ instantiation: New type arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression: (instantiation | literal | variableRead | thisRead) (fieldRead | methodCall)*;
+expression:
+    (instantiation |
+    literal |
+    variableRead |
+    thisRead)
+    (fieldRead |
+    methodCall |
+    equals)*;
 
 variableRead: Identifier;
 
 thisRead: This;
 
 fieldRead: '.' Identifier;
+
+equals: '==' expression;
 
 fieldWrite: expression '.' Identifier '=' expression;
 

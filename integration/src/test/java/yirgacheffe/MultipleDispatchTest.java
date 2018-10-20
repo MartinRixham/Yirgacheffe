@@ -26,7 +26,8 @@ public class MultipleDispatchTest
 				"main hello(Array<String> args)" +
 				"{\n" +
 					"Object myClass = this;" +
-					"Bool equal = myClass.equals(\"thingy\");" +
+					"Object string = \"thingy\";" +
+					"Bool equal = myClass.equals(string);" +
 					"new System().getOut().println(equal);" +
 				"}\n" +
 
