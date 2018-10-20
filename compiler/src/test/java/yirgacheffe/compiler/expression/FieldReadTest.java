@@ -29,9 +29,9 @@ public class FieldReadTest
 				"length",
 				PrimitiveType.DOUBLE);
 
-		Type type = fieldRead.check(variables);
+		Type type = fieldRead.getType(variables);
 
-		fieldRead.compile(methodVisitor);
+		fieldRead.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

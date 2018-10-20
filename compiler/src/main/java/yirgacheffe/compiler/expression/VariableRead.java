@@ -12,8 +12,6 @@ public class VariableRead implements Expression
 {
 	private String name;
 
-	private Variable variable;
-
 	private Coordinate coordinate;
 
 	public VariableRead(String name, Coordinate coordinate)
@@ -22,21 +20,20 @@ public class VariableRead implements Expression
 		this.coordinate = coordinate;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
 	{
-		this.variable = result.getVariable(this.name);
-
-		result.read(this);
-
-		return this.variable.getType();
+		return variables.getVariable(this.name).getType();
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		int loadInstruction = this.variable.getType().getLoadInstruction();
-		int index = this.variable.getIndex();
+		Variable variable = variables.getVariable(this.name);
+		int loadInstruction = variable.getType().getLoadInstruction();
+		int index = variable.getIndex();
 
 		methodVisitor.visitVarInsn(loadInstruction, index);
+
+		variables.read(this);
 
 		return new Array<>();
 	}

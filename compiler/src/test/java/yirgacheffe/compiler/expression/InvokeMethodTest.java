@@ -42,9 +42,9 @@ public class InvokeMethodTest
 				expression,
 				new Array<>());
 
-		Type type = invokeMethod.check(variables);
+		Type type = invokeMethod.getType(variables);
 
-		invokeMethod.compile(methodVisitor);
+		invokeMethod.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -84,9 +84,9 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Type type = invokeMethod.check(variables);
+		Type type = invokeMethod.getType(variables);
 
-		invokeMethod.compile(methodVisitor);
+		invokeMethod.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -141,9 +141,9 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Type type = invokeMethod.check(variables);
+		Type type = invokeMethod.getType(variables);
 
-		invokeMethod.compile(methodVisitor);
+		invokeMethod.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -212,9 +212,9 @@ public class InvokeMethodTest
 				expression,
 				new Array<>());
 
-		Type type = invokeMethod.check(variables);
+		Type type = invokeMethod.getType(variables);
 
-		invokeMethod.compile(methodVisitor);
+		invokeMethod.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

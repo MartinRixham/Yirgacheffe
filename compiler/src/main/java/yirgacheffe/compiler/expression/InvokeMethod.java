@@ -8,12 +8,13 @@ import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
-import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.GenericType;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Method;
@@ -30,16 +31,6 @@ public class InvokeMethod implements Expression
 
 	private Array<Expression> arguments;
 
-	private Type ownerType;
-
-	private Array<Type> argumentTypes = new Array<>();
-
-	private MatchResult matchResult;
-
-	private Type returnType;
-
-	private Array<Error> errors;
-
 	public InvokeMethod(
 		Coordinate coordinate,
 		String name,
@@ -54,39 +45,39 @@ public class InvokeMethod implements Expression
 		this.arguments = arguments;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
 	{
-		this.ownerType = this.owner.check(result);
+		Type ownerType = this.owner.getType(variables);
+		Class<?> ownerClass = ownerType.reflectionClass();
+		Method[] methods = ownerClass.getDeclaredMethods();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals(this.name))
+			{
+				return new Function(ownerType, method).getReturnType();
+			}
+		}
+
+		return new NullType();
+	}
+
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	{
+		Array<Type> argumentTypes = new Array<>();
 
 		for (Expression argument: this.arguments)
 		{
-			this.argumentTypes.push(argument.check(result));
+			argumentTypes.push(argument.getType(variables));
 		}
 
-		Arguments arguments = new Arguments(this.argumentTypes);
-
-		this.matchResult =
-			this.getMatchResult(
-				this.ownerType,
-				this.name,
-				arguments);
-
-		Callable function = this.matchResult.getFunction();
-
-		this.returnType = function.getReturnType();
-		this.errors = this.matchResult.getErrors();
-
-		return function.getReturnType();
-	}
-
-	public Array<Error> compile(MethodVisitor methodVisitor)
-	{
-		Callable function = this.matchResult.getFunction();
+		Arguments arguments = new Arguments(argumentTypes);
+		Type owner = this.owner.getType(variables);
+		MatchResult matchResult = this.getMatchResult(owner, this.name, arguments);
+		Callable function = matchResult.getFunction();
 		Array<Type> parameters = function.getParameterTypes();
-		Type owner = this.ownerType;
-		Type returnType = this.returnType;
-
-		Array<Error> errors = this.owner.compile(methodVisitor);
+		Type returnType = matchResult.getFunction().getReturnType();
+		Array<Error> errors = this.owner.compile(methodVisitor, variables);
 
 		if (owner instanceof PrimitiveType)
 		{
@@ -101,9 +92,9 @@ public class InvokeMethod implements Expression
 		for (int i = 0; i < this.arguments.length(); i++)
 		{
 			Expression argument = this.arguments.get(i);
-			Type argumentType = this.argumentTypes.get(i);
+			Type argumentType = argumentTypes.get(i);
 
-			errors = errors.concat(argument.compile(methodVisitor));
+			errors = errors.concat(argument.compile(methodVisitor, variables));
 
 			if (argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
@@ -160,7 +151,7 @@ public class InvokeMethod implements Expression
 			methodVisitor.visitInsn(Opcodes.F2D);
 		}
 
-		return this.errors.concat(errors);
+		return matchResult.getErrors().concat(errors);
 	}
 
 	private MatchResult getMatchResult(

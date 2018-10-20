@@ -25,7 +25,6 @@ public class Else implements ConditionalStatement
 		this.statement = statement;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		StatementResult ifResult = this.precondition.compile(methodVisitor, variables);
@@ -54,7 +53,6 @@ public class Else implements ConditionalStatement
 		return new StatementResult(returns, errors);
 	}
 
-	@Override
 	public Label getLabel()
 	{
 		return this.label;

@@ -21,9 +21,9 @@ public class ThisTest
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
 
-		Type type = thisRead.check(variables);
+		Type type = thisRead.getType(variables);
 
-		thisRead.compile(methodVisitor);
+		thisRead.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

@@ -5,8 +5,6 @@
 
 <suppressions>
 	<suppress checks="MagicNumber" files="src/test/java"/>
-	<suppress checks="MethodName" files="src/test/java"/>
 	<suppress checks="FileLength" files="src/test/java"/>
-	<suppress checks="FileLength" files="src/main/java/yirgacheffe/compiler/expression/InvokeMethod.java"/>
 	<suppress checks="FileLength" files="src/main/java/yirgacheffe/lang/Array.java"/>
 </suppressions>

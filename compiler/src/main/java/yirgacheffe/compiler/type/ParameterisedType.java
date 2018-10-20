@@ -28,49 +28,41 @@ public class ParameterisedType implements Type
 		this.typeParameters = types;
 	}
 
-	@Override
 	public Class<?> reflectionClass()
 	{
 		return this.primaryType.reflectionClass();
 	}
 
-	@Override
 	public String toJVMType()
 	{
 		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
 	}
 
-	@Override
 	public String toFullyQualifiedType()
 	{
 		return this.primaryType.toFullyQualifiedType();
 	}
 
-	@Override
 	public int width()
 	{
 		return 1;
 	}
 
-	@Override
 	public int getReturnInstruction()
 	{
 		return Opcodes.ARETURN;
 	}
 
-	@Override
 	public int getStoreInstruction()
 	{
 		return Opcodes.ASTORE;
 	}
 
-	@Override
 	public int getLoadInstruction()
 	{
 		return Opcodes.ALOAD;
 	}
 
-	@Override
 	public String toString()
 	{
 		Array<String> typeNames = new Array<>();
@@ -85,7 +77,6 @@ public class ParameterisedType implements Type
 			"<" + String.join(",", typeNames) + ">";
 	}
 
-	@Override
 	public boolean isAssignableTo(Type other)
 	{
 		if (other instanceof ParameterisedType)

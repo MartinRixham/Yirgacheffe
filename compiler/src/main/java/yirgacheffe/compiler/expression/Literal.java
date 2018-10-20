@@ -21,12 +21,12 @@ public class Literal implements Expression
 		this.text = text;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
 	{
 		return this.type;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		if (this.type instanceof ReferenceType)
 		{

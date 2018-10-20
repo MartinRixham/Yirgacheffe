@@ -16,12 +16,12 @@ public class This implements Expression
 		this.type = type;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
 	{
 		return this.type;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 

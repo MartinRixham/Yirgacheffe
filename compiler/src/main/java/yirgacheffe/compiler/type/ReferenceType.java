@@ -11,55 +11,46 @@ public class ReferenceType implements Type
 		this.reflectionClass = reflectionClass;
 	}
 
-	@Override
 	public Class<?> reflectionClass()
 	{
 		return this.reflectionClass;
 	}
 
-	@Override
 	public String toJVMType()
 	{
 		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
 	}
 
-	@Override
 	public String toFullyQualifiedType()
 	{
 		return this.reflectionClass.getName();
 	}
 
-	@Override
 	public int width()
 	{
 		return 1;
 	}
 
-	@Override
 	public int getReturnInstruction()
 	{
 		return Opcodes.ARETURN;
 	}
 
-	@Override
 	public int getStoreInstruction()
 	{
 		return Opcodes.ASTORE;
 	}
 
-	@Override
 	public int getLoadInstruction()
 	{
 		return Opcodes.ALOAD;
 	}
 
-	@Override
 	public String toString()
 	{
 		return this.toFullyQualifiedType();
 	}
 
-	@Override
 	public boolean isAssignableTo(Type other)
 	{
 		return other.reflectionClass().isAssignableFrom(this.reflectionClass());

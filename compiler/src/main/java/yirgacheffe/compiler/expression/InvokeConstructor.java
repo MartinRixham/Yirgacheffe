@@ -24,10 +24,6 @@ public class InvokeConstructor implements Expression
 
 	private Array<Expression> arguments;
 
-	private Callable function;
-
-	private Array<Error> errors;
-
 	public InvokeConstructor(
 		Coordinate coordinate,
 		Type owner,
@@ -38,16 +34,22 @@ public class InvokeConstructor implements Expression
 		this.arguments = arguments;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
+	{
+		return this.owner;
+	}
+
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Array<Type> argumentTypes = new Array<>();
 
 		for (Expression argument: this.arguments)
 		{
-			argumentTypes.push(argument.check(result));
+			argumentTypes.push(argument.getType(variables));
 		}
 
 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
+
 		Array<Callable> functions = new Array<>();
 		Arguments arguments = new Arguments(argumentTypes);
 
@@ -64,17 +66,9 @@ public class InvokeConstructor implements Expression
 				true)
 				.getMatchingExecutable(arguments);
 
-		this.errors = matchResult.getErrors();
-		this.function = matchResult.getFunction();
-
-		return this.owner;
-	}
-
-	public Array<Error> compile(MethodVisitor methodVisitor)
-	{
 		if (this.owner instanceof NullType)
 		{
-			return this.errors;
+			return matchResult.getErrors();
 		}
 
 		String typeWithSlashes =
@@ -87,16 +81,16 @@ public class InvokeConstructor implements Expression
 
 		for (Expression argument: this.arguments)
 		{
-			errors = errors.concat(argument.compile(methodVisitor));
+			errors = errors.concat(argument.compile(methodVisitor, variables));
 		}
 
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			typeWithSlashes,
 			"<init>",
-			this.function.getDescriptor(),
+			matchResult.getFunction().getDescriptor(),
 			false);
 
-		return this.errors.concat(errors);
+		return matchResult.getErrors().concat(errors);
 	}
 }

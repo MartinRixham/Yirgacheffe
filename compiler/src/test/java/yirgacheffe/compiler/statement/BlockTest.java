@@ -26,8 +26,8 @@ public class BlockTest
 
 		VariableRead variableRead = new VariableRead("myVariable", coordinate);
 
-		variableRead.check(variables);
-		variableRead.compile(methodVisitor);
+		variableRead.getType(variables);
+		variableRead.compile(methodVisitor, variables);
 
 		assertEquals(1, variables.getErrors().length());
 		assertEquals(

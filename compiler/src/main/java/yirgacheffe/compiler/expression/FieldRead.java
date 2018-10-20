@@ -15,8 +15,6 @@ public class FieldRead implements Expression
 
 	private Type type;
 
-	private Type ownerType;
-
 	public FieldRead(Expression owner, String name, Type type)
 	{
 		this.owner = owner;
@@ -24,20 +22,18 @@ public class FieldRead implements Expression
 		this.type = type;
 	}
 
-	public Type check(Variables result)
+	public Type getType(Variables variables)
 	{
-		this.ownerType = this.owner.check(result);
-
 		return this.type;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Array<Error> errors = this.owner.compile(methodVisitor);
+		Array<Error> errors = this.owner.compile(methodVisitor, variables);
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
-			this.ownerType.toFullyQualifiedType().replace(".", "/"),
+			this.owner.getType(variables).toFullyQualifiedType().replace(".", "/"),
 			this.name,
 			this.type.toJVMType());
 

@@ -27,9 +27,9 @@ public class VariableReadTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Expression expression = new VariableRead("myVariable", coordinate);
 
-		Type type = expression.check(variables);
+		Type type = expression.getType(variables);
 
-		expression.compile(methodVisitor);
+		expression.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -55,9 +55,9 @@ public class VariableReadTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Expression expression = new VariableRead("myVariable", coordinate);
 
-		Type type = expression.check(variables);
+		Type type = expression.getType(variables);
 
-		expression.compile(methodVisitor);
+		expression.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

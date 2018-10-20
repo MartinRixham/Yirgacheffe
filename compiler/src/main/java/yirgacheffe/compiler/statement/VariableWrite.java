@@ -27,15 +27,14 @@ public class VariableWrite implements Statement
 		this.coordinate = coordinate;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type type = this.expression.check(variables);
+		Type type = this.expression.getType(variables);
 		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
 		Array<Error> errors = new Array<>();
 
-		this.expression.compile(methodVisitor);
+		this.expression.compile(methodVisitor, variables);
 
 		if (!type.isAssignableTo(variableType))
 		{

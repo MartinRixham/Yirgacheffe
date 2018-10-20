@@ -8,7 +8,7 @@ import yirgacheffe.lang.Array;
 
 public interface Expression
 {
-	Type check(Variables result);
+	Type getType(Variables variables);
 
-	Array<Error> compile(MethodVisitor methodVisitor);
+	Array<Error> compile(MethodVisitor methodVisitor, Variables variables);
 }

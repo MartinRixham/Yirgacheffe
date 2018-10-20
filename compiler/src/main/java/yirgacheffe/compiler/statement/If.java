@@ -20,11 +20,10 @@ public class If implements ConditionalStatement
 		this.statement = statement;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		this.condition.check(variables);
-		this.condition.compile(methodVisitor);
+		this.condition.getType(variables);
+		this.condition.compile(methodVisitor, variables);
 
 		methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 

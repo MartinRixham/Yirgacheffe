@@ -17,12 +17,11 @@ public class FunctionCall implements Statement
 		this.expression = expression;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type type = this.expression.check(variables);
+		Type type = this.expression.getType(variables);
 
-		Array<Error> errors = this.expression.compile(methodVisitor);
+		Array<Error> errors = this.expression.compile(methodVisitor, variables);
 
 		int width = type.width();
 

@@ -30,7 +30,6 @@ public class Return implements Statement
 		this.coordinate = coordinate;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = PrimitiveType.VOID;
@@ -38,8 +37,8 @@ public class Return implements Statement
 
 		if (this.expression != null)
 		{
-			type = this.expression.check(variables);
-			errors = errors.concat(this.expression.compile(methodVisitor));
+			type = this.expression.getType(variables);
+			errors = errors.concat(this.expression.compile(methodVisitor, variables));
 
 			methodVisitor.visitInsn(type.getReturnInstruction());
 		}

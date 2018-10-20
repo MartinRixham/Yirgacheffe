@@ -57,11 +57,11 @@ public class FieldListener extends FieldDeclarationListener
 		Variables variables = new Variables();
 		Expression expression = this.expressions.pop();
 		Expression self = this.expressions.pop();
-		Type expressionType = expression.check(variables);
+		Type expressionType = expression.getType(variables);
 		Type fieldType = this.types.getType(declaration.type());
 
-		self.compile(this.methodVisitor);
-		expression.compile(this.methodVisitor);
+		self.compile(this.methodVisitor, variables);
+		expression.compile(this.methodVisitor, variables);
 
 		this.methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,

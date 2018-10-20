@@ -33,11 +33,10 @@ public class FieldWrite implements Statement
 		this.value = value;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type ownerType = this.owner.check(variables);
-		Type type = this.value.check(variables);
+		Type ownerType = this.owner.getType(variables);
+		Type type = this.value.getType(variables);
 		Array<Error> errors = new Array<>();
 
 		try
@@ -63,8 +62,8 @@ public class FieldWrite implements Statement
 			throw new RuntimeException(e);
 		}
 
-		this.owner.compile(methodVisitor);
-		this.value.compile(methodVisitor);
+		this.owner.compile(methodVisitor, variables);
+		this.value.compile(methodVisitor, variables);
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,

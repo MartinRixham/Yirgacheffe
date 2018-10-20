@@ -13,7 +13,6 @@ public class Branch implements Statement
 		this.conditional = conditional;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Label label = this.conditional.getLabel();

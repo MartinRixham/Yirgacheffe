@@ -21,7 +21,6 @@ public class Block implements Statement
 		this.statements = statements;
 	}
 
-	@Override
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();

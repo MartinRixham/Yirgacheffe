@@ -23,9 +23,9 @@ public class LiteralTest
 		Literal literal = new Literal(new ReferenceType(String.class), "\"thingy\"");
 		Variables variables = new Variables();
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -47,9 +47,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(new ReferenceType(String.class), "\"thi\"ngy\"");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -71,9 +71,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -93,9 +93,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "1");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -115,9 +115,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "2");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -139,9 +139,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.DOUBLE, "0.5");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -163,9 +163,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "false");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -186,9 +186,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.BOOLEAN, "true");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -209,9 +209,9 @@ public class LiteralTest
 
 		Literal literal = new Literal(PrimitiveType.CHAR, "'r'");
 
-		Type type = literal.check(variables);
+		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor);
+		literal.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 

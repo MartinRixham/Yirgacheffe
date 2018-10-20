@@ -35,9 +35,9 @@ public class InvokeConstructorTest
 				owner,
 				arguments);
 
-		Type type = invokeConstructor.check(variables);
+		Type type = invokeConstructor.getType(variables);
 
-		invokeConstructor.compile(methodVisitor);
+		invokeConstructor.compile(methodVisitor, variables);
 
 		InsnList instructions = methodVisitor.instructions;
 
