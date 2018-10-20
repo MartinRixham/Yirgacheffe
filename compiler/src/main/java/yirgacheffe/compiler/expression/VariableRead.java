@@ -2,9 +2,11 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.lang.Array;
 
 public class VariableRead implements Expression
 {
@@ -20,7 +22,6 @@ public class VariableRead implements Expression
 		this.coordinate = coordinate;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		this.variable = result.getVariable(this.name);
@@ -30,15 +31,14 @@ public class VariableRead implements Expression
 		return this.variable.getType();
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
 		int loadInstruction = this.variable.getType().getLoadInstruction();
 		int index = this.variable.getIndex();
 
 		methodVisitor.visitVarInsn(loadInstruction, index);
 
-		return new ExpressionResult();
+		return new Array<>();
 	}
 
 	public Coordinate getCoordinate()

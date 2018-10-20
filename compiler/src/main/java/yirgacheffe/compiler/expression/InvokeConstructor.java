@@ -38,7 +38,6 @@ public class InvokeConstructor implements Expression
 		this.arguments = arguments;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		Array<Type> argumentTypes = new Array<>();
@@ -71,12 +70,11 @@ public class InvokeConstructor implements Expression
 		return this.owner;
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
 		if (this.owner instanceof NullType)
 		{
-			return new ExpressionResult(this.errors);
+			return this.errors;
 		}
 
 		String typeWithSlashes =
@@ -85,11 +83,11 @@ public class InvokeConstructor implements Expression
 		methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
 		methodVisitor.visitInsn(Opcodes.DUP);
 
-		ExpressionResult result = new ExpressionResult(this.errors);
+		Array<Error> errors = new Array<>();
 
 		for (Expression argument: this.arguments)
 		{
-			result = result.add(argument.compile(methodVisitor));
+			errors = errors.concat(argument.compile(methodVisitor));
 		}
 
 		methodVisitor.visitMethodInsn(
@@ -99,6 +97,6 @@ public class InvokeConstructor implements Expression
 			this.function.getDescriptor(),
 			false);
 
-		return result;
+		return this.errors.concat(errors);
 	}
 }

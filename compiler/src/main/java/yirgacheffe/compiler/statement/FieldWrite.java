@@ -4,8 +4,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ErrorMessage;
-import yirgacheffe.compiler.error.FieldAssignmentError;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -53,7 +51,9 @@ public class FieldWrite implements Statement
 					.equals(expressionClass.getSimpleName().toLowerCase()))
 			{
 				Type fieldType = this.getType(fieldClass);
-				ErrorMessage message = new FieldAssignmentError(fieldType, type);
+				String message =
+					"Cannot assign expression of type " + type +
+					" to field of type " + fieldType + ".";
 
 				errors.push(new Error(this.coordinate, message));
 			}

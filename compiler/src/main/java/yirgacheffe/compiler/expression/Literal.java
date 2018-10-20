@@ -2,10 +2,12 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 public class Literal implements Expression
 {
@@ -19,14 +21,12 @@ public class Literal implements Expression
 		this.text = text;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		return this.type;
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
 		if (this.type instanceof ReferenceType)
 		{
@@ -65,6 +65,6 @@ public class Literal implements Expression
 			}
 		}
 
-		return new ExpressionResult();
+		return new Array<>();
 	}
 }

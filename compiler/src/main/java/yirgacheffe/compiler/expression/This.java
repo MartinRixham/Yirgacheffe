@@ -2,8 +2,10 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 public class This implements Expression
 {
@@ -14,17 +16,15 @@ public class This implements Expression
 		this.type = type;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		return this.type;
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
-		return new ExpressionResult();
+		return new Array<>();
 	}
 }

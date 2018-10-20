@@ -5,7 +5,6 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.ExpressionResult;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -36,12 +35,11 @@ public class Return implements Statement
 	{
 		Type type = PrimitiveType.VOID;
 		Array<Error> errors = new Array<>();
-		ExpressionResult result = new ExpressionResult();
 
 		if (this.expression != null)
 		{
 			type = this.expression.check(variables);
-			result = result.add(this.expression.compile(methodVisitor));
+			errors = errors.concat(this.expression.compile(methodVisitor));
 
 			methodVisitor.visitInsn(type.getReturnInstruction());
 		}
@@ -60,6 +58,6 @@ public class Return implements Statement
 			errors.push(new Error(this.coordinate, message));
 		}
 
-		return new StatementResult(true, result.getErrors().concat(errors));
+		return new StatementResult(true, errors);
 	}
 }

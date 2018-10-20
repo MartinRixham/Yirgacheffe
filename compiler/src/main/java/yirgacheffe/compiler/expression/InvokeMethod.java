@@ -54,7 +54,6 @@ public class InvokeMethod implements Expression
 		this.arguments = arguments;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		this.ownerType = this.owner.check(result);
@@ -80,15 +79,14 @@ public class InvokeMethod implements Expression
 		return function.getReturnType();
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
 		Callable function = this.matchResult.getFunction();
 		Array<Type> parameters = function.getParameterTypes();
 		Type owner = this.ownerType;
 		Type returnType = this.returnType;
 
-		ExpressionResult result = this.owner.compile(methodVisitor);
+		Array<Error> errors = this.owner.compile(methodVisitor);
 
 		if (owner instanceof PrimitiveType)
 		{
@@ -105,7 +103,7 @@ public class InvokeMethod implements Expression
 			Expression argument = this.arguments.get(i);
 			Type argumentType = this.argumentTypes.get(i);
 
-			result = result.add(argument.compile(methodVisitor));
+			errors = errors.concat(argument.compile(methodVisitor));
 
 			if (argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
@@ -162,7 +160,7 @@ public class InvokeMethod implements Expression
 			methodVisitor.visitInsn(Opcodes.F2D);
 		}
 
-		return result.add(new ExpressionResult(this.errors));
+		return this.errors.concat(errors);
 	}
 
 	private MatchResult getMatchResult(

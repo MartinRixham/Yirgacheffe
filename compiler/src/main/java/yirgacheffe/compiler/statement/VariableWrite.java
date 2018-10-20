@@ -3,8 +3,6 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.error.ErrorMessage;
-import yirgacheffe.compiler.error.VariableAssignmentError;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -41,7 +39,10 @@ public class VariableWrite implements Statement
 
 		if (!type.isAssignableTo(variableType))
 		{
-			ErrorMessage message = new VariableAssignmentError(variableType, type);
+			String message =
+				"Cannot assign expression of type " +
+				type + " to variable of type " +
+				variableType + ".";
 
 			errors.push(new Error(this.coordinate, message));
 		}

@@ -2,8 +2,10 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 public class FieldRead implements Expression
 {
@@ -22,7 +24,6 @@ public class FieldRead implements Expression
 		this.type = type;
 	}
 
-	@Override
 	public Type check(Variables result)
 	{
 		this.ownerType = this.owner.check(result);
@@ -30,10 +31,9 @@ public class FieldRead implements Expression
 		return this.type;
 	}
 
-	@Override
-	public ExpressionResult compile(MethodVisitor methodVisitor)
+	public Array<Error> compile(MethodVisitor methodVisitor)
 	{
-		ExpressionResult result = this.owner.compile(methodVisitor);
+		Array<Error> errors = this.owner.compile(methodVisitor);
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
@@ -41,6 +41,6 @@ public class FieldRead implements Expression
 			this.name,
 			this.type.toJVMType());
 
-		return result;
+		return errors;
 	}
 }

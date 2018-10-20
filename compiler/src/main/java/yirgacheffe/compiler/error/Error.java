@@ -9,12 +9,6 @@ public class Error implements Comparable<Error>
 
 	private String message;
 
-	public Error(Coordinate coordinate, ErrorMessage message)
-	{
-		this.coordinate = coordinate;
-		this.message = message.toString();
-	}
-
 	public Error(Coordinate coordinate, String message)
 	{
 		this.coordinate = coordinate;

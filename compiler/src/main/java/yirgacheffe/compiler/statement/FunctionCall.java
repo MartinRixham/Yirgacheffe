@@ -2,10 +2,11 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.ExpressionResult;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class FunctionCall implements Statement
 {
@@ -21,7 +22,7 @@ public class FunctionCall implements Statement
 	{
 		Type type = this.expression.check(variables);
 
-		ExpressionResult result = this.expression.compile(methodVisitor);
+		Array<Error> errors = this.expression.compile(methodVisitor);
 
 		int width = type.width();
 
@@ -34,6 +35,6 @@ public class FunctionCall implements Statement
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
 
-		return new StatementResult(false, result.getErrors());
+		return new StatementResult(false, errors);
 	}
 }
