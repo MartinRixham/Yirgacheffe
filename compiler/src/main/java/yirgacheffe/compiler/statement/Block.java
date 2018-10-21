@@ -21,12 +21,26 @@ public class Block implements Statement
 		this.statements = statements;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		for (Statement statement: this.statements)
+		{
+			if (statement.returns())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();
 		boolean unreachableCode = false;
 		Array<Error> errors = new Array<>();
-		StatementResult blockResult = new StatementResult(false);
+		StatementResult blockResult = new StatementResult();
 
 		for (int i = 0; i < this.statements.length(); i++)
 		{
@@ -35,7 +49,7 @@ public class Block implements Statement
 
 			blockResult = blockResult.add(result);
 
-			if (result.returns() && i < this.statements.length() - 1)
+			if (this.statements.get(i).returns() && i < this.statements.length() - 1)
 			{
 				unreachableCode = true;
 			}
@@ -50,6 +64,6 @@ public class Block implements Statement
 
 		variables.setDeclaredVariables(declaredVariables);
 
-		return new StatementResult(false, errors).add(blockResult);
+		return new StatementResult(errors).add(blockResult);
 	}
 }

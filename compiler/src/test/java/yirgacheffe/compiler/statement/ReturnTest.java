@@ -27,7 +27,7 @@ public class ReturnTest
 
 		StatementResult result = returnStatement.compile(methodVisitor, variables);
 
-		assertTrue(result.returns());
+		assertTrue(returnStatement.returns());
 		assertEquals(0, result.getErrors().length());
 
 		InsnList instructions = methodVisitor.instructions;

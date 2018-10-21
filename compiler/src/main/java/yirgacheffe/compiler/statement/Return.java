@@ -30,6 +30,12 @@ public class Return implements Statement
 		this.coordinate = coordinate;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return true;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = PrimitiveType.VOID;
@@ -57,6 +63,6 @@ public class Return implements Statement
 			errors.push(new Error(this.coordinate, message));
 		}
 
-		return new StatementResult(true, errors);
+		return new StatementResult(errors);
 	}
 }

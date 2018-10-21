@@ -132,7 +132,7 @@ public class MethodListener extends TypeListener
 		Variables variables = new Variables();
 
 		StatementResult result = block.compile(this.methodVisitor, variables);
-		boolean returns = result.returns();
+		boolean returns = block.returns();
 
 		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
 		{

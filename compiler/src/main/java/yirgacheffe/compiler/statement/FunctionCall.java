@@ -17,6 +17,12 @@ public class FunctionCall implements Statement
 		this.expression = expression;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return false;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = this.expression.getType(variables);
@@ -34,6 +40,6 @@ public class FunctionCall implements Statement
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
 
-		return new StatementResult(false, errors);
+		return new StatementResult(errors);
 	}
 }

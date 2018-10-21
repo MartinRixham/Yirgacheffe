@@ -33,6 +33,12 @@ public class FieldWrite implements Statement
 		this.value = value;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return false;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type ownerType = this.owner.getType(variables);
@@ -71,7 +77,7 @@ public class FieldWrite implements Statement
 			this.name,
 			type.toJVMType());
 
-		return new StatementResult(false, errors);
+		return new StatementResult(errors);
 	}
 
 	private Type getType(Class<?> clazz)

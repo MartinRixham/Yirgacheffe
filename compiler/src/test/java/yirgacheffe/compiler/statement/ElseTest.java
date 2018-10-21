@@ -83,7 +83,7 @@ public class ElseTest
 
 		StatementResult result = elseStatement.compile(methodVisitor, variables);
 
-		assertFalse(result.returns());
+		assertFalse(elseStatement.returns());
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",

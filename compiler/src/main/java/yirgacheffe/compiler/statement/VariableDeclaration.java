@@ -16,10 +16,16 @@ public class VariableDeclaration implements Statement
 		this.type = type;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return false;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		variables.declare(this.name, this.type);
 
-		return new StatementResult(false);
+		return new StatementResult();
 	}
 }

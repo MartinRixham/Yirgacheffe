@@ -17,6 +17,6 @@ public class OpenBlockTest
 
 		StatementResult result = openBlock.compile(methodVisitor, variables);
 
-		assertFalse(result.returns());
+		assertFalse(openBlock.returns());
 	}
 }

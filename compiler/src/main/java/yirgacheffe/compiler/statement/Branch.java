@@ -13,6 +13,12 @@ public class Branch implements Statement
 		this.conditional = conditional;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return this.conditional.returns() && (this.conditional instanceof Else);
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Label label = this.conditional.getLabel();
@@ -21,8 +27,6 @@ public class Branch implements Statement
 
 		methodVisitor.visitLabel(label);
 
-		boolean returns = result.returns() && (this.conditional instanceof Else);
-
-		return new StatementResult(returns, result.getErrors());
+		return new StatementResult(result.getErrors());
 	}
 }

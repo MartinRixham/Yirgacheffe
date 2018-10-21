@@ -20,6 +20,12 @@ public class If implements ConditionalStatement
 		this.statement = statement;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return this.statement.returns();
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		this.condition.getType(variables);

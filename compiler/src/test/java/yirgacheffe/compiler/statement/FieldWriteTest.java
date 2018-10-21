@@ -74,7 +74,7 @@ public class FieldWriteTest
 
 		StatementResult result = fieldWrite.compile(methodVisitor, variables);
 
-		assertFalse(result.returns());
+		assertFalse(fieldWrite.returns());
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +

@@ -25,6 +25,12 @@ public class Else implements ConditionalStatement
 		this.statement = statement;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return this.precondition.returns() && this.statement.returns();
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		StatementResult ifResult = this.precondition.compile(methodVisitor, variables);
@@ -46,11 +52,10 @@ public class Else implements ConditionalStatement
 		}
 
 		StatementResult blockResult = this.statement.compile(methodVisitor, variables);
-		boolean returns = ifResult.returns() && blockResult.returns();
 
 		errors = errors.concat(ifResult.getErrors()).concat(blockResult.getErrors());
 
-		return new StatementResult(returns, errors);
+		return new StatementResult(errors);
 	}
 
 	public Label getLabel()

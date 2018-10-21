@@ -27,6 +27,12 @@ public class VariableWrite implements Statement
 		this.coordinate = coordinate;
 	}
 
+	@Override
+	public boolean returns()
+	{
+		return false;
+	}
+
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = this.expression.getType(variables);
@@ -50,7 +56,7 @@ public class VariableWrite implements Statement
 
 		variables.write(this);
 
-		return new StatementResult(false, errors);
+		return new StatementResult(errors);
 	}
 
 	public Coordinate getCoordinate()
