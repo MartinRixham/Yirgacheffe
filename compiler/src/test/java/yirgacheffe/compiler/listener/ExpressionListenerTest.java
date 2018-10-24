@@ -214,4 +214,35 @@ public class ExpressionListenerTest
 		assertEquals(5, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
 	}
+
+	@Test
+	public void testRemainder()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 3 % 2;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DREM, thirdInstruction.getOpcode());
+	}
 }

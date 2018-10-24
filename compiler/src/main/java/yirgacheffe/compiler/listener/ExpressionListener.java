@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Remainder;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
@@ -70,5 +72,21 @@ public class ExpressionListener extends StatementListener
 		}
 
 		this.expressions.push(new Literal(type, context.getText()));
+	}
+
+	@Override
+	public void exitRemainder(YirgacheffeParser.RemainderContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		for (int i = 1; i < context.unaryExpression().size(); i++)
+		{
+			Expression secondOperand = this.expressions.pop();
+			Expression firstOperand = this.expressions.pop();
+
+			Remainder remainder = new Remainder(coordinate, firstOperand, secondOperand);
+
+			this.expressions.push(remainder);
+		}
 	}
 }
