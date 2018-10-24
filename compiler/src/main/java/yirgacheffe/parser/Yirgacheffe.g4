@@ -86,14 +86,29 @@ instantiation: New type arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression:
-    (instantiation |
-    literal |
-    variableRead |
-    thisRead)
-    (fieldRead |
-    methodCall |
-    equals)*;
+expression: or;
+
+or: and ('||' and)*;
+
+and: equals ('&&' equals)*;
+
+equals: notEquals ('==' notEquals)*;
+
+notEquals: subtract ('!=' subtract)*;
+
+subtract: add ('-' add)*;
+
+add: multiply ('+' multiply)*;
+
+multiply: divide ('*' divide)*;
+
+divide: remainder ('/' remainder)*;
+
+remainder: unaryExpression ('%' unaryExpression)*;
+
+unaryExpression:
+    (instantiation | literal | variableRead | thisRead | parenthesis)
+    (fieldRead | methodCall)*;
 
 variableRead: Identifier;
 
@@ -101,7 +116,7 @@ thisRead: This;
 
 fieldRead: '.' Identifier;
 
-equals: '==' expression;
+parenthesis: '(' expression ')';
 
 fieldWrite: expression '.' Identifier '=' expression;
 

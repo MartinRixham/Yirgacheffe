@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
+import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Classes;
@@ -107,7 +108,10 @@ public class FieldListener extends FieldDeclarationListener
 	@Override
 	public void exitFieldWrite(YirgacheffeParser.FieldWriteContext context)
 	{
-		if (!this.inConstructor || context.expression().get(0).thisRead() == null)
+		Expression value = this.expressions.pop();
+		Expression owner = this.expressions.pop();
+
+		if (!this.inConstructor || value instanceof This)
 		{
 			String message = "Fields must be assigned in initialisers or constructors.";
 
@@ -116,8 +120,6 @@ public class FieldListener extends FieldDeclarationListener
 
 		Coordinate coordinate = new Coordinate(context);
 		String fieldName = context.Identifier().getText();
-		Expression value = this.expressions.pop();
-		Expression owner = this.expressions.pop();
 
 		this.statements.push(new FieldWrite(coordinate, fieldName, owner, value));
 	}
