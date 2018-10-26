@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.Division;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Multiplication;
+import yirgacheffe.compiler.expression.Negation;
 import yirgacheffe.compiler.expression.Remainder;
 import yirgacheffe.compiler.expression.Subtraction;
 import yirgacheffe.compiler.expression.This;
@@ -154,5 +155,13 @@ public class ExpressionListener extends StatementListener
 		}
 
 		this.expressions.push(expressions.pop());
+	}
+
+	@Override
+	public void exitNegation(YirgacheffeParser.NegationContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(new Negation(coordinate, this.expressions.pop()));
 	}
 }

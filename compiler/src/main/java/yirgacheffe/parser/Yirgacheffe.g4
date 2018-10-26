@@ -105,7 +105,7 @@ multiply: unaryExpression (multiplicative unaryExpression)*;
 multiplicative: Remainder | Divide | Multiply;
 
 unaryExpression:
-    (instantiation | literal | variableRead | thisRead | parenthesis)
+    (instantiation | literal | variableRead | thisRead | parenthesis | negation)
     (fieldRead | methodCall)*;
 
 variableRead: Identifier;
@@ -115,6 +115,8 @@ thisRead: This;
 fieldRead: '.' Identifier;
 
 parenthesis: '(' expression ')';
+
+negation: Subtract unaryExpression;
 
 fieldWrite: expression '.' Identifier '=' expression;
 
