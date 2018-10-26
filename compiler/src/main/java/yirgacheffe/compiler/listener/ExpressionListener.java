@@ -10,6 +10,7 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ExpressionListener extends StatementListener
@@ -77,16 +78,26 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void exitRemainder(YirgacheffeParser.RemainderContext context)
 	{
-		Coordinate coordinate = new Coordinate(context);
+		Array<Coordinate> coordinates = new Array<>();
+		Array<Expression> expressions = new Array<>();
+
+		for (YirgacheffeParser.UnaryExpressionContext c: context.unaryExpression())
+		{
+			coordinates.push(new Coordinate(c));
+			expressions.push(this.expressions.pop());
+		}
 
 		for (int i = 1; i < context.unaryExpression().size(); i++)
 		{
-			Expression secondOperand = this.expressions.pop();
-			Expression firstOperand = this.expressions.pop();
+			Expression firstOperand = expressions.pop();
+			Expression secondOperand = expressions.pop();
 
-			Remainder remainder = new Remainder(coordinate, firstOperand, secondOperand);
+			Remainder remainder =
+				new Remainder(coordinates.pop(), firstOperand, secondOperand);
 
-			this.expressions.push(remainder);
+			expressions.push(remainder);
 		}
+
+		this.expressions.push(expressions.pop());
 	}
 }
