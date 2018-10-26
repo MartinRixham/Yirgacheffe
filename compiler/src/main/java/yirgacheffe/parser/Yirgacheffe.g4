@@ -100,11 +100,9 @@ subtract: add ('-' add)*;
 
 add: multiply ('+' multiply)*;
 
-multiply: divide ('*' divide)*;
+multiply: unaryExpression ((multiplicative)  unaryExpression)*;
 
-divide: remainder ('/' remainder)*;
-
-remainder: unaryExpression ('%' unaryExpression)*;
+multiplicative: Remainder | Divide | Multiply;
 
 unaryExpression:
     (instantiation | literal | variableRead | thisRead | parenthesis)
@@ -145,6 +143,11 @@ Return: 'return';
 Main: 'main';
 If: 'if';
 Else: 'else';
+
+// operators
+Remainder: '%';
+Divide: '/';
+Multiply: '*';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 

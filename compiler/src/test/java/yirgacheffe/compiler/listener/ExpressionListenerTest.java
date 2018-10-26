@@ -217,14 +217,14 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testRemainder()
+	public void testDivisionAndRemainder()
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 4 % 3 % 2;\n" +
+					"return 4 % 3 / 2;\n" +
 				"}\n" +
 			"}";
 
@@ -265,6 +265,6 @@ public class ExpressionListenerTest
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.DREM, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.DDIV, fifthInstruction.getOpcode());
 	}
 }

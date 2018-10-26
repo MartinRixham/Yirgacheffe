@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.expression.Division;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Remainder;
@@ -76,7 +77,7 @@ public class ExpressionListener extends StatementListener
 	}
 
 	@Override
-	public void exitRemainder(YirgacheffeParser.RemainderContext context)
+	public void exitMultiply(YirgacheffeParser.MultiplyContext context)
 	{
 		Array<Coordinate> coordinates = new Array<>();
 		Array<Expression> expressions = new Array<>();
@@ -87,15 +88,25 @@ public class ExpressionListener extends StatementListener
 			expressions.push(this.expressions.pop());
 		}
 
-		for (int i = 1; i < context.unaryExpression().size(); i++)
+		for (int i = 0; i < context.unaryExpression().size() - 1; i++)
 		{
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			Remainder remainder =
-				new Remainder(coordinates.pop(), firstOperand, secondOperand);
+			Expression expression;
 
-			expressions.push(remainder);
+			if (context.multiplicative(i).Remainder() != null)
+			{
+				expression =
+					new Remainder(coordinates.pop(), firstOperand, secondOperand);
+			}
+			else
+			{
+				expression =
+					new Division(coordinates.pop(), firstOperand, secondOperand);
+			}
+
+			expressions.push(expression);
 		}
 
 		this.expressions.push(expressions.pop());

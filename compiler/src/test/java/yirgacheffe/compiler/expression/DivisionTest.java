@@ -16,21 +16,21 @@ import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 
-public class RemainderTest
+public class DivisionTest
 {
 	@Test
-	public void testCompilingRemainder()
+	public void testCompilingDivision()
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
 		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
 		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
-		Remainder remainder = new Remainder(coordinate, firstOperand, secondOperand);
+		Division division = new Division(coordinate, firstOperand, secondOperand);
 
-		Type type = remainder.getType(variables);
+		Type type = division.getType(variables);
 
-		Array<Error> errors = remainder.compile(methodVisitor, variables);
+		Array<Error> errors = division.compile(methodVisitor, variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(0, errors.length());
@@ -51,7 +51,7 @@ public class RemainderTest
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DREM, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DDIV, thirdInstruction.getOpcode());
 	}
 
 	@Test
@@ -62,16 +62,16 @@ public class RemainderTest
 		Coordinate coordinate = new Coordinate(3,  6);
 		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
 		This secondOperand = new This(new ReferenceType(String.class));
-		Remainder remainder = new Remainder(coordinate, firstOperand, secondOperand);
+		Division division = new Division(coordinate, firstOperand, secondOperand);
 
-		Type type = remainder.getType(variables);
+		Type type = division.getType(variables);
 
-		Array<Error> errors = remainder.compile(methodVisitor, variables);
+		Array<Error> errors = division.compile(methodVisitor, variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, errors.length());
 
 		assertEquals(errors.get(0).toString(),
-			"line 3:6 Cannot find remainder of types Num and java.lang.String.");
+			"line 3:6 Cannot divide Num and java.lang.String.");
 	}
 }
