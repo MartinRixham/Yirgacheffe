@@ -16,21 +16,22 @@ import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 
-public class DivisionTest
+public class MultiplicationTest
 {
 	@Test
-	public void testCompilingDivision()
+	public void testCompilingMultiplication()
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
 		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
 		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
-		Division division = new Division(coordinate, firstOperand, secondOperand);
+		Multiplication multiplication =
+			new Multiplication(coordinate, firstOperand, secondOperand);
 
-		Type type = division.getType(variables);
+		Type type = multiplication.getType(variables);
 
-		Array<Error> errors = division.compile(methodVisitor, variables);
+		Array<Error> errors = multiplication.compile(methodVisitor, variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(0, errors.length());
@@ -51,27 +52,28 @@ public class DivisionTest
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DDIV, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DMUL, thirdInstruction.getOpcode());
 	}
 
 	@Test
-	public void testDivisionOfWrongType()
+	public void testMultiplicationOfWrongType()
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
 		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
 		This secondOperand = new This(new ReferenceType(String.class));
-		Division division = new Division(coordinate, firstOperand, secondOperand);
+		Multiplication multiplication =
+			new Multiplication(coordinate, firstOperand, secondOperand);
 
-		Type type = division.getType(variables);
+		Type type = multiplication.getType(variables);
 
-		Array<Error> errors = division.compile(methodVisitor, variables);
+		Array<Error> errors = multiplication.compile(methodVisitor, variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, errors.length());
 
 		assertEquals(errors.get(0).toString(),
-			"line 3:6 Cannot divide Num and java.lang.String.");
+			"line 3:6 Cannot multiply Num and java.lang.String.");
 	}
 }

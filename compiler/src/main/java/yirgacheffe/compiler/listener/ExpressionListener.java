@@ -4,6 +4,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Division;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Multiplication;
 import yirgacheffe.compiler.expression.Remainder;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -100,10 +101,15 @@ public class ExpressionListener extends StatementListener
 				expression =
 					new Remainder(coordinates.pop(), firstOperand, secondOperand);
 			}
-			else
+			else if (context.multiplicative(i).Divide() != null)
 			{
 				expression =
 					new Division(coordinates.pop(), firstOperand, secondOperand);
+			}
+			else
+			{
+				expression =
+					new Multiplication(coordinates.pop(), firstOperand, secondOperand);
 			}
 
 			expressions.push(expression);
