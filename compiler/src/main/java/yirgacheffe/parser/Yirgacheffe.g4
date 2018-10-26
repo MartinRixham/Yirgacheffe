@@ -94,13 +94,13 @@ and: equals ('&&' equals)*;
 
 equals: notEquals ('==' notEquals)*;
 
-notEquals: subtract ('!=' subtract)*;
+notEquals: add ('!=' add)*;
 
-subtract: add ('-' add)*;
+add: multiply (additive multiply)*;
 
-add: multiply ('+' multiply)*;
+additive: Subtract | Add;
 
-multiply: unaryExpression ((multiplicative)  unaryExpression)*;
+multiply: unaryExpression (multiplicative unaryExpression)*;
 
 multiplicative: Remainder | Divide | Multiply;
 
@@ -148,6 +148,8 @@ Else: 'else';
 Remainder: '%';
 Divide: '/';
 Multiply: '*';
+Add: '+';
+Subtract: '-';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 

@@ -217,7 +217,7 @@ public class ExpressionListenerTest
 	}
 
 	@Test
-	public void testDivisionAndRemainder()
+	public void testMultiplicationDivisionAndRemainder()
 	{
 		String source =
 			"class MyClass\n" +
@@ -275,5 +275,57 @@ public class ExpressionListenerTest
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
 		assertEquals(Opcodes.DMUL, seventhInstruction.getOpcode());
+	}
+
+	@Test
+	public void testAdditionAndSubtraction()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"return 5 - 4 + 3;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(6, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(5.0, firstInstruction.cst);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals(4.0, secondInstruction.cst);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DSUB, thirdInstruction.getOpcode());
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(3.0, fourthInstruction.cst);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DADD, fifthInstruction.getOpcode());
 	}
 }
