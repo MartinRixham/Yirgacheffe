@@ -1,14 +1,11 @@
 package yirgacheffe.compiler.listener;
 
+import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.Addition;
-import yirgacheffe.compiler.expression.Division;
+import yirgacheffe.compiler.expression.BinaryNumericOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
-import yirgacheffe.compiler.expression.Multiplication;
 import yirgacheffe.compiler.expression.Negation;
-import yirgacheffe.compiler.expression.Remainder;
-import yirgacheffe.compiler.expression.Subtraction;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
@@ -97,25 +94,32 @@ public class ExpressionListener extends StatementListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			Expression expression;
+			int opcode;
+			String description;
 
 			if (context.multiplicative(i).Remainder() != null)
 			{
-				expression =
-					new Remainder(coordinates.pop(), firstOperand, secondOperand);
+				opcode = Opcodes.DREM;
+				description = "find remainder of";
 			}
 			else if (context.multiplicative(i).Divide() != null)
 			{
-				expression =
-					new Division(coordinates.pop(), firstOperand, secondOperand);
+				opcode = Opcodes.DDIV;
+				description = "divide";
 			}
 			else
 			{
-				expression =
-					new Multiplication(coordinates.pop(), firstOperand, secondOperand);
+				opcode = Opcodes.DMUL;
+				description = "multiply";
 			}
 
-			expressions.push(expression);
+			expressions.push(new BinaryNumericOperation(
+				coordinates.pop(),
+				opcode,
+				description,
+				firstOperand,
+				secondOperand
+			));
 		}
 
 		this.expressions.push(expressions.pop());
@@ -138,20 +142,27 @@ public class ExpressionListener extends StatementListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			Expression expression;
+			int opcode;
+			String description;
 
 			if (context.additive(i).Subtract() != null)
 			{
-				expression =
-					new Subtraction(coordinates.pop(), firstOperand, secondOperand);
+				opcode = Opcodes.DSUB;
+				description = "subtract";
 			}
 			else
 			{
-				expression =
-					new Addition(coordinates.pop(), firstOperand, secondOperand);
+				opcode = Opcodes.DADD;
+				description = "add";
 			}
 
-			expressions.push(expression);
+			expressions.push(new BinaryNumericOperation(
+				coordinates.pop(),
+				opcode,
+				description,
+				firstOperand,
+				secondOperand
+			));
 		}
 
 		this.expressions.push(expressions.pop());

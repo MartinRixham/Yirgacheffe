@@ -375,4 +375,30 @@ public class ExpressionListenerTest
 
 		assertEquals(Opcodes.DNEG, fourthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testNumericOperationsOnStrings()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public String method()" +
+				"{\n" +
+					"return \"6\" % \"5\" / \"4\" * \"3\" + \"2\" - \"1\";\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 4:31 Cannot subtract java.lang.String and java.lang.String.\n" +
+			"line 4:37 Cannot add java.lang.String and java.lang.String.\n" +
+			"line 4:13 Cannot multiply java.lang.String and java.lang.String.\n" +
+			"line 4:19 Cannot divide java.lang.String and java.lang.String.\n" +
+			"line 4:25 Cannot find remainder of java.lang.String and java.lang.String.\n",
+			result.getErrors());
+	}
 }

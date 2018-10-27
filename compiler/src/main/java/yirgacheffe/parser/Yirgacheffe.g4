@@ -92,9 +92,9 @@ or: and ('||' and)*;
 
 and: equals ('&&' equals)*;
 
-equals: notEquals ('==' notEquals)*;
+equals: add (equative add)*;
 
-notEquals: add ('!=' add)*;
+equative: NotEqual | Equal;
 
 add: multiply (additive multiply)*;
 
@@ -152,6 +152,8 @@ Divide: '/';
 Multiply: '*';
 Add: '+';
 Subtract: '-';
+Equal: '==';
+NotEqual: '!=';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 
