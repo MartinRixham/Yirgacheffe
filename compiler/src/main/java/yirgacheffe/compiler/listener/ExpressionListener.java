@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.expression.And;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
@@ -174,5 +175,26 @@ public class ExpressionListener extends StatementListener
 		Coordinate coordinate = new Coordinate(context);
 
 		this.expressions.push(new Negation(coordinate, this.expressions.pop()));
+	}
+
+	@Override
+	public void exitAnd(YirgacheffeParser.AndContext context)
+	{
+		Array<Expression> expressions = new Array<>();
+
+		for (YirgacheffeParser.EqualsContext c: context.equals())
+		{
+			expressions.push(this.expressions.pop());
+		}
+
+		for (int i = 0; i < context.equals().size() - 1; i++)
+		{
+			Expression firstOperand = expressions.pop();
+			Expression secondOperand = expressions.pop();
+
+			expressions.push(new And(firstOperand, secondOperand));
+		}
+
+		this.expressions.push(expressions.pop());
 	}
 }
