@@ -83,4 +83,55 @@ public class AndTest
 
 		assertEquals(Opcodes.POP2, tenthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testCompilingAndBooleans()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Literal firstOperand = new Literal(PrimitiveType.BOOLEAN, "true");
+		Literal secondOperand = new Literal(PrimitiveType.BOOLEAN, "false");
+
+		And and = new And(firstOperand, secondOperand);
+
+		Type type = and.getType(variables);
+
+		Array<Error> errors = and.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(7, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DUP, thirdInstruction.getOpcode());
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label label = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFNE, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.SWAP, fifthInstruction.getOpcode());
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.getLabel());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
+	}
 }

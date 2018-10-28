@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -32,17 +33,31 @@ public class And implements Expression
 		this.secondOperand.compile(methodVisitor, variables);
 		this.firstOperand.compile(methodVisitor, variables);
 
-		methodVisitor.visitInsn(Opcodes.DUP2);
-		methodVisitor.visitInsn(Opcodes.DCONST_0);
-		methodVisitor.visitInsn(Opcodes.DCMPL);
+		if (this.firstOperand.getType(variables) == PrimitiveType.DOUBLE)
+		{
+			methodVisitor.visitInsn(Opcodes.DUP2);
+			methodVisitor.visitInsn(Opcodes.DCONST_0);
+			methodVisitor.visitInsn(Opcodes.DCMPL);
 
-		Label label = new Label();
+			Label label = new Label();
 
-		methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
-		methodVisitor.visitInsn(Opcodes.DUP2_X2);
-		methodVisitor.visitInsn(Opcodes.POP2);
-		methodVisitor.visitLabel(label);
-		methodVisitor.visitInsn(Opcodes.POP2);
+			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			methodVisitor.visitInsn(Opcodes.DUP2_X2);
+			methodVisitor.visitInsn(Opcodes.POP2);
+			methodVisitor.visitLabel(label);
+			methodVisitor.visitInsn(Opcodes.POP2);
+		}
+		else
+		{
+			methodVisitor.visitInsn(Opcodes.DUP);
+
+			Label label = new Label();
+
+			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			methodVisitor.visitInsn(Opcodes.SWAP);
+			methodVisitor.visitLabel(label);
+			methodVisitor.visitInsn(Opcodes.POP);
+		}
 
 		return errors;
 	}
