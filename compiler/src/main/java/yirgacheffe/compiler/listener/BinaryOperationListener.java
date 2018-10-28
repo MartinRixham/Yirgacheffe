@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.And;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
+import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
 import yirgacheffe.compiler.expression.Or;
@@ -154,6 +155,27 @@ public class BinaryOperationListener extends FunctionCallListener
 			Expression secondOperand = expressions.pop();
 
 			expressions.push(new Or(firstOperand, secondOperand));
+		}
+
+		this.expressions.push(expressions.pop());
+	}
+
+	@Override
+	public void exitEquals(YirgacheffeParser.EqualsContext context)
+	{
+		Array<Expression> expressions = new Array<>();
+
+		for (YirgacheffeParser.AddContext c: context.add())
+		{
+			expressions.push(this.expressions.pop());
+		}
+
+		for (int i = 0; i < context.add().size() - 1; i++)
+		{
+			Expression firstOperand = expressions.pop();
+			Expression secondOperand = expressions.pop();
+
+			expressions.push(new Equation(firstOperand, secondOperand));
 		}
 
 		this.expressions.push(expressions.pop());
