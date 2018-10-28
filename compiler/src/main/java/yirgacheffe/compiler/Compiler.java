@@ -5,9 +5,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.error.ParseErrorStrategy;
 import yirgacheffe.compiler.error.ParseErrorListener;
+import yirgacheffe.compiler.listener.BinaryOperationListener;
 import yirgacheffe.compiler.listener.ClassListener;
 import yirgacheffe.compiler.listener.FieldDeclarationListener;
-import yirgacheffe.compiler.listener.FunctionCallListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
@@ -57,7 +57,7 @@ public class Compiler
 	public CompilationResult compile(Classes classes)
 	{
 		YirgacheffeListener listener =
-			new FunctionCallListener(this.sourceFile, classes);
+			new BinaryOperationListener(this.sourceFile, classes);
 
 		Array<Error> errors = this.execute(listener);
 
