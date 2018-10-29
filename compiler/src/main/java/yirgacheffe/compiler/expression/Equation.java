@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.comparison.Comparison;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -15,10 +16,16 @@ public class Equation implements Expression
 
 	private Expression secondOperand;
 
-	public Equation(Expression firstOperand, Expression secondOperand)
+	private Comparison comparison;
+
+	public Equation(
+		Expression firstOperand,
+		Expression secondOperand,
+		Comparison comparison)
 	{
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
+		this.comparison = comparison;
 	}
 
 	public Type getType(Variables variables)
@@ -29,21 +36,12 @@ public class Equation implements Expression
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Array<Error> errors = new Array<>();
+		Label trueLabel	= new Label();
+		Type type = this.firstOperand.getType(variables);
 
 		this.firstOperand.compile(methodVisitor, variables);
 		this.secondOperand.compile(methodVisitor, variables);
-
-		Label trueLabel = new Label();
-
-		if (this.firstOperand.getType(variables) == PrimitiveType.DOUBLE)
-		{
-			methodVisitor.visitInsn(Opcodes.DCMPL);
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, trueLabel);
-		}
-		else
-		{
-			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, trueLabel);
-		}
+		this.comparison.compile(methodVisitor, trueLabel, type);
 
 		methodVisitor.visitInsn(Opcodes.ICONST_0);
 

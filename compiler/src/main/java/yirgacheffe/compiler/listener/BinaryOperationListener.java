@@ -1,6 +1,9 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.comparison.Comparison;
+import yirgacheffe.compiler.comparison.Equals;
+import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.And;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
@@ -175,7 +178,18 @@ public class BinaryOperationListener extends FunctionCallListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			expressions.push(new Equation(firstOperand, secondOperand));
+			Comparison comparison;
+
+			if (context.equative(i).Equal() != null)
+			{
+				comparison = new Equals();
+			}
+			else
+			{
+				comparison = new NotEquals();
+			}
+
+			expressions.push(new Equation(firstOperand, secondOperand, comparison));
 		}
 
 		this.expressions.push(expressions.pop());
