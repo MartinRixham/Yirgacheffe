@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Variables;
 
@@ -28,10 +29,18 @@ public class If implements ConditionalStatement
 
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		this.condition.getType(variables);
-		this.condition.compile(methodVisitor, variables);
+		if (this.condition instanceof Equation)
+		{
+			Equation equation = (Equation) this.condition;
 
-		methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+			equation.compileCondition(methodVisitor, variables, this.label);
+		}
+		else
+		{
+			this.condition.compile(methodVisitor, variables);
+
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+		}
 
 		return this.statement.compile(methodVisitor, variables);
 	}

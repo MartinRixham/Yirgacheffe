@@ -14,11 +14,11 @@ public class NotEquals implements Comparison
 		if (type == PrimitiveType.DOUBLE)
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
-			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, label);
+			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
 		}
 	}
 }

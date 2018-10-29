@@ -37,21 +37,30 @@ public class Equation implements Expression
 	{
 		Array<Error> errors = new Array<>();
 		Label trueLabel	= new Label();
-		Type type = this.firstOperand.getType(variables);
 
-		this.firstOperand.compile(methodVisitor, variables);
-		this.secondOperand.compile(methodVisitor, variables);
-		this.comparison.compile(methodVisitor, trueLabel, type);
+		this.compileCondition(methodVisitor, variables, trueLabel);
 
-		methodVisitor.visitInsn(Opcodes.ICONST_0);
+		methodVisitor.visitInsn(Opcodes.ICONST_1);
 
 		Label falseLabel = new Label();
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, falseLabel);
 		methodVisitor.visitLabel(trueLabel);
-		methodVisitor.visitInsn(Opcodes.ICONST_1);
+		methodVisitor.visitInsn(Opcodes.ICONST_0);
 		methodVisitor.visitLabel(falseLabel);
 
 		return errors;
+	}
+
+	public void compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		Type type = this.firstOperand.getType(variables);
+
+		this.firstOperand.compile(methodVisitor, variables);
+		this.secondOperand.compile(methodVisitor, variables);
+		this.comparison.compile(methodVisitor, label, type);
 	}
 }

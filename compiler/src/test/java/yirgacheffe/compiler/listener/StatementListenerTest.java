@@ -284,6 +284,65 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testIfEquation()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"if (true == false)" +
+					"{" +
+						"Num one = 1;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(8, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_0, secondInstruction.getOpcode());
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IF_ICMPNE, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.getLabel());
+	}
+
+	@Test
 	public void testBranchWithoutReturnStatement()
 	{
 		String source =

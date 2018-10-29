@@ -61,11 +61,11 @@ public class EquationTest
 		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
 		Label trueLabel = fourthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.IFNE, fourthInstruction.getOpcode());
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.ICONST_0, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_1, fifthInstruction.getOpcode());
 
 		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
 
@@ -78,7 +78,7 @@ public class EquationTest
 
 		InsnNode eightInstruction = (InsnNode) instructions.get(7);
 
-		assertEquals(Opcodes.ICONST_1, eightInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, eightInstruction.getOpcode());
 
 		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
 
@@ -124,11 +124,11 @@ public class EquationTest
 		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
 		Label trueLabel = fourthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IFNE, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.ICONST_0, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_1, fifthInstruction.getOpcode());
 
 		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
 
@@ -141,7 +141,7 @@ public class EquationTest
 
 		InsnNode eightInstruction = (InsnNode) instructions.get(7);
 
-		assertEquals(Opcodes.ICONST_1, eightInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, eightInstruction.getOpcode());
 
 		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
 
@@ -181,11 +181,11 @@ public class EquationTest
 		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
 		Label trueLabel = thirdInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IF_ICMPEQ, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IF_ICMPNE, thirdInstruction.getOpcode());
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.ICONST_0, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_1, fourthInstruction.getOpcode());
 
 		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
 
@@ -198,7 +198,7 @@ public class EquationTest
 
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.ICONST_1, seventhInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, seventhInstruction.getOpcode());
 
 		LabelNode eightInstruction = (LabelNode) instructions.get(7);
 
@@ -238,11 +238,11 @@ public class EquationTest
 		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
 		Label trueLabel = thirdInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IF_ICMPNE, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IF_ICMPEQ, thirdInstruction.getOpcode());
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.ICONST_0, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_1, fourthInstruction.getOpcode());
 
 		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
 
@@ -255,7 +255,7 @@ public class EquationTest
 
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.ICONST_1, seventhInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, seventhInstruction.getOpcode());
 
 		LabelNode eightInstruction = (LabelNode) instructions.get(7);
 

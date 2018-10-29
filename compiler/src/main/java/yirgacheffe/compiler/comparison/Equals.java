@@ -14,11 +14,11 @@ public class Equals implements Comparison
 		if (type == PrimitiveType.DOUBLE)
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
+			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPEQ, label);
+			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, label);
 		}
 	}
 }
