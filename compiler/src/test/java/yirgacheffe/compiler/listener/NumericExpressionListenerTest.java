@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class BinaryOperationListenerTest
+public class NumericExpressionListenerTest
 {
 	@Test
 	public void testMultiplicationDivisionAndRemainder()
@@ -289,71 +289,5 @@ public class BinaryOperationListenerTest
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
-	}
-
-	@Test
-	public void testEquation()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Bool method()" +
-				"{\n" +
-					"return false == false == true;\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-		InsnList instructions = method.instructions;
-
-		assertEquals(20, instructions.size());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
-	}
-
-	@Test
-	public void testNotEquation()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Bool method()" +
-				"{\n" +
-					"return false != false != true;\n" +
-				"}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-		InsnList instructions = method.instructions;
-
-		assertEquals(20, instructions.size());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
 	}
 }

@@ -92,9 +92,13 @@ or: and ('||' and)*;
 
 and: equals ('&&' equals)*;
 
-equals: add (equative add)*;
+equals: inequality (equative inequality)*;
 
 equative: NotEqual | Equal;
+
+inequality: add (comparative add)*;
+
+comparative: LessThan | GreaterThan | LessThanOrEqual | GreaterThanOrEqual;
 
 add: multiply (additive multiply)*;
 
@@ -154,6 +158,10 @@ Add: '+';
 Subtract: '-';
 Equal: '==';
 NotEqual: '!=';
+LessThan: '<';
+GreaterThan: '>';
+LessThanOrEqual: '<=';
+GreaterThanOrEqual: '>=';
 
 CharacterLiteral: '\'' StringCharacter '\'';
 

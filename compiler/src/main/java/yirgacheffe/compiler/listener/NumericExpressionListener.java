@@ -1,13 +1,9 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.comparison.Comparison;
-import yirgacheffe.compiler.comparison.Equals;
-import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.And;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
-import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
 import yirgacheffe.compiler.expression.Or;
@@ -15,9 +11,9 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class BinaryOperationListener extends FunctionCallListener
+public class NumericExpressionListener extends FunctionCallListener
 {
-	public BinaryOperationListener(String sourceFile, Classes classes)
+	public NumericExpressionListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}
@@ -158,38 +154,6 @@ public class BinaryOperationListener extends FunctionCallListener
 			Expression secondOperand = expressions.pop();
 
 			expressions.push(new Or(firstOperand, secondOperand));
-		}
-
-		this.expressions.push(expressions.pop());
-	}
-
-	@Override
-	public void exitEquals(YirgacheffeParser.EqualsContext context)
-	{
-		Array<Expression> expressions = new Array<>();
-
-		for (YirgacheffeParser.AddContext c: context.add())
-		{
-			expressions.push(this.expressions.pop());
-		}
-
-		for (int i = 0; i < context.add().size() - 1; i++)
-		{
-			Expression firstOperand = expressions.pop();
-			Expression secondOperand = expressions.pop();
-
-			Comparison comparison;
-
-			if (context.equative(i).Equal() != null)
-			{
-				comparison = new Equals();
-			}
-			else
-			{
-				comparison = new NotEquals();
-			}
-
-			expressions.push(new Equation(firstOperand, secondOperand, comparison));
 		}
 
 		this.expressions.push(expressions.pop());
