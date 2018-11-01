@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -121,6 +122,60 @@ public class AndTest
 		Label label = fourthInstruction.label.getLabel();
 
 		assertEquals(Opcodes.IFNE, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.SWAP, fifthInstruction.getOpcode());
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.getLabel());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
+	}
+
+	@Test
+	public void testCompilingAndStrings()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Type string = new ReferenceType(String.class);
+		Literal firstOperand = new Literal(string, "\"mystring\"");
+		Literal secondOperand = new Literal(string, "\"notherstring\"");
+
+		And and = new And(firstOperand, secondOperand);
+
+		Type type = and.getType(variables);
+
+		Array<Error> errors = and.compile(methodVisitor, variables);
+
+		assertEquals(string, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(7, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("notherstring", firstInstruction.cst);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("mystring", secondInstruction.cst);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DUP, thirdInstruction.getOpcode());
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label label = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFNONNULL, fourthInstruction.getOpcode());
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 

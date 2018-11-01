@@ -29,18 +29,17 @@ public class And implements Expression
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Array<Error> errors = new Array<>();
+		Label label = new Label();
+		Type type = this.firstOperand.getType(variables);
 
 		this.secondOperand.compile(methodVisitor, variables);
 		this.firstOperand.compile(methodVisitor, variables);
 
-		if (this.firstOperand.getType(variables) == PrimitiveType.DOUBLE)
+		if (type == PrimitiveType.DOUBLE)
 		{
 			methodVisitor.visitInsn(Opcodes.DUP2);
 			methodVisitor.visitInsn(Opcodes.DCONST_0);
 			methodVisitor.visitInsn(Opcodes.DCMPL);
-
-			Label label = new Label();
-
 			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 			methodVisitor.visitInsn(Opcodes.DUP2_X2);
 			methodVisitor.visitInsn(Opcodes.POP2);
@@ -51,9 +50,15 @@ public class And implements Expression
 		{
 			methodVisitor.visitInsn(Opcodes.DUP);
 
-			Label label = new Label();
+			if (type instanceof PrimitiveType)
+			{
+				methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			}
+			else
+			{
+				methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, label);
+			}
 
-			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 			methodVisitor.visitInsn(Opcodes.SWAP);
 			methodVisitor.visitLabel(label);
 			methodVisitor.visitInsn(Opcodes.POP);
