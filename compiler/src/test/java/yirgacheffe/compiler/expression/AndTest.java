@@ -17,6 +17,8 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AndTest
 {
@@ -34,7 +36,7 @@ public class AndTest
 
 		Array<Error> errors = and.compile(methodVisitor, variables);
 
-		assertEquals(PrimitiveType.DOUBLE, type);
+		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
 		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
@@ -99,7 +101,7 @@ public class AndTest
 
 		Array<Error> errors = and.compile(methodVisitor, variables);
 
-		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertTrue(type.isAssignableTo(PrimitiveType.BOOLEAN));
 		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
@@ -151,7 +153,7 @@ public class AndTest
 
 		Array<Error> errors = and.compile(methodVisitor, variables);
 
-		assertEquals(string, type);
+		assertTrue(type.isAssignableTo(string));
 		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
@@ -188,5 +190,28 @@ public class AndTest
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
 		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
+	}
+
+	@Test
+	public void testAndDifferentTypesAreAssignableToCommonSupertype()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+		Type list = new ReferenceType(java.util.List.class);
+		Expression firstOperand = new This(arrayList);
+		Expression secondOperand = new This(linkedList);
+
+		And and = new And(firstOperand, secondOperand);
+
+		Type type = and.getType(variables);
+
+		Array<Error> errors = and.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+		assertFalse(type.isAssignableTo(arrayList));
+		assertFalse(type.isAssignableTo(linkedList));
+		assertTrue(type.isAssignableTo(list));
 	}
 }

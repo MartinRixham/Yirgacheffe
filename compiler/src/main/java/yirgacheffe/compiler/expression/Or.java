@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -23,7 +24,10 @@ public class Or implements Expression
 
 	public Type getType(Variables variables)
 	{
-		return this.firstOperand.getType(variables);
+		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
+
+		return new IntersectionType(firstType, secondType);
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
@@ -35,7 +39,7 @@ public class Or implements Expression
 		this.secondOperand.compile(methodVisitor, variables);
 		this.firstOperand.compile(methodVisitor, variables);
 
-		if (type == PrimitiveType.DOUBLE)
+		if (type.isAssignableTo(PrimitiveType.DOUBLE))
 		{
 			methodVisitor.visitInsn(Opcodes.DUP2);
 			methodVisitor.visitInsn(Opcodes.DCONST_0);
