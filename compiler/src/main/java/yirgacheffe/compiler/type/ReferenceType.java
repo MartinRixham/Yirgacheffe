@@ -46,6 +46,11 @@ public class ReferenceType implements Type
 		return Opcodes.ALOAD;
 	}
 
+	public int getZero()
+	{
+		return Opcodes.ACONST_NULL;
+	}
+
 	public String toString()
 	{
 		return this.toFullyQualifiedType();

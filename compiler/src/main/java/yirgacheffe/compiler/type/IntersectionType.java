@@ -47,6 +47,11 @@ public class IntersectionType implements Type
 		return this.firstType.getLoadInstruction();
 	}
 
+	public int getZero()
+	{
+		return this.firstType.getZero();
+	}
+
 	public String toString()
 	{
 		return this.firstType.toString();

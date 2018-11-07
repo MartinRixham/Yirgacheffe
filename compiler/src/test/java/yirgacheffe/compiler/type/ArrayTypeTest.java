@@ -22,6 +22,7 @@ public class ArrayTypeTest
 		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
+		assertEquals(Opcodes.ACONST_NULL, string.getZero());
 	}
 
 	@Test

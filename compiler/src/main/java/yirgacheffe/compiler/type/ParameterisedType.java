@@ -63,6 +63,11 @@ public class ParameterisedType implements Type
 		return Opcodes.ALOAD;
 	}
 
+	public int getZero()
+	{
+		return Opcodes.ACONST_NULL;
+	}
+
 	public String toString()
 	{
 		Array<String> typeNames = new Array<>();

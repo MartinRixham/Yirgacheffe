@@ -16,5 +16,7 @@ public interface Type
 
 	int getLoadInstruction();
 
+	int getZero();
+
 	boolean isAssignableTo(Type other);
 }

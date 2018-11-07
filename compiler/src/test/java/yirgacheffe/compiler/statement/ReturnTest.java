@@ -9,6 +9,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 
@@ -60,6 +61,93 @@ public class ReturnTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFailToReturnString()
+	{
+		Coordinate coordinate = new Coordinate(5, 3);
+		Type returnType = new ReferenceType(String.class);
+		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
+		Return returnStatement = new Return(coordinate, returnType, expression);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		StatementResult result = returnStatement.compile(methodVisitor, variables);
+
+		assertEquals(1, result.getErrors().length());
+
+		assertEquals(
+			"line 5:3 Mismatched return type: " +
+				"Cannot return expression of type Num " +
+				"from method of return type java.lang.String.",
+			result.getErrors().get(0).toString());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ACONST_NULL, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ARETURN, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFailToReturnBoolean()
+	{
+		Coordinate coordinate = new Coordinate(5, 3);
+		Type returnType = PrimitiveType.BOOLEAN;
+		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
+		Return returnStatement = new Return(coordinate, returnType, expression);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		StatementResult result = returnStatement.compile(methodVisitor, variables);
+
+		assertEquals(1, result.getErrors().length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.IRETURN, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFailToReturnDouble()
+	{
+		Coordinate coordinate = new Coordinate(5, 3);
+		Type returnType = PrimitiveType.DOUBLE;
+		Expression expression = new Literal(PrimitiveType.BOOLEAN, "1");
+		Return returnStatement = new Return(coordinate, returnType, expression);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		StatementResult result = returnStatement.compile(methodVisitor, variables);
+
+		assertEquals(1, result.getErrors().length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 

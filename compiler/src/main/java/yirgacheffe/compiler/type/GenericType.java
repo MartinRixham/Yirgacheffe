@@ -44,6 +44,11 @@ public class GenericType implements Type
 		return this.type.getLoadInstruction();
 	}
 
+	public int getZero()
+	{
+		return this.type.getZero();
+	}
+
 	public String toString()
 	{
 		return this.type.toString();

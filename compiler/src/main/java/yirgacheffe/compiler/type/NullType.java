@@ -39,6 +39,11 @@ public class NullType implements Type
 		return Opcodes.ALOAD;
 	}
 
+	public int getZero()
+	{
+		return Opcodes.ACONST_NULL;
+	}
+
 	public boolean isAssignableTo(Type other)
 	{
 		return true;

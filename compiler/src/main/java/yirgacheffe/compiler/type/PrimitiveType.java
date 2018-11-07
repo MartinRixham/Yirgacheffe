@@ -1,36 +1,25 @@
 package yirgacheffe.compiler.type;
 
-import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.instructions.DoubleInstructions;
+import yirgacheffe.compiler.instructions.Instructions;
+import yirgacheffe.compiler.instructions.IntegerInstructions;
+import yirgacheffe.compiler.instructions.VoidInstructions;
 
 public enum PrimitiveType implements Type
 {
-	VOID(
-		"Void", "V", 0, Opcodes.RETURN, Opcodes.ASTORE,
-		Opcodes.ALOAD, java.lang.Void.class),
+	VOID("Void", "V", 0, new VoidInstructions(), java.lang.Void.class),
 
-	BOOLEAN(
-		"Bool", "Z", 1, Opcodes.IRETURN, Opcodes.ISTORE,
-		Opcodes.ILOAD, java.lang.Boolean.class),
+	BOOLEAN("Bool", "Z", 1, new IntegerInstructions(), java.lang.Boolean.class),
 
-	CHAR(
-		"Char", "C", 1, Opcodes.IRETURN, Opcodes.ISTORE,
-		Opcodes.ILOAD, java.lang.Character.class),
+	CHAR("Char", "C", 1, new IntegerInstructions(), java.lang.Character.class),
 
-	INT(
-		"Num", "I", 2, Opcodes.DRETURN, Opcodes.DSTORE,
-		Opcodes.DLOAD, java.lang.Double.class),
+	INT("Num", "I", 2, new DoubleInstructions(), java.lang.Double.class),
 
-	LONG(
-		"Num", "J", 2, Opcodes.DRETURN, Opcodes.DSTORE,
-		Opcodes.DLOAD, java.lang.Double.class),
+	LONG("Num", "J", 2, new DoubleInstructions(), java.lang.Double.class),
 
-	FLOAT(
-		"Num", "F", 2, Opcodes.DRETURN, Opcodes.DSTORE,
-		Opcodes.DLOAD, java.lang.Double.class),
+	FLOAT("Num", "F", 2, new DoubleInstructions(), java.lang.Double.class),
 
-	DOUBLE(
-		"Num", "D", 2, Opcodes.DRETURN, Opcodes.DSTORE,
-		Opcodes.DLOAD, java.lang.Double.class);
+	DOUBLE("Num", "D", 2, new DoubleInstructions(), java.lang.Double.class);
 
 	private String name;
 
@@ -40,27 +29,19 @@ public enum PrimitiveType implements Type
 
 	private int width;
 
-	private int returnInstruction;
-
-	private int storeInstruction;
-
-	private int loadInstruction;
+	private Instructions instructions;
 
 	PrimitiveType(
 		String name,
 		String jvmType,
 		int width,
-		int returnInstruction,
-		int storeInstruction,
-		int loadInstruction,
+		Instructions instructions,
 		Class<?> reflectionClass)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
 		this.width = width;
-		this.returnInstruction = returnInstruction;
-		this.storeInstruction = storeInstruction;
-		this.loadInstruction = loadInstruction;
+		this.instructions = instructions;
 		this.reflectionClass = reflectionClass;
 	}
 
@@ -86,17 +67,22 @@ public enum PrimitiveType implements Type
 
 	public int getReturnInstruction()
 	{
-		return this.returnInstruction;
+		return this.instructions.getReturn();
 	}
 
 	public int getStoreInstruction()
 	{
-		return this.storeInstruction;
+		return this.instructions.getStore();
 	}
 
 	public int getLoadInstruction()
 	{
-		return this.loadInstruction;
+		return this.instructions.getLoad();
+	}
+
+	public int getZero()
+	{
+		return this.instructions.getZero();
 	}
 
 	public String toString()

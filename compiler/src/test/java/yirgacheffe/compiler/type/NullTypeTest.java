@@ -19,6 +19,7 @@ public class NullTypeTest
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 	}
 
 	@Test

@@ -19,8 +19,9 @@ public class PrimitiveTypeTest
 		assertEquals("V", type.toJVMType());
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
-		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
-		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.NOP, type.getStoreInstruction());
+		assertEquals(Opcodes.NOP, type.getLoadInstruction());
+		assertEquals(Opcodes.NOP, type.getZero());
 	}
 
 	@Test
@@ -35,6 +36,7 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.ICONST_0, type.getZero());
 	}
 
 	@Test
@@ -49,6 +51,7 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.ICONST_0, type.getZero());
 	}
 
 	@Test
@@ -63,6 +66,7 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.DRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.DSTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.DLOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.DCONST_0, type.getZero());
 	}
 
 	@Test

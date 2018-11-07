@@ -1,10 +1,10 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -16,7 +16,7 @@ public class Return implements Statement
 
 	private Type type = PrimitiveType.VOID;
 
-	private Expression expression;
+	private Expression expression = new Nothing();
 
 	public Return(Coordinate coordinate, Type type, Expression expression)
 	{
@@ -38,23 +38,17 @@ public class Return implements Statement
 
 	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Type type = PrimitiveType.VOID;
+		Type type = this.expression.getType(variables);
 		Array<Error> errors = new Array<>();
 
-		if (this.expression != null)
+		if (type.isAssignableTo(this.type))
 		{
-			type = this.expression.getType(variables);
 			errors = errors.concat(this.expression.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(type.getReturnInstruction());
 		}
 		else
 		{
-			methodVisitor.visitInsn(Opcodes.RETURN);
-		}
+			methodVisitor.visitInsn(this.type.getZero());
 
-		if (!type.isAssignableTo(this.type))
-		{
 			String message =
 				"Mismatched return type: Cannot return expression of type " +
 				type + " from method of return type " +
@@ -62,6 +56,8 @@ public class Return implements Statement
 
 			errors.push(new Error(this.coordinate, message));
 		}
+
+		methodVisitor.visitInsn(this.type.getReturnInstruction());
 
 		return new StatementResult(errors);
 	}
