@@ -386,4 +386,36 @@ public class MethodListenerTest
 			"line 4:5 Duplicate declaration of method myMethod(java.lang.String).\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testCallingBooleanMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.method();\n" +
+				"}\n\n" +
+				"public Bool method()" +
+				"{\n" +
+					"return true;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

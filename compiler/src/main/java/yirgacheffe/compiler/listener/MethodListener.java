@@ -60,9 +60,7 @@ public class MethodListener extends TypeListener
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
 			context.signature().Identifier().getText(),
-			descriptor,
-			null,
-			null);
+			descriptor, null, null);
 	}
 
 	@Override
@@ -70,6 +68,7 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
 		boolean isPrivate = false;
+		String name = null;
 
 		if (context.Modifier() == null)
 		{
@@ -84,8 +83,6 @@ public class MethodListener extends TypeListener
 			isPrivate = context.Modifier().getText().equals("private");
 		}
 
-		String name = null;
-
 		if (context.signature().Identifier() != null)
 		{
 			name = context.signature().Identifier().getText();
@@ -93,13 +90,9 @@ public class MethodListener extends TypeListener
 
 		this.returnType = this.types.getType(context.type());
 		String descriptor = this.descriptor + this.returnType.toJVMType();
-		this.methodVisitor =
-			this.writer.visitMethod(
-				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				name,
-				descriptor,
-				null,
-				null);
+		this.methodVisitor = this.writer.visitMethod(
+			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+			name, descriptor, null, null);
 	}
 
 	@Override
@@ -130,14 +123,22 @@ public class MethodListener extends TypeListener
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
 		Variables variables = new Variables();
-
 		StatementResult result = block.compile(this.methodVisitor, variables);
 		boolean returns = block.returns();
 
 		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
 		{
-			this.methodVisitor.visitInsn(Opcodes.DCONST_0);
-			this.methodVisitor.visitInsn(Opcodes.DRETURN);
+			if (this.returnType.isAssignableTo(PrimitiveType.DOUBLE))
+			{
+				this.methodVisitor.visitInsn(Opcodes.DCONST_0);
+				this.methodVisitor.visitInsn(Opcodes.DRETURN);
+			}
+			else
+			{
+				this.methodVisitor.visitInsn(Opcodes.ICONST_0);
+				this.methodVisitor.visitInsn(Opcodes.IRETURN);
+			}
+
 		}
 		else if (!returns && this.returnType == PrimitiveType.VOID)
 		{
