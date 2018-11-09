@@ -494,4 +494,22 @@ public class StatementListenerTest
 		assertEquals("line 5:0 Missing return statement.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testEmptyReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"return;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
 }

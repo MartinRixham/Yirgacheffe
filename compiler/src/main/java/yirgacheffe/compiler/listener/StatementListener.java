@@ -89,9 +89,17 @@ public class StatementListener extends FieldListener
 	public void exitReturnStatement(YirgacheffeParser.ReturnStatementContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
-		Expression expression = this.expressions.pop();
 
-		this.statements.push(new Return(coordinate, this.returnType, expression));
+		if (context.expression() == null)
+		{
+			this.statements.push(new Return(coordinate));
+		}
+		else
+		{
+			Expression expression = this.expressions.pop();
+
+			this.statements.push(new Return(coordinate, this.returnType, expression));
+		}
 	}
 
 	@Override
