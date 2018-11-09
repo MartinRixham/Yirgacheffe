@@ -2,11 +2,10 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.And;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
+import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
-import yirgacheffe.compiler.expression.Or;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -132,7 +131,14 @@ public class NumericExpressionListener extends FunctionCallListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			expressions.push(new And(firstOperand, secondOperand));
+			BooleanOperation and =
+				new BooleanOperation(
+					Opcodes.IFNE,
+					Opcodes.IFNONNULL,
+					firstOperand,
+					secondOperand);
+
+			expressions.push(and);
 		}
 
 		this.expressions.push(expressions.pop());
@@ -153,7 +159,14 @@ public class NumericExpressionListener extends FunctionCallListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			expressions.push(new Or(firstOperand, secondOperand));
+			BooleanOperation or =
+				new BooleanOperation(
+					Opcodes.IFEQ,
+					Opcodes.IFNULL,
+					firstOperand,
+					secondOperand);
+
+			expressions.push(or);
 		}
 
 		this.expressions.push(expressions.pop());

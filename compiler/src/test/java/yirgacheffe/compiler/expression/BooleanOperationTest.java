@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class OrTest
+public class BooleanOperationTest
 {
 	@Test
 	public void testCompilingAndDoubles()
@@ -30,7 +30,12 @@ public class OrTest
 		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
 		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
 
-		Or or = new Or(firstOperand, secondOperand);
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
 
 		Type type = or.getType(variables);
 
@@ -95,7 +100,12 @@ public class OrTest
 		Literal firstOperand = new Literal(PrimitiveType.BOOLEAN, "true");
 		Literal secondOperand = new Literal(PrimitiveType.BOOLEAN, "false");
 
-		Or or = new Or(firstOperand, secondOperand);
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
 
 		Type type = or.getType(variables);
 
@@ -147,7 +157,12 @@ public class OrTest
 		Literal firstOperand = new Literal(string, "\"mystring\"");
 		Literal secondOperand = new Literal(string, "\"notherstring\"");
 
-		Or or = new Or(firstOperand, secondOperand);
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
 
 		Type type = or.getType(variables);
 
@@ -203,7 +218,12 @@ public class OrTest
 		Expression firstOperand = new This(arrayList);
 		Expression secondOperand = new This(linkedList);
 
-		Or or = new Or(firstOperand, secondOperand);
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
 
 		Type type = or.getType(variables);
 
@@ -213,5 +233,73 @@ public class OrTest
 		assertFalse(type.isAssignableTo(arrayList));
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
+	}
+
+	@Test
+	public void testSecondOperandShouldMatchFirstOperandDouble()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Type string = new ReferenceType(String.class);
+		Expression firstOperand = new Literal(PrimitiveType.DOUBLE, "5");
+		Expression secondOperand = new Literal(string, "\"myString\"");
+
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
+
+		Array<Error> errors = or.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(10, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals(5.0, secondInstruction.cst);
+	}
+
+	@Test
+	public void testSecondOperandShouldMatchFirstOperandNotDouble()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Type string = new ReferenceType(String.class);
+		Expression firstOperand = new Literal(string, "\"myString\"");
+		Expression secondOperand = new Literal(PrimitiveType.DOUBLE, "5");
+
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
+
+		Array<Error> errors = or.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(7, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("myString", secondInstruction.cst);
 	}
 }
