@@ -33,7 +33,7 @@ public class ConstructorListener extends MainMethodListener
 
 		boolean isPrivate = false;
 
-		if (context.Modifier() == null)
+		if (context.modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -43,7 +43,7 @@ public class ConstructorListener extends MainMethodListener
 		}
 		else
 		{
-			isPrivate = context.Modifier().getText().equals("private");
+			isPrivate = context.modifier().Private() != null;
 		}
 
 		this.returnType = PrimitiveType.VOID;

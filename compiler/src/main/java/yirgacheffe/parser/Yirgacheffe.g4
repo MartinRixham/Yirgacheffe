@@ -30,14 +30,13 @@ function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
 	block;
 
-classMethodDeclaration: Modifier? type signature;
+classMethodDeclaration: modifier? type signature;
 
-mainMethodDeclaration: Modifier? type? Main signature;
+mainMethodDeclaration: modifier? Main signature;
 
-constructorDeclaration: Modifier? signature;
+constructorDeclaration: modifier? signature;
 
-interfaceMethodDeclaration:
-	Modifier? type signature semicolon;
+interfaceMethodDeclaration: modifier? type signature semicolon;
 
 signature: Identifier '(' parameter? (',' parameter)* ')';
 
@@ -45,7 +44,9 @@ field: (fieldInitialisation | fieldDeclaration) semicolon;
 
 fieldInitialisation: fieldDeclaration '=' expression;
 
-fieldDeclaration: Modifier? type? Identifier;
+fieldDeclaration: modifier? type? Identifier;
+
+modifier: Public | Private;
 
 statement:
 	block | conditionalStatement |
@@ -140,8 +141,9 @@ Package: 'package';
 Import: 'import';
 Class: 'class';
 Interface: 'interface';
+Public: 'public';
+Private: 'private';
 PrimitiveType: 'Void' | 'Bool' | 'Char' | 'Num';
-Modifier: 'public' | 'private';
 BooleanLiteral: 'true' | 'false';
 New: 'new';
 This: 'this';

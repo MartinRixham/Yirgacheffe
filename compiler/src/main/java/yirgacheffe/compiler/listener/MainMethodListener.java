@@ -21,11 +21,13 @@ public class MainMethodListener extends MethodListener
 	public void exitMainMethodDeclaration(
 		YirgacheffeParser.MainMethodDeclarationContext context)
 	{
+		this.checkPrivate(context);
+
 		YirgacheffeParser.SignatureContext signature = context.signature();
 
 		if (signature.parameter().size() != 1)
 		{
-			this.addError(context);
+			this.addParameterError(context);
 		}
 		else
 		{
@@ -37,7 +39,7 @@ public class MainMethodListener extends MethodListener
 
 			if (!argsType.isAssignableTo(parameterType))
 			{
-				this.addError(context);
+				this.addParameterError(context);
 			}
 		}
 
@@ -56,7 +58,20 @@ public class MainMethodListener extends MethodListener
 		this.returnType = PrimitiveType.VOID;
 	}
 
-	private void addError(YirgacheffeParser.MainMethodDeclarationContext context)
+	private void checkPrivate(YirgacheffeParser.MainMethodDeclarationContext context)
+	{
+		boolean isPrivate =
+			context.modifier() != null && context.modifier().Private() != null;
+
+		if (isPrivate)
+		{
+			String message = "Main method cannot be private.";
+
+			this.errors.push(new Error(context, message));
+		}
+	}
+
+	private void addParameterError(YirgacheffeParser.MainMethodDeclarationContext context)
 	{
 		String message =
 			"Main method must have exactly one parameter of " +

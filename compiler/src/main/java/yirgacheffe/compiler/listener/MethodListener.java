@@ -46,7 +46,7 @@ public class MethodListener extends TypeListener
 	public void exitInterfaceMethodDeclaration(
 		YirgacheffeParser.InterfaceMethodDeclarationContext context)
 	{
-		if (context.Modifier() != null)
+		if (context.modifier() != null)
 		{
 			String message =
 				"Access modifier is not required for interface method declaration.";
@@ -70,7 +70,7 @@ public class MethodListener extends TypeListener
 		boolean isPrivate = false;
 		String name = null;
 
-		if (context.Modifier() == null)
+		if (context.modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -80,7 +80,7 @@ public class MethodListener extends TypeListener
 		}
 		else
 		{
-			isPrivate = context.Modifier().getText().equals("private");
+			isPrivate = context.modifier().Private() != null;
 		}
 
 		if (context.signature().Identifier() != null)

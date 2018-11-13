@@ -182,4 +182,24 @@ public class MainMethodListenerTest
 			"yirgacheffe.lang.Array<java.lang.String>.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testPrivateMainMethodNotAllowed()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"private main method(Array<String> args)" +
+				"{" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Main method cannot be private.\n",
+			result.getErrors());
+	}
 }
