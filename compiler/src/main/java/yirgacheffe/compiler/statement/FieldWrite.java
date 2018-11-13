@@ -68,8 +68,8 @@ public class FieldWrite implements Statement
 			throw new RuntimeException(e);
 		}
 
-		this.owner.compile(methodVisitor, variables);
-		this.value.compile(methodVisitor, variables);
+		errors.push(this.owner.compile(methodVisitor, variables));
+		errors.push(this.value.compile(methodVisitor, variables));
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,

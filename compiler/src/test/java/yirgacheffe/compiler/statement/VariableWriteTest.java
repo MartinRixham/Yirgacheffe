@@ -8,8 +8,10 @@ import org.junit.Test;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
@@ -45,5 +47,23 @@ public class VariableWriteTest
 
 		assertEquals(Opcodes.ASTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
+	}
+
+	@Test
+	public void testWriteInvalidExpression()
+	{
+		Coordinate coordinate = new Coordinate(4, 2);
+		Type string = new ReferenceType(String.class);
+		Expression value = new InvalidExpression(string);
+		VariableWrite variableWrite =
+			new VariableWrite("myVariable", value, coordinate);
+		MethodNode methodVisitor = new MethodNode();
+
+		Variables variables = new Variables();
+		variables.declare("myVariable", string);
+
+		StatementResult result = variableWrite.compile(methodVisitor, variables);
+
+		assertEquals(1, result.getErrors().length());
 	}
 }

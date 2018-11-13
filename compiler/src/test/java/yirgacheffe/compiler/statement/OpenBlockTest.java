@@ -5,6 +5,7 @@ import org.junit.Test;
 import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class OpenBlockTest
 {
@@ -17,6 +18,7 @@ public class OpenBlockTest
 
 		StatementResult result = openBlock.compile(methodVisitor, variables);
 
+		assertNotNull(result);
 		assertFalse(openBlock.returns());
 	}
 }

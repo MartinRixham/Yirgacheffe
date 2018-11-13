@@ -40,7 +40,7 @@ public class VariableWrite implements Statement
 		Type variableType = variable.getType();
 		Array<Error> errors = new Array<>();
 
-		this.expression.compile(methodVisitor, variables);
+		errors.push(this.expression.compile(methodVisitor, variables));
 
 		if (!type.isAssignableTo(variableType))
 		{

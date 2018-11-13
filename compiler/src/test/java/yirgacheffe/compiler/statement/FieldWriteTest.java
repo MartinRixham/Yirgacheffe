@@ -9,10 +9,12 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 
 import static org.junit.Assert.assertEquals;
@@ -100,5 +102,22 @@ public class FieldWriteTest
 			"line 6:0 Cannot assign expression of type " +
 				"Num to field of type java.lang.String.",
 			result.getErrors().get(0).toString());
+	}
+
+	@Test
+	public void testAssignInvalidExpressionToInvalidExpression()
+	{
+		Coordinate coordinate = new Coordinate(6, 0);
+		Type testClass = new ReferenceType(this.getClass());
+		Type string = new ReferenceType(String.class);
+		Expression owner = new InvalidExpression(testClass);
+		Expression value = new InvalidExpression(string);
+		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		StatementResult result = fieldWrite.compile(methodVisitor, variables);
+
+		assertEquals(2, result.getErrors().length());
 	}
 }
