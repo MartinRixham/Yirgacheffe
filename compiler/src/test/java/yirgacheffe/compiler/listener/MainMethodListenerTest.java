@@ -225,4 +225,27 @@ public class MainMethodListenerTest
 			"line 1:0 Main class must have default constructor.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testMultipleMainMethods()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)" +
+				"{" +
+				"}\n" +
+				"main schmethod(Array<String> args)" +
+				"{" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Cannot have multiple main methods.\n",
+			result.getErrors());
+	}
 }

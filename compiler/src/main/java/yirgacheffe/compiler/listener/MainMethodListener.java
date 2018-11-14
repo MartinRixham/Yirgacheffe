@@ -43,6 +43,8 @@ public class MainMethodListener extends MethodListener
 			}
 		}
 
+		this.checkMultipleMainMethods(context);
+
 		this.mainMethodName = signature.Identifier().getText();
 
 		String descriptor = this.descriptor + "V";
@@ -56,6 +58,17 @@ public class MainMethodListener extends MethodListener
 				null);
 
 		this.returnType = PrimitiveType.VOID;
+	}
+
+	private void checkMultipleMainMethods(
+		YirgacheffeParser.MainMethodDeclarationContext context)
+	{
+		if (this.mainMethodName != null)
+		{
+			String message = "Cannot have multiple main methods.";
+
+			this.errors.push(new Error(context, message));
+		}
 	}
 
 	private void checkPrivate(YirgacheffeParser.MainMethodDeclarationContext context)
