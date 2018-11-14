@@ -202,4 +202,27 @@ public class MainMethodListenerTest
 			"line 3:0 Main method cannot be private.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testMainMethodHasDefaultConstructor()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass(String string)" +
+				"{" +
+				"}\n" +
+				"main method(Array<String> args)" +
+				"{" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Main class must have default constructor.\n",
+			result.getErrors());
+	}
 }

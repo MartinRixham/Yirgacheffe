@@ -107,6 +107,12 @@ public class ClassListener extends PackageListener
 		{
 			this.makeDefaultConstructor();
 		}
+		else if (this.mainMethodName != null)
+		{
+			String message = "Main class must have default constructor.";
+
+			this.errors.push(new Error(context, message));
+		}
 	}
 
 	private void makeMainMethod()
