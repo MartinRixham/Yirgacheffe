@@ -115,8 +115,13 @@ public class InvokeMethod implements Expression
 
 		boolean isInterface = owner.reflectionClass().isInterface();
 
+		int invocationOpcode =
+			isInterface ? Opcodes.INVOKEINTERFACE :
+				function.isPublic() ? Opcodes.INVOKEVIRTUAL :
+					Opcodes.INVOKESPECIAL;
+
 		methodVisitor.visitMethodInsn(
-			isInterface ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL,
+			invocationOpcode,
 			this.withSlashes(owner),
 			function.getName(),
 			function.getDescriptor(),

@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -25,6 +26,10 @@ import static org.junit.Assert.assertTrue;
 
 public class InvokeMethodTest
 {
+	private void method()
+	{
+	}
+
 	@Test
 	public void testCompilingToStringInvocation()
 	{
@@ -38,7 +43,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"toString",
-				"myClass",
+				"MyClass",
 				expression,
 				new Array<>());
 
@@ -64,6 +69,50 @@ public class InvokeMethodTest
 		assertFalse(secondInstruction.itf);
 
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
+	}
+
+	@Test
+	public void testCompilingPrivateMethodInvocation()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(0, 1);
+		Type testClass = new ReferenceType(this.getClass());
+		Expression expression = new This(testClass);
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"method",
+				"yirgacheffe.compiler.expression.InvokeMethodTest",
+				expression,
+				new Array<>());
+
+		Type type = invokeMethod.getType(variables);
+
+		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("yirgacheffe/compiler/expression/InvokeMethodTest",
+			secondInstruction.owner);
+		assertEquals("method", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
+		assertFalse(secondInstruction.itf);
+
+		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 	}
 
 	@Test
