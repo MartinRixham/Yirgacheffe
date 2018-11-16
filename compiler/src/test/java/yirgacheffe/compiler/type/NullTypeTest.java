@@ -20,6 +20,7 @@ public class NullTypeTest
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
+		assertEquals("java.lang.Object", type.toString());
 	}
 
 	@Test

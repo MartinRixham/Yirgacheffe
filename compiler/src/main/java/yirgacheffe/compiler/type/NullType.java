@@ -48,4 +48,10 @@ public class NullType implements Type
 	{
 		return true;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "java.lang.Object";
+	}
 }

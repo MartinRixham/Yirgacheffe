@@ -89,7 +89,7 @@ public class InvokeMethod implements Expression
 				false);
 		}
 
-		for (int i = 0; i < this.arguments.length(); i++)
+		for (int i = 0; i < Math.min(this.arguments.length(), parameters.length()); i++)
 		{
 			Expression argument = this.arguments.get(i);
 			Type argumentType = argumentTypes.get(i);

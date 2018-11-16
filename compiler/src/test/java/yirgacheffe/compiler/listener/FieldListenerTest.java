@@ -880,4 +880,29 @@ public class FieldListenerTest
 				"to field of type java.lang.String.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testCallMethodOnUnknownField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"Num number = 1;\n" +
+					"out.println(1);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Unknown local variable 'out'.\n" +
+				"line 6:3 Method java.lang.Object.println(Num) not found.\n",
+			result.getErrors());
+
+	}
 }
