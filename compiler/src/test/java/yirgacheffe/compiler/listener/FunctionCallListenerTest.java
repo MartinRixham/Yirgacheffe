@@ -824,4 +824,75 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testTypeConversionReturnsNumber()
+	{
+		String source =
+			"import java.io.PrintStream;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"PrintStream out;\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"this.out.println(1.1.intValue());\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(8, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(1.1, thirdInstruction.cst);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals("valueOf", fourthInstruction.name);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals("intValue", fifthInstruction.name);
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.I2D, sixthInstruction.getOpcode());
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, seventhInstruction.getOpcode());
+		assertEquals("println", seventhInstruction.name);
+		assertEquals("java/io/PrintStream", seventhInstruction.owner);
+		assertEquals("(D)V", seventhInstruction.desc);
+	}
 }

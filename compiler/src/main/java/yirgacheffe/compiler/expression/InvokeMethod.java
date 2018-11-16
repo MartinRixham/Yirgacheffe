@@ -8,6 +8,7 @@ import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
+import yirgacheffe.compiler.function.Methods;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.NullType;
@@ -50,16 +51,24 @@ public class InvokeMethod implements Expression
 		Type ownerType = this.owner.getType(variables);
 		Class<?> ownerClass = ownerType.reflectionClass();
 		Method[] methods = ownerClass.getDeclaredMethods();
+		Type returnType = new NullType();
 
 		for (Method method: methods)
 		{
 			if (method.getName().equals(this.name))
 			{
-				return new Function(ownerType, method).getReturnType();
+				returnType = new Function(ownerType, method).getReturnType();
 			}
 		}
 
-		return new NullType();
+		if (returnType == PrimitiveType.INT ||
+			returnType == PrimitiveType.LONG ||
+			returnType == PrimitiveType.FLOAT)
+		{
+			return PrimitiveType.DOUBLE;
+		}
+
+		return returnType;
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
@@ -73,10 +82,13 @@ public class InvokeMethod implements Expression
 
 		Arguments arguments = new Arguments(argumentTypes);
 		Type owner = this.owner.getType(variables);
-		MatchResult matchResult = this.getMatchResult(owner, this.name, arguments);
+		Methods methods = new Methods(owner, this.caller);
+		Array<Callable> namedMethods = methods.getMethodsNamed(this.name);
+		String method = owner + "." + this.name;
+		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
+		MatchResult matchResult = functions.getMatchingExecutable(arguments);
 		Callable function = matchResult.getFunction();
 		Array<Type> parameters = function.getParameterTypes();
-		Type returnType = matchResult.getFunction().getReturnType();
 		Array<Error> errors = this.owner.compile(methodVisitor, variables);
 
 		if (owner instanceof PrimitiveType)
@@ -127,6 +139,8 @@ public class InvokeMethod implements Expression
 			function.getDescriptor(),
 			isInterface);
 
+		Type returnType = matchResult.getFunction().getReturnType();
+
 		if (returnType instanceof GenericType)
 		{
 			methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, this.withSlashes(returnType));
@@ -157,38 +171,6 @@ public class InvokeMethod implements Expression
 		}
 
 		return matchResult.getErrors().concat(errors);
-	}
-
-	private MatchResult getMatchResult(
-		Type owner,
-		String methodName,
-		Arguments arguments)
-	{
-		Method[] methods;
-
-		if (owner.toFullyQualifiedType().equals(this.caller))
-		{
-			methods = owner.reflectionClass().getDeclaredMethods();
-		}
-		else
-		{
-			methods = owner.reflectionClass().getMethods();
-		}
-
-		Array<Callable> namedMethods = new Array<>();
-
-		for (Method method: methods)
-		{
-			if (method.getName().equals(methodName))
-			{
-				namedMethods.push(new Function(owner, method));
-			}
-		}
-
-		String method = owner + "." + methodName;
-
-		return new Functions(this.coordinate, method, namedMethods, false)
-			.getMatchingExecutable(arguments);
 	}
 
 	private String withSlashes(Type type)

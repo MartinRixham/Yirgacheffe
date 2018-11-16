@@ -13,11 +13,11 @@ public enum PrimitiveType implements Type
 
 	CHAR("Char", "C", 1, new IntegerInstructions(), java.lang.Character.class),
 
-	INT("Num", "I", 2, new DoubleInstructions(), java.lang.Double.class),
+	INT("Num", "I", 2, new DoubleInstructions(), java.lang.Integer.class),
 
-	LONG("Num", "J", 2, new DoubleInstructions(), java.lang.Double.class),
+	LONG("Num", "J", 2, new DoubleInstructions(), java.lang.Long.class),
 
-	FLOAT("Num", "F", 2, new DoubleInstructions(), java.lang.Double.class),
+	FLOAT("Num", "F", 2, new DoubleInstructions(), java.lang.Float.class),
 
 	DOUBLE("Num", "D", 2, new DoubleInstructions(), java.lang.Double.class);
 
