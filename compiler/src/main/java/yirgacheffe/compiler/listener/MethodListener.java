@@ -60,7 +60,9 @@ public class MethodListener extends TypeListener
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
 			context.signature().Identifier().getText(),
-			descriptor, null, null);
+			descriptor,
+			null,
+			null);
 	}
 
 	@Override
@@ -90,9 +92,14 @@ public class MethodListener extends TypeListener
 
 		this.returnType = this.types.getType(context.type());
 		String descriptor = this.descriptor + this.returnType.toJVMType();
-		this.methodVisitor = this.writer.visitMethod(
-			isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-			name, descriptor, null, null);
+
+		this.methodVisitor =
+			this.writer.visitMethod(
+				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+				name,
+				descriptor,
+				null,
+				null);
 	}
 
 	@Override
@@ -128,17 +135,8 @@ public class MethodListener extends TypeListener
 
 		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
 		{
-			if (this.returnType.isAssignableTo(PrimitiveType.DOUBLE))
-			{
-				this.methodVisitor.visitInsn(Opcodes.DCONST_0);
-				this.methodVisitor.visitInsn(Opcodes.DRETURN);
-			}
-			else
-			{
-				this.methodVisitor.visitInsn(Opcodes.ICONST_0);
-				this.methodVisitor.visitInsn(Opcodes.IRETURN);
-			}
-
+			this.methodVisitor.visitInsn(this.returnType.getZero());
+			this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 		}
 		else if (!returns && this.returnType == PrimitiveType.VOID)
 		{
