@@ -6,12 +6,15 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FieldReadTest
 {
@@ -50,5 +53,19 @@ public class FieldReadTest
 		assertEquals("D", secondInstruction.desc);
 
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead read = new VariableRead("myVariable", coordinate);
+
+		Expression fieldRead = new FieldRead(read, "myField", PrimitiveType.DOUBLE);
+
+		Array<VariableRead> reads = fieldRead.getVariableReads();
+
+		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(read, fieldRead.getFirstOperand());
 	}
 }

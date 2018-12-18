@@ -1,11 +1,13 @@
 package yirgacheffe.compiler.type;
 
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class Variables
@@ -17,6 +19,8 @@ public class Variables
 	private Array<VariableRead> variableReads = new Array<>();
 
 	private Array<VariableWrite> variableWrites = new Array<>();
+
+	private Map<VariableRead, Expression> optimisedVariables = new IdentityHashMap<>();
 
 	public Map<String, Variable> getDeclaredVariables()
 	{
@@ -84,5 +88,20 @@ public class Variables
 		}
 
 		return errors;
+	}
+
+	public void optimise(VariableRead variableRead, Expression expression)
+	{
+		this.optimisedVariables.put(variableRead, expression);
+	}
+
+	public boolean canOptimise(VariableRead variableRead)
+	{
+		return this.optimisedVariables.keySet().contains(variableRead);
+	}
+
+	public Expression getOptimisedExpression(VariableRead variableRead)
+	{
+		return this.optimisedVariables.get(variableRead);
 	}
 }

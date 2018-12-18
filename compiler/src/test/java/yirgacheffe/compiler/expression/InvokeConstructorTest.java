@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -65,5 +66,48 @@ public class InvokeConstructorTest
 		assertFalse(fourthInstruction.itf);
 
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+	}
+
+	@Test
+	public void testGettingFirstOperand()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(1, 0);
+		Type owner = new ReferenceType(Double.class);
+		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		Array<Expression> arguments = new Array<Expression>(one);
+
+		InvokeConstructor invokeConstructor =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				arguments);
+
+		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+		assertEquals(one, invokeConstructor.getFirstOperand());
+	}
+
+	@Test
+	public void testGettingNoFirstOperand()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(1, 0);
+		Type owner = new ReferenceType(String.class);
+		Array<Expression> arguments = new Array<Expression>();
+
+		InvokeConstructor invokeConstructor =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				arguments);
+
+		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+		assertEquals(invokeConstructor, invokeConstructor.getFirstOperand());
 	}
 }

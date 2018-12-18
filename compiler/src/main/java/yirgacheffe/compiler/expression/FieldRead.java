@@ -39,4 +39,14 @@ public class FieldRead implements Expression
 
 		return errors;
 	}
+
+	public Expression getFirstOperand()
+	{
+		return this.owner.getFirstOperand();
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.owner.getVariableReads();
+	}
 }

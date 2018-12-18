@@ -5,7 +5,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class If implements ConditionalStatement
 {
@@ -21,7 +23,6 @@ public class If implements ConditionalStatement
 		this.statement = statement;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return this.statement.returns();
@@ -48,5 +49,17 @@ public class If implements ConditionalStatement
 	public Label getLabel()
 	{
 		return this.label;
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.condition.getFirstOperand();
+	}
+
+	@Override
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.condition.getVariableReads()
+			.concat(this.statement.getVariableReads());
 	}
 }

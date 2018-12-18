@@ -2,5 +2,5 @@ package example;
 
 interface MyInterface
 {
-    public int myMethod();
+	public int myMethod();
 }

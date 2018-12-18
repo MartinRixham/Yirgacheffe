@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -30,7 +31,6 @@ public class Return implements Statement
 		this.coordinate = coordinate;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return true;
@@ -60,5 +60,15 @@ public class Return implements Statement
 		methodVisitor.visitInsn(this.type.getReturnInstruction());
 
 		return new StatementResult(errors);
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.expression;
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.expression.getVariableReads();
 	}
 }

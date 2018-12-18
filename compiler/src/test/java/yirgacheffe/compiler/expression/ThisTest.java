@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,5 +38,16 @@ public class ThisTest
 		assertEquals(
 			"yirgacheffe.compiler.expression.ThisTest",
 			type.toFullyQualifiedType());
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Expression thisStatement = new This(new ReferenceType(this.getClass()));
+
+		Array<VariableRead> reads = thisStatement.getVariableReads();
+
+		assertEquals(0, reads.length());
+		assertEquals(thisStatement, thisStatement.getFirstOperand());
 	}
 }

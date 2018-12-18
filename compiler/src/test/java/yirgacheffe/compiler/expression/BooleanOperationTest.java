@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -301,5 +302,26 @@ public class BooleanOperationTest
 
 		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
 		assertEquals("myString", secondInstruction.cst);
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
+		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+
+		Expression operation =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
+
+		Array<VariableRead> reads = operation.getVariableReads();
+
+		assertTrue(reads.indexOf(firstOperand) >= 0);
+		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

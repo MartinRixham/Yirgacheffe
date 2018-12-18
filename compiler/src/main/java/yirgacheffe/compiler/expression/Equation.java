@@ -52,6 +52,11 @@ public class Equation implements Expression
 		return errors;
 	}
 
+	public Expression getFirstOperand()
+	{
+		return this.firstOperand.getFirstOperand();
+	}
+
 	public void compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
@@ -62,5 +67,11 @@ public class Equation implements Expression
 		this.firstOperand.compile(methodVisitor, variables);
 		this.secondOperand.compile(methodVisitor, variables);
 		this.comparison.compile(methodVisitor, label, type);
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.firstOperand.getVariableReads()
+			.concat(this.secondOperand.getVariableReads());
 	}
 }

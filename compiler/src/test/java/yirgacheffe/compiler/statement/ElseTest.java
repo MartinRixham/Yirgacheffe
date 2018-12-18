@@ -11,6 +11,8 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -18,6 +20,7 @@ import yirgacheffe.lang.Array;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ElseTest
 {
@@ -88,5 +91,29 @@ public class ElseTest
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",
 			result.getErrors().get(0).toString());
+	}
+
+	@Test
+	public void testElseHasNoFirstOperand()
+	{
+		Coordinate coordinate = new Coordinate(2, 4);
+		Statement doNothing = new DoNothing();
+		Else elseStatement = new Else(coordinate, doNothing, doNothing);
+
+		assertTrue(elseStatement.getFirstOperand() instanceof Nothing);
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableWrite write = new VariableWrite("var", read, coordinate);
+		Statement elseStatement = new Else(coordinate, write, write);
+
+		Array<VariableRead> reads = elseStatement.getVariableReads();
+
+		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(read, elseStatement.getFirstOperand());
 	}
 }

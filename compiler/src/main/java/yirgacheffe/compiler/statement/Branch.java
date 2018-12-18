@@ -2,7 +2,10 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class Branch implements Statement
 {
@@ -13,7 +16,6 @@ public class Branch implements Statement
 		this.conditional = conditional;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return this.conditional.returns() && (this.conditional instanceof Else);
@@ -28,5 +30,15 @@ public class Branch implements Statement
 		methodVisitor.visitLabel(label);
 
 		return new StatementResult(result.getErrors());
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.conditional.getFirstOperand();
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.conditional.getVariableReads();
 	}
 }

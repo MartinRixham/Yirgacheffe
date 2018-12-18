@@ -11,4 +11,8 @@ public interface Expression
 	Type getType(Variables variables);
 
 	Array<Error> compile(MethodVisitor methodVisitor, Variables variables);
+
+	Expression getFirstOperand();
+
+	Array<VariableRead> getVariableReads();
 }

@@ -10,10 +10,14 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class IfTest
 {
@@ -48,5 +52,29 @@ public class IfTest
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
+	}
+
+	@Test
+	public void testFirstOperandIsNothing()
+	{
+		If ifStatement = new If(new Nothing(), new DoNothing());
+
+		Expression operand = ifStatement.getFirstOperand();
+
+		assertTrue(operand instanceof Nothing);
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableWrite write = new VariableWrite("var", read, coordinate);
+		Statement ifStatement = new If(read, write);
+
+		Array<VariableRead> reads = ifStatement.getVariableReads();
+
+		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(read, ifStatement.getFirstOperand());
 	}
 }

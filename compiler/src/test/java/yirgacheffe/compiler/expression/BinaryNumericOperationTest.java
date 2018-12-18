@@ -15,6 +15,7 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BinaryNumericOperationTest
 {
@@ -85,5 +86,49 @@ public class BinaryNumericOperationTest
 
 		assertEquals(errors.get(0).toString(),
 			"line 3:6 Cannot add Num and java.lang.String.");
+	}
+
+	@Test
+	public void testInvalidOperands()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		Expression firstOperand = new InvalidExpression(PrimitiveType.DOUBLE);
+		Expression secondOperand = new InvalidExpression(PrimitiveType.DOUBLE);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Expression expression =
+			new BinaryNumericOperation(
+				coordinate,
+				0,
+				"and",
+				firstOperand,
+				secondOperand);
+
+		Array<Error> errors = expression.compile(methodVisitor, variables);
+
+		assertEquals(2, errors.length());
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
+		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+
+		Expression operation =
+			new BinaryNumericOperation(
+				coordinate,
+				Opcodes.DDIV,
+				"divide",
+				firstOperand,
+				secondOperand);
+
+		Array<VariableRead> reads = operation.getVariableReads();
+
+		assertTrue(reads.indexOf(firstOperand) >= 0);
+		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

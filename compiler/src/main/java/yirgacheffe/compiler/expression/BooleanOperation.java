@@ -100,4 +100,15 @@ public class BooleanOperation implements Expression
 
 		return errors;
 	}
+
+	public Expression getFirstOperand()
+	{
+		return this.firstOperand.getFirstOperand();
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.firstOperand.getVariableReads()
+			.concat(this.secondOperand.getVariableReads());
+	}
 }

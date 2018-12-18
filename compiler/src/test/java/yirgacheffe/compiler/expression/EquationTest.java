@@ -11,7 +11,9 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.comparison.Comparison;
 import yirgacheffe.compiler.comparison.Equals;
+import yirgacheffe.compiler.comparison.GreaterThan;
 import yirgacheffe.compiler.comparison.NotEquals;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -19,6 +21,7 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EquationTest
 {
@@ -260,5 +263,22 @@ public class EquationTest
 		LabelNode eightInstruction = (LabelNode) instructions.get(7);
 
 		assertEquals(falseLabel, eightInstruction.getLabel());
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
+		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+
+		Expression operation =
+			new Equation(firstOperand, secondOperand, new GreaterThan());
+
+		Array<VariableRead> reads = operation.getVariableReads();
+
+		assertTrue(reads.indexOf(firstOperand) >= 0);
+		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

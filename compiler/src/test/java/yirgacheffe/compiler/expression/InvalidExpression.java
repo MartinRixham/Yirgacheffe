@@ -16,18 +16,26 @@ public class InvalidExpression implements Expression
 		this.type = type;
 	}
 
-	@Override
 	public Type getType(Variables variables)
 	{
 		return this.type;
 	}
 
-	@Override
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Coordinate coordinate = new Coordinate(0, 0);
 		Error error = new Error(coordinate, "This expression is not valid.");
 
 		return new Array<>(error);
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this;
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return new Array<>();
 	}
 }

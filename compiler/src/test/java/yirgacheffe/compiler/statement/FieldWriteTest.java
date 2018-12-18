@@ -12,13 +12,16 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FieldWriteTest
 {
@@ -119,5 +122,33 @@ public class FieldWriteTest
 		StatementResult result = fieldWrite.compile(methodVisitor, variables);
 
 		assertEquals(2, result.getErrors().length());
+	}
+
+	@Test
+	public void testFieldWriteHasNoFirstOperand()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		Literal one = new Literal(PrimitiveType.DOUBLE, "1");
+		Literal two = new Literal(PrimitiveType.DOUBLE, "2");
+		FieldWrite fieldWrite = new FieldWrite(coordinate, "field", one, two);
+
+		assertEquals(one, fieldWrite.getFirstOperand());
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
+		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+
+		Statement write =
+			new FieldWrite(coordinate, "var", firstOperand, secondOperand);
+
+		Array<VariableRead> reads = write.getVariableReads();
+
+		assertTrue(reads.indexOf(firstOperand) >= 0);
+		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(firstOperand, write.getFirstOperand());
 	}
 }

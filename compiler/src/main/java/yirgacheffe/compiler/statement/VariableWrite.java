@@ -4,6 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
@@ -27,7 +28,6 @@ public class VariableWrite implements Statement
 		this.coordinate = coordinate;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
@@ -42,6 +42,8 @@ public class VariableWrite implements Statement
 
 		errors.push(this.expression.compile(methodVisitor, variables));
 
+		methodVisitor.visitVarInsn(type.getStoreInstruction(), variable.getIndex());
+
 		if (!type.isAssignableTo(variableType))
 		{
 			String message =
@@ -52,11 +54,19 @@ public class VariableWrite implements Statement
 			errors.push(new Error(this.coordinate, message));
 		}
 
-		methodVisitor.visitVarInsn(type.getStoreInstruction(), variable.getIndex());
-
 		variables.write(this);
 
 		return new StatementResult(errors);
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.expression;
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.expression.getVariableReads();
 	}
 
 	public Coordinate getCoordinate()
@@ -67,5 +77,27 @@ public class VariableWrite implements Statement
 	public String getName()
 	{
 		return this.name;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof String)
+		{
+			return this.name.equals(other);
+		}
+
+		if (other instanceof VariableWrite || other instanceof VariableRead)
+		{
+			return other.equals(this.name);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode();
 	}
 }

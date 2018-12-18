@@ -173,8 +173,27 @@ public class InvokeMethod implements Expression
 		return matchResult.getErrors().concat(errors);
 	}
 
+	public Expression getFirstOperand()
+	{
+		return this.owner.getFirstOperand();
+	}
+
 	private String withSlashes(Type type)
 	{
 		return type.toFullyQualifiedType().replace(".", "/");
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		Array<VariableRead> variableReads = new Array<>();
+
+		for (Expression argument: this.arguments)
+		{
+			variableReads = variableReads.concat(argument.getVariableReads());
+		}
+
+		variableReads = variableReads.concat(this.owner.getVariableReads());
+
+		return variableReads;
 	}
 }

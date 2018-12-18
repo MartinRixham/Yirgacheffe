@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -33,7 +34,6 @@ public class FieldWrite implements Statement
 		this.value = value;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
@@ -90,5 +90,16 @@ public class FieldWrite implements Statement
 		{
 			return new ReferenceType(clazz);
 		}
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.owner;
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.owner.getVariableReads()
+			.concat(this.value.getVariableReads());
 	}
 }

@@ -11,6 +11,7 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NegationTest
 {
@@ -32,5 +33,19 @@ public class NegationTest
 
 		assertEquals(errors.get(0).toString(),
 			"line 3:6 Cannot negate java.lang.String.");
+	}
+
+	@Test
+	public void testGettingVariableReads()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead read = new VariableRead("myVariable", coordinate);
+
+		Expression negation = new Negation(coordinate, read);
+
+		Array<VariableRead> reads = negation.getVariableReads();
+
+		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(read, negation.getFirstOperand());
 	}
 }

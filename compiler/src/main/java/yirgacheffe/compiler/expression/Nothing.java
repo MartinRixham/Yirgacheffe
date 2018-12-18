@@ -9,14 +9,22 @@ import yirgacheffe.lang.Array;
 
 public class Nothing implements Expression
 {
-	@Override
 	public Type getType(Variables variables)
 	{
 		return PrimitiveType.VOID;
 	}
 
-	@Override
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	{
+		return new Array<>();
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this;
+	}
+
+	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
 	}

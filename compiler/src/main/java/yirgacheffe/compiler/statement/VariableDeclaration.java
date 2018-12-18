@@ -1,8 +1,12 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 public class VariableDeclaration implements Statement
 {
@@ -16,7 +20,6 @@ public class VariableDeclaration implements Statement
 		this.type = type;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
@@ -27,5 +30,15 @@ public class VariableDeclaration implements Statement
 		variables.declare(this.name, this.type);
 
 		return new StatementResult();
+	}
+
+	public Expression getFirstOperand()
+	{
+		return new Nothing();
+	}
+
+	public Array<VariableRead> getVariableReads()
+	{
+		return new Array<>();
 	}
 }

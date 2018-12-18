@@ -4,6 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -17,7 +18,6 @@ public class FunctionCall implements Statement
 		this.expression = expression;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
@@ -41,5 +41,16 @@ public class FunctionCall implements Statement
 		}
 
 		return new StatementResult(errors);
+	}
+
+	public Expression getFirstOperand()
+	{
+		return this.expression.getFirstOperand();
+	}
+
+	@Override
+	public Array<VariableRead> getVariableReads()
+	{
+		return this.expression.getVariableReads();
 	}
 }
