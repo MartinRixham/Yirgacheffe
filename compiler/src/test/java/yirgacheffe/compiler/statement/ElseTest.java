@@ -9,7 +9,9 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -35,9 +37,9 @@ public class ElseTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = elseStatement.compile(methodVisitor, variables);
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -84,13 +86,13 @@ public class ElseTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = elseStatement.compile(methodVisitor, variables);
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
 
 		assertFalse(elseStatement.returns());
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",
-			result.getErrors().get(0).toString());
+			errors.get(0).toString());
 	}
 
 	@Test
@@ -101,6 +103,23 @@ public class ElseTest
 		Else elseStatement = new Else(coordinate, doNothing, doNothing);
 
 		assertTrue(elseStatement.getFirstOperand() instanceof Nothing);
+	}
+
+	@Test
+	public void testInvalidPrecondition()
+	{
+		Coordinate coordinate = new Coordinate(2, 4);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		If ifStatement =
+			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
+
+		Else elseStatement = new Else(coordinate, ifStatement, new DoNothing());
+
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
+
+		assertEquals(1, errors.length());
 	}
 
 	@Test

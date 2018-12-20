@@ -8,7 +8,9 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -31,9 +33,9 @@ public class IfTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = ifStatement.compile(methodVisitor, variables);
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -62,6 +64,20 @@ public class IfTest
 		Expression operand = ifStatement.getFirstOperand();
 
 		assertTrue(operand instanceof Nothing);
+	}
+
+	@Test
+	public void testInvalidCondition()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		If ifStatement =
+			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
+
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables);
+
+		assertEquals(1, errors.length());
 	}
 
 	@Test

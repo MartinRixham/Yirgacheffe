@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Variables;
@@ -10,7 +11,7 @@ public interface Statement
 {
 	boolean returns();
 
-	StatementResult compile(MethodVisitor methodVisitor, Variables variables);
+	Array<Error> compile(MethodVisitor methodVisitor, Variables variables);
 
 	Expression getFirstOperand();
 

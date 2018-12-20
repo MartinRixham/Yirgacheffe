@@ -2,6 +2,7 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Variables;
@@ -21,15 +22,15 @@ public class Branch implements Statement
 		return this.conditional.returns() && (this.conditional instanceof Else);
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Label label = this.conditional.getLabel();
 
-		StatementResult result = this.conditional.compile(methodVisitor, variables);
+		Array<Error> errors = this.conditional.compile(methodVisitor, variables);
 
 		methodVisitor.visitLabel(label);
 
-		return new StatementResult(result.getErrors());
+		return errors;
 	}
 
 	public Expression getFirstOperand()

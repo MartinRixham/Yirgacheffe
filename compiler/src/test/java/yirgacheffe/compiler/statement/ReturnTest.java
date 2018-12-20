@@ -6,12 +6,14 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,10 +28,10 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
 
 		assertTrue(returnStatement.returns());
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -50,9 +52,9 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -77,15 +79,15 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 
 		assertEquals(
 			"line 5:3 Mismatched return type: " +
 				"Cannot return expression of type Num " +
 				"from method of return type java.lang.String.",
-			result.getErrors().get(0).toString());
+			errors.get(0).toString());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -110,9 +112,9 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -137,9 +139,9 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 

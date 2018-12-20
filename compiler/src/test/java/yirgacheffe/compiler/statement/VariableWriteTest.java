@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
@@ -35,9 +36,9 @@ public class VariableWriteTest
 		Variables variables = new Variables();
 		variables.declare("myVariable", new ReferenceType(String.class));
 
-		StatementResult result = variableWrite.compile(methodVisitor, variables);
+		Array<Error> errors = variableWrite.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions =  methodVisitor.instructions;
 
@@ -67,9 +68,9 @@ public class VariableWriteTest
 		Variables variables = new Variables();
 		variables.declare("myVariable", string);
 
-		StatementResult result = variableWrite.compile(methodVisitor, variables);
+		Array<Error> errors = variableWrite.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 	}
 
 	@Test

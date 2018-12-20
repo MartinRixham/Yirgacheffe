@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
@@ -39,9 +40,9 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions =  methodVisitor.instructions;
 
@@ -77,14 +78,14 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
 
 		assertFalse(fieldWrite.returns());
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
 				"java.lang.String to field of type Num.",
-			result.getErrors().get(0).toString());
+			errors.get(0).toString());
 	}
 
 	@Test
@@ -97,14 +98,14 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, errors.length());
 
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
 				"Num to field of type java.lang.String.",
-			result.getErrors().get(0).toString());
+			errors.get(0).toString());
 	}
 
 	@Test
@@ -119,9 +120,9 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
 
-		assertEquals(2, result.getErrors().length());
+		assertEquals(2, errors.length());
 	}
 
 	@Test

@@ -32,10 +32,9 @@ public class Else implements ConditionalStatement
 		return this.precondition.returns() && this.statement.returns();
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		StatementResult ifResult = this.precondition.compile(methodVisitor, variables);
-		Array<Error> errors = new Array<>();
+		Array<Error> errors = this.precondition.compile(methodVisitor, variables);
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
 
@@ -52,11 +51,9 @@ public class Else implements ConditionalStatement
 			errors.push(new Error(this.coordinate, message));
 		}
 
-		StatementResult blockResult = this.statement.compile(methodVisitor, variables);
+		errors.push(this.statement.compile(methodVisitor, variables));
 
-		errors = errors.concat(ifResult.getErrors()).concat(blockResult.getErrors());
-
-		return new StatementResult(errors);
+		return errors;
 	}
 
 	public Label getLabel()

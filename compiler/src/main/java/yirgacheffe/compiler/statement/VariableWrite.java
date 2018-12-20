@@ -33,7 +33,7 @@ public class VariableWrite implements Statement
 		return false;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = this.expression.getType(variables);
 		Variable variable = variables.getVariable(this.name);
@@ -56,7 +56,7 @@ public class VariableWrite implements Statement
 
 		variables.write(this);
 
-		return new StatementResult(errors);
+		return errors;
 	}
 
 	public Expression getFirstOperand()

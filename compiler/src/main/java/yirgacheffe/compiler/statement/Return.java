@@ -36,14 +36,14 @@ public class Return implements Statement
 		return true;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = this.expression.getType(variables);
 		Array<Error> errors = new Array<>();
 
 		if (type.isAssignableTo(this.type))
 		{
-			errors = errors.concat(this.expression.compile(methodVisitor, variables));
+			errors.push(this.expression.compile(methodVisitor, variables));
 		}
 		else
 		{
@@ -59,7 +59,7 @@ public class Return implements Statement
 
 		methodVisitor.visitInsn(this.type.getReturnInstruction());
 
-		return new StatementResult(errors);
+		return errors;
 	}
 
 	public Expression getFirstOperand()

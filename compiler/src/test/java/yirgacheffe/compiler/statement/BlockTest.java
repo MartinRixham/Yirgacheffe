@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.BinaryNumericOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
@@ -68,11 +69,10 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(1, result.getErrors().length());
-		assertEquals("line 4:0 Unreachable code.",
-			result.getErrors().get(0).toString());
+		assertEquals(1, errors.length());
+		assertEquals("line 4:0 Unreachable code.", errors.get(0).toString());
 	}
 
 	@Test
@@ -97,9 +97,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -141,9 +141,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -206,9 +206,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -283,9 +283,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -349,9 +349,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -407,9 +407,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -460,9 +460,9 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
 

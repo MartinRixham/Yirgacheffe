@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -14,9 +15,9 @@ public class OpenBlock implements Statement
 		return false;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		return new StatementResult();
+		return new Array<>();
 	}
 
 	public Expression getFirstOperand()

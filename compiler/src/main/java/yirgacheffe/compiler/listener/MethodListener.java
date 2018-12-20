@@ -8,7 +8,6 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
-import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
@@ -130,7 +129,7 @@ public class MethodListener extends TypeListener
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
 		Variables variables = new Variables();
-		StatementResult result = block.compile(this.methodVisitor, variables);
+		Array<Error> errors = block.compile(this.methodVisitor, variables);
 		boolean returns = block.returns();
 
 		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
@@ -150,7 +149,7 @@ public class MethodListener extends TypeListener
 		}
 
 		this.errors.push(variables.getErrors());
-		this.errors.push(result.getErrors());
+		this.errors.push(errors);
 
 		this.methodVisitor.visitMaxs(0, 0);
 		this.inConstructor = false;

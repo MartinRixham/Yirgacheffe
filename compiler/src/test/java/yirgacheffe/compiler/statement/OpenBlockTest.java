@@ -2,9 +2,11 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,9 +22,9 @@ public class OpenBlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		StatementResult result = openBlock.compile(methodVisitor, variables);
+		Array<Error> errors = openBlock.compile(methodVisitor, variables);
 
-		assertNotNull(result);
+		assertNotNull(errors);
 		assertFalse(openBlock.returns());
 	}
 

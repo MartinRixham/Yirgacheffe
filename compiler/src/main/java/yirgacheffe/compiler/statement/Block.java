@@ -43,22 +43,18 @@ public class Block implements Statement
 		return false;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Array<Statement> statements = this.statements;
 		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();
 		boolean unreachableCode = false;
 		Array<Error> errors = new Array<>();
-		StatementResult blockResult = new StatementResult();
 
 		this.optimise(variables);
 
 		for (int i = 0; i < statements.length(); i++)
 		{
-			StatementResult result =
-				statements.get(i).compile(methodVisitor, variables);
-
-			blockResult = blockResult.add(result);
+			errors.push(statements.get(i).compile(methodVisitor, variables));
 
 			if (statements.get(i).returns() && i < statements.length() - 1)
 			{
@@ -75,7 +71,7 @@ public class Block implements Statement
 
 		variables.setDeclaredVariables(declaredVariables);
 
-		return new StatementResult(errors).add(blockResult);
+		return errors;
 	}
 
 	private void optimise(Variables variables)

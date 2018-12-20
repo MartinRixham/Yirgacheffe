@@ -23,7 +23,7 @@ public class FunctionCall implements Statement
 		return false;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type type = this.expression.getType(variables);
 
@@ -40,7 +40,7 @@ public class FunctionCall implements Statement
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
 
-		return new StatementResult(errors);
+		return errors;
 	}
 
 	public Expression getFirstOperand()

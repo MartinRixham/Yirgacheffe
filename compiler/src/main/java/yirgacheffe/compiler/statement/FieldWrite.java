@@ -39,7 +39,7 @@ public class FieldWrite implements Statement
 		return false;
 	}
 
-	public StatementResult compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		Type ownerType = this.owner.getType(variables);
 		Type type = this.value.getType(variables);
@@ -77,7 +77,7 @@ public class FieldWrite implements Statement
 			this.name,
 			type.toJVMType());
 
-		return new StatementResult(errors);
+		return errors;
 	}
 
 	private Type getType(Class<?> clazz)
