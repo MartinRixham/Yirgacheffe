@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -28,7 +29,7 @@ public class VariableWriteTest
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
-			new VariableWrite("myVariable", value, coordinate);
+			new VariableWrite(coordinate, "myVariable", value);
 		MethodNode methodVisitor = new MethodNode();
 
 		Variables variables = new Variables();
@@ -60,7 +61,7 @@ public class VariableWriteTest
 		Type string = new ReferenceType(String.class);
 		Expression value = new InvalidExpression(string);
 		VariableWrite variableWrite =
-			new VariableWrite("myVariable", value, coordinate);
+			new VariableWrite(coordinate, "myVariable", value);
 		MethodNode methodVisitor = new MethodNode();
 
 		Variables variables = new Variables();
@@ -77,8 +78,8 @@ public class VariableWriteTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal firstString = new Literal(new ReferenceType(String.class), "\"string\"");
 		Literal secondString = new Literal(new ReferenceType(String.class), "\"thingy\"");
-		VariableWrite firstVariable = new VariableWrite("var", firstString, coordinate);
-		VariableWrite secondVariable = new VariableWrite("var", secondString, coordinate);
+		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
+		VariableWrite secondVariable = new VariableWrite(coordinate, "var", secondString);
 
 		assertEquals(firstVariable, secondVariable);
 		assertEquals(firstVariable.hashCode(), secondVariable.hashCode());
@@ -89,7 +90,7 @@ public class VariableWriteTest
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal firstString = new Literal(new ReferenceType(String.class), "\"string\"");
-		VariableWrite firstVariable = new VariableWrite("var", firstString, coordinate);
+		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
 		Object secondVariable = new Object();
 
 		assertNotEquals(firstVariable, secondVariable);
@@ -101,7 +102,7 @@ public class VariableWriteTest
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
-		VariableWrite variableWrite = new VariableWrite("myVar", string, coordinate);
+		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 		VariableRead variableRead = new VariableRead("myVar", coordinate);
 
 		assertEquals(variableWrite, variableRead);
@@ -112,10 +113,25 @@ public class VariableWriteTest
 	public void testFirstOperandIsNothing()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableWrite variableWrite = new VariableWrite("var", new Nothing(), coordinate);
+		VariableWrite variableWrite = new VariableWrite(coordinate, "var", new Nothing());
 
 		Expression operand = variableWrite.getFirstOperand();
 
 		assertTrue(operand instanceof Nothing);
+	}
+
+	@Test
+	public void testGetVariables()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		VariableWrite variableWrite = new VariableWrite(coordinate, "var", new Nothing());
+
+		Array<VariableRead> reads = variableWrite.getVariableReads();
+
+		assertEquals(0, reads.length());
+
+		Array<VariableWrite> writes = variableWrite.getVariableWrites();
+
+		assertTrue(writes.indexOf(variableWrite) >= 0);
 	}
 }

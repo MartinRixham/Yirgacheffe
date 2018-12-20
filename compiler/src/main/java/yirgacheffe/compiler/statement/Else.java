@@ -75,4 +75,11 @@ public class Else implements ConditionalStatement
 		return this.statement.getVariableReads()
 			.concat(this.precondition.getVariableReads());
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return this.statement.getVariableWrites()
+			.concat(this.precondition.getVariableWrites());
+	}
 }

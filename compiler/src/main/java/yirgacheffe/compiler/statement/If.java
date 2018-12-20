@@ -62,4 +62,10 @@ public class If implements ConditionalStatement
 		return this.condition.getVariableReads()
 			.concat(this.statement.getVariableReads());
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return this.statement.getVariableWrites();
+	}
 }

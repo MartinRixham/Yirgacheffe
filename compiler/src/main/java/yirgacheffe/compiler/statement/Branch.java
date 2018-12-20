@@ -41,4 +41,10 @@ public class Branch implements Statement
 	{
 		return this.conditional.getVariableReads();
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return this.conditional.getVariableWrites();
+	}
 }

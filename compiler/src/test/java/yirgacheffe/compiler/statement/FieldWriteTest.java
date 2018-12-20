@@ -149,6 +149,10 @@ public class FieldWriteTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
+
+		Array<VariableWrite> writes = write.getVariableWrites();
+
+		assertEquals(0, writes.length());
 		assertEquals(firstOperand, write.getFirstOperand());
 	}
 }

@@ -53,4 +53,10 @@ public class FunctionCall implements Statement
 	{
 		return this.expression.getVariableReads();
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>();
+	}
 }

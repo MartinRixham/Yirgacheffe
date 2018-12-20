@@ -48,7 +48,7 @@ public class VariablesTest
 		Variables variables = new Variables();
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableWrite write = new VariableWrite("myVariable", expression, coordinate);
+		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 		variables.write(write);
@@ -62,7 +62,7 @@ public class VariablesTest
 		Variables variables = new Variables();
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableWrite write = new VariableWrite("myVariable", expression, coordinate);
+		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 
 		variables.write(write);
 

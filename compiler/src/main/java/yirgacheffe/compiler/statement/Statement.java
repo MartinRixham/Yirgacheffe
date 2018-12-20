@@ -15,4 +15,6 @@ public interface Statement
 	Expression getFirstOperand();
 
 	Array<VariableRead> getVariableReads();
+
+	Array<VariableWrite> getVariableWrites();
 }

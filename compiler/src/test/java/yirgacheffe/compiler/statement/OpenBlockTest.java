@@ -35,5 +35,6 @@ public class OpenBlockTest
 
 		assertTrue(operand instanceof Nothing);
 		assertEquals(0, openBlock.getVariableReads().length());
+		assertEquals(0, openBlock.getVariableWrites().length());
 	}
 }

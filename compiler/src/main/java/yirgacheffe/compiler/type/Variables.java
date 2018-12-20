@@ -90,9 +90,9 @@ public class Variables
 		return errors;
 	}
 
-	public void optimise(VariableRead variableRead, Expression expression)
+	public void optimise(VariableRead variableRead, VariableWrite variableWrite)
 	{
-		this.optimisedVariables.put(variableRead, expression);
+		this.optimisedVariables.put(variableRead, variableWrite.getExpression());
 	}
 
 	public boolean canOptimise(VariableRead variableRead)

@@ -13,8 +13,10 @@ import yirgacheffe.lang.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Block implements Statement
 {
@@ -49,7 +51,7 @@ public class Block implements Statement
 		Array<Error> errors = new Array<>();
 		StatementResult blockResult = new StatementResult();
 
-		this.optimise(statements, variables);
+		this.optimise(variables);
 
 		for (int i = 0; i < statements.length(); i++)
 		{
@@ -76,41 +78,47 @@ public class Block implements Statement
 		return new StatementResult(errors).add(blockResult);
 	}
 
-	public void optimise(Array<Statement> statements, Variables variables)
+	private void optimise(Variables variables)
 	{
 		List<VariableRead> variableReads = new ArrayList<>();
+		Set<VariableWrite> variableWrites = new HashSet<>();
 		VariableRead nextVariable = null;
 
-		for (int i = this.statements.length() - 1; i >= 1; i--)
+		for (int i = this.statements.length() - 1; i >= 0; i--)
 		{
-			Statement statement = statements.get(i);
-			Expression expression = statement.getFirstOperand();
-			VariableRead variableRead = null;
+			Statement statement = this.statements.get(i);
 
-			variableReads.addAll(
-				Arrays.asList(statement.getVariableReads().toArray()));
+			if (statement.equals(nextVariable) &&
+				Collections.frequency(variableReads, statement) == 1)
+			{
+				this.statements.splice(i, 1);
+				variables.optimise(nextVariable, (VariableWrite) statement);
+			}
+			else
+			{
+				variableWrites.addAll(
+					Arrays.asList(statement.getVariableWrites().toArray()));
+			}
+
+			variableReads.removeAll(Collections.singleton(statement));
+
+			if (statement instanceof VariableDeclaration)
+			{
+				if (!variableWrites.contains(statement))
+				{
+					this.statements.splice(i, 1);
+				}
+			}
+
+			Expression expression = statement.getFirstOperand();
 
 			if (expression instanceof VariableRead)
 			{
-				variableRead = (VariableRead) expression;
-				nextVariable = variableRead;
-			}
-			else if (statement instanceof VariableWrite)
-			{
-				if (statement.equals(nextVariable) &&
-					Collections.frequency(variableReads, statement) == 1)
-				{
-					statements.splice(i, 1);
-					variables.optimise(nextVariable, statement.getFirstOperand());
-				}
-
-				variableReads.removeAll(Collections.singleton(statement));
+				nextVariable = (VariableRead) expression;
 			}
 
-			if (variableRead != nextVariable)
-			{
-				nextVariable = null;
-			}
+			variableReads.addAll(
+				Arrays.asList(statement.getVariableReads().toArray()));
 		}
 	}
 
@@ -136,5 +144,21 @@ public class Block implements Statement
 		}
 
 		return variableReads;
+	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		Array<VariableWrite> variableWrites = new Array<>();
+
+		for (Statement statement: this.statements)
+		{
+			if (statement instanceof VariableWrite)
+			{
+				variableWrites.push((VariableWrite) statement);
+			}
+		}
+
+		return variableWrites;
 	}
 }

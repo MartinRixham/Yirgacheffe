@@ -101,7 +101,7 @@ public class VariableReadTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
 		VariableRead variableRead = new VariableRead("myVar", coordinate);
-		VariableWrite variableWrite = new VariableWrite("myVar", string, coordinate);
+		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 
 		assertEquals(variableRead, variableWrite);
 		assertEquals(variableRead.hashCode(), variableWrite.hashCode());

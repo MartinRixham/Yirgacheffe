@@ -6,10 +6,10 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
+import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.StatementResult;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -121,7 +121,7 @@ public class MethodListener extends TypeListener
 
 		String name = context.Identifier().getText();
 
-		this.statements.push(new VariableDeclaration(name, type));
+		this.statements.push(new ParameterDeclaration(name, type));
 	}
 
 	@Override

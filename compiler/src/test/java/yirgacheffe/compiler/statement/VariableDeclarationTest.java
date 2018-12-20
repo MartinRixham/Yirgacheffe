@@ -20,5 +20,6 @@ public class VariableDeclarationTest
 
 		assertTrue(operand instanceof Nothing);
 		assertEquals(0, variableDeclaration.getVariableReads().length());
+		assertEquals(0, variableDeclaration.getVariableWrites().length());
 	}
 }

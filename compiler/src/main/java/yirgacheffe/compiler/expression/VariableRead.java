@@ -23,7 +23,14 @@ public class VariableRead implements Expression
 
 	public Type getType(Variables variables)
 	{
-		return variables.getVariable(this.name).getType();
+		if (variables.canOptimise(this))
+		{
+			return variables.getOptimisedExpression(this).getType(variables);
+		}
+		else
+		{
+			return variables.getVariable(this.name).getType();
+		}
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
@@ -39,9 +46,8 @@ public class VariableRead implements Expression
 		else
 		{
 			methodVisitor.visitVarInsn(loadInstruction, index);
+			variables.read(this);
 		}
-
-		variables.read(this);
 
 		return new Array<>();
 	}

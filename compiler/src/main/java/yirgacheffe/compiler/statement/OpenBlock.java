@@ -28,4 +28,10 @@ public class OpenBlock implements Statement
 	{
 		return new Array<>();
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>();
+	}
 }

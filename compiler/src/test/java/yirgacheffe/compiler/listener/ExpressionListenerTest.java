@@ -31,6 +31,7 @@ public class ExpressionListenerTest
 				"{\n" +
 					"String myVariable = \"thingy\";\n" +
 					"String anotherVariable = myVariable;\n" +
+					"anotherVariable = myVariable;\n" +
 				"}\n" +
 			"}";
 
@@ -49,7 +50,7 @@ public class ExpressionListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		assertEquals(Opcodes.ALOAD, instructions.get(2).getOpcode());
 	}

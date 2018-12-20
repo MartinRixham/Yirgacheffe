@@ -53,7 +53,7 @@ public class StatementListener extends FieldListener
 
 		Coordinate coordinate = new Coordinate(context.getStart());
 
-		this.statements.push(new VariableWrite(name, expression, coordinate));
+		this.statements.push(new VariableWrite(coordinate, name, expression));
 	}
 
 	@Override

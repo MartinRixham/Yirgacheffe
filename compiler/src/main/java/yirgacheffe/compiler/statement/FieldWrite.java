@@ -102,4 +102,10 @@ public class FieldWrite implements Statement
 		return this.owner.getVariableReads()
 			.concat(this.value.getVariableReads());
 	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>();
+	}
 }

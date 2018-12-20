@@ -64,11 +64,17 @@ public class Return implements Statement
 
 	public Expression getFirstOperand()
 	{
-		return this.expression;
+		return this.expression.getFirstOperand();
 	}
 
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.expression.getVariableReads();
+	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>();
 	}
 }

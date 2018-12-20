@@ -19,9 +19,9 @@ public class VariableWrite implements Statement
 	private Coordinate coordinate;
 
 	public VariableWrite(
+		Coordinate coordinate,
 		String name,
-		Expression expression,
-		Coordinate coordinate)
+		Expression expression)
 	{
 		this.name = name;
 		this.expression = expression;
@@ -61,12 +61,23 @@ public class VariableWrite implements Statement
 
 	public Expression getFirstOperand()
 	{
+		return this.expression.getFirstOperand();
+	}
+
+	public Expression getExpression()
+	{
 		return this.expression;
 	}
 
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.expression.getVariableReads();
+	}
+
+	@Override
+	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>(this);
 	}
 
 	public Coordinate getCoordinate()

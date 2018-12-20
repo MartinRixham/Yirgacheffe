@@ -108,12 +108,16 @@ public class ElseTest
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		VariableRead read = new VariableRead("myVariable", coordinate);
-		VariableWrite write = new VariableWrite("var", read, coordinate);
+		VariableWrite write = new VariableWrite(coordinate, "var", read);
 		Statement elseStatement = new Else(coordinate, write, write);
 
 		Array<VariableRead> reads = elseStatement.getVariableReads();
 
 		assertTrue(reads.indexOf(read) >= 0);
+
+		Array<VariableWrite> writes = elseStatement.getVariableWrites();
+
+		assertTrue(writes.indexOf(write) >= 0);
 		assertEquals(read, elseStatement.getFirstOperand());
 	}
 }
