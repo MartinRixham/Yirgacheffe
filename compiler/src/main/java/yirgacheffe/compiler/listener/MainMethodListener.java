@@ -47,7 +47,7 @@ public class MainMethodListener extends MethodListener
 
 		this.mainMethodName = signature.Identifier().getText();
 
-		String descriptor = this.descriptor + "V";
+		String descriptor = this.signature.getDescriptor() + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

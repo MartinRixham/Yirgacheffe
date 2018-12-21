@@ -12,8 +12,10 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -33,6 +35,7 @@ public class FieldWriteTest
 	@Test
 	public void testSuccessfulFieldWrite()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
@@ -40,7 +43,7 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -71,6 +74,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToPrimitiveField()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(new ReferenceType(String.class), "\"one\"");
@@ -78,7 +82,7 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
 		assertFalse(fieldWrite.returns());
 		assertEquals(1, errors.length());
@@ -91,6 +95,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToStringField()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(PrimitiveType.DOUBLE, "1");
@@ -98,7 +103,7 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 
@@ -111,6 +116,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignInvalidExpressionToInvalidExpression()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Type testClass = new ReferenceType(this.getClass());
 		Type string = new ReferenceType(String.class);
@@ -120,13 +126,13 @@ public class FieldWriteTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables);
+		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
 		assertEquals(2, errors.length());
 	}
 
 	@Test
-	public void testFieldWriteHasNoFirstOperand()
+	public void testFieldWriteHasFirstOperand()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Literal one = new Literal(PrimitiveType.DOUBLE, "1");
@@ -134,6 +140,8 @@ public class FieldWriteTest
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "field", one, two);
 
 		assertEquals(one, fieldWrite.getFirstOperand());
+		assertTrue(fieldWrite.getExpression() instanceof Nothing);
+		assertFalse(fieldWrite.isEmpty());
 	}
 
 	@Test

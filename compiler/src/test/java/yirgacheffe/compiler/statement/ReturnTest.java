@@ -9,6 +9,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -23,12 +25,13 @@ public class ReturnTest
 	@Test
 	public void testVoidReturn()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
 		assertTrue(returnStatement.returns());
 		assertEquals(0, errors.length());
@@ -40,11 +43,13 @@ public class ReturnTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.RETURN, firstInstruction.getOpcode());
+		assertTrue(returnStatement.getExpression() instanceof Nothing);
 	}
 
 	@Test
 	public void testReturnNum()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.DOUBLE;
 		Expression expression = new Literal(returnType, "1");
@@ -52,7 +57,7 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -72,6 +77,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnString()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
@@ -79,7 +85,7 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 
@@ -105,6 +111,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnBoolean()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
@@ -112,7 +119,7 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 
@@ -132,6 +139,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnDouble()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.DOUBLE;
 		Expression expression = new Literal(PrimitiveType.BOOLEAN, "1");
@@ -139,7 +147,7 @@ public class ReturnTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables);
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 

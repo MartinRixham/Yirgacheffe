@@ -2,11 +2,15 @@ package yirgacheffe.compiler.function;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.lang.MutableReference;
 
@@ -23,8 +27,10 @@ public class FunctionsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Array<Type> string = new Array<>(new ReferenceType(String.class));
-		Arguments arguments = new Arguments(string);
+		Variables variables = new Variables();
+		Expression string = new Literal(new ReferenceType(String.class), "\"\"");
+		Array<Expression> args = new Array<>(string);
+		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
 		Method[] methods = printStream.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
@@ -53,8 +59,10 @@ public class FunctionsTest
 	@Test
 	public void testGettingBooleanPrintlnMethod()
 	{
-		Array<Type> bool = new Array<>(PrimitiveType.BOOLEAN);
-		Arguments arguments = new Arguments(bool);
+		Variables variables = new Variables();
+		Expression bool = new Literal(PrimitiveType.BOOLEAN, "true");
+		Array<Expression> args = new Array<>(bool);
+		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
 		Method[] methods = printStream.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
@@ -83,10 +91,11 @@ public class FunctionsTest
 	@Test
 	public void testFailedToMatchFunction()
 	{
+		Variables variables = new Variables();
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Callable> notMethods = new Array<>();
-		Arguments arguments = new Arguments(new Array<>());
+		Arguments arguments = new Arguments(new Array<>(), variables);
 
 		for (Method method: methods)
 		{
@@ -114,11 +123,13 @@ public class FunctionsTest
 	@Test
 	public void testAmbiguousMatching()
 	{
+		Variables variables = new Variables();
 		ReferenceType hashMap = new ReferenceType(HashMap.class);
 		Type string = new ReferenceType(String.class);
 		Array<Type> strings = new Array<>(string, string);
-		Array<Type> argumentTypes = new Array<>(new ParameterisedType(hashMap, strings));
-		Arguments arguments = new Arguments(argumentTypes);
+		Type mapType = new ParameterisedType(hashMap, strings);
+		Array<Expression> args = new Array<>(new This(mapType));
+		Arguments arguments = new Arguments(args, variables);
 		Type testClass = new ReferenceType(FunctionsTest.class);
 		Method[] methods = testClass.reflectionClass().getMethods();
 		Array<Callable> printlnMethods = new Array<>();
@@ -150,10 +161,12 @@ public class FunctionsTest
 	@Test
 	public void testMismatchedParameters()
 	{
+		Variables variables = new Variables();
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Callable> splitMethods = new Array<>();
-		Arguments arguments = new Arguments(new Array<>(PrimitiveType.BOOLEAN));
+		Array<Expression> args = new Array<>(new Literal(PrimitiveType.BOOLEAN, "true"));
+		Arguments arguments = new Arguments(args, variables);
 
 		for (Method method: methods)
 		{
@@ -181,6 +194,7 @@ public class FunctionsTest
 	@Test
 	public void testConstructorCallWithWrongArgument()
 	{
+		Variables variables = new Variables();
 		Type string = new ReferenceType(String.class);
 		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
 		Array<Callable> callables = new Array<>();
@@ -190,7 +204,8 @@ public class FunctionsTest
 			callables.push(new Function(string, constructor));
 		}
 
-		Arguments arguments = new Arguments(new Array<>(PrimitiveType.DOUBLE));
+		Array<Expression> args = new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));
+		Arguments arguments = new Arguments(args, variables);
 
 		Functions functions =
 			new Functions(
@@ -210,13 +225,15 @@ public class FunctionsTest
 	@Test
 	public void testMethodCallWithMismatchedTypeParameter()
 	{
+		Variables variables = new Variables();
 		ReferenceType mutableReference = new ReferenceType(MutableReference.class);
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);
 		Type owner = new ParameterisedType(mutableReference, new Array<>(string));
 		Method[] methods = mutableReference.reflectionClass().getMethods();
 		Array<Callable> setMethods = new Array<>();
-		Arguments arguments = new Arguments(new Array<>(object));
+		Array<Expression> args = new Array<>(new This(object));
+		Arguments arguments = new Arguments(args, variables);
 
 		for (Method method: methods)
 		{

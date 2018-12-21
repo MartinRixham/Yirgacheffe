@@ -903,6 +903,5 @@ public class FieldListenerTest
 			"line 6:0 Unknown local variable 'out'.\n" +
 				"line 6:3 Method java.lang.Object.println(Num) not found.\n",
 			result.getErrors());
-
 	}
 }

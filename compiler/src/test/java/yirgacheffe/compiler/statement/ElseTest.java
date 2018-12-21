@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -29,6 +30,7 @@ public class ElseTest
 	@Test
 	public void testElseStatement()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Expression condition = new Literal(PrimitiveType.BOOLEAN, "true");
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
@@ -37,7 +39,7 @@ public class ElseTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -79,6 +81,7 @@ public class ElseTest
 	@Test
 	public void testElseNotPrecededByIf()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
 		Statement ifStatement = new Block(coordinate, new Array<>());
@@ -86,7 +89,7 @@ public class ElseTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
 
 		assertFalse(elseStatement.returns());
 		assertEquals(1, errors.length());
@@ -103,11 +106,13 @@ public class ElseTest
 		Else elseStatement = new Else(coordinate, doNothing, doNothing);
 
 		assertTrue(elseStatement.getFirstOperand() instanceof Nothing);
+		assertFalse(elseStatement.isEmpty());
 	}
 
 	@Test
 	public void testInvalidPrecondition()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -117,7 +122,28 @@ public class ElseTest
 
 		Else elseStatement = new Else(coordinate, ifStatement, new DoNothing());
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables);
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
+
+		assertEquals(1, errors.length());
+	}
+
+	@Test
+	public void testInvalidStatement()
+	{
+		Signature caller = new Signature("method", new Array<>());
+		Coordinate coordinate = new Coordinate(2, 4);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		If precondition =
+			new If(new Nothing(), new DoNothing());
+
+		If ifStatement =
+			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
+
+		Else elseStatement = new Else(coordinate, precondition, ifStatement);
+
+		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 	}
@@ -138,5 +164,6 @@ public class ElseTest
 
 		assertTrue(writes.indexOf(write) >= 0);
 		assertEquals(read, elseStatement.getFirstOperand());
+		assertTrue(elseStatement.getExpression() instanceof Nothing);
 	}
 }

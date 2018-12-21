@@ -42,6 +42,18 @@ public class Array<T> implements Iterable<T>
 		return Arrays.toString(Arrays.copyOf(this.array, this.length));
 	}
 
+	public String join(String separator)
+	{
+		String[] strings = new String[this.length];
+
+		for (int i = 0; i < this.length; i++)
+		{
+			strings[i] = this.array[i].toString();
+		}
+
+		return String.join(separator, strings);
+	}
+
 	public T get(double index)
 	{
 		int intIndex = (int) index;
@@ -303,5 +315,47 @@ public class Array<T> implements Iterable<T>
 	public T[] toArray()
 	{
 		return (T[]) Arrays.copyOf(this.array, this.length);
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Array)
+		{
+			Array array = (Array) other;
+
+			if (this.length != array.length())
+			{
+				return false;
+			}
+
+			for (int i = 0; i < this.length; i++)
+			{
+				if (!this.array[i].equals(array.get(i)))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hashCode = 0;
+
+		for (Object object: this.array)
+		{
+			if (object != null)
+			{
+				hashCode += object.hashCode();
+			}
+		}
+
+		return hashCode;
 	}
 }

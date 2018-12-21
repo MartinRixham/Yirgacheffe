@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -26,7 +27,10 @@ public class VariableDeclaration implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		variables.declare(this.name, this.type);
 
@@ -49,6 +53,11 @@ public class VariableDeclaration implements Statement
 		return new Array<>();
 	}
 
+	public Expression getExpression()
+	{
+		return new Nothing();
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -69,5 +78,10 @@ public class VariableDeclaration implements Statement
 	public int hashCode()
 	{
 		return this.name.hashCode();
+	}
+
+	public boolean isEmpty()
+	{
+		return true;
 	}
 }

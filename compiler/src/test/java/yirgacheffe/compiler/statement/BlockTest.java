@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Variables;
@@ -33,6 +34,7 @@ public class BlockTest
 	@Test
 	public void testFailToReadVariableDeclaredInBlock()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
@@ -40,7 +42,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		block.compile(methodVisitor, variables);
+		block.compile(methodVisitor, variables, caller);
 
 		VariableRead variableRead = new VariableRead("myVariable", coordinate);
 
@@ -56,6 +58,7 @@ public class BlockTest
 	@Test
 	public void testUnreachableCode()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 		Return returnStatement = new Return(coordinate);
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
@@ -69,7 +72,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 		assertEquals("line 4:0 Unreachable code.", errors.get(0).toString());
@@ -78,6 +81,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForReturn()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -97,7 +101,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -117,6 +121,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForMethodCall()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -141,7 +146,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -171,6 +176,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwice()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -206,7 +212,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -254,6 +260,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwiceAndNotFirstOperand()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		This testClass = new This(new ReferenceType(this.getClass()));
@@ -283,7 +290,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -320,6 +327,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfLocalVariableLoadCalls()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -349,7 +357,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -370,6 +378,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfVariableDeclarationAndLoadCalls()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -407,7 +416,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -428,6 +437,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseVariableInAddition()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -460,7 +470,7 @@ public class BlockTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = block.compile(methodVisitor, variables);
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -484,8 +494,11 @@ public class BlockTest
 		Block block = new Block(coordinate, new Array<>());
 
 		Expression operand = block.getFirstOperand();
+		Expression expression = block.getExpression();
 
 		assertTrue(operand instanceof Nothing);
+		assertTrue(expression instanceof Nothing);
+		assertTrue(block.isEmpty());
 	}
 
 	@Test
@@ -505,5 +518,6 @@ public class BlockTest
 		assertTrue(writes.indexOf(write) >= 0);
 
 		assertEquals(read, block.getFirstOperand());
+		assertEquals(read, block.getExpression());
 	}
 }

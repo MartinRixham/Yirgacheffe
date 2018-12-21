@@ -27,13 +27,11 @@ public class Function implements Callable
 		this.executable = executable;
 	}
 
-	@Override
 	public String getName()
 	{
 		return this.executable.getName();
 	}
 
-	@Override
 	public String getDescriptor()
 	{
 		StringBuilder descriptor = new StringBuilder();
@@ -50,7 +48,6 @@ public class Function implements Callable
 		return descriptor.toString() + this.getReturnType().toJVMType();
 	}
 
-	@Override
 	public Type getReturnType()
 	{
 		if (this.executable instanceof Constructor)
@@ -76,7 +73,6 @@ public class Function implements Callable
 		}
 	}
 
-	@Override
 	public Array<Type> getParameterTypes()
 	{
 		Class<?>[] classes = this.executable.getParameterTypes();
@@ -106,7 +102,6 @@ public class Function implements Callable
 		}
 	}
 
-	@Override
 	public Array<MismatchedTypes> checkTypeParameters(Arguments arguments)
 	{
 		if (this.owner instanceof ParameterisedType)
@@ -123,7 +118,6 @@ public class Function implements Callable
 		}
 	}
 
-	@Override
 	public boolean isPublic()
 	{
 		return Modifier.isPublic(this.executable.getModifiers());

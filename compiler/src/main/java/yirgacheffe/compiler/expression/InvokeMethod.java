@@ -9,11 +9,11 @@ import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.function.Methods;
+import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -73,14 +73,7 @@ public class InvokeMethod implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Array<Type> argumentTypes = new Array<>();
-
-		for (Expression argument: this.arguments)
-		{
-			argumentTypes.push(argument.getType(variables));
-		}
-
-		Arguments arguments = new Arguments(argumentTypes);
+		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
 		Methods methods = new Methods(owner, this.caller);
 		Array<Callable> namedMethods = methods.getMethodsNamed(this.name);
@@ -101,29 +94,7 @@ public class InvokeMethod implements Expression
 				false);
 		}
 
-		for (int i = 0; i < Math.min(this.arguments.length(), parameters.length()); i++)
-		{
-			Expression argument = this.arguments.get(i);
-			Type argumentType = argumentTypes.get(i);
-
-			errors = errors.concat(argument.compile(methodVisitor, variables));
-
-			if (argumentType instanceof PrimitiveType &&
-				parameters.get(i) instanceof ReferenceType)
-			{
-
-				String descriptor =
-					"(" + argumentType.toJVMType() + ")L" +
-					this.withSlashes(argumentType) + ";";
-
-				methodVisitor.visitMethodInsn(
-					Opcodes.INVOKESTATIC,
-					this.withSlashes(argumentType),
-					"valueOf",
-					descriptor,
-					false);
-			}
-		}
+		errors.push(arguments.compile(parameters, methodVisitor, variables));
 
 		boolean isInterface = owner.reflectionClass().isInterface();
 
@@ -139,7 +110,7 @@ public class InvokeMethod implements Expression
 			function.getDescriptor(),
 			isInterface);
 
-		Type returnType = matchResult.getFunction().getReturnType();
+		Type returnType = function.getReturnType();
 
 		if (returnType instanceof GenericType)
 		{
@@ -173,6 +144,23 @@ public class InvokeMethod implements Expression
 		return matchResult.getErrors().concat(errors);
 	}
 
+	public Array<Error> compileArguments(
+		MethodVisitor methodVisitor,
+		Variables variables)
+	{
+		Arguments arguments = new Arguments(this.arguments, variables);
+		Type owner = this.owner.getType(variables);
+		Methods methods = new Methods(owner, this.caller);
+		Array<Callable> namedMethods = methods.getMethodsNamed(this.name);
+		String method = owner + "." + this.name;
+		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
+		MatchResult matchResult = functions.getMatchingExecutable(arguments);
+		Callable function = matchResult.getFunction();
+		Array<Type> parameters = function.getParameterTypes();
+
+		return arguments.compile(parameters, methodVisitor, variables);
+	}
+
 	public Expression getFirstOperand()
 	{
 		return this.owner.getFirstOperand();
@@ -195,5 +183,37 @@ public class InvokeMethod implements Expression
 		variableReads = variableReads.concat(this.owner.getVariableReads());
 
 		return variableReads;
+	}
+
+	public Array<Type> getParameters(Variables variables)
+	{
+		Array<Type> parameters = new Array<>();
+
+		for (Expression expression: this.arguments)
+		{
+			parameters.push(expression.getType(variables));
+		}
+
+		return parameters;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof TailCall)
+		{
+			TailCall tailCall = (TailCall) other;
+
+			return this.owner instanceof This &&
+				tailCall.equals(this.name, this.arguments);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode() + this.arguments.hashCode();
 	}
 }

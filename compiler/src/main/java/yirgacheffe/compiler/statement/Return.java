@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -36,7 +37,10 @@ public class Return implements Statement
 		return true;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		Type type = this.expression.getType(variables);
 		Array<Error> errors = new Array<>();
@@ -76,5 +80,16 @@ public class Return implements Statement
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
+	}
+
+	@Override
+	public Expression getExpression()
+	{
+		return new Nothing();
+	}
+
+	public boolean isEmpty()
+	{
+		return false;
 	}
 }

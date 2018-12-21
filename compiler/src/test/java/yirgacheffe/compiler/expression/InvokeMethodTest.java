@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -11,6 +12,9 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.statement.FunctionCall;
+import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -27,6 +31,10 @@ import static org.junit.Assert.assertTrue;
 public class InvokeMethodTest
 {
 	private void method()
+	{
+	}
+
+	public void method(Double num)
 	{
 	}
 
@@ -163,6 +171,41 @@ public class InvokeMethodTest
 	}
 
 	@Test
+	public void testCompileArguments()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(0, 1);
+		Type stringType = new ReferenceType(String.class);
+		Expression expression = new Literal(stringType, "\"thingy\"");
+		Array<Expression> arguments = new Array<>(new Literal(stringType, "\"sumpt\""));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"concat",
+				"myClass",
+				expression,
+				arguments);
+
+		Type type = invokeMethod.getType(variables);
+
+		Array<Error> errors = invokeMethod.compileArguments(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("sumpt", firstInstruction.cst);
+		assertEquals("java.lang.String", type.toFullyQualifiedType());
+	}
+
+	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
@@ -282,5 +325,59 @@ public class InvokeMethodTest
 		assertEquals("run", secondInstruction.name);
 		assertEquals("()V", secondInstruction.desc);
 		assertTrue(secondInstruction.itf);
+	}
+
+	@Test
+	public void testInvalidArgument()
+	{
+		Coordinate coordinate = new Coordinate(2, 4);
+		This testClass = new This(new ReferenceType(this.getClass()));
+		String name = "method";
+		Array<Expression> arguments =
+			new Array<>(new InvalidExpression(PrimitiveType.DOUBLE));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				name,
+				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				testClass,
+				arguments);
+
+		MethodVisitor methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+
+		assertEquals(1, errors.length());
+		assertEquals("line 0:0 This expression is not valid.", errors.get(0).toString());
+	}
+
+	@Test
+	public void testEqualsTailCall()
+	{
+		Coordinate coordinate = new Coordinate(2, 4);
+		This testClass = new This(new ReferenceType(this.getClass()));
+		String name = "myMethod";
+		Literal number = new Literal(PrimitiveType.DOUBLE, "1");
+		Array<Expression> arguments = new Array<>(number);
+		Variables variables = new Variables();
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				name,
+				"MyClass",
+				testClass,
+				arguments);
+
+		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE);
+		Signature signature = new Signature(name, parameters);
+
+		TailCall tailCall =
+			new TailCall(new FunctionCall(invokeMethod), signature, variables);
+
+		assertEquals(invokeMethod, tailCall);
+		assertEquals(name.hashCode() + arguments.hashCode(), invokeMethod.hashCode());
 	}
 }

@@ -48,7 +48,7 @@ public class ConstructorListener extends MainMethodListener
 
 		this.returnType = PrimitiveType.VOID;
 
-		String descriptor = this.descriptor + "V";
+		String descriptor = this.signature.getDescriptor() + "V";
 
 		this.methodVisitor =
 			this.writer.visitMethod(

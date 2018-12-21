@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -26,7 +27,10 @@ public class ParameterDeclaration implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		variables.declare(this.name, this.type);
 
@@ -43,9 +47,18 @@ public class ParameterDeclaration implements Statement
 		return new Array<>();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
+	}
+
+	public Expression getExpression()
+	{
+		return new Nothing();
+	}
+
+	public boolean isEmpty()
+	{
+		return true;
 	}
 }

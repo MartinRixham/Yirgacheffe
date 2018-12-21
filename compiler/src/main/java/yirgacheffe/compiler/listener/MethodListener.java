@@ -6,8 +6,10 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
+import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
@@ -32,9 +34,9 @@ public class MethodListener extends TypeListener
 
 	protected MethodVisitor methodVisitor;
 
-	private Set<String> methods = new HashSet<>();
+	private Set<Signature> methods = new HashSet<>();
 
-	protected String descriptor;
+	protected Signature signature;
 
 	public MethodListener(String sourceFile, Classes classes)
 	{
@@ -54,7 +56,7 @@ public class MethodListener extends TypeListener
 		}
 
 		this.returnType = this.types.getType(context.type());
-		String descriptor = this.descriptor + this.returnType.toJVMType();
+		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
 
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
@@ -90,7 +92,7 @@ public class MethodListener extends TypeListener
 		}
 
 		this.returnType = this.types.getType(context.type());
-		String descriptor = this.descriptor + this.returnType.toJVMType();
+		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
 
 		this.methodVisitor =
 			this.writer.visitMethod(
@@ -126,13 +128,17 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitFunction(YirgacheffeParser.FunctionContext context)
 	{
+		this.statements.unshift(new LabelStatement(this.signature.getLabel()));
+
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
 		Variables variables = new Variables();
-		Array<Error> errors = block.compile(this.methodVisitor, variables);
 		boolean returns = block.returns();
 
-		if (this.returnType != PrimitiveType.VOID && this.statements.length() == 0)
+		Array<Error> errors =
+			block.compile(this.methodVisitor, variables, this.signature);
+
+		if (this.returnType != PrimitiveType.VOID && block.isEmpty())
 		{
 			this.methodVisitor.visitInsn(this.returnType.getZero());
 			this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
@@ -164,34 +170,27 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitSignature(YirgacheffeParser.SignatureContext context)
 	{
-		Array<String> parameters = new Array<>();
-		StringBuilder descriptor = new StringBuilder("(");
+		Array<Type> parameters = new Array<>();
 
 		for (YirgacheffeParser.ParameterContext parameter : context.parameter())
 		{
 			Type type = this.types.getType(parameter.type());
-
-			descriptor.append(type.toJVMType());
-			parameters.push(type.toString());
+			parameters.push(type);
 		}
 
-		descriptor.append(")");
+		this.signature =
+			new Signature(context.Identifier().getSymbol().getText(), parameters);
 
-		this.descriptor = descriptor.toString();
-		String signature = context.Identifier() + this.descriptor;
-
-		if (this.methods.contains(signature))
+		if (this.methods.contains(this.signature))
 		{
 			String message =
-				"Duplicate declaration of method " +
-				context.Identifier() + "(" +
-				String.join(",", parameters) + ").";
+				"Duplicate declaration of method " + this.signature.toString() + ".";
 
 			this.errors.push(new Error(context, message));
 		}
 		else
 		{
-			this.methods.add(signature);
+			this.methods.add(this.signature);
 		}
 	}
 }

@@ -6,7 +6,9 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -32,9 +34,13 @@ public class Else implements ConditionalStatement
 		return this.precondition.returns() && this.statement.returns();
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
-		Array<Error> errors = this.precondition.compile(methodVisitor, variables);
+		Array<Error> errors =
+			this.precondition.compile(methodVisitor, variables, caller);
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
 
@@ -51,7 +57,7 @@ public class Else implements ConditionalStatement
 			errors.push(new Error(this.coordinate, message));
 		}
 
-		errors.push(this.statement.compile(methodVisitor, variables));
+		errors.push(this.statement.compile(methodVisitor, variables, caller));
 
 		return errors;
 	}
@@ -66,17 +72,25 @@ public class Else implements ConditionalStatement
 		return this.precondition.getFirstOperand();
 	}
 
-	@Override
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.statement.getVariableReads()
 			.concat(this.precondition.getVariableReads());
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return this.statement.getVariableWrites()
 			.concat(this.precondition.getVariableWrites());
+	}
+
+	public Expression getExpression()
+	{
+		return new Nothing();
+	}
+
+	public boolean isEmpty()
+	{
+		return false;
 	}
 }

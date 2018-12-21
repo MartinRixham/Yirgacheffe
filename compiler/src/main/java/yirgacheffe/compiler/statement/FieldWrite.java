@@ -5,7 +5,9 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -39,7 +41,10 @@ public class FieldWrite implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		Type ownerType = this.owner.getType(variables);
 		Type type = this.value.getType(variables);
@@ -103,9 +108,18 @@ public class FieldWrite implements Statement
 			.concat(this.value.getVariableReads());
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
+	}
+
+	public Expression getExpression()
+	{
+		return new Nothing();
+	}
+
+	public boolean isEmpty()
+	{
+		return false;
 	}
 }

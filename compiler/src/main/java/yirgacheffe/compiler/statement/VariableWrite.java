@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
@@ -33,7 +34,10 @@ public class VariableWrite implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		Type type = this.expression.getType(variables);
 		Variable variable = variables.getVariable(this.name);
@@ -110,5 +114,10 @@ public class VariableWrite implements Statement
 	public int hashCode()
 	{
 		return this.name.hashCode();
+	}
+
+	public boolean isEmpty()
+	{
+		return false;
 	}
 }

@@ -13,12 +13,14 @@ import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,6 +29,7 @@ public class VariableWriteTest
 	@Test
 	public void testVariableWrite()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
@@ -36,7 +39,7 @@ public class VariableWriteTest
 		Variables variables = new Variables();
 		variables.declare("myVariable", new ReferenceType(String.class));
 
-		Array<Error> errors = variableWrite.compile(methodVisitor, variables);
+		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -58,6 +61,7 @@ public class VariableWriteTest
 	@Test
 	public void testWriteInvalidExpression()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 2);
 		Type string = new ReferenceType(String.class);
 		Expression value = new InvalidExpression(string);
@@ -68,7 +72,7 @@ public class VariableWriteTest
 		Variables variables = new Variables();
 		variables.declare("myVariable", string);
 
-		Array<Error> errors = variableWrite.compile(methodVisitor, variables);
+		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 	}
@@ -119,6 +123,7 @@ public class VariableWriteTest
 		Expression operand = variableWrite.getFirstOperand();
 
 		assertTrue(operand instanceof Nothing);
+		assertFalse(variableWrite.isEmpty());
 	}
 
 	@Test

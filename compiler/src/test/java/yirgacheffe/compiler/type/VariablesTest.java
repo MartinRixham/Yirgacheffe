@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.statement;
+package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
@@ -6,8 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.VariableRead;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.statement.VariableWrite;
 
 import static org.junit.Assert.assertEquals;
 

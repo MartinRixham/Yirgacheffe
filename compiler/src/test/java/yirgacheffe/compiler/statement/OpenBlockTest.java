@@ -5,6 +5,7 @@ import org.junit.Test;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -18,14 +19,16 @@ public class OpenBlockTest
 	@Test
 	public void testOpenBlock()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		OpenBlock openBlock = new OpenBlock();
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = openBlock.compile(methodVisitor, variables);
+		Array<Error> errors = openBlock.compile(methodVisitor, variables, caller);
 
 		assertNotNull(errors);
 		assertFalse(openBlock.returns());
+		assertTrue(openBlock.isEmpty());
 	}
 
 	@Test
@@ -34,8 +37,10 @@ public class OpenBlockTest
 		OpenBlock openBlock = new OpenBlock();
 
 		Expression operand = openBlock.getFirstOperand();
+		Expression expression = openBlock.getExpression();
 
 		assertTrue(operand instanceof Nothing);
+		assertTrue(expression instanceof Nothing);
 		assertEquals(0, openBlock.getVariableReads().length());
 		assertEquals(0, openBlock.getVariableWrites().length());
 	}

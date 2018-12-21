@@ -14,11 +14,13 @@ import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class IfTest
@@ -26,6 +28,7 @@ public class IfTest
 	@Test
 	public void testIfStatement()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Expression condition = new Literal(PrimitiveType.BOOLEAN, "true");
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
@@ -33,7 +36,7 @@ public class IfTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables);
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(0, errors.length());
 
@@ -69,13 +72,33 @@ public class IfTest
 	@Test
 	public void testInvalidCondition()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables);
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+
+		assertEquals(1, errors.length());
+		assertFalse(ifStatement.isEmpty());
+	}
+
+	@Test
+	public void testInvalidStatement()
+	{
+		Signature caller = new Signature("method", new Array<>());
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		If statement =
+			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
+
+		If ifStatement =
+			new If(new Nothing(), statement);
+
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
 
 		assertEquals(1, errors.length());
 	}
@@ -96,5 +119,6 @@ public class IfTest
 
 		assertTrue(writes.indexOf(write) >= 0);
 		assertEquals(read, ifStatement.getFirstOperand());
+		assertTrue(ifStatement.getExpression() instanceof Nothing);
 	}
 }

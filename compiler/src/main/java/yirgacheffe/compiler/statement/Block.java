@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -43,18 +44,25 @@ public class Block implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Array<Error> compile(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Signature caller)
 	{
 		Array<Statement> statements = this.statements;
 		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();
 		boolean unreachableCode = false;
 		Array<Error> errors = new Array<>();
 
-		this.optimise(variables);
+		this.optimiseVariables(variables);
+		this.optimiseTailCall(caller, variables);
 
 		for (int i = 0; i < statements.length(); i++)
 		{
-			errors.push(statements.get(i).compile(methodVisitor, variables));
+			Signature call =
+				i == statements.length() - 1 ? caller : new Signature("", new Array<>());
+
+			errors.push(statements.get(i).compile(methodVisitor, variables, call));
 
 			if (statements.get(i).returns() && i < statements.length() - 1)
 			{
@@ -74,7 +82,7 @@ public class Block implements Statement
 		return errors;
 	}
 
-	private void optimise(Variables variables)
+	private void optimiseVariables(Variables variables)
 	{
 		List<VariableRead> variableReads = new ArrayList<>();
 		Set<VariableWrite> variableWrites = new HashSet<>();
@@ -118,6 +126,21 @@ public class Block implements Statement
 		}
 	}
 
+	private void optimiseTailCall(Signature caller, Variables variables)
+	{
+		if (this.statements.length() == 0)
+		{
+			return;
+		}
+
+		Statement lastStatement = this.statements.pop();
+
+		TailCall tailCall =
+			new TailCall(lastStatement, caller, variables);
+
+		this.statements.push(tailCall);
+	}
+
 	public Expression getFirstOperand()
 	{
 		if (this.statements.length() == 0)
@@ -142,7 +165,6 @@ public class Block implements Statement
 		return variableReads;
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		Array<VariableWrite> variableWrites = new Array<>();
@@ -156,5 +178,30 @@ public class Block implements Statement
 		}
 
 		return variableWrites;
+	}
+
+	public Expression getExpression()
+	{
+		if (this.statements.length() == 0)
+		{
+			return new Nothing();
+		}
+		else
+		{
+			return this.statements.get(this.statements.length() - 1).getExpression();
+		}
+	}
+
+	public boolean isEmpty()
+	{
+		for (Statement statement: this.statements)
+		{
+			if (!statement.isEmpty())
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

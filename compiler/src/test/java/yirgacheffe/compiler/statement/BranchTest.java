@@ -8,6 +8,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BranchTest
@@ -18,8 +19,11 @@ public class BranchTest
 		Branch branch = new Branch(new If(new Nothing(), new DoNothing()));
 
 		Expression operand = branch.getFirstOperand();
+		Expression expression = branch.getExpression();
 
 		assertTrue(operand instanceof Nothing);
+		assertTrue(expression instanceof Nothing);
+		assertFalse(branch.isEmpty());
 	}
 
 	@Test

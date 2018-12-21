@@ -41,17 +41,10 @@ public class InvokeConstructor implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Array<Type> argumentTypes = new Array<>();
-
-		for (Expression argument: this.arguments)
-		{
-			argumentTypes.push(argument.getType(variables));
-		}
-
 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
 
 		Array<Callable> functions = new Array<>();
-		Arguments arguments = new Arguments(argumentTypes);
+		Arguments arguments = new Arguments(this.arguments, variables);
 
 		for (Constructor<?> constructor : constructors)
 		{

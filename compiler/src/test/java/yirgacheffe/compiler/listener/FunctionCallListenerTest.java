@@ -6,6 +6,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -933,43 +934,45 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(8, instructions.size());
+		//assertEquals(8, instructions.size());
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 
 		Label label = firstInstruction.getLabel();
 
-		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+		assertTrue(instructions.get(1) instanceof FrameNode);
 
-		assertEquals(Opcodes.DLOAD, secondInstruction.getOpcode());
-		assertEquals(1, secondInstruction.var);
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DLOAD, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.DADD, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
 
-		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
-		assertEquals(3, fifthInstruction.var);
+		assertEquals(Opcodes.DADD, fifthInstruction.getOpcode());
 
 		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.DLOAD, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
 		assertEquals(3, sixthInstruction.var);
 
 		VarInsnNode seventhInstruction = (VarInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.DSTORE, seventhInstruction.getOpcode());
-		assertEquals(1, seventhInstruction.var);
+		assertEquals(Opcodes.DLOAD, seventhInstruction.getOpcode());
+		assertEquals(3, seventhInstruction.var);
 
-		JumpInsnNode eighthInstruction = (JumpInsnNode) instructions.get(7);
+		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
 
-		assertEquals(Opcodes.GOTO, eighthInstruction.getOpcode());
-		assertEquals(label, eighthInstruction.label.getLabel());
+		assertEquals(Opcodes.DSTORE, eighthInstruction.getOpcode());
+		assertEquals(1, eighthInstruction.var);
+
+		JumpInsnNode ninthInstruction = (JumpInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.GOTO, ninthInstruction.getOpcode());
+		assertEquals(label, ninthInstruction.label.getLabel());
 	}
 }

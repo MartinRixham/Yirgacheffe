@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -28,6 +29,7 @@ public class FunctionCallTest
 	@Test
 	public void testFunctionThatReturnsDouble()
 	{
+		Signature caller = new Signature("method", new Array<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		MethodNode methodVisitor = new MethodNode();
 		Array<Expression> arguments =
@@ -42,7 +44,7 @@ public class FunctionCallTest
 		FunctionCall functionCall = new FunctionCall(invoke);
 		Variables variables = new Variables();
 
-		functionCall.compile(methodVisitor, variables);
+		functionCall.compile(methodVisitor, variables, caller);
 
 		InsnList instructions = methodVisitor.instructions;
 
@@ -66,8 +68,8 @@ public class FunctionCallTest
 	{
 		Literal one = new Literal(PrimitiveType.DOUBLE, "1");
 
-		FunctionCall functionCall =
-			new FunctionCall(new Expression()
+		Expression expression =
+			new Expression()
 			{
 				public Expression getFirstOperand()
 				{
@@ -80,8 +82,8 @@ public class FunctionCallTest
 				}
 
 				public Array<Error> compile(
-					MethodVisitor methodVisitor,
-					Variables variables)
+						MethodVisitor methodVisitor,
+						Variables variables)
 				{
 					return new Array<>();
 				}
@@ -90,8 +92,11 @@ public class FunctionCallTest
 				{
 					return new Array<>();
 				}
-			});
+			};
+
+		FunctionCall functionCall = new FunctionCall(expression);
 
 		assertEquals(one, functionCall.getFirstOperand());
+		assertEquals(expression.hashCode(), functionCall.hashCode());
 	}
 }
