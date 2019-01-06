@@ -95,12 +95,12 @@ public class Variables
 		this.optimisedVariables.put(variableRead, variableWrite.getExpression());
 	}
 
-	public boolean canOptimise(VariableRead variableRead)
+	public boolean canOptimise(Expression variableRead)
 	{
 		return this.optimisedVariables.keySet().contains(variableRead);
 	}
 
-	public Expression getOptimisedExpression(VariableRead variableRead)
+	public Expression getOptimisedExpression(Expression variableRead)
 	{
 		return this.optimisedVariables.get(variableRead);
 	}

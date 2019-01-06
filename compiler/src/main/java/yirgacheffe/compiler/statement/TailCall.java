@@ -37,9 +37,16 @@ public class TailCall implements Statement
 		Variables variables,
 		Signature caller)
 	{
-		if (this.invocation.equals(this))
+		Expression invocation = this.invocation.getExpression();
+
+		if (variables.canOptimise(invocation))
 		{
-			InvokeMethod invokeMethod = (InvokeMethod) this.invocation.getExpression();
+			invocation = variables.getOptimisedExpression(invocation);
+		}
+
+		if (invocation.equals(this))
+		{
+			InvokeMethod invokeMethod = (InvokeMethod) invocation;
 
 			invokeMethod.compileArguments(methodVisitor, variables);
 
@@ -53,7 +60,7 @@ public class TailCall implements Statement
 
 				width -= parameters.get(i).width();
 
-				methodVisitor.visitVarInsn(storeInstruction, width + 1);
+				methodVisitor.visitVarInsn(storeInstruction, width);
 			}
 
 			methodVisitor.visitJumpInsn(Opcodes.GOTO, caller.getLabel());
@@ -68,7 +75,7 @@ public class TailCall implements Statement
 
 	private int getWidth(Array<Type> parameters)
 	{
-		int width = 0;
+		int width = 1;
 
 		for (Type type: parameters)
 		{

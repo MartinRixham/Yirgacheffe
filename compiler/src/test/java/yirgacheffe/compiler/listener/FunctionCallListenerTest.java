@@ -1064,4 +1064,68 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.GOTO, eleventhInstruction.getOpcode());
 		assertEquals(label, eleventhInstruction.label.getLabel());
 	}
+
+	@Test
+	public void testRecursiveMethodCallViaVariable()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method(Num number)" +
+				"{\n" +
+					"Num result = this.method(number + 1);\n" +
+					"return result;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		LabelNode firstInstruction = (LabelNode) instructions.get(0);
+
+		Label label = firstInstruction.getLabel();
+
+		assertTrue(instructions.get(1) instanceof FrameNode);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DLOAD, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DADD, fifthInstruction.getOpcode());
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
+		assertEquals(1, sixthInstruction.var);
+
+		JumpInsnNode seventhInstruction = (JumpInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.GOTO, seventhInstruction.getOpcode());
+		assertEquals(label, seventhInstruction.label.getLabel());
+	}
 }
