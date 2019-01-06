@@ -50,4 +50,14 @@ public class ReferenceTypeTest
 
 		assertFalse(string.isAssignableTo(system));
 	}
+
+	@Test
+	public void testEqualTypes()
+	{
+		Type first = new ReferenceType(String.class);
+		Type second = new ReferenceType(String.class);
+
+		assertEquals(first, second);
+		assertEquals(first.hashCode(), first.reflectionClass().hashCode());
+	}
 }

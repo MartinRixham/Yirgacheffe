@@ -45,11 +45,15 @@ public class TailCall implements Statement
 
 			Array<Type> parameters = invokeMethod.getParameters(variables);
 
+			int width = this.getWidth(parameters);
+
 			for (int i = parameters.length() - 1; i >= 0; i--)
 			{
 				int storeInstruction = parameters.get(i).getStoreInstruction();
 
-				methodVisitor.visitVarInsn(storeInstruction, i + 1);
+				width -= parameters.get(i).width();
+
+				methodVisitor.visitVarInsn(storeInstruction, width + 1);
 			}
 
 			methodVisitor.visitJumpInsn(Opcodes.GOTO, caller.getLabel());
@@ -60,6 +64,18 @@ public class TailCall implements Statement
 		{
 			return this.invocation.compile(methodVisitor, variables, caller);
 		}
+	}
+
+	private int getWidth(Array<Type> parameters)
+	{
+		int width = 0;
+
+		for (Type type: parameters)
+		{
+			width += type.width();
+		}
+
+		return width;
 	}
 
 	public Expression getFirstOperand()

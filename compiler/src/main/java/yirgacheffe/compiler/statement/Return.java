@@ -76,20 +76,30 @@ public class Return implements Statement
 		return this.expression.getVariableReads();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
 	}
 
-	@Override
 	public Expression getExpression()
 	{
-		return new Nothing();
+		return this.expression;
 	}
 
 	public boolean isEmpty()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		return this.expression.equals(other);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.expression.hashCode();
 	}
 }

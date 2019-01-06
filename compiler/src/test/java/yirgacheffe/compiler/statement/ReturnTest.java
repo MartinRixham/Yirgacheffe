@@ -163,4 +163,17 @@ public class ReturnTest
 
 		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
 	}
+
+	@Test
+	public void testReturnEqualToExpression()
+	{
+		Coordinate coordinate = new Coordinate(2, 3);
+		Type type = PrimitiveType.DOUBLE;
+		Expression expression = new Literal(type, "1");
+
+		Return returnStatement = new Return(coordinate, type, expression);
+
+		assertEquals(returnStatement, expression);
+		assertEquals(returnStatement.hashCode(), expression.hashCode());
+	}
 }

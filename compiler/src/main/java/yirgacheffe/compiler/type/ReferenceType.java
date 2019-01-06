@@ -60,4 +60,23 @@ public class ReferenceType implements Type
 	{
 		return other.reflectionClass().isAssignableFrom(this.reflectionClass());
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof ReferenceType)
+		{
+			ReferenceType referenceType = (ReferenceType) other;
+
+			return this.reflectionClass.equals(referenceType.reflectionClass);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.reflectionClass.hashCode();
+	}
 }

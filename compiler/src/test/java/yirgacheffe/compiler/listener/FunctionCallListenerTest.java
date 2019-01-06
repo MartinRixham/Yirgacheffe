@@ -934,7 +934,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		//assertEquals(8, instructions.size());
+		// assertEquals(8, instructions.size());
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 
@@ -974,5 +974,94 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.GOTO, ninthInstruction.getOpcode());
 		assertEquals(label, ninthInstruction.label.getLabel());
+	}
+
+	@Test
+	public void testRecursiveMethodCallInsideBlock()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method(Num number)" +
+				"{\n" +
+					"Num result = number + 1;\n" +
+					"if (true)\n" +
+					"{\n" +
+						"return this.method(result);\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+						"return result;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		LabelNode firstInstruction = (LabelNode) instructions.get(0);
+
+		Label label = firstInstruction.getLabel();
+
+		assertTrue(instructions.get(1) instanceof FrameNode);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DLOAD, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DADD, fifthInstruction.getOpcode());
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
+		assertEquals(3, sixthInstruction.var);
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.ICONST_1, seventhInstruction.getOpcode());
+
+		JumpInsnNode eighthInstruction = (JumpInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.IFEQ, eighthInstruction.getOpcode());
+
+		VarInsnNode ninthInstruction = (VarInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.DLOAD, ninthInstruction.getOpcode());
+		assertEquals(3, ninthInstruction.var);
+
+		VarInsnNode tenthInstruction = (VarInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.DSTORE, tenthInstruction.getOpcode());
+		assertEquals(1, tenthInstruction.var);
+
+		JumpInsnNode eleventhInstruction = (JumpInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.GOTO, eleventhInstruction.getOpcode());
+		assertEquals(label, eleventhInstruction.label.getLabel());
 	}
 }
