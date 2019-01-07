@@ -958,22 +958,12 @@ public class FunctionCallListenerTest
 		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
-		assertEquals(3, sixthInstruction.var);
+		assertEquals(1, sixthInstruction.var);
 
-		VarInsnNode seventhInstruction = (VarInsnNode) instructions.get(6);
+		JumpInsnNode seventhInstruction = (JumpInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.DLOAD, seventhInstruction.getOpcode());
-		assertEquals(3, seventhInstruction.var);
-
-		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
-
-		assertEquals(Opcodes.DSTORE, eighthInstruction.getOpcode());
-		assertEquals(1, eighthInstruction.var);
-
-		JumpInsnNode ninthInstruction = (JumpInsnNode) instructions.get(8);
-
-		assertEquals(Opcodes.GOTO, ninthInstruction.getOpcode());
-		assertEquals(label, ninthInstruction.label.getLabel());
+		assertEquals(Opcodes.GOTO, seventhInstruction.getOpcode());
+		assertEquals(label, seventhInstruction.label.getLabel());
 	}
 
 	@Test

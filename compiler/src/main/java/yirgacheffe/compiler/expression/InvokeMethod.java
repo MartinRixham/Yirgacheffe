@@ -163,7 +163,14 @@ public class InvokeMethod implements Expression
 
 	public Expression getFirstOperand()
 	{
-		return this.owner.getFirstOperand();
+		if (this.owner instanceof This && this.arguments.length() > 0)
+		{
+			return this.arguments.get(0);
+		}
+		else
+		{
+			return this.owner.getFirstOperand();
+		}
 	}
 
 	private String withSlashes(Type type)
