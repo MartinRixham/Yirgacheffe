@@ -87,7 +87,6 @@ public class InvokeConstructorTest
 		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
 
 		assertEquals(0, errors.length());
-		assertEquals(one, invokeConstructor.getFirstOperand());
 	}
 
 	@Test
@@ -108,6 +107,5 @@ public class InvokeConstructorTest
 		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
 
 		assertEquals(0, errors.length());
-		assertEquals(invokeConstructor, invokeConstructor.getFirstOperand());
 	}
 }

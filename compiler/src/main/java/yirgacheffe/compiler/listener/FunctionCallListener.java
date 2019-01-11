@@ -69,7 +69,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		for (int i = context.expression().size() - 1; i >= 0; i--)
 		{
-			arguments.set(i, this.expressions.pop());
+			arguments.unshift(this.expressions.pop());
 		}
 
 		this.arguments = arguments;

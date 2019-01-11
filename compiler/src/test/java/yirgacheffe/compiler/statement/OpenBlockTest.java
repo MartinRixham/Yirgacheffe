@@ -36,10 +36,8 @@ public class OpenBlockTest
 	{
 		OpenBlock openBlock = new OpenBlock();
 
-		Expression operand = openBlock.getFirstOperand();
 		Expression expression = openBlock.getExpression();
 
-		assertTrue(operand instanceof Nothing);
 		assertTrue(expression instanceof Nothing);
 		assertEquals(0, openBlock.getVariableReads().length());
 		assertEquals(0, openBlock.getVariableWrites().length());

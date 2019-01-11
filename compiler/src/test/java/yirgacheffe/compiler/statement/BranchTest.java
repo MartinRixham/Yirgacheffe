@@ -7,21 +7,19 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.lang.Array;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BranchTest
 {
 	@Test
-	public void testFirstOperandIsNothing()
+	public void testEmptyBranch()
 	{
-		Branch branch = new Branch(new If(new Nothing(), new DoNothing()));
+		Expression nothing = new Nothing();
+		Branch branch = new Branch(new If(nothing, new DoNothing()));
 
-		Expression operand = branch.getFirstOperand();
 		Expression expression = branch.getExpression();
 
-		assertTrue(operand instanceof Nothing);
 		assertTrue(expression instanceof Nothing);
 		assertFalse(branch.isEmpty());
 	}
@@ -30,7 +28,7 @@ public class BranchTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 		VariableWrite write = new VariableWrite(coordinate, "var", read);
 		Statement branch = new Branch(new If(read, write));
 
@@ -41,6 +39,5 @@ public class BranchTest
 		Array<VariableWrite> writes = branch.getVariableWrites();
 
 		assertTrue(writes.indexOf(write) >= 0);
-		assertEquals(read, branch.getFirstOperand());
 	}
 }

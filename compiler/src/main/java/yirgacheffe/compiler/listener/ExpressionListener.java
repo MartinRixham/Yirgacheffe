@@ -22,7 +22,7 @@ public class ExpressionListener extends StatementListener
 	{
 		String name = context.getText();
 
-		this.expressions.push(new VariableRead(name, new Coordinate(context)));
+		this.expressions.push(new VariableRead(new Coordinate(context), name));
 	}
 
 	@Override

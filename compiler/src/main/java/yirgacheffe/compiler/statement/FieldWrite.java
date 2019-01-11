@@ -97,11 +97,6 @@ public class FieldWrite implements Statement
 		}
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.owner;
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.owner.getVariableReads()

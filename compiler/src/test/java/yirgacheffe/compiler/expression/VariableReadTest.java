@@ -27,7 +27,7 @@ public class VariableReadTest
 		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(1, 0);
-		Expression expression = new VariableRead("myVariable", coordinate);
+		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
 
@@ -55,7 +55,7 @@ public class VariableReadTest
 		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(1, 0);
-		Expression expression = new VariableRead("myVariable", coordinate);
+		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
 
@@ -77,8 +77,8 @@ public class VariableReadTest
 	public void testEqualVariables()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableRead firstVariable = new VariableRead("myVariable", coordinate);
-		VariableRead secondVariable = new VariableRead("myVariable", coordinate);
+		VariableRead firstVariable = new VariableRead(coordinate, "myVariable");
+		VariableRead secondVariable = new VariableRead(coordinate, "myVariable");
 
 		assertEquals(firstVariable, secondVariable);
 		assertEquals(firstVariable.hashCode(), secondVariable.hashCode());
@@ -88,7 +88,7 @@ public class VariableReadTest
 	public void testNotEqualToObject()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableRead firstVariable = new VariableRead("myVariable", coordinate);
+		VariableRead firstVariable = new VariableRead(coordinate, "myVariable");
 		Object secondVariable = new Object();
 
 		assertNotEquals(firstVariable, secondVariable);
@@ -100,7 +100,7 @@ public class VariableReadTest
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
-		VariableRead variableRead = new VariableRead("myVar", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 
 		assertEquals(variableRead, variableWrite);

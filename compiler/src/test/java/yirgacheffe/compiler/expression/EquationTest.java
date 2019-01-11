@@ -269,8 +269,8 @@ public class EquationTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
-		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+		VariableRead firstOperand = new VariableRead(coordinate, "myVariable");
+		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
 
 		Expression operation =
 			new Equation(firstOperand, secondOperand, new GreaterThan());
@@ -279,6 +279,5 @@ public class EquationTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
-		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

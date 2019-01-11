@@ -58,6 +58,7 @@ public class InvokeMethod implements Expression
 			if (method.getName().equals(this.name))
 			{
 				returnType = new Function(ownerType, method).getReturnType();
+				break;
 			}
 		}
 
@@ -66,6 +67,13 @@ public class InvokeMethod implements Expression
 			returnType == PrimitiveType.FLOAT)
 		{
 			return PrimitiveType.DOUBLE;
+		}
+
+		if (returnType instanceof GenericType)
+		{
+			GenericType genericType = (GenericType) returnType;
+
+			return genericType.unwrap();
 		}
 
 		return returnType;
@@ -159,18 +167,6 @@ public class InvokeMethod implements Expression
 		Array<Type> parameters = function.getParameterTypes();
 
 		return arguments.compile(parameters, methodVisitor, variables);
-	}
-
-	public Expression getFirstOperand()
-	{
-		if (this.owner instanceof This && this.arguments.length() > 0)
-		{
-			return this.arguments.get(0);
-		}
-		else
-		{
-			return this.owner.getFirstOperand();
-		}
 	}
 
 	private String withSlashes(Type type)

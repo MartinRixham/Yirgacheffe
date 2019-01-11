@@ -20,7 +20,7 @@ public class Variables
 
 	private Array<VariableWrite> variableWrites = new Array<>();
 
-	private Map<VariableRead, Expression> optimisedVariables = new IdentityHashMap<>();
+	private Map<Expression, Expression> optimisedVariables = new IdentityHashMap<>();
 
 	public Map<String, Variable> getDeclaredVariables()
 	{
@@ -90,7 +90,7 @@ public class Variables
 		return errors;
 	}
 
-	public void optimise(VariableRead variableRead, VariableWrite variableWrite)
+	public void optimise(Expression variableRead, VariableWrite variableWrite)
 	{
 		this.optimisedVariables.put(variableRead, variableWrite.getExpression());
 	}

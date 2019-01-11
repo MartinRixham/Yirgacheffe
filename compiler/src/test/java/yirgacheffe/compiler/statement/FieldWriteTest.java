@@ -139,7 +139,6 @@ public class FieldWriteTest
 		Literal two = new Literal(PrimitiveType.DOUBLE, "2");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "field", one, two);
 
-		assertEquals(one, fieldWrite.getFirstOperand());
 		assertTrue(fieldWrite.getExpression() instanceof Nothing);
 		assertFalse(fieldWrite.isEmpty());
 	}
@@ -148,8 +147,8 @@ public class FieldWriteTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
-		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+		VariableRead firstOperand = new VariableRead(coordinate, "myVariable");
+		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
 
 		Statement write =
 			new FieldWrite(coordinate, "var", firstOperand, secondOperand);
@@ -162,6 +161,5 @@ public class FieldWriteTest
 		Array<VariableWrite> writes = write.getVariableWrites();
 
 		assertEquals(0, writes.length());
-		assertEquals(firstOperand, write.getFirstOperand());
 	}
 }

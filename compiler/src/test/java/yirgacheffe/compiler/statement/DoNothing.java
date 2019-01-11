@@ -24,9 +24,9 @@ public class DoNothing implements Statement
 		return new Array<>();
 	}
 
-	public Expression getFirstOperand()
+	public Array<Expression> getCommutableOperands()
 	{
-		return new Nothing();
+		return new Array<>();
 	}
 
 	public Array<VariableRead> getVariableReads()

@@ -114,8 +114,8 @@ public class BinaryNumericOperationTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
-		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+		VariableRead firstOperand = new VariableRead(coordinate, "myVariable");
+		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
 
 		Expression operation =
 			new BinaryNumericOperation(
@@ -129,6 +129,5 @@ public class BinaryNumericOperationTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
-		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

@@ -19,13 +19,11 @@ public class LabelStatement implements Statement
 		this.label = label;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
 	}
 
-	@Override
 	public Array<Error> compile(
 		MethodVisitor methodVisitor,
 		Variables variables,
@@ -36,25 +34,16 @@ public class LabelStatement implements Statement
 		return new Array<>();
 	}
 
-	@Override
-	public Expression getFirstOperand()
-	{
-		return new Nothing();
-	}
-
-	@Override
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
 	}
 
-	@Override
 	public Expression getExpression()
 	{
 		return new Nothing();

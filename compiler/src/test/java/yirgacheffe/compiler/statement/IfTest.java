@@ -60,16 +60,6 @@ public class IfTest
 	}
 
 	@Test
-	public void testFirstOperandIsNothing()
-	{
-		If ifStatement = new If(new Nothing(), new DoNothing());
-
-		Expression operand = ifStatement.getFirstOperand();
-
-		assertTrue(operand instanceof Nothing);
-	}
-
-	@Test
 	public void testInvalidCondition()
 	{
 		Signature caller = new Signature("method", new Array<>());
@@ -107,7 +97,7 @@ public class IfTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 		VariableWrite write = new VariableWrite(coordinate, "var", read);
 		Statement ifStatement = new If(read, write);
 
@@ -118,7 +108,6 @@ public class IfTest
 		Array<VariableWrite> writes = ifStatement.getVariableWrites();
 
 		assertTrue(writes.indexOf(write) >= 0);
-		assertEquals(read, ifStatement.getFirstOperand());
 		assertTrue(ifStatement.getExpression() instanceof Nothing);
 	}
 }

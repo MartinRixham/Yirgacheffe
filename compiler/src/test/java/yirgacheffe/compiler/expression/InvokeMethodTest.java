@@ -294,7 +294,7 @@ public class InvokeMethodTest
 		variables.declare("myVariable", owner);
 
 		Coordinate coordinate = new Coordinate(0, 1);
-		VariableRead expression = new VariableRead("myVariable", coordinate);
+		VariableRead expression = new VariableRead(coordinate, "myVariable");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(

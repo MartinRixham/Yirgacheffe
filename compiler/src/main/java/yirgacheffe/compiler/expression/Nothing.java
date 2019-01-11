@@ -19,11 +19,6 @@ public class Nothing implements Expression
 		return new Array<>();
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this;
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();

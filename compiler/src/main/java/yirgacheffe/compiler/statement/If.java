@@ -61,11 +61,6 @@ public class If implements ConditionalStatement
 		return this.label;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.condition.getFirstOperand();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.condition.getVariableReads()

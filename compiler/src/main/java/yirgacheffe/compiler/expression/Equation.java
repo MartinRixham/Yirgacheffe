@@ -52,11 +52,6 @@ public class Equation implements Expression
 		return errors;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.firstOperand.getFirstOperand();
-	}
-
 	public void compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,

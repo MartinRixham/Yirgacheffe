@@ -15,6 +15,5 @@ public class NothingTest
 		Array<VariableRead> reads = nothing.getVariableReads();
 
 		assertEquals(0, reads.length());
-		assertEquals(nothing, nothing.getFirstOperand());
 	}
 }

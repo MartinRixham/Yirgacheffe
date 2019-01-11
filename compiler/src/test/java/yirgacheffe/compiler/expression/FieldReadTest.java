@@ -59,13 +59,12 @@ public class FieldReadTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 
 		Expression fieldRead = new FieldRead(read, "myField", PrimitiveType.DOUBLE);
 
 		Array<VariableRead> reads = fieldRead.getVariableReads();
 
 		assertTrue(reads.indexOf(read) >= 0);
-		assertEquals(read, fieldRead.getFirstOperand());
 	}
 }

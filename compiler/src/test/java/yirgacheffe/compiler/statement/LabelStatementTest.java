@@ -15,7 +15,6 @@ public class LabelStatementTest
 	{
 		LabelStatement labelStatement = new LabelStatement(new Label());
 
-		assertTrue(labelStatement.getFirstOperand() instanceof Nothing);
 		assertEquals(new Array<>(), labelStatement.getVariableReads());
 		assertEquals(new Array<>(), labelStatement.getVariableWrites());
 		assertTrue(labelStatement.getExpression() instanceof Nothing);

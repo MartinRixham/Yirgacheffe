@@ -12,7 +12,5 @@ public interface Expression
 
 	Array<Error> compile(MethodVisitor methodVisitor, Variables variables);
 
-	Expression getFirstOperand();
-
 	Array<VariableRead> getVariableReads();
 }

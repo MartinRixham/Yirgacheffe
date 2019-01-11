@@ -99,17 +99,6 @@ public class ElseTest
 	}
 
 	@Test
-	public void testElseHasNoFirstOperand()
-	{
-		Coordinate coordinate = new Coordinate(2, 4);
-		Statement doNothing = new DoNothing();
-		Else elseStatement = new Else(coordinate, doNothing, doNothing);
-
-		assertTrue(elseStatement.getFirstOperand() instanceof Nothing);
-		assertFalse(elseStatement.isEmpty());
-	}
-
-	@Test
 	public void testInvalidPrecondition()
 	{
 		Signature caller = new Signature("method", new Array<>());
@@ -152,7 +141,7 @@ public class ElseTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 		VariableWrite write = new VariableWrite(coordinate, "var", read);
 		Statement elseStatement = new Else(coordinate, write, write);
 
@@ -163,7 +152,7 @@ public class ElseTest
 		Array<VariableWrite> writes = elseStatement.getVariableWrites();
 
 		assertTrue(writes.indexOf(write) >= 0);
-		assertEquals(read, elseStatement.getFirstOperand());
 		assertTrue(elseStatement.getExpression() instanceof Nothing);
+		assertFalse(elseStatement.isEmpty());
 	}
 }

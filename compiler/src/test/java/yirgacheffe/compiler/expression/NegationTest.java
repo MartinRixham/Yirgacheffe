@@ -39,13 +39,12 @@ public class NegationTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 
 		Expression negation = new Negation(coordinate, read);
 
 		Array<VariableRead> reads = negation.getVariableReads();
 
 		assertTrue(reads.indexOf(read) >= 0);
-		assertEquals(read, negation.getFirstOperand());
 	}
 }

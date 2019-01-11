@@ -63,11 +63,6 @@ public class VariableWrite implements Statement
 		return errors;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.expression.getFirstOperand();
-	}
-
 	public Expression getExpression()
 	{
 		return this.expression;

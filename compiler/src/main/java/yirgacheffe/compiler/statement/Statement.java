@@ -17,8 +17,6 @@ public interface Statement
 		Variables variables,
 		Signature caller);
 
-	Expression getFirstOperand();
-
 	Array<VariableRead> getVariableReads();
 
 	Array<VariableWrite> getVariableWrites();

@@ -17,14 +17,13 @@ VariableDeclarationTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("var", PrimitiveType.DOUBLE);
 
-		Expression operand = variableDeclaration.getFirstOperand();
 		Expression expression = variableDeclaration.getExpression();
 
-		assertTrue(operand instanceof Nothing);
 		assertTrue(expression instanceof Nothing);
 		assertEquals(0, variableDeclaration.getVariableReads().length());
 		assertEquals(0, variableDeclaration.getVariableWrites().length());
 		assertTrue(variableDeclaration.isEmpty());
 		assertTrue(variableDeclaration.equals("var"));
+		assertEquals(variableDeclaration, variableDeclaration);
 	}
 }

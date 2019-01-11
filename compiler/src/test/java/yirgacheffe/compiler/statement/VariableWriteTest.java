@@ -108,7 +108,7 @@ public class VariableWriteTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
-		VariableRead variableRead = new VariableRead("myVar", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 
 		assertEquals(variableWrite, variableRead);
 		assertEquals(variableWrite.hashCode(), variableRead.hashCode());
@@ -118,11 +118,9 @@ public class VariableWriteTest
 	public void testFirstOperandIsNothing()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableWrite variableWrite = new VariableWrite(coordinate, "var", new Nothing());
+		Expression nothing = new Nothing();
+		VariableWrite variableWrite = new VariableWrite(coordinate, "var", nothing);
 
-		Expression operand = variableWrite.getFirstOperand();
-
-		assertTrue(operand instanceof Nothing);
 		assertFalse(variableWrite.isEmpty());
 	}
 

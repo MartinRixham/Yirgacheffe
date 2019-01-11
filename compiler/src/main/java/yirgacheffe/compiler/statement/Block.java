@@ -86,39 +86,36 @@ public class Block implements Statement
 	{
 		List<VariableRead> variableReads = new ArrayList<>();
 		Set<VariableWrite> variableWrites = new HashSet<>();
-		VariableRead nextVariable = null;
 
 		for (int i = this.statements.length() - 1; i >= 0; i--)
 		{
 			Statement statement = this.statements.get(i);
 
-			if (statement.equals(nextVariable) &&
-				Collections.frequency(variableReads, statement) == 1)
+			boolean optimised = false;
+
+			for (VariableRead variableRead: variableReads)
 			{
-				this.statements.splice(i, 1);
-				variables.optimise(nextVariable, (VariableWrite) statement);
+				if (statement.equals(variableRead) &&
+					Collections.frequency(variableReads, statement) == 1)
+				{
+					this.statements.splice(i, 1);
+					variables.optimise(variableRead, (VariableWrite) statement);
+					optimised = true;
+				}
 			}
-			else
+
+			if (!optimised)
 			{
 				variableWrites.addAll(
-					Arrays.asList(statement.getVariableWrites().toArray()));
+						Arrays.asList(statement.getVariableWrites().toArray()));
 			}
 
 			variableReads.removeAll(Collections.singleton(statement));
 
-			if (statement instanceof VariableDeclaration)
+			if (statement instanceof VariableDeclaration &&
+				!variableWrites.contains(statement))
 			{
-				if (!variableWrites.contains(statement))
-				{
 					this.statements.splice(i, 1);
-				}
-			}
-
-			Expression expression = statement.getFirstOperand();
-
-			if (expression instanceof VariableRead)
-			{
-				nextVariable = (VariableRead) expression;
 			}
 
 			variableReads.addAll(
@@ -139,18 +136,6 @@ public class Block implements Statement
 			new TailCall(lastStatement, caller, variables);
 
 		this.statements.push(tailCall);
-	}
-
-	public Expression getFirstOperand()
-	{
-		if (this.statements.length() == 0)
-		{
-			return new Nothing();
-		}
-		else
-		{
-			return this.statements.get(0).getFirstOperand();
-		}
 	}
 
 	public Array<VariableRead> getVariableReads()

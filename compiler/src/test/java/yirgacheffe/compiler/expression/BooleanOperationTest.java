@@ -308,8 +308,8 @@ public class BooleanOperationTest
 	public void testGettingVariableReads()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		VariableRead firstOperand = new VariableRead("myVariable", coordinate);
-		VariableRead secondOperand = new VariableRead("myVariable", coordinate);
+		VariableRead firstOperand = new VariableRead(coordinate, "myVariable");
+		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
 
 		Expression operation =
 			new BooleanOperation(
@@ -322,6 +322,5 @@ public class BooleanOperationTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
-		assertEquals(firstOperand, operation.getFirstOperand());
 	}
 }

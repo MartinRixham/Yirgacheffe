@@ -24,11 +24,6 @@ public class OpenBlock implements Statement
 		return new Array<>();
 	}
 
-	public Expression getFirstOperand()
-	{
-		return new Nothing();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();

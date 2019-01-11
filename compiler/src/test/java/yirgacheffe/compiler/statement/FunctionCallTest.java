@@ -64,18 +64,14 @@ public class FunctionCallTest
 	}
 
 	@Test
-	public void testGettingFunctionCallFirstOperand()
+	public void testGettingVariableReads()
 	{
-		Literal one = new Literal(PrimitiveType.DOUBLE, "1");
+		Coordinate coordinate = new Coordinate(2, 4);
+		VariableRead variable = new VariableRead(coordinate, "var");
 
 		Expression expression =
 			new Expression()
 			{
-				public Expression getFirstOperand()
-				{
-					return one;
-				}
-
 				public Type getType(Variables variables)
 				{
 					return new NullType();
@@ -90,13 +86,15 @@ public class FunctionCallTest
 
 				public Array<VariableRead> getVariableReads()
 				{
-					return new Array<>();
+
+					return new Array<>(variable);
 				}
 			};
 
 		FunctionCall functionCall = new FunctionCall(expression);
 
-		assertEquals(one, functionCall.getFirstOperand());
 		assertEquals(expression.hashCode(), functionCall.hashCode());
+		assertEquals(1, functionCall.getVariableReads().length());
+		assertEquals(variable, functionCall.getVariableReads().get(0));
 	}
 }

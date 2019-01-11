@@ -87,18 +87,6 @@ public class InvokeConstructor implements Expression
 		return matchResult.getErrors().concat(errors);
 	}
 
-	public Expression getFirstOperand()
-	{
-		if (this.arguments.length() == 0)
-		{
-			return this;
-		}
-		else
-		{
-			return this.arguments.get(0).getFirstOperand();
-		}
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		Array<VariableRead> variableReads = new Array<>();

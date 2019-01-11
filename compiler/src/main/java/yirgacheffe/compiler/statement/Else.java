@@ -67,11 +67,6 @@ public class Else implements ConditionalStatement
 		return this.label;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.precondition.getFirstOperand();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.statement.getVariableReads()

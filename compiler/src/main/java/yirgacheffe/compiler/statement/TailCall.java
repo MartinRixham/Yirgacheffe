@@ -85,11 +85,6 @@ public class TailCall implements Statement
 		return width;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return new Nothing();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();

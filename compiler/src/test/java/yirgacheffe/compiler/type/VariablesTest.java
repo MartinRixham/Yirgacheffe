@@ -17,7 +17,7 @@ public class VariablesTest
 	{
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 		variables.read(read);
@@ -30,7 +30,7 @@ public class VariablesTest
 	{
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 
 		variables.read(read);
 

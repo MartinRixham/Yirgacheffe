@@ -15,7 +15,7 @@ public class VariableRead implements Expression
 
 	private Coordinate coordinate;
 
-	public VariableRead(String name, Coordinate coordinate)
+	public VariableRead(Coordinate coordinate, String name)
 	{
 		this.name = name;
 		this.coordinate = coordinate;
@@ -50,11 +50,6 @@ public class VariableRead implements Expression
 		}
 
 		return new Array<>();
-	}
-
-	public Expression getFirstOperand()
-	{
-		return this;
 	}
 
 	public Coordinate getCoordinate()

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -23,6 +24,7 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BlockTest
@@ -44,7 +46,7 @@ public class BlockTest
 
 		block.compile(methodVisitor, variables, caller);
 
-		VariableRead variableRead = new VariableRead("myVariable", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
 		variableRead.getType(variables);
 		variableRead.compile(methodVisitor, variables);
@@ -89,7 +91,7 @@ public class BlockTest
 
 		Expression number = new Literal(PrimitiveType.DOUBLE, "1");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
-		VariableRead variableRead = new VariableRead("myVariable", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
 		Return returnStatement =
 			new Return(coordinate, PrimitiveType.DOUBLE, variableRead);
@@ -129,7 +131,7 @@ public class BlockTest
 
 		Expression number = new Literal(PrimitiveType.DOUBLE, "1");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
-		VariableRead variableRead = new VariableRead("myVariable", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -174,6 +176,80 @@ public class BlockTest
 	}
 
 	@Test
+	public void testOptimiseTwoLocalVariablesForMethodCall()
+	{
+		Signature caller = new Signature("method", new Array<>());
+		Coordinate coordinate = new Coordinate(4, 0);
+
+		VariableDeclaration variableDeclaration =
+				new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
+
+		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression two = new Literal(PrimitiveType.DOUBLE, "2");
+		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
+
+		VariableWrite notherVariableWrite =
+				new VariableWrite(coordinate, "notherVariable", two);
+
+		VariableRead notherVariableRead = new VariableRead(coordinate, "notherVariable");
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"equals",
+				"java/lang/Object",
+				variableRead,
+				new Array<>(notherVariableRead));
+
+		FunctionCall functionCall = new FunctionCall(invokeMethod);
+
+		Array<Statement> statements =
+			new Array<>(
+				variableDeclaration, variableWrite, notherVariableWrite, functionCall);
+
+		Block block = new Block(coordinate, statements);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("valueOf", secondInstruction.name);
+
+		LdcInsnNode thirdInstructionNode = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstructionNode.getOpcode());
+		assertEquals(2.0, thirdInstructionNode.cst);
+
+		MethodInsnNode fourthInstructionNode = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKESTATIC, fourthInstructionNode.getOpcode());
+		assertEquals("valueOf", fourthInstructionNode.name);
+
+		MethodInsnNode fifthInstructionNode = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstructionNode.getOpcode());
+		assertEquals("equals", fifthInstructionNode.name);
+
+		InsnNode sixthInstructionNode = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.POP, sixthInstructionNode.getOpcode());
+	}
+
+	@Test
 	public void testDoNotOptimiseVariableReferencedTwice()
 	{
 		Signature caller = new Signature("method", new Array<>());
@@ -184,12 +260,12 @@ public class BlockTest
 
 		Expression number = new Literal(PrimitiveType.DOUBLE, "1");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
-		VariableRead returnVariableRead = new VariableRead("myVariable", coordinate);
+		VariableRead returnVariableRead = new VariableRead(coordinate, "myVariable");
 
 		Return returnStatement =
 			new Return(coordinate, PrimitiveType.DOUBLE, returnVariableRead);
 
-		VariableRead variableRead = new VariableRead("myVariable", coordinate);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -270,8 +346,8 @@ public class BlockTest
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", testClass);
 
-		VariableRead firstRead = new VariableRead("myVariable", coordinate);
-		VariableRead secondRead = new VariableRead("myVariable", coordinate);
+		VariableRead firstRead = new VariableRead(coordinate, "myVariable");
+		VariableRead secondRead = new VariableRead(coordinate, "myVariable");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -336,13 +412,13 @@ public class BlockTest
 		Expression number = new Literal(PrimitiveType.DOUBLE, "1");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var", number);
 
-		VariableRead firstRead = new VariableRead("var", coordinate);
+		VariableRead firstRead = new VariableRead(coordinate, "var");
 		VariableWrite secondWrite = new VariableWrite(coordinate, "var", firstRead);
 
-		VariableRead secondRead = new VariableRead("var", coordinate);
+		VariableRead secondRead = new VariableRead(coordinate, "var");
 		VariableWrite thirdWrite = new VariableWrite(coordinate, "var", secondRead);
 
-		VariableRead thirdRead = new VariableRead("var", coordinate);
+		VariableRead thirdRead = new VariableRead(coordinate, "var");
 		VariableWrite fourthWrite = new VariableWrite(coordinate, "var", thirdRead);
 
 		Array<Statement> statements =
@@ -388,17 +464,17 @@ public class BlockTest
 
 		VariableDeclaration secondDeclaration =
 			new VariableDeclaration("var2", PrimitiveType.DOUBLE);
-		VariableRead firstRead = new VariableRead("var1", coordinate);
+		VariableRead firstRead = new VariableRead(coordinate, "var1");
 		VariableWrite secondWrite = new VariableWrite(coordinate, "var2", firstRead);
 
 		VariableDeclaration thirdDeclaration =
 			new VariableDeclaration("var3", PrimitiveType.DOUBLE);
-		VariableRead secondRead = new VariableRead("var2", coordinate);
+		VariableRead secondRead = new VariableRead(coordinate, "var2");
 		VariableWrite thirdWrite = new VariableWrite(coordinate, "var3", secondRead);
 
 		VariableDeclaration fourthDeclaration =
 			new VariableDeclaration("var4", PrimitiveType.DOUBLE);
-		VariableRead thirdRead = new VariableRead("var3", coordinate);
+		VariableRead thirdRead = new VariableRead(coordinate, "var3");
 		VariableWrite fourthWrite = new VariableWrite(coordinate, "var4", thirdRead);
 
 		Array<Statement> statements =
@@ -447,7 +523,7 @@ public class BlockTest
 
 		VariableDeclaration secondDeclaration =
 			new VariableDeclaration("var2", PrimitiveType.DOUBLE);
-		VariableRead firstRead = new VariableRead("var1", coordinate);
+		VariableRead firstRead = new VariableRead(coordinate, "var1");
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
 
 		Expression addition =
@@ -488,15 +564,13 @@ public class BlockTest
 	}
 
 	@Test
-	public void testFirstOperandIsNothing()
+	public void testEmptyBlock()
 	{
 		Coordinate coordinate = new Coordinate(3, 4);
 		Block block = new Block(coordinate, new Array<>());
 
-		Expression operand = block.getFirstOperand();
 		Expression expression = block.getExpression();
 
-		assertTrue(operand instanceof Nothing);
 		assertTrue(expression instanceof Nothing);
 		assertTrue(block.isEmpty());
 	}
@@ -505,7 +579,7 @@ public class BlockTest
 	public void testGettingVariables()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		VariableRead read = new VariableRead("myVariable", coordinate);
+		VariableRead read = new VariableRead(coordinate, "myVariable");
 		VariableWrite write = new VariableWrite(coordinate, "var", read);
 		Statement block = new Block(coordinate, new Array<>(write));
 
@@ -517,7 +591,7 @@ public class BlockTest
 
 		assertTrue(writes.indexOf(write) >= 0);
 
-		assertEquals(read, block.getFirstOperand());
 		assertEquals(read, block.getExpression());
+		assertFalse(block.isEmpty());
 	}
 }

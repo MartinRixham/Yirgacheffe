@@ -43,11 +43,6 @@ public class Negation implements Expression
 		return errors;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.expression.getFirstOperand();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.expression.getVariableReads();

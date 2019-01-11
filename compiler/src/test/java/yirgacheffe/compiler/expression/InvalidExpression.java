@@ -29,11 +29,6 @@ public class InvalidExpression implements Expression
 		return new Array<>(error);
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this;
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();

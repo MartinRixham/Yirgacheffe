@@ -42,11 +42,6 @@ public class Branch implements Statement
 		return errors;
 	}
 
-	public Expression getFirstOperand()
-	{
-		return this.conditional.getFirstOperand();
-	}
-
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.conditional.getVariableReads();

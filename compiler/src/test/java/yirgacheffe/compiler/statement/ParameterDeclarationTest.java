@@ -16,7 +16,6 @@ public class ParameterDeclarationTest
 		ParameterDeclaration parameterDeclaration =
 			new ParameterDeclaration("myParam", PrimitiveType.DOUBLE);
 
-		assertTrue(parameterDeclaration.getFirstOperand() instanceof Nothing);
 		assertEquals(new Array<>(), parameterDeclaration.getVariableReads());
 		assertEquals(new Array<>(), parameterDeclaration.getVariableWrites());
 		assertTrue(parameterDeclaration.getExpression() instanceof Nothing);

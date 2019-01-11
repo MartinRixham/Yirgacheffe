@@ -48,6 +48,5 @@ public class ThisTest
 		Array<VariableRead> reads = thisStatement.getVariableReads();
 
 		assertEquals(0, reads.length());
-		assertEquals(thisStatement, thisStatement.getFirstOperand());
 	}
 }
