@@ -28,7 +28,9 @@ interfaceDeclaration:
 
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
-	block;
+	'{'
+		statement*
+	'}';
 
 classMethodDeclaration: modifier? type signature;
 

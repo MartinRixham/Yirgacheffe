@@ -107,7 +107,7 @@ public class Block implements Statement
 			if (!optimised)
 			{
 				variableWrites.addAll(
-						Arrays.asList(statement.getVariableWrites().toArray()));
+					Arrays.asList(statement.getVariableWrites().toArray()));
 			}
 
 			variableReads.removeAll(Collections.singleton(statement));
