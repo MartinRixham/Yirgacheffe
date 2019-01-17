@@ -6,6 +6,7 @@ import yirgacheffe.lang.Array;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -31,7 +32,7 @@ public final class Yirgacheffe
 		for (String sourceFile : this.sourceFiles)
 		{
 			byte[] encoded = Files.readAllBytes(Paths.get(sourceFile));
-			String source = new String(encoded, "UTF-8");
+			String source = new String(encoded, StandardCharsets.UTF_8);
 			Compiler compiler = new Compiler(sourceFile, source);
 
 			compilers.push(compiler);

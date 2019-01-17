@@ -10,7 +10,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class MainMethodListener extends MethodListener
+public class MainMethodListener extends ParallelMethodListener
 {
 	public MainMethodListener(String sourceFile, Classes classes)
 	{

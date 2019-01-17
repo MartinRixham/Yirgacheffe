@@ -17,7 +17,7 @@ importStatement: Import packageName '.' Identifier semicolon;
 classDeclaration:
 	(Class | Identifier) Identifier?
 	'{'
-		(function | interfaceMethodDeclaration | field)*
+		(function | parallelMethod | interfaceMethodDeclaration | field)*
 	'}';
 
 interfaceDeclaration:
@@ -32,9 +32,17 @@ function:
 		statement*
 	'}';
 
+parallelMethod:
+	parallelMethodDeclaration
+	'{'
+		statement*
+	'}';
+
 classMethodDeclaration: modifier? type signature;
 
 mainMethodDeclaration: modifier? Main signature;
+
+parallelMethodDeclaration: Parallel classMethodDeclaration;
 
 constructorDeclaration: modifier? signature;
 
@@ -112,8 +120,8 @@ multiply: unaryExpression (multiplicative unaryExpression)*;
 multiplicative: Remainder | Divide | Multiply;
 
 unaryExpression:
-    (instantiation | literal | variableRead | thisRead | parenthesis | negation)
-    (fieldRead | methodCall)*;
+	(instantiation | literal | variableRead | thisRead | parenthesis | negation)
+	(fieldRead | methodCall)*;
 
 variableRead: Identifier;
 
@@ -153,6 +161,7 @@ Return: 'return';
 Main: 'main';
 If: 'if';
 Else: 'else';
+Parallel: 'parallel';
 
 // operators
 Remainder: '%';

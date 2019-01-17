@@ -51,11 +51,11 @@ public class Literal implements Expression
 		{
 			Double dub = new Double(this.text);
 
-			if (dub.doubleValue() == 0)
+			if (dub == 0)
 			{
 				methodVisitor.visitInsn(Opcodes.DCONST_0);
 			}
-			else if (dub.doubleValue() == 1)
+			else if (dub == 1)
 			{
 				methodVisitor.visitInsn(Opcodes.DCONST_1);
 			}
