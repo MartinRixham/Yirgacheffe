@@ -95,10 +95,10 @@ public class Block implements Statement
 
 			for (VariableRead variableRead: variableReads)
 			{
-				if (statement.equals(variableRead) &&
-					Collections.frequency(variableReads, statement) == 1)
+				if (this.canOptimise(statement, variableRead, variableReads, i))
 				{
-					this.statements.splice(i, 1);
+					Statement optimisedStatement = new OptimisedStatement(statement);
+					this.statements.splice(i, 1, optimisedStatement);
 					variables.optimise(variableRead, (VariableWrite) statement);
 					optimised = true;
 				}
@@ -110,17 +110,39 @@ public class Block implements Statement
 					Arrays.asList(statement.getVariableWrites().toArray()));
 			}
 
-			variableReads.removeAll(Collections.singleton(statement));
-
 			if (statement instanceof VariableDeclaration &&
 				!variableWrites.contains(statement))
 			{
 					this.statements.splice(i, 1);
 			}
 
+			variableReads.removeAll(Collections.singleton(statement));
 			variableReads.addAll(
 				Arrays.asList(statement.getVariableReads().toArray()));
 		}
+	}
+
+	private boolean canOptimise(
+		Statement statement,
+		VariableRead variableRead,
+		List<VariableRead> variableReads,
+		int index)
+	{
+		if (!statement.equals(variableRead) ||
+			Collections.frequency(variableReads, statement) != 1)
+		{
+			return false;
+		}
+
+		while (!this.statements.get(++index).getVariableReads().contains(variableRead))
+		{
+			if (statement.getVariableReads().contains(this.statements.get(index)))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private void optimiseTailCall(Signature caller, Variables variables)

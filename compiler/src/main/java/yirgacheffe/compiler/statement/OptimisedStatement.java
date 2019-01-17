@@ -3,14 +3,20 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class DoNothing implements Statement
+public class OptimisedStatement implements Statement
 {
+	private Statement statement;
+
+	public OptimisedStatement(Statement statement)
+	{
+		this.statement = statement;
+	}
+
 	public boolean returns()
 	{
 		return false;
@@ -26,7 +32,7 @@ public class DoNothing implements Statement
 
 	public Array<VariableRead> getVariableReads()
 	{
-		return new Array<>();
+		return this.statement.getVariableReads();
 	}
 
 	public Array<VariableWrite> getVariableWrites()
@@ -34,13 +40,11 @@ public class DoNothing implements Statement
 		return new Array<>();
 	}
 
-	@Override
 	public Expression getExpression()
 	{
-		return new Nothing();
+		return this.statement.getExpression();
 	}
 
-	@Override
 	public boolean isEmpty()
 	{
 		return true;

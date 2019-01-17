@@ -274,6 +274,11 @@ public class Array<T> implements Iterable<T>
 		return Arrays.asList(this.array).indexOf(item);
 	}
 
+	public boolean contains(Object item)
+	{
+		return Arrays.asList(this.array).contains(item);
+	}
+
 	private void grow(int minimum)
 	{
 		int length = this.array.length;

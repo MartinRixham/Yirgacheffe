@@ -594,4 +594,76 @@ public class BlockTest
 		assertEquals(read, block.getExpression());
 		assertFalse(block.isEmpty());
 	}
+
+	@Test
+	public void testDoNotCommuteReadAndWrite()
+	{
+		Signature caller = new Signature("method", new Array<>());
+		Coordinate coordinate = new Coordinate(4, 0);
+
+		VariableDeclaration variableDeclaration =
+				new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
+		VariableDeclaration notherVariableDeclaration =
+			new VariableDeclaration("notherVariable", PrimitiveType.DOUBLE);
+
+		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
+		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
+
+		VariableWrite notherVariableWrite =
+			new VariableWrite(coordinate, "notherVariable", variableRead);
+
+		VariableRead notherVariableRead = new VariableRead(coordinate, "notherVariable");
+
+		Return returnStatement =
+			new Return(coordinate, PrimitiveType.DOUBLE, notherVariableRead);
+
+		Array<Statement> statements =
+			new Array<>(
+				variableDeclaration,
+				notherVariableDeclaration,
+				variableWrite,
+				notherVariableWrite,
+				variableWrite,
+				returnStatement);
+
+		Block block = new Block(coordinate, statements);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DSTORE, secondInstruction.getOpcode());
+		assertEquals(3, secondInstruction.var);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DSTORE, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DLOAD, fifthInstruction.getOpcode());
+		assertEquals(3, fifthInstruction.var);
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DRETURN, sixthInstruction.getOpcode());
+	}
 }
