@@ -28,12 +28,12 @@ interfaceDeclaration:
 
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
-	'{'
-		statement*
-	'}';
+	functionBlock;
 
 parallelMethod:
-	parallelMethodDeclaration
+	parallelMethodDeclaration functionBlock;
+
+functionBlock:
 	'{'
 		statement*
 	'}';

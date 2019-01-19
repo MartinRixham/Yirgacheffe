@@ -4,8 +4,10 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -13,6 +15,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.lang.Array;
 
 import java.util.List;
 
@@ -49,6 +52,8 @@ public class ParallelMethodListenerTest
 		MethodNode firstMethod = (MethodNode) methods.get(0);
 
 		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(11, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -107,5 +112,44 @@ public class ParallelMethodListenerTest
 		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
 
 		assertEquals(Opcodes.ARETURN, eleventhInstruction.getOpcode());
+
+		this.testGeneratedClass(result);
+	}
+
+	private void testGeneratedClass(CompilationResult result)
+	{
+		Array<byte[]> generatedClasses = result.getGeneratedClasses();
+
+		assertEquals(1, generatedClasses.length());
+
+		ClassReader reader = new ClassReader(generatedClasses.get(0));
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		FieldNode firstField = (FieldNode) fields.get(0);
+
+		assertEquals("Ljava/lang/Comparable;", firstField.desc);
+		assertEquals("0", firstField.name);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(2, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("thingy", firstInstruction.cst);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ARETURN, secondInstruction.getOpcode());
 	}
 }

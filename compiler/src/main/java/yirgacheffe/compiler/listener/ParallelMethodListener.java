@@ -1,12 +1,16 @@
 package yirgacheffe.compiler.listener;
 
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ParallelMethodListener extends MethodListener
 {
+	private ClassWriter generatedClassWriter;
+
 	public ParallelMethodListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -18,10 +22,13 @@ public class ParallelMethodListener extends MethodListener
 	{
 		MethodVisitor methodVisitor = this.methodVisitor;
 
+		String methodName =
+			context.classMethodDeclaration().signature().Identifier().getText();
+
 		String runnableClass =
 			this.packageName + "/" +
 			this.className + "$" +
-			context.classMethodDeclaration().signature().Identifier();
+			methodName;
 
 		methodVisitor.visitTypeInsn(Opcodes.NEW, runnableClass);
 		methodVisitor.visitInsn(Opcodes.DUP);
@@ -56,5 +63,42 @@ public class ParallelMethodListener extends MethodListener
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
 		methodVisitor.visitInsn(Opcodes.ARETURN);
+
+		ClassWriter writer =
+			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+
+		writer.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+			runnableClass,
+			null,
+			"java/lang/Object",
+			null);
+
+		this.methodVisitor =
+			writer.visitMethod(
+				Opcodes.ACC_PRIVATE,
+				methodName,
+				"()V",
+				null,
+				null);
+
+		this.generatedClassWriter = writer;
+	}
+
+	@Override
+	public void exitParallelMethod(YirgacheffeParser.ParallelMethodContext context)
+	{
+		ClassWriter writer = this.generatedClassWriter;
+
+		YirgacheffeParser.TypeContext typeContext =
+			context.parallelMethodDeclaration().classMethodDeclaration().type();
+
+		Type type = this.types.getType(typeContext);
+
+		writer.visitField(
+			Opcodes.ACC_PUBLIC, "0", type.toJVMType(), null, null);
+
+		this.generatedClasses.push(writer.toByteArray());
 	}
 }

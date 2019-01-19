@@ -126,7 +126,7 @@ public class MethodListener extends TypeListener
 	}
 
 	@Override
-	public void exitFunction(YirgacheffeParser.FunctionContext context)
+	public void exitFunctionBlock(YirgacheffeParser.FunctionBlockContext context)
 	{
 		this.statements.unshift(new LabelStatement(this.signature.getLabel()));
 

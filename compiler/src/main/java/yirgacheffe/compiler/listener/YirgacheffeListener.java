@@ -28,6 +28,8 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	protected Classes classes;
 
+	protected Array<byte[]> generatedClasses = new Array<>();
+
 	public YirgacheffeListener(String sourceFile, Classes classes)
 	{
 		this.sourceFile = sourceFile;
@@ -74,7 +76,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			String classFileName = this.directory + this.className + ".class";
 			byte[] bytes = this.writer.toByteArray();
 
-			return new CompilationResult(classFileName, bytes);
+			return new CompilationResult(classFileName, bytes, this.generatedClasses);
 		}
 	}
 
