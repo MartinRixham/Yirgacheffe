@@ -1,11 +1,15 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
+
+import java.lang.reflect.Method;
 
 public class ParallelMethodListener extends MethodListener
 {
@@ -99,20 +103,6 @@ public class ParallelMethodListener extends MethodListener
 		writer.visitField(
 			Opcodes.ACC_PUBLIC, "0", type.toJVMType(), null, null);
 
-		this.compileRunMethod(writer, context, type);
-
-		this.generatedClasses.push(writer.toByteArray());
-	}
-
-	private void compileRunMethod(
-		ClassWriter writer,
-		YirgacheffeParser.ParallelMethodContext context,
-		Type type)
-	{
-		MethodVisitor methodVisitor =
-			writer.visitMethod(
-				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
-
 		String methodName =
 			context.parallelMethodDeclaration().classMethodDeclaration()
 				.signature().Identifier().getText();
@@ -121,6 +111,23 @@ public class ParallelMethodListener extends MethodListener
 			this.packageName + "/" +
 				this.className + "$" +
 				methodName;
+
+		this.compileRunMethod(writer, type, runnableClass, methodName);
+		this.compileInterfaceMethods(writer, type, runnableClass);
+		this.generatedClasses.push(writer.toByteArray());
+	}
+
+	private void compileRunMethod(
+		ClassWriter writer,
+		Type type,
+		String runnableClass,
+		String methodName)
+	{
+		MethodVisitor methodVisitor =
+			writer.visitMethod(
+				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
@@ -136,5 +143,65 @@ public class ParallelMethodListener extends MethodListener
 			type.toJVMType());
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
+		methodVisitor.visitMaxs(0, 0);
+	}
+
+	private void compileInterfaceMethods(
+		ClassWriter writer,
+		Type type,
+		String runnableClass)
+	{
+		Method[] interfaceMethods = type.reflectionClass().getMethods();
+
+		for (Method method: interfaceMethods)
+		{
+			Function function = new Function(type, method);
+
+			MethodVisitor methodVisitor =
+				writer.visitMethod(
+					Opcodes.ACC_PUBLIC,
+					method.getName(),
+					function.getDescriptor(),
+					null,
+					null);
+
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitFieldInsn(
+				Opcodes.GETFIELD,
+				runnableClass,
+				"0",
+				type.toJVMType());
+
+			Label label = new Label();
+
+			methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, label);
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Object",
+				"wait",
+				"()V",
+				false);
+
+			methodVisitor.visitLabel(label);
+
+			methodVisitor.visitFieldInsn(
+				Opcodes.GETFIELD,
+				runnableClass,
+				"0",
+				type.toJVMType());
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				type.toFullyQualifiedType().replace(".", "/"),
+				method.getName(),
+				function.getDescriptor(),
+				false);
+
+			methodVisitor.visitInsn(type.getReturnInstruction());
+			methodVisitor.visitMaxs(0, 0);
+		}
 	}
 }
