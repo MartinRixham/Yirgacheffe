@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -127,6 +128,12 @@ public class ParallelMethodListenerTest
 
 		reader.accept(classNode, 0);
 
+		List interfaces = classNode.interfaces;
+
+		assertEquals(2, interfaces.size());
+		assertEquals("java/lang/Runnable", interfaces.get(0));
+		assertEquals("java/lang/Comparable", interfaces.get(1));
+
 		List fields = classNode.fields;
 
 		assertEquals(1, fields.size());
@@ -137,10 +144,16 @@ public class ParallelMethodListenerTest
 		assertEquals("0", firstField.name);
 
 		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
 
-		InsnList instructions = firstMethod.instructions;
+		this.testThreadMethod((MethodNode) methods.get(0));
+		this.testRunMethod((MethodNode) methods.get(1));
+	}
 
+	private void testThreadMethod(MethodNode method)
+	{
+		InsnList instructions = method.instructions;
+
+		assertEquals("method", method.name);
 		assertEquals(2, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
@@ -151,5 +164,31 @@ public class ParallelMethodListenerTest
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.ARETURN, secondInstruction.getOpcode());
+	}
+
+	private void testRunMethod(MethodNode method)
+	{
+		InsnList instructions = method.instructions;
+
+		assertEquals("run", method.name);
+		assertEquals(3, instructions.size());
+
+		MethodInsnNode firstInstruction = (MethodInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, firstInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", firstInstruction.owner);
+		assertEquals("method", firstInstruction.name);
+		assertEquals("()Ljava/lang/Comparable;", firstInstruction.desc);
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.PUTFIELD, secondInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", secondInstruction.owner);
+		assertEquals("0", secondInstruction.name);
+		assertEquals("Ljava/lang/Comparable;", secondInstruction.desc);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
 	}
 }

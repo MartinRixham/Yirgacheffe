@@ -73,7 +73,7 @@ public class ParallelMethodListener extends MethodListener
 			runnableClass,
 			null,
 			"java/lang/Object",
-			null);
+			new String[] {"java/lang/Runnable", "java/lang/Comparable"});
 
 		this.methodVisitor =
 			writer.visitMethod(
@@ -99,6 +99,42 @@ public class ParallelMethodListener extends MethodListener
 		writer.visitField(
 			Opcodes.ACC_PUBLIC, "0", type.toJVMType(), null, null);
 
+		this.compileRunMethod(writer, context, type);
+
 		this.generatedClasses.push(writer.toByteArray());
+	}
+
+	private void compileRunMethod(
+		ClassWriter writer,
+		YirgacheffeParser.ParallelMethodContext context,
+		Type type)
+	{
+		MethodVisitor methodVisitor =
+			writer.visitMethod(
+				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
+
+		String methodName =
+			context.parallelMethodDeclaration().classMethodDeclaration()
+				.signature().Identifier().getText();
+
+		String runnableClass =
+			this.packageName + "/" +
+				this.className + "$" +
+				methodName;
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			runnableClass,
+			methodName,
+			"()" + type.toJVMType(),
+			false);
+
+		methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			runnableClass,
+			"0",
+			type.toJVMType());
+
+		methodVisitor.visitInsn(Opcodes.RETURN);
 	}
 }
