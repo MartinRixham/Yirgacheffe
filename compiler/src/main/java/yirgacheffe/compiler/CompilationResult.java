@@ -13,12 +13,12 @@ public class CompilationResult
 
 	private Array<Error> errors;
 
-	private Array<byte[]> generatedClasses;
+	private Array<GeneratedClass> generatedClasses;
 
 	public CompilationResult(
 		String classFileName,
 		byte[] bytecode,
-		Array<byte[]> generatedClasses)
+		Array<GeneratedClass> generatedClasses)
 	{
 		this.classFileName = classFileName;
 		this.bytecode = bytecode;
@@ -36,7 +36,7 @@ public class CompilationResult
 		return this.bytecode;
 	}
 
-	public Array<byte[]> getGeneratedClasses()
+	public Array<GeneratedClass> getGeneratedClasses()
 	{
 		return this.generatedClasses;
 	}

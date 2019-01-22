@@ -4,9 +4,11 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.GeneratedClass;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Method;
@@ -29,10 +31,8 @@ public class ParallelMethodListener extends MethodListener
 		String methodName =
 			context.classMethodDeclaration().signature().Identifier().getText();
 
-		String runnableClass =
-			this.packageName + "/" +
-			this.className + "$" +
-			methodName;
+		String packageName = this.packageName == null ? "" : this.packageName + "/";
+		String runnableClass = packageName + this.className + "$" + methodName;
 
 		methodVisitor.visitTypeInsn(Opcodes.NEW, runnableClass);
 		methodVisitor.visitInsn(Opcodes.DUP);
@@ -67,6 +67,7 @@ public class ParallelMethodListener extends MethodListener
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
 		methodVisitor.visitInsn(Opcodes.ARETURN);
+		methodVisitor.visitMaxs(0, 0);
 
 		ClassWriter writer =
 			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -79,11 +80,13 @@ public class ParallelMethodListener extends MethodListener
 			"java/lang/Object",
 			new String[] {"java/lang/Runnable", "java/lang/Comparable"});
 
+		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
+
 		this.methodVisitor =
 			writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
 				methodName,
-				"()V",
+				descriptor,
 				null,
 				null);
 
@@ -107,14 +110,17 @@ public class ParallelMethodListener extends MethodListener
 			context.parallelMethodDeclaration().classMethodDeclaration()
 				.signature().Identifier().getText();
 
-		String runnableClass =
-			this.packageName + "/" +
-				this.className + "$" +
-				methodName;
+		String packageName = this.packageName == null ? "" : this.packageName + "/";
+		String runnableClass = packageName + this.className + "$" + methodName;
 
 		this.compileRunMethod(writer, type, runnableClass, methodName);
 		this.compileInterfaceMethods(writer, type, runnableClass);
-		this.generatedClasses.push(writer.toByteArray());
+		this.compileConstructor(writer);
+
+		GeneratedClass generatedClass =
+			new GeneratedClass(runnableClass + ".class", writer.toByteArray());
+
+		this.generatedClasses.push(generatedClass);
 	}
 
 	private void compileRunMethod(
@@ -128,6 +134,7 @@ public class ParallelMethodListener extends MethodListener
 				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitInsn(Opcodes.DUP);
 
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
@@ -141,6 +148,20 @@ public class ParallelMethodListener extends MethodListener
 			runnableClass,
 			"0",
 			type.toJVMType());
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitInsn(Opcodes.MONITORENTER);
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/Object",
+				"notifyAll",
+				"()V",
+				false);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitInsn(Opcodes.MONITOREXIT);
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
 		methodVisitor.visitMaxs(0, 0);
@@ -177,6 +198,8 @@ public class ParallelMethodListener extends MethodListener
 
 			methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, label);
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodVisitor.visitInsn(Opcodes.MONITORENTER);
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
@@ -185,13 +208,25 @@ public class ParallelMethodListener extends MethodListener
 				"()V",
 				false);
 
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodVisitor.visitInsn(Opcodes.MONITOREXIT);
+
 			methodVisitor.visitLabel(label);
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 			methodVisitor.visitFieldInsn(
 				Opcodes.GETFIELD,
 				runnableClass,
 				"0",
 				type.toJVMType());
+
+			Array<Type> parameters = function.getParameterTypes();
+
+			for (int i = 0; i < parameters.length(); i++)
+			{
+				methodVisitor.visitVarInsn(
+					parameters.get(i).getLoadInstruction(), i + 1);
+			}
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
@@ -200,8 +235,31 @@ public class ParallelMethodListener extends MethodListener
 				function.getDescriptor(),
 				false);
 
-			methodVisitor.visitInsn(type.getReturnInstruction());
+			methodVisitor.visitInsn(function.getReturnType().getReturnInstruction());
 			methodVisitor.visitMaxs(0, 0);
 		}
+	}
+
+	public void compileConstructor(ClassWriter writer)
+	{
+		MethodVisitor methodVisitor =
+			writer.visitMethod(
+				Opcodes.ACC_PUBLIC,
+				"<init>",
+				"()V",
+				null,
+				null);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"java/lang/Object",
+			"<init>",
+			"()V",
+			false);
+
+		methodVisitor.visitInsn(Opcodes.RETURN);
+		methodVisitor.visitMaxs(0, 0);
 	}
 }

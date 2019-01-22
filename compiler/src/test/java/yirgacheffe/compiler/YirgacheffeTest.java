@@ -194,4 +194,25 @@ public class YirgacheffeTest
 		new File("example/reader/Writer.class").delete();
 		new File("example/reader/Reader.class").delete();
 	}
+
+	@Test
+	public void testThreadClassGeneratedForParallelMethod() throws Exception
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setErr(error);
+
+		Yirgacheffe.main(new String[] {"example/Parallel.yg"});
+
+		assertTrue(spyError.toString().length() == 0);
+		assertTrue(new FileInputStream("example/Parallel.class").read() != -1);
+		assertTrue(new FileInputStream("example/Parallel$getString.class").read() != -1);
+
+		System.setErr(originalError);
+
+		new File("example/Parallel.class").delete();
+		new File("example/Parallel$getString.class").delete();
+	}
 }

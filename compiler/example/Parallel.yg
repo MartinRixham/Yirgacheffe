@@ -1,0 +1,9 @@
+package example;
+
+class Parallel
+{
+    parallel public Comparable<String> getString()
+    {
+        return "thingy";
+    }
+}
