@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
@@ -18,6 +19,11 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.ConstantCallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 public class InvokeMethod implements Expression
@@ -31,6 +37,25 @@ public class InvokeMethod implements Expression
 	private Expression owner;
 
 	private Array<Expression> arguments;
+
+	public static CallSite bootstrap(MethodHandles.Lookup l, String name, MethodType type)
+	{
+		Class<?> receiver = type.parameterType(0);
+		type = type.dropParameterTypes(0, 1);
+
+		MethodHandle target;
+
+		try
+		{
+			target = l.findVirtual(receiver, name, type);
+		}
+		catch(NoSuchMethodException|IllegalAccessException ex)
+		{
+			throw new BootstrapMethodError(ex);
+		}
+
+		return new ConstantCallSite(target);
+	}
 
 	public InvokeMethod(
 		Coordinate coordinate,
@@ -104,19 +129,26 @@ public class InvokeMethod implements Expression
 
 		errors.push(arguments.compile(parameters, methodVisitor, variables));
 
-		boolean isInterface = owner.reflectionClass().isInterface();
+		String ownerDescriptor = this.withSlashes(owner);
 
-		int invocationOpcode =
-			isInterface ? Opcodes.INVOKEINTERFACE :
-				function.isPublic() ? Opcodes.INVOKEVIRTUAL :
-					Opcodes.INVOKESPECIAL;
+		String descriptor =
+			'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
+			ownerDescriptor + ';' : ownerDescriptor) +
+			function.getDescriptor().substring(1);
 
-		methodVisitor.visitMethodInsn(
-			invocationOpcode,
-			this.withSlashes(owner),
+		Handle bootstrapMethod =
+			new Handle(
+				Opcodes.H_INVOKESTATIC,
+				InvokeMethod.class.getName().replace(".", "/"),
+				"bootstrap",
+			 "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;)" +
+					 "Ljava/lang/invoke/CallSite;",
+				false);
+
+		methodVisitor.visitInvokeDynamicInsn(
 			function.getName(),
-			function.getDescriptor(),
-			isInterface);
+			descriptor,
+			bootstrapMethod);
 
 		Type returnType = function.getReturnType();
 
