@@ -15,6 +15,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.statement.TailCall;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -372,7 +373,7 @@ public class InvokeMethodTest
 				arguments);
 
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE);
-		Signature signature = new Signature(name, parameters);
+		Signature signature = new Signature(new NullType(), name, parameters);
 
 		TailCall tailCall =
 			new TailCall(new FunctionCall(invokeMethod), signature, variables);

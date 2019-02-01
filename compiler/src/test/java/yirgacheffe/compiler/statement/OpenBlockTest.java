@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -19,7 +20,7 @@ public class OpenBlockTest
 	@Test
 	public void testOpenBlock()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		OpenBlock openBlock = new OpenBlock();
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();

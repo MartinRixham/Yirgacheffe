@@ -7,6 +7,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -60,7 +61,9 @@ public class Block implements Statement
 		for (int i = 0; i < statements.length(); i++)
 		{
 			Signature call =
-				i == statements.length() - 1 ? caller : new Signature("", new Array<>());
+				i == statements.length() - 1 ?
+					caller :
+					new Signature(new NullType(), "", new Array<>());
 
 			errors.push(statements.get(i).compile(methodVisitor, variables, call));
 

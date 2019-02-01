@@ -18,6 +18,13 @@ public class MainMethodListener extends ParallelMethodListener
 	}
 
 	@Override
+	public void enterMainMethodDeclaration(
+		YirgacheffeParser.MainMethodDeclarationContext context)
+	{
+		this.returnType = PrimitiveType.VOID;
+	}
+
+	@Override
 	public void exitMainMethodDeclaration(
 		YirgacheffeParser.MainMethodDeclarationContext context)
 	{
@@ -47,17 +54,13 @@ public class MainMethodListener extends ParallelMethodListener
 
 		this.mainMethodName = signature.Identifier().getText();
 
-		String descriptor = this.signature.getDescriptor() + "V";
-
 		this.methodVisitor =
 			this.writer.visitMethod(
 				Opcodes.ACC_PUBLIC,
 				this.mainMethodName,
-				descriptor,
-				null,
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
 				null);
-
-		this.returnType = PrimitiveType.VOID;
 	}
 
 	private void checkMultipleMainMethods(

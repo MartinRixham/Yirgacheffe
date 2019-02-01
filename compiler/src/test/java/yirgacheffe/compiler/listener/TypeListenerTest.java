@@ -7,6 +7,7 @@ import yirgacheffe.compiler.type.Classes;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class TypeListenerTest
 {
@@ -52,5 +53,35 @@ public class TypeListenerTest
 			"line 4:4 Type yirgacheffe.lang.MutableReference" +
 				" requires 1 parameter(s) but found 0.",
 			result.getErrors().split("\n")[0]);
+	}
+
+	@Test
+	public void testParameterisedReturnType()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.getMap().get(\"hello\");\n" +
+				"}\n" +
+				"public Map<String, String> getMap()\n" +
+				"{\n" +
+					"return new HashMap<String, String>();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
 	}
 }

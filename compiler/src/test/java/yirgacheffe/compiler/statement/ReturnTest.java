@@ -11,6 +11,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -25,7 +26,7 @@ public class ReturnTest
 	@Test
 	public void testVoidReturn()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate);
 		MethodNode methodVisitor = new MethodNode();
@@ -49,7 +50,7 @@ public class ReturnTest
 	@Test
 	public void testReturnNum()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.DOUBLE;
 		Expression expression = new Literal(returnType, "1");
@@ -77,7 +78,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnString()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
@@ -111,7 +112,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnBoolean()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
@@ -139,7 +140,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnDouble()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.DOUBLE;
 		Expression expression = new Literal(PrimitiveType.BOOLEAN, "1");

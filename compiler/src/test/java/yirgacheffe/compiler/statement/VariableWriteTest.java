@@ -14,6 +14,7 @@ import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -29,7 +30,7 @@ public class VariableWriteTest
 	@Test
 	public void testVariableWrite()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
@@ -61,7 +62,7 @@ public class VariableWriteTest
 	@Test
 	public void testWriteInvalidExpression()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 2);
 		Type string = new ReferenceType(String.class);
 		Expression value = new InvalidExpression(string);

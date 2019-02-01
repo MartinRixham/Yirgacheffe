@@ -6,14 +6,17 @@ import yirgacheffe.lang.Array;
 
 public class Signature
 {
+	private Type returnType;
+
 	private String name;
 
 	private Array<Type> parameters;
 
 	private Label label = new Label();
 
-	public Signature(String name, Array<Type> parameters)
+	public Signature(Type returnType, String name, Array<Type> parameters)
 	{
+		this.returnType = returnType;
 		this.name = name;
 		this.parameters = parameters;
 	}
@@ -52,7 +55,39 @@ public class Signature
 			strings[i] = this.parameters.get(i).toJVMType();
 		}
 
-		return "(" + String.join("", strings) + ")";
+		return "(" + String.join("", strings) + ")" + this.returnType.toJVMType();
+	}
+
+	public String getSignature()
+	{
+		if (this.returnType.hasParameter())
+		{
+			return this.reallyGetSignature();
+		}
+
+		for (Type type: this.parameters)
+		{
+			if (type.hasParameter())
+			{
+				return this.reallyGetSignature();
+			}
+		}
+
+		return null;
+	}
+
+	private String reallyGetSignature()
+	{
+		String[] strings = new String[this.parameters.length()];
+
+		for (int i = 0; i < strings.length; i++)
+		{
+			strings[i] = this.parameters.get(i).getSignature();
+		}
+
+		String returnType = this.returnType.getSignature();
+
+		return "(" + String.join("", strings) + ")" + returnType;
 	}
 
 	@Override

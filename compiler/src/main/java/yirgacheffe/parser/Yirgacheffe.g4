@@ -38,7 +38,7 @@ functionBlock:
 		statement*
 	'}';
 
-classMethodDeclaration: modifier? type signature;
+classMethodDeclaration: modifier? returnType signature;
 
 mainMethodDeclaration: modifier? Main signature;
 
@@ -46,7 +46,9 @@ parallelMethodDeclaration: Parallel classMethodDeclaration;
 
 constructorDeclaration: modifier? signature;
 
-interfaceMethodDeclaration: modifier? type signature semicolon;
+interfaceMethodDeclaration: modifier? returnType signature semicolon;
+
+returnType: type;
 
 signature: Identifier '(' parameter? (',' parameter)* ')';
 

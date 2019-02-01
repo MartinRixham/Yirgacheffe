@@ -59,6 +59,18 @@ public class GenericType implements Type
 		return this.type.isAssignableTo(other);
 	}
 
+	@Override
+	public boolean hasParameter()
+	{
+		return this.type.hasParameter();
+	}
+
+	@Override
+	public String getSignature()
+	{
+		return this.type.getSignature();
+	}
+
 	public Type unwrap()
 	{
 		return this.type;

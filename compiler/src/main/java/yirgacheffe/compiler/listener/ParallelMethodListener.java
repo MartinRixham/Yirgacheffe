@@ -80,14 +80,12 @@ public class ParallelMethodListener extends MethodListener
 			"java/lang/Object",
 			new String[] {"java/lang/Runnable", "java/lang/Comparable"});
 
-		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
-
 		this.methodVisitor =
 			writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
 				methodName,
-				descriptor,
-				null,
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
 				null);
 
 		this.generatedClassWriter = writer;
@@ -99,7 +97,10 @@ public class ParallelMethodListener extends MethodListener
 		ClassWriter writer = this.generatedClassWriter;
 
 		YirgacheffeParser.TypeContext typeContext =
-			context.parallelMethodDeclaration().classMethodDeclaration().type();
+			context.parallelMethodDeclaration()
+				.classMethodDeclaration()
+				.returnType()
+				.type();
 
 		Type type = this.types.getType(typeContext);
 

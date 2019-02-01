@@ -62,6 +62,18 @@ public class ReferenceType implements Type
 	}
 
 	@Override
+	public boolean hasParameter()
+	{
+		return false;
+	}
+
+	@Override
+	public String getSignature()
+	{
+		return this.toJVMType();
+	}
+
+	@Override
 	public boolean equals(Object other)
 	{
 		if (other instanceof ReferenceType)

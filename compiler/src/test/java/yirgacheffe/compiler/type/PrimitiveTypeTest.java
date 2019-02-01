@@ -17,11 +17,13 @@ public class PrimitiveTypeTest
 		assertEquals("Void", type.toString());
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
+		assertEquals("V", type.getSignature());
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.NOP, type.getStoreInstruction());
 		assertEquals(Opcodes.NOP, type.getLoadInstruction());
 		assertEquals(Opcodes.NOP, type.getZero());
+		assertFalse(type.hasParameter());
 	}
 
 	@Test

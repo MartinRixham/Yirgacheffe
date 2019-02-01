@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ParameterisedTypeTest
 {
@@ -23,11 +24,13 @@ public class ParameterisedTypeTest
 		assertEquals(List.class, type.reflectionClass());
 		assertEquals("java.util.List", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/List;", type.toJVMType());
+		assertEquals("Ljava/util/List<Ljava/lang/String;>;", type.getSignature());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
+		assertTrue(type.hasParameter());
 	}
 
 	@Test

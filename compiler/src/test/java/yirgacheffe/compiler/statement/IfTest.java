@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -28,7 +29,7 @@ public class IfTest
 	@Test
 	public void testIfStatement()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Expression condition = new Literal(PrimitiveType.BOOLEAN, "true");
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
@@ -62,7 +63,7 @@ public class IfTest
 	@Test
 	public void testInvalidCondition()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
@@ -78,7 +79,7 @@ public class IfTest
 	@Test
 	public void testInvalidStatement()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 

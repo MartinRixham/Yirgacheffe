@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -35,7 +36,7 @@ public class FieldWriteTest
 	@Test
 	public void testSuccessfulFieldWrite()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
@@ -74,7 +75,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToPrimitiveField()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(new ReferenceType(String.class), "\"one\"");
@@ -95,7 +96,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToStringField()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Literal(PrimitiveType.DOUBLE, "1");
@@ -116,7 +117,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignInvalidExpressionToInvalidExpression()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Type testClass = new ReferenceType(this.getClass());
 		Type string = new ReferenceType(String.class);

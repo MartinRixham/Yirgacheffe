@@ -19,4 +19,8 @@ public interface Type
 	int getZero();
 
 	boolean isAssignableTo(Type other);
+
+	boolean hasParameter();
+
+	String getSignature();
 }

@@ -50,6 +50,18 @@ public class NullType implements Type
 	}
 
 	@Override
+	public boolean hasParameter()
+	{
+		return false;
+	}
+
+	@Override
+	public String getSignature()
+	{
+		return null;
+	}
+
+	@Override
 	public String toString()
 	{
 		return "java.lang.Object";

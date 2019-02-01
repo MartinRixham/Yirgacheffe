@@ -55,15 +55,18 @@ public class MethodListener extends TypeListener
 			this.errors.push(new Error(context, message));
 		}
 
-		this.returnType = this.types.getType(context.type());
-		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
-
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
 			context.signature().Identifier().getText(),
-			descriptor,
+			this.signature.getDescriptor(),
 			null,
 			null);
+	}
+
+	@Override
+	public void exitReturnType(YirgacheffeParser.ReturnTypeContext context)
+	{
+		this.returnType = this.types.getType(context.type());
 	}
 
 	@Override
@@ -91,15 +94,12 @@ public class MethodListener extends TypeListener
 			name = context.signature().Identifier().getText();
 		}
 
-		this.returnType = this.types.getType(context.type());
-		String descriptor = this.signature.getDescriptor() + this.returnType.toJVMType();
-
 		this.methodVisitor =
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				name,
-				descriptor,
-				null,
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
 				null);
 	}
 
@@ -183,7 +183,10 @@ public class MethodListener extends TypeListener
 		}
 
 		this.signature =
-			new Signature(context.Identifier().getSymbol().getText(), parameters);
+			new Signature(
+				this.returnType,
+				context.Identifier().getSymbol().getText(),
+				parameters);
 
 		if (this.methods.contains(this.signature))
 		{

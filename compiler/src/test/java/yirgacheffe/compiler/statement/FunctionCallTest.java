@@ -29,7 +29,7 @@ public class FunctionCallTest
 	@Test
 	public void testFunctionThatReturnsDouble()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		MethodNode methodVisitor = new MethodNode();
 		Array<Expression> arguments =

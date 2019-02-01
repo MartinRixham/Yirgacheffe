@@ -17,12 +17,14 @@ public class ArrayTypeTest
 		assertEquals("java.lang.String[]", string.toString());
 		assertEquals("[Ljava.lang.String;", string.reflectionClass().getName());
 		assertEquals("[Ljava/lang/String;", string.toJVMType());
+		assertEquals("[Ljava/lang/String;", string.getSignature());
 		assertEquals("java.lang.String[]", string.toFullyQualifiedType());
 		assertEquals(1, string.width());
 		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, string.getZero());
+		assertFalse(string.hasParameter());
 	}
 
 	@Test

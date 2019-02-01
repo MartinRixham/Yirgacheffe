@@ -15,6 +15,13 @@ public class ConstructorListener extends MainMethodListener
 	}
 
 	@Override
+	public void enterConstructorDeclaration(
+		YirgacheffeParser.ConstructorDeclarationContext context)
+	{
+		this.returnType = PrimitiveType.VOID;
+	}
+
+	@Override
 	public void exitConstructorDeclaration(
 		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
@@ -46,16 +53,12 @@ public class ConstructorListener extends MainMethodListener
 			isPrivate = context.modifier().Private() != null;
 		}
 
-		this.returnType = PrimitiveType.VOID;
-
-		String descriptor = this.signature.getDescriptor() + "V";
-
 		this.methodVisitor =
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				"<init>",
-				descriptor,
-				null,
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
 				null);
 
 		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);

@@ -105,6 +105,29 @@ public class ParameterisedType implements Type
 		}
 	}
 
+	@Override
+	public boolean hasParameter()
+	{
+		return true;
+	}
+
+	@Override
+	public String getSignature()
+	{
+		Array<String> typeNames = new Array<>();
+		Class<?> primaryClass = this.primaryType.reflectionClass();
+
+		for (TypeVariable type: primaryClass.getTypeParameters())
+		{
+			typeNames.push(this.typeParameters.get(type.getName()).toJVMType());
+		}
+
+		String jvmType = this.toJVMType();
+
+		return jvmType.substring(0, jvmType.length() - 1) +
+			"<" + String.join("", typeNames) + ">;";
+	}
+
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)
 	{
 		Type type = this.typeParameters.get(typeName);

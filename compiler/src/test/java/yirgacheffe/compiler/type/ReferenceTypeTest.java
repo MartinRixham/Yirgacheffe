@@ -20,11 +20,13 @@ public class ReferenceTypeTest
 		assertEquals(loadedClass, type.reflectionClass());
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
+		assertEquals("Ljava/lang/String;", type.getSignature());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
+		assertFalse(type.hasParameter());
 	}
 
 	@Test

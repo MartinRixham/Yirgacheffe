@@ -18,6 +18,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Variables;
@@ -36,7 +37,7 @@ public class BlockTest
 	@Test
 	public void testFailToReadVariableDeclaredInBlock()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
@@ -60,7 +61,7 @@ public class BlockTest
 	@Test
 	public void testUnreachableCode()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 		Return returnStatement = new Return(coordinate);
 		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
@@ -83,7 +84,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForReturn()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -123,7 +124,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForMethodCall()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -178,7 +179,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseTwoLocalVariablesForMethodCall()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -252,7 +253,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwice()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -336,7 +337,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwiceAndNotFirstOperand()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		This testClass = new This(new ReferenceType(this.getClass()));
@@ -403,7 +404,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfLocalVariableLoadCalls()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -454,7 +455,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfVariableDeclarationAndLoadCalls()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -513,7 +514,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseVariableInAddition()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -598,7 +599,7 @@ public class BlockTest
 	@Test
 	public void testDoNotCommuteReadAndWrite()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =

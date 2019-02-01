@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -30,7 +31,7 @@ public class ElseTest
 	@Test
 	public void testElseStatement()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Expression condition = new Literal(PrimitiveType.BOOLEAN, "true");
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
@@ -81,7 +82,7 @@ public class ElseTest
 	@Test
 	public void testElseNotPrecededByIf()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
 		Statement ifStatement = new Block(coordinate, new Array<>());
@@ -101,7 +102,7 @@ public class ElseTest
 	@Test
 	public void testInvalidPrecondition()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -119,7 +120,7 @@ public class ElseTest
 	@Test
 	public void testInvalidStatement()
 	{
-		Signature caller = new Signature("method", new Array<>());
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();

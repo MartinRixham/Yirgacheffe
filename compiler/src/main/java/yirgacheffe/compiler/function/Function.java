@@ -14,6 +14,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 
 public class Function implements Callable
 {
@@ -58,6 +59,25 @@ public class Function implements Callable
 		Method method = (Method) this.executable;
 		java.lang.reflect.Type returned = method.getGenericReturnType();
 
+		return this.getReturnType(returned);
+	}
+
+	private Type getReturnType(java.lang.reflect.Type returned)
+	{
+		if (returned instanceof ParameterizedType)
+		{
+			ParameterizedType type = (ParameterizedType) returned;
+			ReferenceType primaryType = new ReferenceType((Class) type.getRawType());
+
+			Array<Type> typeParameters = new Array<>();
+
+			for (java.lang.reflect.Type typeArgument: type.getActualTypeArguments())
+			{
+				typeParameters.push(this.getReturnType(typeArgument));
+			}
+
+			return new ParameterisedType(primaryType, typeParameters);
+		}
 		if (returned instanceof Class)
 		{
 			return this.getType((Class) returned);
