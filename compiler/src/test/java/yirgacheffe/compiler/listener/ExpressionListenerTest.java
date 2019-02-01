@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
@@ -128,10 +128,10 @@ public class ExpressionListenerTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+		InvokeDynamicInsnNode secondInstruction =
+			(InvokeDynamicInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, secondInstruction.getOpcode());
-		assertEquals("MyClass", secondInstruction.owner);
+		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("getOne", secondInstruction.name);
 
 		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);

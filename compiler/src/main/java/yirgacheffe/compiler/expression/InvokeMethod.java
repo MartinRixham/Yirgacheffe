@@ -18,10 +18,9 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Bootstrap;
 
 import java.lang.invoke.CallSite;
-import java.lang.invoke.ConstantCallSite;
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
@@ -37,25 +36,6 @@ public class InvokeMethod implements Expression
 	private Expression owner;
 
 	private Array<Expression> arguments;
-
-	public static CallSite bootstrap(MethodHandles.Lookup l, String name, MethodType type)
-	{
-		Class<?> receiver = type.parameterType(0);
-		type = type.dropParameterTypes(0, 1);
-
-		MethodHandle target;
-
-		try
-		{
-			target = l.findVirtual(receiver, name, type);
-		}
-		catch(NoSuchMethodException|IllegalAccessException ex)
-		{
-			throw new BootstrapMethodError(ex);
-		}
-
-		return new ConstantCallSite(target);
-	}
 
 	public InvokeMethod(
 		Coordinate coordinate,
@@ -136,13 +116,19 @@ public class InvokeMethod implements Expression
 			ownerDescriptor + ';' : ownerDescriptor) +
 			function.getDescriptor().substring(1);
 
+		MethodType methodType =
+			MethodType.methodType(
+				CallSite.class,
+				MethodHandles.Lookup.class,
+				String.class,
+				MethodType.class);
+
 		Handle bootstrapMethod =
 			new Handle(
 				Opcodes.H_INVOKESTATIC,
-				InvokeMethod.class.getName().replace(".", "/"),
+				Bootstrap.class.getName().replace(".", "/"),
 				"bootstrap",
-			 "(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;)" +
-					 "Ljava/lang/invoke/CallSite;",
+				methodType.toMethodDescriptorString(),
 				false);
 
 		methodVisitor.visitInvokeDynamicInsn(

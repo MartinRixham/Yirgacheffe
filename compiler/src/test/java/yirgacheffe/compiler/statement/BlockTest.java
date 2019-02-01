@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -166,9 +167,10 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
 		assertEquals("valueOf", secondInstruction.name);
 
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+		InvokeDynamicInsnNode thirdInstruction =
+			(InvokeDynamicInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
 		assertEquals("toString", thirdInstruction.name);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
@@ -240,9 +242,10 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, fourthInstructionNode.getOpcode());
 		assertEquals("valueOf", fourthInstructionNode.name);
 
-		MethodInsnNode fifthInstructionNode = (MethodInsnNode) instructions.get(4);
+		InvokeDynamicInsnNode fifthInstructionNode =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstructionNode.getOpcode());
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstructionNode.getOpcode());
 		assertEquals("equals", fifthInstructionNode.name);
 
 		InsnNode sixthInstructionNode = (InsnNode) instructions.get(5);
@@ -316,9 +319,10 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, fourthInstruction.getOpcode());
 		assertEquals("valueOf", fourthInstruction.name);
 
-		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
 		assertEquals("toString", fifthInstruction.name);
 
 		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
@@ -395,9 +399,10 @@ public class BlockTest
 		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
 		assertEquals(1, fourthInstruction.var);
 
-		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
 		assertEquals("add", fifthInstruction.name);
 	}
 

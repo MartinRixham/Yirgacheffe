@@ -5,6 +5,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -27,7 +28,6 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class InvokeMethodTest
 {
@@ -69,13 +69,14 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
 
-		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+		InvokeDynamicInsnNode secondInstruction =
+			(InvokeDynamicInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, secondInstruction.getOpcode());
-		assertEquals("java/lang/String", secondInstruction.owner);
+		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("toString", secondInstruction.name);
-		assertEquals("()Ljava/lang/String;", secondInstruction.desc);
-		assertFalse(secondInstruction.itf);
+		assertEquals(
+			"(Ljava/lang/String;)Ljava/lang/String;",
+			secondInstruction.desc);
 
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
@@ -112,14 +113,14 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+		InvokeDynamicInsnNode secondInstruction =
+			(InvokeDynamicInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
-		assertEquals("yirgacheffe/compiler/expression/InvokeMethodTest",
-			secondInstruction.owner);
+		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("method", secondInstruction.name);
-		assertEquals("()V", secondInstruction.desc);
-		assertFalse(secondInstruction.itf);
+		assertEquals(
+			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;)V",
+			secondInstruction.desc);
 
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 	}
@@ -160,13 +161,14 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
 		assertEquals("sumpt", secondInstruction.cst);
 
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+		InvokeDynamicInsnNode thirdInstruction =
+			(InvokeDynamicInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
-		assertEquals("java/lang/String", thirdInstruction.owner);
-		assertEquals("(Ljava/lang/String;)Ljava/lang/String;", thirdInstruction.desc);
+		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
 		assertEquals("concat", thirdInstruction.name);
-		assertFalse(thirdInstruction.itf);
+		assertEquals(
+			"(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
+			thirdInstruction.desc);
 
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
@@ -263,13 +265,14 @@ public class InvokeMethodTest
 		assertEquals("valueOf", fifthInstruction.name);
 		assertFalse(fifthInstruction.itf);
 
-		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+		InvokeDynamicInsnNode sixthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, sixthInstruction.getOpcode());
-		assertEquals("java/util/HashMap", sixthInstruction.owner);
+		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
 		assertEquals("get", sixthInstruction.name);
-		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", sixthInstruction.desc);
-		assertFalse(sixthInstruction.itf);
+		assertEquals(
+			"(Ljava/util/HashMap;Ljava/lang/Object;)Ljava/lang/Object;",
+			sixthInstruction.desc);
 
 		TypeInsnNode seventhInstruction = (TypeInsnNode) instructions.get(6);
 
@@ -319,13 +322,12 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+		InvokeDynamicInsnNode secondInstruction =
+			(InvokeDynamicInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.INVOKEINTERFACE, secondInstruction.getOpcode());
-		assertEquals("java/lang/Runnable", secondInstruction.owner);
+		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("run", secondInstruction.name);
-		assertEquals("()V", secondInstruction.desc);
-		assertTrue(secondInstruction.itf);
+		assertEquals("(Ljava/lang/Runnable;)V", secondInstruction.desc);
 	}
 
 	@Test

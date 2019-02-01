@@ -13,7 +13,6 @@ import yirgacheffe.lang.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 
 public class Function implements Callable
@@ -136,10 +135,5 @@ public class Function implements Callable
 		{
 			return new Array<>();
 		}
-	}
-
-	public boolean isPublic()
-	{
-		return Modifier.isPublic(this.executable.getModifiers());
 	}
 }

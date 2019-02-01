@@ -39,9 +39,4 @@ public class NullFunction implements Callable
 	{
 		return new Array<>();
 	}
-
-	public boolean isPublic()
-	{
-		return true;
-	}
 }

@@ -16,6 +16,4 @@ public interface Callable
 	Array<Type> getParameterTypes();
 
 	Array<MismatchedTypes> checkTypeParameters(Arguments arguments);
-
-	boolean isPublic();
 }
