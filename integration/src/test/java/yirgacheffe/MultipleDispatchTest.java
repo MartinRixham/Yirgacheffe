@@ -23,9 +23,9 @@ public class MultipleDispatchTest
 			"{\n" +
 				"main hello(Array<String> args)" +
 				"{\n" +
-					"Object myClass = this;" +
+					"MyClass my = this;" +
 					"Object string = this.getString();" +
-					"Bool equal = myClass.equals(string);" +
+					"Bool equal = my.equals(string);" +
 					"new System().getOut().println(equal);" +
 				"}\n" +
 
@@ -37,6 +37,72 @@ public class MultipleDispatchTest
 				"public Bool equals(String other)" +
 				"{" +
 					"return true;" +
+				"}" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		classLoader.add("MyClass", result.getBytecode());
+
+		PrintStream originalOut = java.lang.System.out;
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		java.lang.System.setOut(out);
+
+		Class<?> myClass = classLoader.loadClass("MyClass");
+		Method hello = myClass.getMethod("main", String[].class);
+		String[] args = {};
+
+		hello.invoke(null, (Object) args);
+
+		assertEquals("true\n", spyOut.toString());
+
+		java.lang.System.setOut(originalOut);
+	}
+
+	@Test
+	public void testMatchingMethodWithTwoParameters() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main hello(Array<String> args)" +
+				"{\n" +
+					"MyClass my = this;" +
+					"Object string = this.getString();" +
+					"Bool equal = my.getTruth(string, string);" +
+					"new System().getOut().println(equal);" +
+				"}\n" +
+
+				"public Object getString()" +
+				"{" +
+					"return \"thingy\";" +
+				"}" +
+
+				"public Bool getTruth(Object first, String second)" +
+				"{" +
+					"return true;" +
+				"}" +
+
+				"public Bool getTruth(Object first, Object second)" +
+				"{" +
+					"return false;" +
 				"}" +
 			"}";
 
