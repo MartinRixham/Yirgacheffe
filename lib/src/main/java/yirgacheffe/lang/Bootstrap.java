@@ -70,45 +70,30 @@ public final class Bootstrap
 		Object[] arguments) throws IllegalAccessException
 	{
 		Method[] methods = receiver.getClass().getMethods();
-		Method[] namedMethods = new Method[methods.length];
-		int namedMethodCount = 0;
+		Method matchedMethod = null;
+		int bestMatches = -1;
 
 		for (int i = 0; i < methods.length; i++)
 		{
-			if (methods[i].getName().equals(methodName))
-			{
-				namedMethods[namedMethodCount++] = methods[i];
-			}
-		}
+			Class<?>[] parameterTypes = methods[i].getParameterTypes();
 
-		Class<?>[] argumentTypes = new Class<?>[arguments.length];
-
-		for (int i = 0; i < arguments.length; i++)
-		{
-			argumentTypes[i] = arguments[i].getClass();
-		}
-
-		Method matchedMethod = namedMethods[0];
-		int bestMatches = -1;
-
-		for (int i = 0; i < namedMethodCount; i++)
-		{
-			Class<?>[] parameterTypes = namedMethods[i].getParameterTypes();
-
-			if (argumentTypes.length == parameterTypes.length)
+			if (methods[i].getName().equals(methodName) &&
+				arguments.length == parameterTypes.length)
 			{
 				boolean matches = true;
 				int exactMatches = 0;
 
-				for (int j = 0; j < argumentTypes.length; j++)
+				for (int j = 0; j < arguments.length; j++)
 				{
-					if (!parameterTypes[j].isAssignableFrom(argumentTypes[j]))
+					if (!parameterTypes[j].isAssignableFrom(arguments[j].getClass()) &&
+						!("java.lang." + parameterTypes[j].getName())
+							.equals(arguments[j].getClass().getName().toLowerCase()))
 					{
 						matches = false;
 						break;
 					}
 					else if (parameterTypes[j].getName()
-						.equals(argumentTypes[j].getName()))
+						.equals(arguments[j].getClass().getName()))
 					{
 						exactMatches++;
 					}
@@ -117,7 +102,7 @@ public final class Bootstrap
 				if (matches && exactMatches > bestMatches)
 				{
 					bestMatches = exactMatches;
-					matchedMethod = namedMethods[i];
+					matchedMethod = methods[i];
 				}
 			}
 		}
