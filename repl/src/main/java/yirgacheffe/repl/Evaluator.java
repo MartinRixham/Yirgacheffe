@@ -29,7 +29,7 @@ public class Evaluator
 				"public String evaluate()" +
 				"{" +
 					String.join(" ", this.statements) +
-					" return " + this.expression + ".toString();" +
+					" return (" + this.expression + ").toString();" +
 				"}\n" +
 			"}";
 
