@@ -72,7 +72,7 @@ public final class Yirgacheffe
 				for (GeneratedClass generatedClass: result.getGeneratedClasses())
 				{
 					try (OutputStream outputStream =
-						new FileOutputStream(generatedClass.getFileName()))
+						new FileOutputStream(generatedClass.getClassName() + ".class"))
 					{
 						outputStream.write(generatedClass.getBytecode());
 					}

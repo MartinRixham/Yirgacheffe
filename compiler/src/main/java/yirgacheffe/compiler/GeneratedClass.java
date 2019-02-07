@@ -12,7 +12,7 @@ public class GeneratedClass
 		this.bytecode = bytecode;
 	}
 
-	public String getFileName()
+	public String getClassName()
 	{
 		return this.fileName;
 	}

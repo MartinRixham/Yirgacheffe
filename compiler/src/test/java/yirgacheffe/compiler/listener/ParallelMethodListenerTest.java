@@ -140,7 +140,7 @@ public class ParallelMethodListenerTest
 
 		List interfaces = classNode.interfaces;
 
-		assertEquals("myPackage/MyClass$method.class", generatedClass.getFileName());
+		assertEquals("myPackage/MyClass$method", generatedClass.getClassName());
 		assertEquals(2, interfaces.size());
 		assertEquals("java/lang/Runnable", interfaces.get(0));
 		assertEquals("java/lang/Comparable", interfaces.get(1));
@@ -329,7 +329,7 @@ public class ParallelMethodListenerTest
 
 		MethodInsnNode fifteenthInstruction = (MethodInsnNode) instructions.get(14);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fifteenthInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEINTERFACE, fifteenthInstruction.getOpcode());
 		assertEquals("java/lang/Comparable", fifteenthInstruction.owner);
 		assertEquals("compareTo", fifteenthInstruction.name);
 		assertEquals("(Ljava/lang/Object;)I", fifteenthInstruction.desc);
@@ -364,6 +364,5 @@ public class ParallelMethodListenerTest
 		assertEquals("()V", secondInstruction.desc);
 
 		assertEquals(Opcodes.RETURN, instructions.get(2).getOpcode());
-
 	}
 }

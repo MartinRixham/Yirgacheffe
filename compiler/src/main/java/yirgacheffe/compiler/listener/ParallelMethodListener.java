@@ -119,7 +119,7 @@ public class ParallelMethodListener extends MethodListener
 		this.compileConstructor(writer);
 
 		GeneratedClass generatedClass =
-			new GeneratedClass(runnableClass + ".class", writer.toByteArray());
+			new GeneratedClass(runnableClass, writer.toByteArray());
 
 		this.generatedClasses.push(generatedClass);
 	}
@@ -230,18 +230,18 @@ public class ParallelMethodListener extends MethodListener
 			}
 
 			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
+				Opcodes.INVOKEINTERFACE,
 				type.toFullyQualifiedType().replace(".", "/"),
 				method.getName(),
 				function.getDescriptor(),
-				false);
+				true);
 
 			methodVisitor.visitInsn(function.getReturnType().getReturnInstruction());
 			methodVisitor.visitMaxs(0, 0);
 		}
 	}
 
-	public void compileConstructor(ClassWriter writer)
+	private void compileConstructor(ClassWriter writer)
 	{
 		MethodVisitor methodVisitor =
 			writer.visitMethod(
