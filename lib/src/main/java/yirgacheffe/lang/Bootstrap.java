@@ -20,6 +20,7 @@ public final class Bootstrap
 					MethodHandle.class,
 					MethodHandles.Lookup.class,
 					String.class,
+					boolean.class,
 					Object.class,
 					Object[].class);
 
@@ -39,13 +40,13 @@ public final class Bootstrap
 	{
 	}
 
-	public static CallSite bootstrap(
+	public static CallSite bootstrapPublic(
 		MethodHandles.Lookup lookup,
 		String name,
 		MethodType type)
 	{
 		MethodHandle dispatcher =
-			MethodHandles.insertArguments(DISPATCHER, 0, lookup, name)
+			MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, false)
 				.asCollector(Object[].class, type.parameterCount() - 1);
 
 		MethodType dispatcherType = dispatcher.type();
@@ -63,13 +64,51 @@ public final class Bootstrap
 		return new ConstantCallSite(target);
 	}
 
+	public static CallSite bootstrapPrivate(
+			MethodHandles.Lookup lookup,
+			String name,
+			MethodType type)
+	{
+		MethodHandle dispatcher =
+				MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, true)
+						.asCollector(Object[].class, type.parameterCount() - 1);
+
+		MethodType dispatcherType = dispatcher.type();
+
+		for (int i = 0; i < type.parameterCount(); i++)
+		{
+			dispatcherType = dispatcherType.changeParameterType(i, type.parameterType(i));
+		}
+
+		dispatcher = dispatcher.asType(dispatcherType);
+
+		MethodHandle target =
+				MethodHandles.foldArguments(MethodHandles.invoker(type), dispatcher);
+
+		return new ConstantCallSite(target);
+	}
+
 	private static MethodHandle runtimeDispatcher(
 		MethodHandles.Lookup lookup,
 		String methodName,
+		boolean isPrivate,
 		Object receiver,
 		Object[] arguments) throws IllegalAccessException
 	{
 		Method[] methods = receiver.getClass().getMethods();
+
+		if (isPrivate)
+		{
+			Method[] declaredMethods = receiver.getClass().getDeclaredMethods();
+			Method[] both = new Method[methods.length + declaredMethods.length];
+
+			java.lang.System.arraycopy(methods, 0, both, 0, methods.length);
+			java.lang.System.arraycopy(
+					declaredMethods, 0, both, methods.length, declaredMethods.length);
+
+			methods = both;
+		}
+
 		Method matchedMethod = null;
 		int bestMatches = -1;
 

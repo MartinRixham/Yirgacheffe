@@ -123,11 +123,13 @@ public class InvokeMethod implements Expression
 				String.class,
 				MethodType.class);
 
+		boolean isPrivate = owner.toFullyQualifiedType().equals(this.caller);
+
 		Handle bootstrapMethod =
 			new Handle(
 				Opcodes.H_INVOKESTATIC,
 				Bootstrap.class.getName().replace(".", "/"),
-				"bootstrap",
+				isPrivate ? "bootstrapPrivate" : "bootstrapPublic",
 				methodType.toMethodDescriptorString(),
 				false);
 

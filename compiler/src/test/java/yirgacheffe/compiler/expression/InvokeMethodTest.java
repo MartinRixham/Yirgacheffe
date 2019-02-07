@@ -74,6 +74,7 @@ public class InvokeMethodTest
 
 		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("toString", secondInstruction.name);
+		assertEquals("bootstrapPublic", secondInstruction.bsm.getName());
 		assertEquals(
 			"(Ljava/lang/String;)Ljava/lang/String;",
 			secondInstruction.desc);
@@ -118,6 +119,7 @@ public class InvokeMethodTest
 
 		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
 		assertEquals("method", secondInstruction.name);
+		assertEquals("bootstrapPrivate", secondInstruction.bsm.getName());
 		assertEquals(
 			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;)V",
 			secondInstruction.desc);

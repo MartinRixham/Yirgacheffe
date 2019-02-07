@@ -29,12 +29,12 @@ public class MultipleDispatchTest
 					"new System().getOut().println(equal);" +
 				"}\n" +
 
-				"public Object getString()" +
+				"private Object getString()" +
 				"{" +
 					"return \"thingy\";" +
 				"}" +
 
-				"public Bool equals(String other)" +
+				"private Bool equals(String other)" +
 				"{" +
 					"return true;" +
 				"}" +
