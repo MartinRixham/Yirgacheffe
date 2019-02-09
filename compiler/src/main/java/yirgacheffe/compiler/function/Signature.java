@@ -90,6 +90,11 @@ public class Signature
 		return "(" + String.join("", strings) + ")" + returnType;
 	}
 
+	public Array<Type> getParameters()
+	{
+		return this.parameters;
+	}
+
 	@Override
 	public String toString()
 	{

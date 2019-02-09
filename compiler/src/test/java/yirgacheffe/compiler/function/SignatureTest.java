@@ -44,4 +44,23 @@ public class SignatureTest
 
 		assertEquals(name.hashCode() + parameters.hashCode(), signature.hashCode());
 	}
+
+	@Test
+	public void testSignatureWithGenericParameter()
+	{
+		String name = "method";
+		Type string = new ReferenceType(String.class);
+		Array<Type> typeParams = new Array<>(string, string);
+		Type map = new ParameterisedType(new ReferenceType(Map.class), typeParams);
+		Array<Type> parameters = new Array<>(map);
+		Signature signature = new Signature(PrimitiveType.DOUBLE, name, parameters);
+
+		assertEquals("(Ljava/util/Map;)D", signature.getDescriptor());
+
+		assertEquals(
+			"(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)D",
+			signature.getSignature());
+
+		assertEquals(name.hashCode() + parameters.hashCode(), signature.hashCode());
+	}
 }

@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
-import yirgacheffe.compiler.GeneratedClass;
+import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;

@@ -3,7 +3,7 @@ package yirgacheffe;
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
-import yirgacheffe.compiler.GeneratedClass;
+import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.compiler.type.Classes;
 

@@ -1,4 +1,4 @@
-package yirgacheffe.compiler;
+package yirgacheffe.compiler.parallel;
 
 public class GeneratedClass
 {

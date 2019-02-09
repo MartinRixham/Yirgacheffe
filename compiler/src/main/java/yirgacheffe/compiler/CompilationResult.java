@@ -1,6 +1,7 @@
 package yirgacheffe.compiler;
 
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.lang.Array;
 
 public class CompilationResult

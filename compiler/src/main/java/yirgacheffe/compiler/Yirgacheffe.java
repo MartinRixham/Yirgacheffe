@@ -1,5 +1,6 @@
 package yirgacheffe.compiler;
 
+import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 
