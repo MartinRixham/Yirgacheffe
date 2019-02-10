@@ -190,7 +190,7 @@ public class MethodListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", method.desc);
-		assertEquals(Opcodes.ACC_PRIVATE, method.access);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
 		assertEquals("myMethod", method.name);
 	}
 

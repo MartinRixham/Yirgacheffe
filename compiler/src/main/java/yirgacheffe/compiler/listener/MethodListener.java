@@ -36,6 +36,8 @@ public class MethodListener extends TypeListener
 
 	private Set<Signature> methods = new HashSet<>();
 
+	private Array<Type> parameters = new Array<>();
+
 	protected Signature signature;
 
 	public MethodListener(String sourceFile, Classes classes)
@@ -96,7 +98,7 @@ public class MethodListener extends TypeListener
 
 		this.methodVisitor =
 			this.writer.visitMethod(
-				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+				isPrivate ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
 				name,
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
@@ -119,6 +121,8 @@ public class MethodListener extends TypeListener
 		{
 			type = this.types.getType(context.type());
 		}
+
+		this.parameters.push(type);
 
 		String name = context.Identifier().getText();
 
@@ -174,19 +178,11 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitSignature(YirgacheffeParser.SignatureContext context)
 	{
-		Array<Type> parameters = new Array<>();
-
-		for (YirgacheffeParser.ParameterContext parameter : context.parameter())
-		{
-			Type type = this.types.getType(parameter.type());
-			parameters.push(type);
-		}
-
 		this.signature =
 			new Signature(
 				this.returnType,
 				context.Identifier().getSymbol().getText(),
-				parameters);
+				this.parameters);
 
 		if (this.methods.contains(this.signature))
 		{
@@ -199,5 +195,7 @@ public class MethodListener extends TypeListener
 		{
 			this.methods.add(this.signature);
 		}
+
+		this.parameters = new Array<>();
 	}
 }

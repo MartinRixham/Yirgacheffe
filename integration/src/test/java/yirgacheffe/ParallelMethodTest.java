@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class ParallelMethodTest
 {
 	@Test
-	public void testMainMethod() throws Exception
+	public void testParallelMethod() throws Exception
 	{
 		String source =
 			"class MyClass\n" +

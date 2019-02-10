@@ -49,7 +49,7 @@ public class FieldListenerTest
 
 		FieldNode firstField = (FieldNode) fields.get(0);
 
-		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+		assertEquals(Opcodes.ACC_PROTECTED, firstField.access);
 		assertEquals("D", firstField.desc);
 		assertEquals("myField", firstField.name);
 	}
@@ -79,7 +79,7 @@ public class FieldListenerTest
 
 		FieldNode firstField = (FieldNode) fields.get(0);
 
-		assertEquals(Opcodes.ACC_PRIVATE, firstField.access);
+		assertEquals(Opcodes.ACC_PROTECTED, firstField.access);
 		assertEquals("Ljava/lang/String;", firstField.desc);
 		assertEquals("myStringField", firstField.name);
 	}

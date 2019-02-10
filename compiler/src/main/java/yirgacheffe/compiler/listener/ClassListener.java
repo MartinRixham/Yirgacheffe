@@ -50,7 +50,7 @@ public class ClassListener extends PackageListener
 
 		this.writer.visit(
 			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
 			this.directory + this.className,
 			null,
 			"java/lang/Object",

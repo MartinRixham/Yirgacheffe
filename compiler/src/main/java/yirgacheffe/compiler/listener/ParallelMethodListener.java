@@ -21,7 +21,7 @@ public class ParallelMethodListener extends MethodListener
 
 	@Override
 	public void exitParallelMethodDeclaration(
-			YirgacheffeParser.ParallelMethodDeclarationContext context)
+		YirgacheffeParser.ParallelMethodDeclarationContext context)
 	{
 		MethodVisitor methodVisitor = this.methodVisitor;
 
@@ -29,13 +29,16 @@ public class ParallelMethodListener extends MethodListener
 			context.classMethodDeclaration().signature().Identifier().getText();
 
 		String packageName = this.packageName == null ? "" : this.packageName + "/";
-		String runnableClass = packageName + this.className + "$" + methodName;
+		String className = packageName + this.className;
+		String runnableClass = className + "$" + methodName;
 
 		methodVisitor.visitTypeInsn(Opcodes.NEW, runnableClass);
 		methodVisitor.visitInsn(Opcodes.DUP);
 
 		Array<Type> parameters = this.signature.getParameters();
-		StringBuilder descriptor = new StringBuilder("(");
+		StringBuilder descriptor = new StringBuilder("(L" + className + ";");
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
@@ -87,12 +90,17 @@ public class ParallelMethodListener extends MethodListener
 			"java/lang/Object",
 			new String[] {"java/lang/Runnable", returnType});
 
+		String signature =
+			this.signature
+				.getDescriptor()
+				.replace("(", "(L" + className + ";");
+
 		this.methodVisitor =
 			writer.visitMethod(
-				Opcodes.ACC_PRIVATE,
+				Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC,
 				methodName,
-				this.signature.getDescriptor(),
-				this.signature.getSignature(),
+				signature,
+				null,
 				null);
 
 		this.generatedClassWriter = writer;
@@ -117,10 +125,15 @@ public class ParallelMethodListener extends MethodListener
 					.signature().Identifier().getText();
 
 			String packageName = this.packageName == null ? "" : this.packageName + "/";
-			String className = packageName + this.className + "$" + methodName;
+			String className = packageName + this.className;
 
 			RunnableClass runnableClass =
-				new RunnableClass(className, methodName, type, this.signature);
+				new RunnableClass(
+					className,
+					className + "$" + methodName,
+					methodName,
+					type,
+					this.signature);
 
 			this.generatedClasses.push(runnableClass.compile(this.generatedClassWriter));
 		}

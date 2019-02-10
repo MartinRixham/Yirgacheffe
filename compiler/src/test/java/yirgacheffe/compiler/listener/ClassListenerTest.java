@@ -95,8 +95,10 @@ public class ClassListenerTest
 		reader.accept(classNode, 0);
 
 		assertEquals("MyClass", classNode.name);
-		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, classNode.access);
 		assertEquals(0, classNode.fields.size());
+		assertEquals(
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
+			classNode.access);
 	}
 
 	@Test

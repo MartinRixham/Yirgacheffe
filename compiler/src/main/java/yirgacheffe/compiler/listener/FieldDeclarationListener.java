@@ -49,7 +49,7 @@ public class FieldDeclarationListener extends ConstructorListener
 		Type type = this.types.getType(context.type());
 
 		this.writer.visitField(
-			Opcodes.ACC_PRIVATE,
+			Opcodes.ACC_PROTECTED,
 			fieldName,
 			type.toJVMType(),
 			null,

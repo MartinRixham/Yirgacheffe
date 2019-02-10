@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 
 public class RunnableClass
 {
+	private String parentClassName;
+
 	private String className;
 
 	private String methodName;
@@ -22,11 +24,13 @@ public class RunnableClass
 	private Signature signature;
 
 	public RunnableClass(
+		String parentClassName,
 		String className,
 		String methodName,
 		Type type,
 		Signature signature)
 	{
+		this.parentClassName = parentClassName;
 		this.className = className;
 		this.methodName = methodName;
 		this.type = type;
@@ -36,7 +40,10 @@ public class RunnableClass
 	public GeneratedClass compile(ClassWriter writer)
 	{
 		writer.visitField(
-			Opcodes.ACC_PRIVATE, "0", this.type.toJVMType(), null, null);
+			Opcodes.ACC_PRIVATE, "0return", this.type.toJVMType(), null, null);
+
+		writer.visitField(
+			Opcodes.ACC_PRIVATE, "0", "L" + this.parentClassName + ";", null, null);
 
 		Array<Type> parameters = this.signature.getParameters();
 
@@ -64,8 +71,14 @@ public class RunnableClass
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 		methodVisitor.visitInsn(Opcodes.DUP);
 
+		methodVisitor.visitFieldInsn(
+			Opcodes.GETFIELD,
+			this.className,
+			"0",
+			"L" + this.parentClassName + ";");
+
 		Array<Type> parameters = this.signature.getParameters();
-		StringBuilder descriptor = new StringBuilder("(");
+		StringBuilder descriptor = new StringBuilder("(L" + this.parentClassName + ";");
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
@@ -81,7 +94,7 @@ public class RunnableClass
 		}
 
 		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
+			Opcodes.INVOKESTATIC,
 			this.className,
 			this.methodName,
 			descriptor.toString() + ")" + this.type.toJVMType(),
@@ -90,7 +103,7 @@ public class RunnableClass
 		methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
-			"0",
+			"0return",
 			this.type.toJVMType());
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
@@ -132,7 +145,7 @@ public class RunnableClass
 			methodVisitor.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
-				"0",
+				"0return",
 				this.type.toJVMType());
 
 			Label label = new Label();
@@ -158,7 +171,7 @@ public class RunnableClass
 			methodVisitor.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
-				"0",
+				"0return",
 				this.type.toJVMType());
 
 			Array<Type> parameters = function.getParameterTypes();
@@ -184,7 +197,7 @@ public class RunnableClass
 	private void compileConstructor(ClassWriter writer)
 	{
 		Array<Type> parameters = this.signature.getParameters();
-		StringBuilder descriptor = new StringBuilder("(");
+		StringBuilder descriptor = new StringBuilder("(L" + this.parentClassName + ";");
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
@@ -208,10 +221,19 @@ public class RunnableClass
 			"()V",
 			false);
 
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
+
+		methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			this.className,
+			"0",
+			"L" + this.parentClassName + ";");
+
 		for (int i = 0; i < parameters.length(); i++)
 		{
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
+			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 2);
 
 			methodVisitor.visitFieldInsn(
 				Opcodes.PUTFIELD,
