@@ -35,6 +35,19 @@ public class RunnableClass
 
 	public GeneratedClass compile(ClassWriter writer)
 	{
+		writer.visitField(
+			Opcodes.ACC_PRIVATE, "0", this.type.toJVMType(), null, null);
+
+		Array<Type> parameters = this.signature.getParameters();
+
+		for (int i = 0; i < parameters.length(); i++)
+		{
+			String name = 1 + i + "";
+
+			writer.visitField(
+				Opcodes.ACC_PRIVATE, name, parameters.get(i).toJVMType(), null, null);
+		}
+
 		this.compileRunMethod(writer);
 		this.compileInterfaceMethods(writer);
 		this.compileConstructor(writer);

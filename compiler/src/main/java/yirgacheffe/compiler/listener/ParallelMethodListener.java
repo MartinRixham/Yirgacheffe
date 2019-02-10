@@ -3,6 +3,7 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.parallel.RunnableClass;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -100,7 +101,6 @@ public class ParallelMethodListener extends MethodListener
 	@Override
 	public void exitParallelMethod(YirgacheffeParser.ParallelMethodContext context)
 	{
-		ClassWriter writer = this.generatedClassWriter;
 
 		YirgacheffeParser.TypeContext typeContext =
 			context.parallelMethodDeclaration()
@@ -110,29 +110,25 @@ public class ParallelMethodListener extends MethodListener
 
 		Type type = this.types.getType(typeContext);
 
-		writer.visitField(
-			Opcodes.ACC_PRIVATE, "0", type.toJVMType(), null, null);
-
-		Array<Type> parameters = this.signature.getParameters();
-
-		for (int i = 0; i < parameters.length(); i++)
+		if (type.reflectionClass().isInterface())
 		{
-			String name = 1 + i + "";
+			String methodName =
+				context.parallelMethodDeclaration().classMethodDeclaration()
+					.signature().Identifier().getText();
 
-			writer.visitField(
-				Opcodes.ACC_PRIVATE, name, parameters.get(i).toJVMType(), null, null);
+			String packageName = this.packageName == null ? "" : this.packageName + "/";
+			String className = packageName + this.className + "$" + methodName;
+
+			RunnableClass runnableClass =
+				new RunnableClass(className, methodName, type, this.signature);
+
+			this.generatedClasses.push(runnableClass.compile(this.generatedClassWriter));
 		}
+		else
+		{
+			String message = "Parallel method must have interface return type.";
 
-		String methodName =
-			context.parallelMethodDeclaration().classMethodDeclaration()
-				.signature().Identifier().getText();
-
-		String packageName = this.packageName == null ? "" : this.packageName + "/";
-		String className = packageName + this.className + "$" + methodName;
-
-		RunnableClass runnableClass =
-			new RunnableClass(className, methodName, type, this.signature);
-
-		this.generatedClasses.push(runnableClass.compile(writer));
+			this.errors.push(new Error(context, message));
+		}
 	}
 }

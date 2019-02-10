@@ -25,10 +25,33 @@ import yirgacheffe.lang.Array;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ParallelMethodListenerTest
 {
+	@Test
+	public void testParallelMethodNonInterfaceReturnType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"parallel public String method()" +
+				"{\n" +
+					"return \"thingy\";\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Parallel method must have interface return type.\n",
+			result.getErrors());
+	}
+
 	@Test
 	public void testParallelMethod()
 	{
