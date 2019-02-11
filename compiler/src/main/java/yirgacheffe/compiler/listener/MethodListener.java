@@ -161,10 +161,7 @@ public class MethodListener extends TypeListener
 		this.errors.push(variables.getErrors());
 		this.errors.push(errors);
 
-		if (this.errors.length() == 0)
-		{
-			this.methodVisitor.visitMaxs(0, 0);
-		}
+		this.methodVisitor.visitMaxs(0, 0);
 
 		this.inConstructor = false;
 	}

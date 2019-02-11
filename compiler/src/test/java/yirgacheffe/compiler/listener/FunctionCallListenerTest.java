@@ -1122,4 +1122,32 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.GOTO, seventhInstruction.getOpcode());
 		assertEquals(label, seventhInstruction.label.getLabel());
 	}
+
+	@Test
+	public void testCallingBrokenMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void getThingy()\n" +
+				"{\n" +
+					"this.getString();\n" +
+				"}\n" +
+				"public String getString()\n" +
+				"{\n" +
+					"return new Wibble();\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
 }
