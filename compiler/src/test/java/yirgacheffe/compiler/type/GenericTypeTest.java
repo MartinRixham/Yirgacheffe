@@ -14,7 +14,9 @@ public class GenericTypeTest
 	{
 		Class<?> loadedClass = String.class;
 
-		Type type = new GenericType(new ReferenceType(loadedClass));
+		ReferenceType referenceType = new ReferenceType(loadedClass);
+
+		Type type = new GenericType(referenceType);
 
 		assertEquals("java.lang.String", type.toString());
 		assertEquals(loadedClass, type.reflectionClass());
@@ -28,5 +30,7 @@ public class GenericTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertTrue(type.isAssignableTo(new ReferenceType(java.lang.String.class)));
 		assertFalse(type.hasParameter());
+		assertEquals(type, referenceType);
+		assertEquals(type.hashCode(), referenceType.hashCode());
 	}
 }

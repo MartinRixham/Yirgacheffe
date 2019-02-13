@@ -8,7 +8,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.TypeVariable;
 
-public class TypeListener extends ClassListener
+public class TypeListener extends ImplementationListener
 {
 	public TypeListener(String sourceFile, Classes classes)
 	{

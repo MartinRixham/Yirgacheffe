@@ -35,6 +35,13 @@ public class Signature
 		throw new RuntimeException();
 	}
 
+	public boolean equalWithReturnType(Signature signature)
+	{
+		return this.name.equals(signature.name) &&
+			this.returnType.toString().equals(signature.returnType.toString()) &&
+			this.parameters.equals(signature.parameters);
+	}
+
 	@Override
 	public int hashCode()
 	{

@@ -58,35 +58,37 @@ public class Function implements Callable
 		Method method = (Method) this.executable;
 		java.lang.reflect.Type returned = method.getGenericReturnType();
 
-		return this.getReturnType(returned);
+		return this.getType(returned);
 	}
 
-	private Type getReturnType(java.lang.reflect.Type returned)
+	private Type getType(java.lang.reflect.Type type)
 	{
-		if (returned instanceof ParameterizedType)
+		if (type instanceof ParameterizedType)
 		{
-			ParameterizedType type = (ParameterizedType) returned;
-			ReferenceType primaryType = new ReferenceType((Class) type.getRawType());
+			ParameterizedType parameterizedType = (ParameterizedType) type;
+			ReferenceType primaryType =
+					new ReferenceType((Class) parameterizedType.getRawType());
 
 			Array<Type> typeParameters = new Array<>();
 
-			for (java.lang.reflect.Type typeArgument: type.getActualTypeArguments())
+			for (java.lang.reflect.Type typeArgument:
+				parameterizedType.getActualTypeArguments())
 			{
-				typeParameters.push(this.getReturnType(typeArgument));
+				typeParameters.push(this.getType(typeArgument));
 			}
 
 			return new ParameterisedType(primaryType, typeParameters);
 		}
-		if (returned instanceof Class)
+		if (type instanceof Class)
 		{
-			return this.getType((Class) returned);
+			return this.getType((Class) type);
 		}
 		else
 		{
 			ParameterisedType parameterisedOwner = (ParameterisedType) this.owner;
 
 			Type returnType =
-				parameterisedOwner.getTypeParameterClass(returned.getTypeName());
+				parameterisedOwner.getTypeParameterClass(type.getTypeName());
 
 			return new GenericType(returnType);
 		}
@@ -135,5 +137,40 @@ public class Function implements Callable
 		{
 			return new Array<>();
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		String function = this.getReturnType() + " " + this.getName();
+
+		Array<String> parameters = new Array<>();
+
+		for (java.lang.reflect.Type parameter:
+			this.executable.getGenericParameterTypes())
+		{
+			parameters.push(this.getType(parameter).toString());
+		}
+
+		return function + "(" + parameters.join(",") + ")";
+	}
+
+	public boolean hasSignature(Signature other)
+	{
+		Array<Type> parameters = new Array<>();
+
+		for (java.lang.reflect.Type parameter:
+			this.executable.getGenericParameterTypes())
+		{
+			parameters.push(this.getType(parameter));
+		}
+
+		Signature signature =
+			new Signature(
+				this.getReturnType(),
+				this.getName(),
+				parameters);
+
+		return signature.equalWithReturnType(other);
 	}
 }

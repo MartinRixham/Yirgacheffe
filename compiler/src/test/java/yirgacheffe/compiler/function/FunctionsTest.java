@@ -54,6 +54,7 @@ public class FunctionsTest
 
 		assertEquals(0, result.getErrors().length());
 		assertEquals("(Ljava/lang/String;)V", result.getFunction().getDescriptor());
+		assertEquals("Void println(java.lang.String)", result.getFunction().toString());
 	}
 
 	@Test
@@ -86,6 +87,7 @@ public class FunctionsTest
 
 		assertEquals(0, result.getErrors().length());
 		assertEquals("(Z)V", result.getFunction().getDescriptor());
+		assertEquals("Void println(Bool)", result.getFunction().toString());
 	}
 
 	@Test

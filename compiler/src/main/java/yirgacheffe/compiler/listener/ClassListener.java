@@ -3,7 +3,10 @@ package yirgacheffe.compiler.listener;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class ClassListener extends PackageListener
@@ -14,13 +17,17 @@ public class ClassListener extends PackageListener
 
 	protected int initialiserCount = 0;
 
+	protected Array<Function> interfaceMethods = new Array<>();
+
+	protected Array<Type> interfaces = new Array<>();
+
 	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
 	}
 
 	@Override
-	public void enterClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
+	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
 		if (context.Class() == null)
 		{
@@ -40,21 +47,28 @@ public class ClassListener extends PackageListener
 			this.className = context.Identifier().get(0).getText();
 		}
 
-		for (YirgacheffeParser.InterfaceMethodDeclarationContext interfaceMethod:
-			context.interfaceMethodDeclaration())
-		{
-			String message = "Method requires method body.";
+		String[] interfaces = new String[this.interfaces.length()];
 
-			this.errors.push(new Error(interfaceMethod, message));
+		for (int i = 0; i < this.interfaces.length(); i++)
+		{
+			interfaces[i] =
+				this.interfaces.get(i).toFullyQualifiedType().replace(".", "/");
+		}
+
+		StringBuilder signature = new StringBuilder("Ljava/lang/Object;");
+
+		for (Type type: this.interfaces)
+		{
+			signature.append(type.getSignature());
 		}
 
 		this.writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
 			this.directory + this.className,
-			null,
+			signature.toString(),
 			"java/lang/Object",
-			null);
+			interfaces);
 	}
 
 	@Override
@@ -96,8 +110,16 @@ public class ClassListener extends PackageListener
 	}
 
 	@Override
-	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
+	public void exitClassDefinition(YirgacheffeParser.ClassDefinitionContext context)
 	{
+		for (YirgacheffeParser.InterfaceMethodDeclarationContext interfaceMethod:
+			context.interfaceMethodDeclaration())
+		{
+			String message = "Method requires method body.";
+
+			this.errors.push(new Error(interfaceMethod, message));
+		}
+
 		if (this.mainMethodName != null)
 		{
 			this.makeMainMethod();
@@ -113,6 +135,8 @@ public class ClassListener extends PackageListener
 
 			this.errors.push(new Error(context, message));
 		}
+
+		this.checkInterfaceMethodImplementations(context);
 	}
 
 	private void makeMainMethod()
@@ -190,5 +214,17 @@ public class ClassListener extends PackageListener
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
 		methodVisitor.visitMaxs(0, 0);
+	}
+
+	private void checkInterfaceMethodImplementations(
+		YirgacheffeParser.ClassDefinitionContext context)
+	{
+		for (Function method: this.interfaceMethods)
+		{
+			String message =
+				"Missing implementation of interface method " + method.toString() + ".";
+
+			this.errors.push(new Error(context, message));
+		}
 	}
 }

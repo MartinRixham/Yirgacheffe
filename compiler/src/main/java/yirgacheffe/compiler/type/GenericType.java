@@ -75,4 +75,16 @@ public class GenericType implements Type
 	{
 		return this.type;
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		return this.type.equals(other);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.type.hashCode();
+	}
 }

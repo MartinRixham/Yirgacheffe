@@ -103,6 +103,14 @@ public class MethodListener extends TypeListener
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
+
+		for (int i = this.interfaceMethods.length() - 1; i >= 0; i--)
+		{
+			if (this.interfaceMethods.get(i).hasSignature(this.signature))
+			{
+				this.interfaceMethods.splice(i, 1);
+			}
+		}
 	}
 
 	@Override

@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration
 	importStatement*
-	(classDeclaration | interfaceDeclaration)*
+	(classDefinition | interfaceDeclaration)*
 	EOF;
 
 replLine: expression? | importStatement* | statement*;
@@ -14,11 +14,14 @@ packageName: Identifier ('.' Identifier)*;
 
 importStatement: Import packageName '.' Identifier semicolon;
 
-classDeclaration:
-	(Class | Identifier) Identifier?
+classDefinition: classDeclaration
 	'{'
 		(function | parallelMethod | interfaceMethodDeclaration | field)*
 	'}';
+
+classDeclaration: (Class | Identifier) Identifier? implementation?;
+
+implementation: Implements type*;
 
 interfaceDeclaration:
 	Interface Identifier?
@@ -155,6 +158,7 @@ Class: 'class';
 Interface: 'interface';
 Public: 'public';
 Private: 'private';
+Implements: 'implements';
 PrimitiveType: 'Void' | 'Bool' | 'Char' | 'Num';
 BooleanLiteral: 'true' | 'false';
 New: 'new';

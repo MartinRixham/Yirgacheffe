@@ -83,7 +83,7 @@ public class Array<T> implements Iterable<T>
 		this.grow(this.length + items.length);
 
 		java.lang.System.arraycopy(
-			items.toArray(), 0, this.array, this.length, items.length);
+			items.array, 0, this.array, this.length, items.length);
 
 		this.length = this.length + items.length;
 	}
