@@ -63,18 +63,19 @@ fieldDeclaration: modifier? type? Identifier;
 
 modifier: Public | Private;
 
-statement:
-	block | conditionalStatement |
-	((fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement)
-	semicolon);
+statement: block | conditionalStatement | (statementLine semicolon);
 
-block: '{' statement* '}';
+statementLine: fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement;
+
+block: forStatement? '{' statement* '}';
+
+forStatement: For '(' statementLine ';' expression ';' statementLine ')';
 
 conditionalStatement: ifStatement elseStatement | ifStatement | elseStatement;
 
-ifStatement: 'if' '(' expression ')' statement;
+ifStatement: If '(' expression ')' statement;
 
-elseStatement: 'else' statement;
+elseStatement: Else statement;
 
 variableAssignment: (variableDeclaration | variableWrite) '=' expression;
 
@@ -167,6 +168,7 @@ Return: 'return';
 Main: 'main';
 If: 'if';
 Else: 'else';
+For: 'for';
 Parallel: 'parallel';
 
 // operators

@@ -6,6 +6,7 @@ import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Branch;
 import yirgacheffe.compiler.statement.ConditionalStatement;
 import yirgacheffe.compiler.statement.Else;
+import yirgacheffe.compiler.statement.ForCondition;
 import yirgacheffe.compiler.statement.If;
 import yirgacheffe.compiler.statement.OpenBlock;
 import yirgacheffe.compiler.statement.Return;
@@ -19,6 +20,8 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class StatementListener extends FieldListener
 {
+	private ForCondition forCondition;
+
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -39,27 +42,27 @@ public class StatementListener extends FieldListener
 		YirgacheffeParser.VariableAssignmentContext context)
 	{
 		Expression expression = this.expressions.pop();
-
-		String name;
+		Coordinate coordinate = new Coordinate(context.getStart());
 
 		if (context.variableWrite() == null)
 		{
-			name = context.variableDeclaration().Identifier().getText();
+			VariableDeclaration declaration = (VariableDeclaration) this.statements.pop();
+
+			this.statements.push(new VariableWrite(coordinate, declaration, expression));
 		}
 		else
 		{
-			name = context.variableWrite().Identifier().getText();
+			String name = context.variableWrite().Identifier().getText();
+
+			this.statements.push(new VariableWrite(coordinate, name, expression));
 		}
-
-		Coordinate coordinate = new Coordinate(context.getStart());
-
-		this.statements.push(new VariableWrite(coordinate, name, expression));
 	}
 
 	@Override
 	public void enterBlock(YirgacheffeParser.BlockContext context)
 	{
 		this.statements.push(new OpenBlock());
+		this.forCondition = null;
 	}
 
 	@Override
@@ -82,6 +85,13 @@ public class StatementListener extends FieldListener
 		}
 
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
+
+		if (this.forCondition != null)
+		{
+			blockStatements =
+				new Array<>(this.forCondition.getStatement(blockStatements));
+		}
+
 		this.statements.push(new Block(coordinate, blockStatements));
 	}
 
@@ -132,5 +142,14 @@ public class StatementListener extends FieldListener
 		Branch branch = new Branch(conditional);
 
 		this.statements.push(branch);
+	}
+
+	public void exitForStatement(YirgacheffeParser.ForStatementContext context)
+	{
+		Statement incrementer = this.statements.pop();
+		Expression exitCondition = this.expressions.pop();
+		Statement initialiser = this.statements.pop();
+
+		this.forCondition = new ForCondition(initialiser, exitCondition, incrementer);
 	}
 }

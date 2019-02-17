@@ -13,6 +13,8 @@ import yirgacheffe.lang.Array;
 
 public class VariableWrite implements Statement
 {
+	private VariableDeclaration declaration;
+
 	private String name;
 
 	private Expression expression;
@@ -29,6 +31,17 @@ public class VariableWrite implements Statement
 		this.coordinate = coordinate;
 	}
 
+	public VariableWrite(
+		Coordinate coordinate,
+		VariableDeclaration declaration,
+		Expression expression)
+	{
+		this.declaration = declaration;
+		this.name = declaration.getName();
+		this.expression = expression;
+		this.coordinate = coordinate;
+	}
+
 	public boolean returns()
 	{
 		return false;
@@ -39,10 +52,16 @@ public class VariableWrite implements Statement
 		Variables variables,
 		Signature caller)
 	{
+		Array<Error> errors = new Array<>();
+
+		if (this.declaration != null)
+		{
+			this.declaration.compile(methodVisitor, variables, caller);
+		}
+
 		Type type = this.expression.getType(variables);
 		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
-		Array<Error> errors = new Array<>();
 
 		errors.push(this.expression.compile(methodVisitor, variables));
 

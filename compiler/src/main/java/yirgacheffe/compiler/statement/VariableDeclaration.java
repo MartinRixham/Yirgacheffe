@@ -79,4 +79,9 @@ public class VariableDeclaration implements Statement
 	{
 		return true;
 	}
+
+	public String getName()
+	{
+		return this.name;
+	}
 }
