@@ -1,0 +1,6 @@
+package example.myinterface;
+
+interface MyInterface
+{
+    String getString();
+}

@@ -1,0 +1,14 @@
+package example.myinterface;
+
+class MyImplementation implements MyInterface
+{
+    main method(Array<String> args)
+    {
+        MyInterface my = this;
+    }
+
+    public String getString()
+    {
+        return "thingy";
+    }
+}

@@ -68,6 +68,9 @@
               </targetTests>
               <mutationThreshold>100</mutationThreshold>
               <withHistory>true</withHistory>
+              <excludedClasses>
+                <excludedClass>yirgacheffe.compiler.type.BytecodeClassLoader</excludedClass>
+              </excludedClasses>
             </configuration>
             <goals>
               <goal>mutationCoverage</goal>

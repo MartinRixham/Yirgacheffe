@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class YirgacheffeTest
@@ -24,7 +25,7 @@ public class YirgacheffeTest
 
 		Yirgacheffe.main(new String[] {"example/MyClass.yg"});
 
-		assertTrue(spyError.toString().length() == 0);
+		assertEquals("", spyError.toString());
 		assertTrue(new FileInputStream("example/MyClass.class").read() != -1);
 
 		System.setErr(originalError);
@@ -92,7 +93,7 @@ public class YirgacheffeTest
 		InputStream thirdFile =
 			new FileInputStream("example/more/MoreInterface.class");
 
-		assertTrue(spyError.toString().length() == 0);
+		assertEquals("", spyError.toString());
 		assertTrue(firstFile.read() != -1);
 		assertTrue(secondFile.read() != -1);
 		assertTrue(thirdFile.read() != -1);
@@ -155,7 +156,7 @@ public class YirgacheffeTest
 		InputStream secondFile =
 			new FileInputStream("example/reader/Reader.class");
 
-		assertTrue(spyError.toString().length() == 0);
+		assertEquals("", spyError.toString());
 		assertTrue(firstFile.read() != -1);
 		assertTrue(secondFile.read() != -1);
 
@@ -206,7 +207,7 @@ public class YirgacheffeTest
 
 		Yirgacheffe.main(new String[] {"example/Parallel.yg"});
 
-		assertTrue(spyError.toString().length() == 0);
+		assertEquals("", spyError.toString());
 		assertTrue(new FileInputStream("example/Parallel.class").read() != -1);
 		assertTrue(new FileInputStream("example/Parallel$getString.class").read() != -1);
 
@@ -214,5 +215,34 @@ public class YirgacheffeTest
 
 		new File("example/Parallel.class").delete();
 		new File("example/Parallel$getString.class").delete();
+	}
+
+	@Test
+	public void testImplementingInterface() throws Exception
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setErr(error);
+
+		Yirgacheffe.main(new String[] {"example/myinterface/MyInterface.yg"});
+
+		assertEquals("", spyError.toString());
+		assertNotEquals(
+			-1,
+			new FileInputStream("example/myinterface/MyInterface.class").read());
+
+		Yirgacheffe.main(new String[] {"example/myinterface/MyImplementation.yg"});
+
+		assertEquals("", spyError.toString());
+		assertNotEquals(
+			-1,
+			new FileInputStream("example/myinterface/MyImplementation.class").read());
+
+		System.setErr(originalError);
+
+		new File("example/myinterface/MyInterface.class").delete();
+		new File("example/myinterface/MyImplementation.class").delete();
 	}
 }
