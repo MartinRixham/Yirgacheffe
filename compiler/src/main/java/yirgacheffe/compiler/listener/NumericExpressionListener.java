@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.BinaryNumericOperation;
 import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
+import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -23,13 +24,13 @@ public class NumericExpressionListener extends FunctionCallListener
 		Array<Coordinate> coordinates = new Array<>();
 		Array<Expression> expressions = new Array<>();
 
-		for (YirgacheffeParser.UnaryExpressionContext c: context.unaryExpression())
+		for (YirgacheffeParser.UnaryOperationContext c: context.unaryOperation())
 		{
 			coordinates.push(new Coordinate(c));
 			expressions.push(this.expressions.pop());
 		}
 
-		for (int i = 0; i < context.unaryExpression().size() - 1; i++)
+		for (int i = 0; i < context.unaryOperation().size() - 1; i++)
 		{
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
@@ -114,6 +115,14 @@ public class NumericExpressionListener extends FunctionCallListener
 		Coordinate coordinate = new Coordinate(context);
 
 		this.expressions.push(new Negation(coordinate, this.expressions.pop()));
+	}
+
+	@Override
+	public void exitPostincrement(YirgacheffeParser.PostincrementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(new UnaryOperation(coordinate, this.expressions.pop()));
 	}
 
 	@Override

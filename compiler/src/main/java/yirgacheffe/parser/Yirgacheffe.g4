@@ -121,12 +121,30 @@ add: multiply (additive multiply)*;
 
 additive: Subtract | Add;
 
-multiply: unaryExpression (multiplicative unaryExpression)*;
+multiply: unaryOperation (multiplicative unaryOperation)*;
 
 multiplicative: Remainder | Divide | Multiply;
 
+unaryOperation:
+    postincrement |
+    preincrement |
+    postdecrement |
+    predecrement |
+    negation |
+    unaryExpression;
+
+negation: Subtract unaryExpression;
+
+postincrement: unaryExpression PlusPlus;
+
+preincrement: PlusPlus unaryExpression;
+
+postdecrement: unaryExpression MinusMinus;
+
+predecrement: MinusMinus unaryExpression;
+
 unaryExpression:
-	(instantiation | literal | variableRead | thisRead | parenthesis | negation)
+	(instantiation | literal | variableRead | thisRead | parenthesis)
 	(fieldRead | methodCall)*;
 
 variableRead: Identifier;
@@ -136,8 +154,6 @@ thisRead: This;
 fieldRead: '.' Identifier;
 
 parenthesis: '(' expression ')';
-
-negation: Subtract unaryExpression;
 
 fieldWrite: expression '.' Identifier '=' expression;
 
@@ -177,6 +193,8 @@ Divide: '/';
 Multiply: '*';
 Add: '+';
 Subtract: '-';
+PlusPlus: '++';
+MinusMinus: '--';
 Equal: '==';
 NotEqual: '!=';
 LessThan: '<';
