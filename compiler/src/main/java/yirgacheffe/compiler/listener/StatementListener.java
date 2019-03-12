@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Branch;
 import yirgacheffe.compiler.statement.ConditionalStatement;
@@ -151,5 +152,15 @@ public class StatementListener extends FieldListener
 		Statement initialiser = this.statements.pop();
 
 		this.forCondition = new ForCondition(initialiser, exitCondition, incrementer);
+	}
+
+	public void exitPostincrementStatement(
+		YirgacheffeParser.PostincrementStatementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		Expression expression = this.expressions.pop();
+		UnaryOperation postincrement = new UnaryOperation(coordinate, expression);
+
+		this.statements.push(postincrement);
 	}
 }

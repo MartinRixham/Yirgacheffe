@@ -65,7 +65,27 @@ modifier: Public | Private;
 
 statement: block | conditionalStatement | (statementLine semicolon);
 
-statementLine: fieldWrite | variableAssignment | variableDeclaration | functionCall | returnStatement;
+statementLine:
+    unaryStatement |
+    fieldWrite |
+    variableAssignment |
+    variableDeclaration |
+    functionCall |
+    returnStatement;
+
+unaryStatement:
+    preincrementStatement |
+    postincrementStatement |
+    predecrementStatement |
+    postdecrementStatement;
+
+preincrementStatement: PlusPlus expression;
+
+postincrementStatement: expression PlusPlus;
+
+predecrementStatement: MinusMinus expression;
+
+postdecrementStatement: expression MinusMinus;
 
 block: forStatement? '{' statement* '}';
 
