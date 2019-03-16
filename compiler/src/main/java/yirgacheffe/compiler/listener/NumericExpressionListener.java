@@ -118,11 +118,21 @@ public class NumericExpressionListener extends FunctionCallListener
 	}
 
 	@Override
+	public void exitPreincrement(YirgacheffeParser.PreincrementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(
+			new UnaryOperation(coordinate, this.expressions.pop(), true));
+	}
+
+	@Override
 	public void exitPostincrement(YirgacheffeParser.PostincrementContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
 
-		this.expressions.push(new UnaryOperation(coordinate, this.expressions.pop()));
+		this.expressions.push(
+			new UnaryOperation(coordinate, this.expressions.pop(), false));
 	}
 
 	@Override

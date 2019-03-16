@@ -159,7 +159,7 @@ public class StatementListener extends FieldListener
 	{
 		Coordinate coordinate = new Coordinate(context);
 		Expression expression = this.expressions.pop();
-		UnaryOperation postincrement = new UnaryOperation(coordinate, expression);
+		UnaryOperation postincrement = new UnaryOperation(coordinate, expression, false);
 
 		this.statements.push(postincrement);
 	}

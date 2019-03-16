@@ -19,10 +19,13 @@ public class UnaryOperation implements Expression, Statement
 
 	private Expression expression;
 
-	public UnaryOperation(Coordinate coordinate, Expression expression)
+	private boolean pre;
+
+	public UnaryOperation(Coordinate coordinate, Expression expression, boolean pre)
 	{
 		this.coordinate = coordinate;
 		this.expression = expression;
+		this.pre = pre;
 	}
 
 	public Type getType(Variables variables)
@@ -34,9 +37,18 @@ public class UnaryOperation implements Expression, Statement
 	{
 		Array<Error> errors = this.expression.compile(methodVisitor, variables);
 
-		methodVisitor.visitInsn(Opcodes.DUP2);
+		if (!this.pre)
+		{
+			methodVisitor.visitInsn(Opcodes.DUP2);
+		}
+
 		methodVisitor.visitInsn(Opcodes.DCONST_1);
 		methodVisitor.visitInsn(Opcodes.DADD);
+
+		if (this.pre)
+		{
+			methodVisitor.visitInsn(Opcodes.DUP2);
+		}
 
 		Type type = this.expression.getType(variables);
 
