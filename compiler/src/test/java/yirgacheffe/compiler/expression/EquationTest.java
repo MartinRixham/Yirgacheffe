@@ -30,8 +30,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
-		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
+		Num firstOperand = new Num("3");
+		Num secondOperand = new Num("2");
 		Comparison equals = new Equals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, equals);
@@ -93,8 +93,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
-		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
+		Num firstOperand = new Num("3");
+		Num secondOperand = new Num("2");
 		Comparison notEquals = new NotEquals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, notEquals);
@@ -156,8 +156,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.BOOLEAN, "true");
-		Literal secondOperand = new Literal(PrimitiveType.BOOLEAN, "false");
+		Bool firstOperand = new Bool("true");
+		Bool secondOperand = new Bool("false");
 		Comparison equals = new Equals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, equals);
@@ -213,8 +213,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.BOOLEAN, "true");
-		Literal secondOperand = new Literal(PrimitiveType.BOOLEAN, "false");
+		Bool firstOperand = new Bool("true");
+		Bool secondOperand = new Bool("false");
 		Comparison notEquals = new NotEquals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, notEquals);

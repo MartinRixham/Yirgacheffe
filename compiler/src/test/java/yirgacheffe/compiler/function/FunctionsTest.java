@@ -2,12 +2,13 @@ package yirgacheffe.compiler.function;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Num;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.ParameterisedType;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -28,7 +29,7 @@ public class FunctionsTest
 	public void testGettingStringPrintlnMethod()
 	{
 		Variables variables = new Variables();
-		Expression string = new Literal(new ReferenceType(String.class), "\"\"");
+		Expression string = new Streeng("\"\"");
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
@@ -61,7 +62,7 @@ public class FunctionsTest
 	public void testGettingBooleanPrintlnMethod()
 	{
 		Variables variables = new Variables();
-		Expression bool = new Literal(PrimitiveType.BOOLEAN, "true");
+		Expression bool = new Bool("true");
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
@@ -167,7 +168,7 @@ public class FunctionsTest
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Callable> splitMethods = new Array<>();
-		Array<Expression> args = new Array<>(new Literal(PrimitiveType.BOOLEAN, "true"));
+		Array<Expression> args = new Array<>(new Bool("true"));
 		Arguments arguments = new Arguments(args, variables);
 
 		for (Method method: methods)
@@ -206,7 +207,7 @@ public class FunctionsTest
 			callables.push(new Function(string, constructor));
 		}
 
-		Array<Expression> args = new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));
+		Array<Expression> args = new Array<>(new Num("1"));
 		Arguments arguments = new Arguments(args, variables);
 
 		Functions functions =

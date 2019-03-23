@@ -4,7 +4,7 @@ import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
 
@@ -45,7 +45,7 @@ public class VariablesTest
 	public void testWriteDeclaredVariable()
 	{
 		Variables variables = new Variables();
-		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
+		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 
@@ -59,7 +59,7 @@ public class VariablesTest
 	public void testWriteUndeclaredVariable()
 	{
 		Variables variables = new Variables();
-		Expression expression = new Literal(PrimitiveType.DOUBLE, "123");
+		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 

@@ -28,8 +28,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
-		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
+		Num firstOperand = new Num("3");
+		Num secondOperand = new Num("2");
 
 		BooleanOperation or =
 			new BooleanOperation(
@@ -98,8 +98,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Literal firstOperand = new Literal(PrimitiveType.BOOLEAN, "true");
-		Literal secondOperand = new Literal(PrimitiveType.BOOLEAN, "false");
+		Bool firstOperand = new Bool("true");
+		Bool secondOperand = new Bool("false");
 
 		BooleanOperation or =
 			new BooleanOperation(
@@ -154,9 +154,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Type string = new ReferenceType(String.class);
-		Literal firstOperand = new Literal(string, "\"mystring\"");
-		Literal secondOperand = new Literal(string, "\"notherstring\"");
+		Streeng firstOperand = new Streeng("\"mystring\"");
+		Streeng secondOperand = new Streeng("\"notherstring\"");
 
 		BooleanOperation or =
 			new BooleanOperation(
@@ -169,7 +168,7 @@ public class BooleanOperationTest
 
 		Array<Error> errors = or.compile(methodVisitor, variables);
 
-		assertTrue(type.isAssignableTo(string));
+		assertTrue(type.isAssignableTo(new ReferenceType(String.class)));
 		assertEquals(0, errors.length());
 
 		InsnList instructions = methodVisitor.instructions;
@@ -241,9 +240,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Type string = new ReferenceType(String.class);
-		Expression firstOperand = new Literal(PrimitiveType.DOUBLE, "5");
-		Expression secondOperand = new Literal(string, "\"myString\"");
+		Expression firstOperand = new Num("5");
+		Expression secondOperand = new Streeng("\"myString\"");
 
 		BooleanOperation or =
 			new BooleanOperation(
@@ -275,9 +273,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Type string = new ReferenceType(String.class);
-		Expression firstOperand = new Literal(string, "\"myString\"");
-		Expression secondOperand = new Literal(PrimitiveType.DOUBLE, "5");
+		Expression firstOperand = new Streeng("\"myString\"");
+		Expression secondOperand = new Num("5");
 
 		BooleanOperation or =
 			new BooleanOperation(

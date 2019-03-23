@@ -99,7 +99,7 @@ public class VariableReadTest
 	public void testEqualToVariableWrite()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
+		Streeng string = new Streeng("\"my string\"");
 		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 

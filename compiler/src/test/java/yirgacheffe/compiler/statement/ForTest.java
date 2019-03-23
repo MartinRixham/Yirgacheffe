@@ -9,10 +9,9 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -36,7 +35,7 @@ public class ForTest
 	@Test
 	public void testExitConditionTrue()
 	{
-		Expression tru = new Literal(PrimitiveType.BOOLEAN, "true");
+		Expression tru = new Bool("true");
 
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), new Array<>());
 

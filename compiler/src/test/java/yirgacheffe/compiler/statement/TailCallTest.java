@@ -12,8 +12,9 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
-import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Num;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
@@ -52,8 +53,8 @@ public class TailCallTest
 	public void testCompilingTailCall()
 	{
 		Coordinate coordinate = new Coordinate(4, 6);
-		Expression number = new Literal(PrimitiveType.DOUBLE, "1");
-		Expression string = new Literal(new ReferenceType(String.class), "\"\"");
+		Expression number = new Num("1");
+		Expression string = new Streeng("\"\"");
 
 		Array<Expression> arguments = new Array<>(number, string);
 

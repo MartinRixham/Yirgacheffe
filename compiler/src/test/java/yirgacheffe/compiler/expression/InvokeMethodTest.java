@@ -45,8 +45,7 @@ public class InvokeMethodTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
-		Type stringType = new ReferenceType(String.class);
-		Expression expression = new Literal(stringType, "\"thingy\"");
+		Expression expression = new Streeng("\"thingy\"");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -133,9 +132,8 @@ public class InvokeMethodTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
-		Type stringType = new ReferenceType(String.class);
-		Expression expression = new Literal(stringType, "\"thingy\"");
-		Array<Expression> arguments = new Array<>(new Literal(stringType, "\"sumpt\""));
+		Expression expression = new Streeng("\"thingy\"");
+		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -181,9 +179,8 @@ public class InvokeMethodTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(0, 1);
-		Type stringType = new ReferenceType(String.class);
-		Expression expression = new Literal(stringType, "\"thingy\"");
-		Array<Expression> arguments = new Array<>(new Literal(stringType, "\"sumpt\""));
+		Expression expression = new Streeng("\"thingy\"");
+		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -228,7 +225,7 @@ public class InvokeMethodTest
 				new Array<>());
 
 		Array<Expression> arguments =
-			new Array<>(new Literal(PrimitiveType.DOUBLE, "1"));
+			new Array<>(new Num("1"));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -364,7 +361,7 @@ public class InvokeMethodTest
 		Coordinate coordinate = new Coordinate(2, 4);
 		This testClass = new This(new ReferenceType(this.getClass()));
 		String name = "myMethod";
-		Literal number = new Literal(PrimitiveType.DOUBLE, "1");
+		Num number = new Num("1");
 		Array<Expression> arguments = new Array<>(number);
 		Variables variables = new Variables();
 

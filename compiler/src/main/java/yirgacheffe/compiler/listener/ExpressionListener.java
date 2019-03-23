@@ -1,12 +1,13 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Bool;
+import yirgacheffe.compiler.expression.Char;
+import yirgacheffe.compiler.expression.Num;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -50,25 +51,23 @@ public class ExpressionListener extends StatementListener
 	@Override
 	public void enterLiteral(YirgacheffeParser.LiteralContext context)
 	{
-		Type type;
+		String text = context.getText();
 
 		if (context.StringLiteral() != null)
 		{
-			type = new ReferenceType(String.class);
+			this.expressions.push(new Streeng(text));
 		}
 		else if (context.CharacterLiteral() != null)
 		{
-			type = PrimitiveType.CHAR;
+			this.expressions.push(new Char(text));
 		}
 		else if (context.BooleanLiteral() != null)
 		{
-			type = PrimitiveType.BOOLEAN;
+			this.expressions.push(new Bool(text));
 		}
 		else
 		{
-			type = PrimitiveType.DOUBLE;
+			this.expressions.push(new Num(text));
 		}
-
-		this.expressions.push(new Literal(type, context.getText()));
 	}
 }

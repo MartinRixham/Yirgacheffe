@@ -10,8 +10,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
-import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
@@ -31,7 +31,7 @@ public class VariableWriteTest
 	public void testVariableWrite()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression value = new Literal(new ReferenceType(String.class), "\"sumpt\"");
+		Expression value = new Streeng("\"sumpt\"");
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
@@ -82,8 +82,8 @@ public class VariableWriteTest
 	public void testEqualVariables()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Literal firstString = new Literal(new ReferenceType(String.class), "\"string\"");
-		Literal secondString = new Literal(new ReferenceType(String.class), "\"thingy\"");
+		Streeng firstString = new Streeng("\"string\"");
+		Streeng secondString = new Streeng("\"thingy\"");
 		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
 		VariableWrite secondVariable = new VariableWrite(coordinate, "var", secondString);
 
@@ -95,7 +95,7 @@ public class VariableWriteTest
 	public void testNotEqualToString()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Literal firstString = new Literal(new ReferenceType(String.class), "\"string\"");
+		Streeng firstString = new Streeng("\"string\"");
 		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
 		Object secondVariable = new Object();
 
@@ -107,7 +107,7 @@ public class VariableWriteTest
 	public void testEqualToVariableRead()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Literal string = new Literal(new ReferenceType(String.class), "\"my string\"");
+		Streeng string = new Streeng("\"my string\"");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 

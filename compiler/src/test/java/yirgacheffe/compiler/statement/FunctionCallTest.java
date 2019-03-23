@@ -13,7 +13,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
-import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
@@ -33,7 +33,7 @@ public class FunctionCallTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		MethodNode methodVisitor = new MethodNode();
 		Array<Expression> arguments =
-			new Array<>(new Literal(PrimitiveType.DOUBLE, "3"));
+			new Array<>(new Num("3"));
 
 		InvokeConstructor invoke =
 			new InvokeConstructor(

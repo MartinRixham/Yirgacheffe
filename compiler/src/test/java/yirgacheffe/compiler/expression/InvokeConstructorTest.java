@@ -10,7 +10,6 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
@@ -27,7 +26,7 @@ public class InvokeConstructorTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression one = new Num("1");
 		Array<Expression> arguments = new Array<Expression>(one);
 
 		InvokeConstructor invokeConstructor =
@@ -75,7 +74,7 @@ public class InvokeConstructorTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression one = new Num("1");
 		Array<Expression> arguments = new Array<Expression>(one);
 
 		InvokeConstructor invokeConstructor =

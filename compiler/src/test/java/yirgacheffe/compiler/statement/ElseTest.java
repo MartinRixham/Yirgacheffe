@@ -10,9 +10,9 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
-import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
@@ -32,7 +32,7 @@ public class ElseTest
 	public void testElseStatement()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new Literal(PrimitiveType.BOOLEAN, "true");
+		Expression condition = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate);
 		If ifStatement = new If(condition, statement);

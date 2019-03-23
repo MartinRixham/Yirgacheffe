@@ -25,8 +25,8 @@ public class BinaryNumericOperationTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
-		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
-		Literal secondOperand = new Literal(PrimitiveType.DOUBLE, "2");
+		Num firstOperand = new Num("3");
+		Num secondOperand = new Num("2");
 
 		BinaryNumericOperation operation =
 			new BinaryNumericOperation(
@@ -67,7 +67,7 @@ public class BinaryNumericOperationTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
-		Literal firstOperand = new Literal(PrimitiveType.DOUBLE, "3");
+		Num firstOperand = new Num("3");
 		This secondOperand = new This(new ReferenceType(String.class));
 
 		BinaryNumericOperation operation =

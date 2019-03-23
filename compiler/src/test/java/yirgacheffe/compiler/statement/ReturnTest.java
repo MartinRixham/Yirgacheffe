@@ -7,9 +7,10 @@ import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -52,9 +53,8 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Type returnType = PrimitiveType.DOUBLE;
-		Expression expression = new Literal(returnType, "1");
-		Return returnStatement = new Return(coordinate, returnType, expression);
+		Expression expression = new Num("1");
+		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
@@ -81,7 +81,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
-		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression expression = new Num("1");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -115,7 +115,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
-		Expression expression = new Literal(PrimitiveType.DOUBLE, "1");
+		Expression expression = new Num("1");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -142,9 +142,8 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Type returnType = PrimitiveType.DOUBLE;
-		Expression expression = new Literal(PrimitiveType.BOOLEAN, "1");
-		Return returnStatement = new Return(coordinate, returnType, expression);
+		Expression expression = new Bool("1");
+		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
@@ -169,10 +168,9 @@ public class ReturnTest
 	public void testReturnEqualToExpression()
 	{
 		Coordinate coordinate = new Coordinate(2, 3);
-		Type type = PrimitiveType.DOUBLE;
-		Expression expression = new Literal(type, "1");
+		Expression expression = new Num("1");
 
-		Return returnStatement = new Return(coordinate, type, expression);
+		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 
 		assertEquals(returnStatement, expression);
 		assertEquals(returnStatement.hashCode(), expression.hashCode());
