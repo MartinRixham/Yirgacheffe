@@ -163,4 +163,14 @@ public class StatementListener extends FieldListener
 
 		this.statements.push(postincrement);
 	}
+
+	public void exitPreincrementStatement(
+		YirgacheffeParser.PreincrementStatementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		Expression expression = this.expressions.pop();
+		UnaryOperation preincrement = new UnaryOperation(coordinate, expression, true);
+
+		this.statements.push(preincrement);
+	}
 }

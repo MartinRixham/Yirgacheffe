@@ -672,4 +672,57 @@ public class StatementListenerTest
 		assertEquals(Opcodes.DLOAD, fifthInstruction.getOpcode());
 		assertEquals(1, fifthInstruction.var);
 	}
+
+	@Test
+	public void testPreincrement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+			"public Num method(Num i)" +
+			"{\n" +
+				"++i;\n" +
+				"return i;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DCONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DADD, thirdInstruction.getOpcode());
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DSTORE, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DLOAD, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
+	}
 }
