@@ -31,8 +31,7 @@ public class BinaryNumericOperationTest
 		BinaryNumericOperation operation =
 			new BinaryNumericOperation(
 				coordinate,
-				Opcodes.DADD,
-				"add",
+				Operator.ADD,
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
@@ -73,8 +72,7 @@ public class BinaryNumericOperationTest
 		BinaryNumericOperation operation =
 			new BinaryNumericOperation(
 				coordinate,
-				Opcodes.DADD,
-				"add",
+				Operator.ADD,
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
@@ -100,8 +98,7 @@ public class BinaryNumericOperationTest
 		Expression expression =
 			new BinaryNumericOperation(
 				coordinate,
-				0,
-				"and",
+				Operator.ADD,
 				firstOperand,
 				secondOperand);
 
@@ -120,8 +117,7 @@ public class BinaryNumericOperationTest
 		Expression operation =
 			new BinaryNumericOperation(
 				coordinate,
-				Opcodes.DDIV,
-				"divide",
+				Operator.DIVIDE,
 				firstOperand,
 				secondOperand);
 

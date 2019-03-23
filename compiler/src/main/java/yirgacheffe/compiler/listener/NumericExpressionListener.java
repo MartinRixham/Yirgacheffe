@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.BinaryNumericOperation;
 import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
+import yirgacheffe.compiler.expression.Operator;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
@@ -35,29 +36,24 @@ public class NumericExpressionListener extends FunctionCallListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			int opcode;
-			String description;
+			Operator operator;
 
 			if (context.multiplicative(i).Remainder() != null)
 			{
-				opcode = Opcodes.DREM;
-				description = "find remainder of";
+				operator = Operator.REMAINDER;
 			}
 			else if (context.multiplicative(i).Divide() != null)
 			{
-				opcode = Opcodes.DDIV;
-				description = "divide";
+				operator = Operator.DIVIDE;
 			}
 			else
 			{
-				opcode = Opcodes.DMUL;
-				description = "multiply";
+				operator = Operator.MULTIPLY;
 			}
 
 			expressions.push(new BinaryNumericOperation(
 				coordinates.pop(),
-				opcode,
-				description,
+				operator,
 				firstOperand,
 				secondOperand
 			));
@@ -83,24 +79,20 @@ public class NumericExpressionListener extends FunctionCallListener
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();
 
-			int opcode;
-			String description;
+			Operator operator;
 
 			if (context.additive(i).Subtract() != null)
 			{
-				opcode = Opcodes.DSUB;
-				description = "subtract";
+				operator = Operator.SUBTRACT;
 			}
 			else
 			{
-				opcode = Opcodes.DADD;
-				description = "add";
+				operator = Operator.ADD;
 			}
 
 			expressions.push(new BinaryNumericOperation(
 				coordinates.pop(),
-				opcode,
-				description,
+				operator,
 				firstOperand,
 				secondOperand
 			));

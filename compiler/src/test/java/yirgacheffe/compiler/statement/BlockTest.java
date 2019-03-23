@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
+import yirgacheffe.compiler.expression.Operator;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
@@ -535,8 +536,7 @@ public class BlockTest
 		Expression addition =
 			new BinaryNumericOperation(
 				coordinate,
-				Opcodes.DADD,
-				"add",
+				Operator.ADD,
 				firstRead, one);
 
 		VariableWrite secondWrite = new VariableWrite(coordinate, "var2", addition);

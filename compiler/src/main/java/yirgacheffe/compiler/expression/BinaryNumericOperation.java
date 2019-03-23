@@ -12,9 +12,7 @@ public class BinaryNumericOperation implements Expression
 {
 	private Coordinate coordinate;
 
-	private int opcode;
-
-	private String description;
+	private Operator operator;
 
 	private Expression firstOperand;
 
@@ -22,14 +20,12 @@ public class BinaryNumericOperation implements Expression
 
 	public BinaryNumericOperation(
 		Coordinate coordinate,
-		int opcode,
-		String description,
+		Operator operator,
 		Expression firstOperand,
 		Expression secondOperand)
 	{
 		this.coordinate = coordinate;
-		this.opcode = opcode;
-		this.description = description;
+		this.operator = operator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
 	}
@@ -49,7 +45,7 @@ public class BinaryNumericOperation implements Expression
 		if (firstType != PrimitiveType.DOUBLE || secondType != PrimitiveType.DOUBLE)
 		{
 			String message =
-				"Cannot " + this.description + " " +
+				"Cannot " + this.operator.getDescription() + " " +
 				firstType + " and " + secondType + ".";
 
 			errors.push(new Error(this.coordinate, message));
@@ -58,7 +54,7 @@ public class BinaryNumericOperation implements Expression
 		errors.push(this.firstOperand.compile(methodVisitor, variables));
 		errors.push(this.secondOperand.compile(methodVisitor, variables));
 
-		methodVisitor.visitInsn(this.opcode);
+		methodVisitor.visitInsn(this.operator.getOpcode());
 
 		return errors;
 	}
