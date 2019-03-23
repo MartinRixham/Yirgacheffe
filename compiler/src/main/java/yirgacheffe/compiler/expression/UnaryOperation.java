@@ -21,11 +21,18 @@ public class UnaryOperation implements Expression, Statement
 
 	private boolean pre;
 
-	public UnaryOperation(Coordinate coordinate, Expression expression, boolean pre)
+	private boolean increment;
+
+	public UnaryOperation(
+		Coordinate coordinate,
+		Expression expression,
+		boolean pre,
+		boolean increment)
 	{
 		this.coordinate = coordinate;
 		this.expression = expression;
 		this.pre = pre;
+		this.increment = increment;
 	}
 
 	public Type getType(Variables variables)
@@ -43,29 +50,15 @@ public class UnaryOperation implements Expression, Statement
 		}
 
 		methodVisitor.visitInsn(Opcodes.DCONST_1);
-		methodVisitor.visitInsn(Opcodes.DADD);
+		methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
 
 		if (this.pre)
 		{
 			methodVisitor.visitInsn(Opcodes.DUP2);
 		}
 
-		Type type = this.expression.getType(variables);
-
-		if (type != PrimitiveType.DOUBLE)
-		{
-			String message = "Cannot increment " + type + ".";
-
-			errors.push(new Error(this.coordinate, message));
-		}
-
-		if (this.expression instanceof VariableRead)
-		{
-			VariableRead read = (VariableRead) this.expression;
-			Variable variable = variables.getVariable(read.getName());
-
-			methodVisitor.visitVarInsn(Opcodes.DSTORE, variable.getIndex());
-		}
+		this.checkType(variables, errors);
+		this.updateVariable(variables, methodVisitor);
 
 		return errors;
 	}
@@ -78,17 +71,29 @@ public class UnaryOperation implements Expression, Statement
 		Array<Error> errors = this.expression.compile(methodVisitor, variables);
 
 		methodVisitor.visitInsn(Opcodes.DCONST_1);
-		methodVisitor.visitInsn(Opcodes.DADD);
+		methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
 
+		this.checkType(variables, errors);
+		this.updateVariable(variables, methodVisitor);
+
+		return errors;
+	}
+
+	private void checkType(Variables variables, Array<Error> errors)
+	{
 		Type type = this.expression.getType(variables);
 
 		if (type != PrimitiveType.DOUBLE)
 		{
-			String message = "Cannot increment " + type + ".";
+			String increment = this.increment ? "increment" : "decrement";
+			String message = "Cannot " + increment + " " + type + ".";
 
 			errors.push(new Error(this.coordinate, message));
 		}
+	}
 
+	private void updateVariable(Variables variables, MethodVisitor methodVisitor)
+	{
 		if (this.expression instanceof VariableRead)
 		{
 			VariableRead read = (VariableRead) this.expression;
@@ -96,8 +101,6 @@ public class UnaryOperation implements Expression, Statement
 
 			methodVisitor.visitVarInsn(Opcodes.DSTORE, variable.getIndex());
 		}
-
-		return errors;
 	}
 
 	public boolean returns()

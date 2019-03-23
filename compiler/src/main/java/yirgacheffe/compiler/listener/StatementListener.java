@@ -159,7 +159,9 @@ public class StatementListener extends FieldListener
 	{
 		Coordinate coordinate = new Coordinate(context);
 		Expression expression = this.expressions.pop();
-		UnaryOperation postincrement = new UnaryOperation(coordinate, expression, false);
+
+		UnaryOperation postincrement =
+			new UnaryOperation(coordinate, expression, false, true);
 
 		this.statements.push(postincrement);
 	}
@@ -169,8 +171,34 @@ public class StatementListener extends FieldListener
 	{
 		Coordinate coordinate = new Coordinate(context);
 		Expression expression = this.expressions.pop();
-		UnaryOperation preincrement = new UnaryOperation(coordinate, expression, true);
+
+		UnaryOperation preincrement =
+			new UnaryOperation(coordinate, expression, true, true);
 
 		this.statements.push(preincrement);
+	}
+
+	public void exitPostdecrementStatement(
+		YirgacheffeParser.PostdecrementStatementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		Expression expression = this.expressions.pop();
+
+		UnaryOperation postdecrement =
+			new UnaryOperation(coordinate, expression, false, false);
+
+		this.statements.push(postdecrement);
+	}
+
+	public void exitPredecrementStatement(
+		YirgacheffeParser.PredecrementStatementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		Expression expression = this.expressions.pop();
+
+		UnaryOperation predecrement =
+			new UnaryOperation(coordinate, expression, true, false);
+
+		this.statements.push(predecrement);
 	}
 }

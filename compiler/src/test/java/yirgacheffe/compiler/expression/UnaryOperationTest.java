@@ -25,7 +25,9 @@ public class UnaryOperationTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
-		UnaryOperation postincrement = new UnaryOperation(coordinate, operand, false);
+
+		UnaryOperation postincrement =
+			new UnaryOperation(coordinate, operand, false, true);
 
 		Type type = postincrement.getType(variables);
 
@@ -45,7 +47,10 @@ public class UnaryOperationTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
-		UnaryOperation postincrement = new UnaryOperation(coordinate, operand, false);
+
+		UnaryOperation postincrement =
+			new UnaryOperation(coordinate, operand, false, true);
+
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 
 		Type type = postincrement.getType(variables);
@@ -65,7 +70,7 @@ public class UnaryOperationTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
-		UnaryOperation postincrement = new UnaryOperation(coordinate, read, false);
+		UnaryOperation postincrement = new UnaryOperation(coordinate, read, false, true);
 
 		Array<VariableRead> reads = postincrement.getVariableReads();
 

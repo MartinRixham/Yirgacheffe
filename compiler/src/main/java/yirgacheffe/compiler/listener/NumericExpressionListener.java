@@ -123,7 +123,7 @@ public class NumericExpressionListener extends FunctionCallListener
 		Coordinate coordinate = new Coordinate(context);
 
 		this.expressions.push(
-			new UnaryOperation(coordinate, this.expressions.pop(), true));
+			new UnaryOperation(coordinate, this.expressions.pop(), true, true));
 	}
 
 	@Override
@@ -132,7 +132,25 @@ public class NumericExpressionListener extends FunctionCallListener
 		Coordinate coordinate = new Coordinate(context);
 
 		this.expressions.push(
-			new UnaryOperation(coordinate, this.expressions.pop(), false));
+			new UnaryOperation(coordinate, this.expressions.pop(), false, true));
+	}
+
+	@Override
+	public void exitPredecrement(YirgacheffeParser.PredecrementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(
+			new UnaryOperation(coordinate, this.expressions.pop(), true, false));
+	}
+
+	@Override
+	public void exitPostdecrement(YirgacheffeParser.PostdecrementContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(
+			new UnaryOperation(coordinate, this.expressions.pop(), false, false));
 	}
 
 	@Override
