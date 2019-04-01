@@ -66,7 +66,7 @@ public class ReplTest
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintStream stream = new PrintStream(out);
-		InputStream in = new ByteArrayInputStream("1 + 2".getBytes());
+		InputStream in = new ByteArrayInputStream("1.0 + 2.0".getBytes());
 
 		Repl repl = new Repl(stream);
 

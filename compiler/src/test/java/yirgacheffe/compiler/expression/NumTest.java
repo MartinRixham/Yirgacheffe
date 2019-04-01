@@ -19,7 +19,7 @@ public class NumTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Num literal = new Num("0");
+		Num literal = new Num("0.0");
 
 		Type type = literal.getType(variables);
 
@@ -41,7 +41,7 @@ public class NumTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Num literal = new Num("1");
+		Num literal = new Num("1.0");
 
 		Type type = literal.getType(variables);
 
@@ -56,6 +56,49 @@ public class NumTest
 		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
+	@Test
+	public void testCompilingIntegerZero()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Num literal = new Num("0");
+
+		Type type = literal.getType(variables);
+
+		literal.compile(methodVisitor, variables);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+	}
+
+	@Test
+	public void testCompilingIntegerOne()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Num literal = new Num("1");
+
+		Type type = literal.getType(variables);
+
+		literal.compile(methodVisitor, variables);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+	}
 
 	@Test
 	public void testCompilingInteger()
@@ -63,7 +106,7 @@ public class NumTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
-		Num literal = new Num("2");
+		Num literal = new Num("2.0");
 
 		Type type = literal.getType(variables);
 

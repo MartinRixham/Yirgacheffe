@@ -463,7 +463,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Void method()" +
 				"{\n" +
-					"123.toString();\n" +
+					"123.0.toString();\n" +
 				"}\n" +
 			"}";
 
@@ -912,7 +912,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Void method(Num number)" +
 				"{\n" +
-					"Num result = number + 1;" +
+					"Num result = number + 1.0;" +
 					"this.method(result);\n" +
 				"}\n" +
 			"}";
@@ -978,7 +978,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Num method(Num number)" +
 				"{\n" +
-					"Num result = number + 1;\n" +
+					"Num result = number + 1.0;\n" +
 					"if (true)\n" +
 					"{\n" +
 						"return this.method(result);\n" +
@@ -1067,7 +1067,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"public Num method(Num number)" +
 				"{\n" +
-					"Num result = this.method(number + 1);\n" +
+					"Num result = this.method(number + 1.0);\n" +
 					"return result;\n" +
 				"}\n" +
 			"}";

@@ -353,7 +353,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"Num myNumberField = 5;\n" +
+				"Num myNumberField = 5.0;\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

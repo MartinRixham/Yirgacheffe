@@ -53,7 +53,7 @@ public class TailCallTest
 	public void testCompilingTailCall()
 	{
 		Coordinate coordinate = new Coordinate(4, 6);
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		Expression string = new Streeng("\"\"");
 
 		Array<Expression> arguments = new Array<>(number, string);

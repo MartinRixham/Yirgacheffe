@@ -19,24 +19,52 @@ public class Num implements Expression
 
 	public Type getType(Variables variables)
 	{
-		return PrimitiveType.DOUBLE;
+		for (char character: this.text.toCharArray())
+		{
+			if (!Character.isDigit(character))
+			{
+				return PrimitiveType.DOUBLE;
+			}
+		}
+
+		return PrimitiveType.INT;
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Double dub = new Double(this.text);
+		if (this.getType(variables) == PrimitiveType.INT)
+		{
+			Integer integer = new Integer(this.text);
 
-		if (dub == 0)
-		{
-			methodVisitor.visitInsn(Opcodes.DCONST_0);
-		}
-		else if (dub == 1)
-		{
-			methodVisitor.visitInsn(Opcodes.DCONST_1);
+			if (integer == 0)
+			{
+				methodVisitor.visitInsn(Opcodes.ICONST_0);
+			}
+			else if (integer == 1)
+			{
+				methodVisitor.visitInsn(Opcodes.ICONST_1);
+			}
+			else
+			{
+				methodVisitor.visitLdcInsn(integer);
+			}
 		}
 		else
 		{
-			methodVisitor.visitLdcInsn(dub);
+			Double dub = new Double(this.text);
+
+			if (dub == 0)
+			{
+				methodVisitor.visitInsn(Opcodes.DCONST_0);
+			}
+			else if (dub == 1)
+			{
+				methodVisitor.visitInsn(Opcodes.DCONST_1);
+			}
+			else
+			{
+				methodVisitor.visitLdcInsn(dub);
+			}
 		}
 
 		return new Array<>();

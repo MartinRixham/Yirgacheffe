@@ -4,29 +4,37 @@ import org.objectweb.asm.Opcodes;
 
 public enum Operator
 {
-	ADD(Opcodes.DADD, "add"),
+	ADD(Opcodes.IADD, Opcodes.DADD, "add"),
 
-	SUBTRACT(Opcodes.DSUB, "subtract"),
+	SUBTRACT(Opcodes.ISUB, Opcodes.DSUB, "subtract"),
 
-	MULTIPLY(Opcodes.DMUL, "multiply"),
+	MULTIPLY(Opcodes.IMUL, Opcodes.DMUL, "multiply"),
 
-	DIVIDE(Opcodes.DDIV, "divide"),
+	DIVIDE(Opcodes.IDIV, Opcodes.DDIV, "divide"),
 
-	REMAINDER(Opcodes.DREM, "find remainder of");
+	REMAINDER(Opcodes.IREM, Opcodes.DREM, "find remainder of");
 
-	private int opcode;
+	private int intOpcode;
+
+	private int doubleOpcode;
 
 	private String description;
 
-	Operator(int opcode, String description)
+	Operator(int intOpcode, int doubleOpcode, String description)
 	{
-		this.opcode = opcode;
+		this.intOpcode = intOpcode;
+		this.doubleOpcode = doubleOpcode;
 		this.description = description;
 	}
 
-	public int getOpcode()
+	public int getIntOpcode()
 	{
-		return this.opcode;
+		return this.intOpcode;
+	}
+
+	public int getDoubleOpcode()
+	{
+		return this.doubleOpcode;
 	}
 
 	public String getDescription()

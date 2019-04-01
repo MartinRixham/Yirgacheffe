@@ -88,7 +88,7 @@ public class ExpressionListenerTest
 				"}\n" +
 				"public Num getOne()\n" +
 				"{\n" +
-					"return 1;\n" +
+					"return 1.0;\n" +
 				"}\n" +
 			"}";
 

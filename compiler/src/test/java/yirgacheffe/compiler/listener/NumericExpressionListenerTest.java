@@ -29,7 +29,7 @@ public class NumericExpressionListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 5 % 4 / 3 * 2;\n" +
+					"return 5.0 % 4.0 / 3.0 * 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -90,7 +90,7 @@ public class NumericExpressionListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 5 - 4 + 3;\n" +
+					"return 5.0 - 4.0 + 3.0;\n" +
 				"}\n" +
 			"}";
 
@@ -142,7 +142,7 @@ public class NumericExpressionListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return -(5 + 4);\n" +
+					"return -(5.0 + 4.0);\n" +
 				"}\n" +
 			"}";
 
@@ -215,7 +215,7 @@ public class NumericExpressionListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 5 && 4 && 3;\n" +
+					"return 5.0 && 4.0 && 3.0;\n" +
 				"}\n" +
 			"}";
 

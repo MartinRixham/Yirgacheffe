@@ -7,19 +7,33 @@ import yirgacheffe.compiler.instructions.VoidInstructions;
 
 public enum PrimitiveType implements Type
 {
-	VOID("Void", "V", 0, new VoidInstructions(), java.lang.Void.class),
+	VOID(
+		"Void", "V", 0, new VoidInstructions(),
+		java.lang.Void.class, Float.NaN),
 
-	BOOLEAN("Bool", "Z", 1, new IntegerInstructions(), java.lang.Boolean.class),
+	BOOLEAN(
+		"Bool", "Z", 1, new IntegerInstructions(),
+		java.lang.Boolean.class, Float.NaN),
 
-	CHAR("Char", "C", 1, new IntegerInstructions(), java.lang.Character.class),
+	CHAR(
+		"Char", "C", 1, new IntegerInstructions(),
+		java.lang.Character.class, 2),
 
-	INT("Num", "I", 2, new IntegerInstructions(), java.lang.Integer.class),
+	INT(
+		"Num", "I", 1, new IntegerInstructions(),
+		java.lang.Integer.class, 3),
 
-	LONG("Num", "J", 2, new DoubleInstructions(), java.lang.Long.class),
+	LONG(
+		"Num", "J", 2, new DoubleInstructions(),
+		java.lang.Long.class, 4),
 
-	FLOAT("Num", "F", 2, new DoubleInstructions(), java.lang.Float.class),
+	FLOAT(
+		"Num", "F", 2, new DoubleInstructions(),
+		java.lang.Float.class, 5),
 
-	DOUBLE("Num", "D", 2, new DoubleInstructions(), java.lang.Double.class);
+	DOUBLE(
+		"Num", "D", 2, new DoubleInstructions(),
+		java.lang.Double.class, 6);
 
 	private String name;
 
@@ -31,18 +45,22 @@ public enum PrimitiveType implements Type
 
 	private Instructions instructions;
 
+	private float order;
+
 	PrimitiveType(
 		String name,
 		String jvmType,
 		int width,
 		Instructions instructions,
-		Class<?> reflectionClass)
+		Class<?> reflectionClass,
+		float order)
 	{
 		this.name = name;
 		this.jvmType = jvmType;
 		this.width = width;
 		this.instructions = instructions;
 		this.reflectionClass = reflectionClass;
+		this.order = order;
 	}
 
 	public Class<?> reflectionClass()
@@ -92,8 +110,20 @@ public enum PrimitiveType implements Type
 
 	public boolean isAssignableTo(Type other)
 	{
-		return this == other ||
-			other.reflectionClass().isAssignableFrom(this.reflectionClass);
+		if (this == other)
+		{
+			return true;
+		}
+		else if (other instanceof PrimitiveType)
+		{
+			PrimitiveType otherPrimitive = (PrimitiveType) other;
+
+			return this.order < otherPrimitive.order;
+		}
+		else
+		{
+			return other.reflectionClass().isAssignableFrom(this.reflectionClass);
+		}
 	}
 
 	@Override

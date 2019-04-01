@@ -22,11 +22,11 @@ public class TailCallOptimisationTest
 			"{\n" +
 				"public Num fib(Num n, Num a, Num b)" +
 				"{\n" +
-					"if (n == 0)\n" +
+					"if (n == 0.0)\n" +
 					"{" +
 						"return b;" +
 					"}\n" +
-					"return this.fib(n - 1, b, a + b);" +
+					"return this.fib(n - 1.0, b, a + b);" +
 				"}\n" +
 			"}";
 

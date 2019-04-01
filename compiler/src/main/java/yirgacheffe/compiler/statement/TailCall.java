@@ -29,7 +29,7 @@ public class TailCall implements Statement
 
 	public boolean returns()
 	{
-		return false;
+		return this.invocation.returns();
 	}
 
 	public Array<Error> compile(

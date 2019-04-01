@@ -27,8 +27,8 @@ public class NumberMapTest
 				"main map(Array<String> args)" +
 				"{\n" +
 					"Map<Num,Num> map = new HashMap<Num,Num>();\n" +
-					"map.put(1, 2);\n" +
-					"Num two = map.get(1);\n" +
+					"map.put(1.0, 2.0);\n" +
+					"Num two = map.get(1.0);\n" +
 					"new System().getOut().println(two);\n" +
 				"}\n" +
 			"}";

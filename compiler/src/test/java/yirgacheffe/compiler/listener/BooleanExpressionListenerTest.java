@@ -26,7 +26,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 == 2 == 3;\n" +
+					"return 1.0 == 2.0 == 3.0;\n" +
 				"}\n" +
 			"}";
 
@@ -59,7 +59,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 != 2 != 3;\n" +
+					"return 1.0 != 2.0 != 3.0;\n" +
 				"}\n" +
 			"}";
 
@@ -92,7 +92,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 < 2;\n" +
+					"return 1.0 < 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -125,7 +125,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 > 2;\n" +
+					"return 1.0 > 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -158,7 +158,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 <= 2;\n" +
+					"return 1.0 <= 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -191,7 +191,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1 >= 2;\n" +
+					"return 1.0 >= 2.0;\n" +
 				"}\n" +
 			"}";
 

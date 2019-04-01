@@ -197,11 +197,11 @@ public class StatementListenerTest
 				"{\n" +
 					"if (true)" +
 					"{" +
-						"Num one = 1;\n" +
+						"Num one = 1.0;\n" +
 					"}\n" +
 					"else if (false)" +
 					"{" +
-						"Num two = 2;" +
+						"Num two = 2.0;" +
 					"}" +
 				"}\n" +
 			"}";
@@ -293,7 +293,7 @@ public class StatementListenerTest
 				"{\n" +
 					"if (true == false)" +
 					"{" +
-						"Num one = 1;\n" +
+						"Num one = 1.0;\n" +
 					"}\n" +
 				"}\n" +
 			"}";
@@ -419,7 +419,7 @@ public class StatementListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 1000000;\n" +
+					"return 1000000.0;\n" +
 				"}\n" +
 			"}";
 
@@ -521,7 +521,7 @@ public class StatementListenerTest
 			"{\n" +
 				"public Void method()" +
 				"{\n" +
-					"for (Num i = 0; i < 4; i = i + 1)\n" +
+					"for (Num i = 0.0; i < 4.0; i = i + 1.0)\n" +
 					"{\n" +
 						"Num index = i;\n" +
 					"}\n" +

@@ -53,7 +53,7 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Expression expression = new Num("1");
+		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -81,7 +81,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
-		Expression expression = new Num("1");
+		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -115,7 +115,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
-		Expression expression = new Num("1");
+		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -168,7 +168,7 @@ public class ReturnTest
 	public void testReturnEqualToExpression()
 	{
 		Coordinate coordinate = new Coordinate(2, 3);
-		Expression expression = new Num("1");
+		Expression expression = new Num("1.0");
 
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 

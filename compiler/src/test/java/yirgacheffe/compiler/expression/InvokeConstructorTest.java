@@ -26,7 +26,7 @@ public class InvokeConstructorTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Num("1");
+		Expression one = new Num("1.0");
 		Array<Expression> arguments = new Array<Expression>(one);
 
 		InvokeConstructor invokeConstructor =
@@ -74,7 +74,7 @@ public class InvokeConstructorTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Num("1");
+		Expression one = new Num("1.0");
 		Array<Expression> arguments = new Array<Expression>(one);
 
 		InvokeConstructor invokeConstructor =

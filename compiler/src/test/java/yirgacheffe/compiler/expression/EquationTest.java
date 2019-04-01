@@ -30,8 +30,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num("3.0");
+		Num secondOperand = new Num("2.0");
 		Comparison equals = new Equals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, equals);
@@ -93,8 +93,8 @@ public class EquationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num("3.0");
+		Num secondOperand = new Num("2.0");
 		Comparison notEquals = new NotEquals();
 
 		Equation equation = new Equation(firstOperand, secondOperand, notEquals);

@@ -28,8 +28,8 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num("3.0");
+		Num secondOperand = new Num("2.0");
 
 		BooleanOperation or =
 			new BooleanOperation(
@@ -240,7 +240,7 @@ public class BooleanOperationTest
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
-		Expression firstOperand = new Num("5");
+		Expression firstOperand = new Num("5.0");
 		Expression secondOperand = new Streeng("\"myString\"");
 
 		BooleanOperation or =

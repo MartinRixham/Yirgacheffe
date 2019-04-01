@@ -99,7 +99,7 @@ public class FieldWriteTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(new ReferenceType(this.getClass()));
-		Expression value = new Num("1");
+		Expression value = new Num("1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -136,7 +136,7 @@ public class FieldWriteTest
 	public void testFieldWriteHasFirstOperand()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Num one = new Num("1");
+		Num one = new Num("1.0");
 		Num two = new Num("2");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "field", one, two);
 

@@ -66,13 +66,7 @@ public class BlockTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 		Return returnStatement = new Return(coordinate);
-		Expression one = new Num("1");
-		VariableDeclaration variableDeclaration =
-			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
-		VariableWrite variableWrite =
-			new VariableWrite(coordinate, "myVariable", one);
-		Array<Statement> statements =
-			new Array<>(returnStatement, variableDeclaration, variableWrite);
+		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -84,6 +78,22 @@ public class BlockTest
 	}
 
 	@Test
+	public void testReturnAtEndOfBlock()
+	{
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Coordinate coordinate = new Coordinate(4, 0);
+		Return returnStatement = new Return(coordinate);
+		Array<Statement> statements = new Array<>(returnStatement);
+		Block block = new Block(coordinate, statements);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+
+		assertEquals(0, errors.length());
+	}
+
+	@Test
 	public void testOptimiseRedundantLocalVariableForReturn()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
@@ -92,7 +102,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -132,7 +142,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -188,8 +198,8 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 				new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression one = new Num("1");
-		Expression two = new Num("2");
+		Expression one = new Num("1.0");
+		Expression two = new Num("2.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -263,7 +273,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead returnVariableRead = new VariableRead(coordinate, "myVariable");
 
@@ -416,7 +426,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("var", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var", number);
 
 		VariableRead firstRead = new VariableRead(coordinate, "var");
@@ -466,7 +476,7 @@ public class BlockTest
 
 		VariableDeclaration firstDeclaration =
 			new VariableDeclaration("var1", PrimitiveType.DOUBLE);
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var1", number);
 
 		VariableDeclaration secondDeclaration =
@@ -525,13 +535,13 @@ public class BlockTest
 
 		VariableDeclaration firstDeclaration =
 			new VariableDeclaration("var1", PrimitiveType.DOUBLE);
-		Expression number = new Num("1");
+		Expression number = new Num("1.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var1", number);
 
 		VariableDeclaration secondDeclaration =
 			new VariableDeclaration("var2", PrimitiveType.DOUBLE);
 		VariableRead firstRead = new VariableRead(coordinate, "var1");
-		Expression one = new Num("1");
+		Expression one = new Num("1.0");
 
 		Expression addition =
 			new BinaryNumericOperation(
@@ -612,7 +622,7 @@ public class BlockTest
 		VariableDeclaration notherVariableDeclaration =
 			new VariableDeclaration("notherVariable", PrimitiveType.DOUBLE);
 
-		Expression one = new Num("1");
+		Expression one = new Num("1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
