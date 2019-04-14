@@ -26,7 +26,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1.0 == 2.0 == 3.0;\n" +
+					"return 1.0 == 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -44,7 +44,7 @@ public class BooleanExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(21, instructions.size());
+		assertEquals(12, instructions.size());
 
 		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
 
@@ -59,7 +59,7 @@ public class BooleanExpressionListenerTest
 			"{\n" +
 				"public Bool method()" +
 				"{\n" +
-					"return 1.0 != 2.0 != 3.0;\n" +
+					"return 1.0 != 2.0;\n" +
 				"}\n" +
 			"}";
 
@@ -77,7 +77,7 @@ public class BooleanExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(21, instructions.size());
+		assertEquals(12, instructions.size());
 
 		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
 

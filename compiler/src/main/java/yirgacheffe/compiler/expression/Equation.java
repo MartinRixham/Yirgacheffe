@@ -57,11 +57,34 @@ public class Equation implements Expression
 		Variables variables,
 		Label label)
 	{
-		Type type = this.firstOperand.getType(variables);
+		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
 
-		this.firstOperand.compile(methodVisitor, variables);
-		this.secondOperand.compile(methodVisitor, variables);
-		this.comparison.compile(methodVisitor, label, type);
+		if (firstType == secondType)
+		{
+			this.firstOperand.compile(methodVisitor, variables);
+			this.secondOperand.compile(methodVisitor, variables);
+			this.comparison.compile(methodVisitor, label, firstType);
+		}
+		else if (firstType.isAssignableTo(secondType))
+		{
+			this.firstOperand.compile(methodVisitor, variables);
+
+			methodVisitor.visitInsn(Opcodes.I2D);
+
+			this.secondOperand.compile(methodVisitor, variables);
+			this.comparison.compile(methodVisitor, label, secondType);
+		}
+		else
+		{
+			this.firstOperand.compile(methodVisitor, variables);
+			this.secondOperand.compile(methodVisitor, variables);
+
+			methodVisitor.visitInsn(Opcodes.I2D);
+
+			this.comparison.compile(methodVisitor, label, firstType);
+
+		}
 	}
 
 	public Array<VariableRead> getVariableReads()
