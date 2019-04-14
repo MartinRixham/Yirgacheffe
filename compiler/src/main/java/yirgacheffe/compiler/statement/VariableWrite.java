@@ -1,11 +1,13 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
@@ -65,7 +67,14 @@ public class VariableWrite implements Statement
 
 		errors.push(this.expression.compile(methodVisitor, variables));
 
-		methodVisitor.visitVarInsn(type.getStoreInstruction(), variable.getIndex());
+		if (variableType == PrimitiveType.DOUBLE && !variableType.equals(type))
+		{
+			methodVisitor.visitInsn(Opcodes.I2D);
+		}
+
+		methodVisitor.visitVarInsn(
+			variableType.getStoreInstruction(),
+			variable.getIndex());
 
 		if (!type.isAssignableTo(variableType))
 		{

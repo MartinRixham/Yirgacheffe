@@ -25,7 +25,7 @@ public class LoopTest
 				"PrintStream out = new System().getOut();\n" +
 				"public Void hello()\n" +
 				"{\n" +
-					"for (Num i = 0.0; i < 4.0; i++)\n" +
+					"for (Num i = 0; i < 4; i++)\n" +
 					"{\n" +
 						"this.out.println(i);" +
 					"}\n" +

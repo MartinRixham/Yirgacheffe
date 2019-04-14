@@ -74,6 +74,34 @@ public class VariableReadTest
 	}
 
 	@Test
+	public void testCompilingIntegerRead()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Type owner = PrimitiveType.INT;
+
+		variables.declare("myVariable", owner);
+
+		Coordinate coordinate = new Coordinate(1, 0);
+		Expression expression = new VariableRead(coordinate, "myVariable");
+
+		Type type = expression.getType(variables);
+
+		expression.compile(methodVisitor, variables);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(1, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ILOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+	}
+
+	@Test
 	public void testEqualVariables()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
