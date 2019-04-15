@@ -1,6 +1,9 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.IincInsnNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -33,7 +36,6 @@ public class UnaryOperationTest
 
 		Array<Error> errors = postincrement.compile(methodVisitor, variables);
 
-		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, errors.length());
 
 		assertEquals(errors.get(0).toString(),
@@ -53,11 +55,8 @@ public class UnaryOperationTest
 
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 
-		Type type = postincrement.getType(variables);
-
 		Array<Error> errors = postincrement.compile(methodVisitor, variables, caller);
 
-		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, errors.length());
 
 		assertEquals(errors.get(0).toString(),
@@ -77,5 +76,37 @@ public class UnaryOperationTest
 		assertTrue(reads.indexOf(read) >= 0);
 		assertEquals(read, postincrement.getExpression());
 		assertFalse(postincrement.isEmpty());
+	}
+
+	@Test
+	public void testPostincrementInteger()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		variables.declare("variable", PrimitiveType.INT);
+
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead variableRead = new VariableRead(coordinate, "variable");
+
+		UnaryOperation postincrement =
+			new UnaryOperation(coordinate, variableRead, false, true);
+
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+
+		Type type = postincrement.getType(variables);
+
+		Array<Error> errors = postincrement.compile(methodVisitor, variables, caller);
+
+		assertEquals(PrimitiveType.INT, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		IincInsnNode firstInstruction = (IincInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.IINC, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+		assertEquals(1, firstInstruction.incr);
 	}
 }

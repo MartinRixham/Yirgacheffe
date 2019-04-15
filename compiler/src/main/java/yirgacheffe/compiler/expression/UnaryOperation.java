@@ -37,11 +37,12 @@ public class UnaryOperation implements Expression, Statement
 
 	public Type getType(Variables variables)
 	{
-		return PrimitiveType.DOUBLE;
+		return this.expression.getType(variables);
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
+		Type type = this.expression.getType(variables);
 		Array<Error> errors = this.expression.compile(methodVisitor, variables);
 
 		if (!this.pre)
@@ -57,7 +58,7 @@ public class UnaryOperation implements Expression, Statement
 			methodVisitor.visitInsn(Opcodes.DUP2);
 		}
 
-		this.checkType(variables, errors);
+		this.checkType(type, errors);
 		this.updateVariable(variables, methodVisitor);
 
 		return errors;
@@ -68,22 +69,37 @@ public class UnaryOperation implements Expression, Statement
 		Variables variables,
 		Signature caller)
 	{
-		Array<Error> errors = this.expression.compile(methodVisitor, variables);
+		Type type = this.expression.getType(variables);
+		Array<Error> errors = new Array<>();
 
-		methodVisitor.visitInsn(Opcodes.DCONST_1);
-		methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
+		if (type == PrimitiveType.INT)
+		{
+			if (this.expression instanceof VariableRead)
+			{
+				VariableRead read = (VariableRead) this.expression;
+				Variable variable = variables.getVariable(read.getName());
 
-		this.checkType(variables, errors);
-		this.updateVariable(variables, methodVisitor);
+				methodVisitor.visitIincInsn(variable.getIndex(), this.increment ? 1 : -1);
+			}
+		}
+		else
+		{
+			errors.push(this.expression.compile(methodVisitor, variables));
+
+			methodVisitor.visitInsn(Opcodes.DCONST_1);
+			methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
+
+			this.updateVariable(variables, methodVisitor);
+		}
+
+		this.checkType(type, errors);
 
 		return errors;
 	}
 
-	private void checkType(Variables variables, Array<Error> errors)
+	private void checkType(Type type, Array<Error> errors)
 	{
-		Type type = this.expression.getType(variables);
-
-		if (type != PrimitiveType.DOUBLE)
+		if (!type.isAssignableTo(PrimitiveType.DOUBLE))
 		{
 			String increment = this.increment ? "increment" : "decrement";
 			String message = "Cannot " + increment + " " + type + ".";
