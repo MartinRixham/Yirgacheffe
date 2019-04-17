@@ -7,14 +7,18 @@ import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Variables
 {
 	private int nextVariableIndex = 1;
 
 	private Map<String, Variable> declaredVariables = new HashMap<>();
+
+	private Set<String> declaredIntegers = new HashSet<>();
 
 	private Array<VariableRead> variableReads = new Array<>();
 
@@ -40,6 +44,11 @@ public class Variables
 		this.nextVariableIndex += type.width();
 	}
 
+	public void declareInteger(String name)
+	{
+		this.declaredIntegers.add(name);
+	}
+
 	public void read(VariableRead variableRead)
 	{
 		if (!this.declaredVariables.containsKey(variableRead.getName()))
@@ -60,7 +69,16 @@ public class Variables
 	{
 		if (this.declaredVariables.containsKey(name))
 		{
-			return this.declaredVariables.get(name);
+			if (this.declaredIntegers.contains(name))
+			{
+				int index = this.declaredVariables.get(name).getIndex();
+
+				return new Variable(index, PrimitiveType.INT);
+			}
+			else
+			{
+				return this.declaredVariables.get(name);
+			}
 		}
 		else
 		{

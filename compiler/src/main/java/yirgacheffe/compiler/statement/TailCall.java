@@ -87,12 +87,12 @@ public class TailCall implements Statement
 
 	public Array<VariableRead> getVariableReads()
 	{
-		return new Array<>();
+		return this.invocation.getVariableReads();
 	}
 
 	public Array<VariableWrite> getVariableWrites()
 	{
-		return new Array<>();
+		return this.invocation.getVariableWrites();
 	}
 
 	public Expression getExpression()

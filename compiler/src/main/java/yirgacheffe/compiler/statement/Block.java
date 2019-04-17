@@ -8,6 +8,8 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -57,6 +59,7 @@ public class Block implements Statement
 
 		this.optimiseVariables(variables);
 		this.optimiseTailCall(caller, variables);
+		this.optimiseIntegers(variables);
 
 		for (int i = 0; i < statements.length(); i++)
 		{
@@ -163,6 +166,42 @@ public class Block implements Statement
 		this.statements.push(tailCall);
 	}
 
+	private void optimiseIntegers(Variables variables)
+	{
+		Set<VariableWrite> variableWrites = new HashSet<>();
+
+		for (Statement statement: this.statements)
+		{
+			for (VariableWrite variableWrite: statement.getVariableWrites())
+			{
+				Type type = variableWrite.getExpression().getType(variables);
+
+				if (type == PrimitiveType.INT)
+				{
+					variableWrites.add(variableWrite);
+				}
+			}
+		}
+
+		for (Statement statement: this.statements)
+		{
+			for (VariableWrite variableWrite: statement.getVariableWrites())
+			{
+				Type type = variableWrite.getExpression().getType(variables);
+
+				if (type == PrimitiveType.DOUBLE)
+				{
+					variableWrites.remove(variableWrite);
+				}
+			}
+		}
+
+		for (VariableWrite variableWrite: variableWrites)
+		{
+			variables.declareInteger(variableWrite.getName());
+		}
+	}
+
 	public Array<VariableRead> getVariableReads()
 	{
 		Array<VariableRead> variableReads = new Array<>();
@@ -181,9 +220,9 @@ public class Block implements Statement
 
 		for (Statement statement: this.statements)
 		{
-			if (statement instanceof VariableWrite)
+			for (VariableWrite variableWrite: statement.getVariableWrites())
 			{
-				variableWrites.push((VariableWrite) statement);
+				variableWrites.push(variableWrite);
 			}
 		}
 
