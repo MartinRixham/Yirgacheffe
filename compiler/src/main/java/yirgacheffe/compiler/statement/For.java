@@ -6,7 +6,6 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Variables;
@@ -20,18 +19,18 @@ public class For implements Statement
 
 	private Statement incrementer;
 
-	private Array<Statement> statements;
+	private Block block;
 
 	public For(
 		Statement initialiser,
 		Expression exitCondition,
 		Statement incrementer,
-		Array<Statement> statements)
+		Block block)
 	{
 		this.initialiser = initialiser;
 		this.exitCondition = exitCondition;
 		this.incrementer = incrementer;
-		this.statements = statements;
+		this.block = block;
 	}
 
 	@Override
@@ -66,10 +65,7 @@ public class For implements Statement
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, exitLabel);
 		}
 
-		for (Statement statement : this.statements)
-		{
-			errors = errors.concat(statement.compile(methodVisitor, variables, caller));
-		}
+		errors = errors.concat(this.block.compile(methodVisitor, variables, caller));
 
 		errors = errors.concat(
 			this.incrementer.compile(methodVisitor, variables, caller));
@@ -96,14 +92,7 @@ public class For implements Statement
 	@Override
 	public Expression getExpression()
 	{
-		if (this.statements.length() == 0)
-		{
-			return new Nothing();
-		}
-		else
-		{
-			return this.statements.get(this.statements.length() - 1).getExpression();
-		}
+		return this.block.getExpression();
 	}
 
 	@Override

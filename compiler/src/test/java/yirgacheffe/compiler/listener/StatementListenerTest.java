@@ -544,7 +544,7 @@ public class StatementListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(15, instructions.size());
+		assertEquals(14, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -581,31 +581,27 @@ public class StatementListenerTest
 		assertEquals(Opcodes.ILOAD, eighthInstruction.getOpcode());
 		assertEquals(1, eighthInstruction.var);
 
-		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+		VarInsnNode ninthInstruction = (VarInsnNode) instructions.get(8);
 
-		assertEquals(Opcodes.I2D, ninthInstruction.getOpcode());
+		assertEquals(Opcodes.ISTORE, ninthInstruction.getOpcode());
+		assertEquals(3, ninthInstruction.var);
 
-		VarInsnNode tenthInstruction = (VarInsnNode) instructions.get(9);
+		IincInsnNode tenthInstruction = (IincInsnNode) instructions.get(9);
 
-		assertEquals(Opcodes.DSTORE, tenthInstruction.getOpcode());
-		assertEquals(3, tenthInstruction.var);
+		assertEquals(Opcodes.IINC, tenthInstruction.getOpcode());
+		assertEquals(1, tenthInstruction.var);
+		assertEquals(1, tenthInstruction.incr);
 
-		IincInsnNode eleventhInstruction = (IincInsnNode) instructions.get(10);
+		JumpInsnNode eleventhInstruction = (JumpInsnNode) instructions.get(10);
 
-		assertEquals(Opcodes.IINC, eleventhInstruction.getOpcode());
-		assertEquals(1, eleventhInstruction.var);
-		assertEquals(1, eleventhInstruction.incr);
+		assertEquals(Opcodes.GOTO, eleventhInstruction.getOpcode());
+		assertEquals(continueLabel, eleventhInstruction.label.getLabel());
 
-		JumpInsnNode twelfthInstruction = (JumpInsnNode) instructions.get(11);
+		LabelNode twelfthInstruction = (LabelNode) instructions.get(11);
 
-		assertEquals(Opcodes.GOTO, twelfthInstruction.getOpcode());
-		assertEquals(continueLabel, twelfthInstruction.label.getLabel());
+		assertEquals(exitLabel, twelfthInstruction.getLabel());
 
-		LabelNode thirteenthInstruction = (LabelNode) instructions.get(12);
-
-		assertEquals(exitLabel, thirteenthInstruction.getLabel());
-
-		assertTrue(instructions.get(13) instanceof FrameNode);
+		assertTrue(instructions.get(12) instanceof FrameNode);
 	}
 
 	@Test

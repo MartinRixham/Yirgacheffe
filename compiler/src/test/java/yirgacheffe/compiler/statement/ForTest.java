@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
@@ -24,8 +25,11 @@ public class ForTest
 	@Test
 	public void testEmptyForStatement()
 	{
+		Coordinate coordinate = new Coordinate(3, 4);
+		Block block = new Block(coordinate, new Array<>());
+
 		For forStatement =
-			new For(new DoNothing(), new Nothing(), new DoNothing(), new Array<>());
+			new For(new DoNothing(), new Nothing(), new DoNothing(), block);
 
 		assertTrue(forStatement.getExpression() instanceof Nothing);
 		assertFalse(forStatement.returns());
@@ -36,8 +40,10 @@ public class ForTest
 	public void testExitConditionTrue()
 	{
 		Expression tru = new Bool("true");
+		Coordinate coordinate = new Coordinate(3, 4);
+		Block block = new Block(coordinate, new Array<>());
 
-		For forStatement = new For(new DoNothing(), tru, new DoNothing(), new Array<>());
+		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);
 
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();

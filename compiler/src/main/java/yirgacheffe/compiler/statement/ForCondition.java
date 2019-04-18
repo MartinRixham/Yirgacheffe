@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.lang.Array;
 
 public class ForCondition
 {
@@ -21,12 +20,12 @@ public class ForCondition
 		this.incrementer = incrementer;
 	}
 
-	public For getStatement(Array<Statement> statements)
+	public For getStatement(Block block)
 	{
 		return new For(
 			this.initialiser,
 			this.exitCondition,
 			this.incrementer,
-			statements);
+			block);
 	}
 }

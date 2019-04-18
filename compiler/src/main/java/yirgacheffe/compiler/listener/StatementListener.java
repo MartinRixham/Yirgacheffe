@@ -69,31 +69,36 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitBlock(YirgacheffeParser.BlockContext context)
 	{
-		Array<Statement> blockStatements = new Array<>();
-
-		while (true)
-		{
-			Statement statement = this.statements.pop();
-
-			if (statement instanceof OpenBlock)
-			{
-				break;
-			}
-			else
-			{
-				blockStatements.unshift(statement);
-			}
-		}
-
+		Array<Statement> blockStatements = getStatements(new Array<>());
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
+		Block block = new Block(coordinate, blockStatements);
 
-		if (this.forCondition != null)
+		if (this.forCondition == null)
 		{
-			blockStatements =
-				new Array<>(this.forCondition.getStatement(blockStatements));
+			this.statements.push(new Block(coordinate, blockStatements));
 		}
+		else
+		{
+			Statement statement = this.forCondition.getStatement(block);
 
-		this.statements.push(new Block(coordinate, blockStatements));
+			this.statements.push(new Block(coordinate, new Array<>(statement)));
+		}
+	}
+
+	private Array<Statement> getStatements(Array<Statement> blockStatements)
+	{
+		Statement statement = this.statements.pop();
+
+		if (statement instanceof OpenBlock)
+		{
+			return blockStatements;
+		}
+		else
+		{
+			blockStatements.unshift(statement);
+
+			return this.getStatements(blockStatements);
+		}
 	}
 
 	@Override
