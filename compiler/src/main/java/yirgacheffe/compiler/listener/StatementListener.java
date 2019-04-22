@@ -69,7 +69,7 @@ public class StatementListener extends FieldListener
 	@Override
 	public void exitBlock(YirgacheffeParser.BlockContext context)
 	{
-		Array<Statement> blockStatements = getStatements(new Array<>());
+		Array<Statement> blockStatements = this.getStatements(new Array<>());
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, blockStatements);
 

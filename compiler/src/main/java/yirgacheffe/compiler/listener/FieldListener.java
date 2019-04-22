@@ -86,6 +86,7 @@ public class FieldListener extends FieldDeclarationListener
 	@Override
 	public void enterFieldRead(YirgacheffeParser.FieldReadContext context)
 	{
+		Coordinate coordinate = new Coordinate(context);
 		String fieldName = context.Identifier().getText();
 		Type fieldType = this.fieldTypes.get(fieldName);
 
@@ -100,7 +101,7 @@ public class FieldListener extends FieldDeclarationListener
 		}
 
 		Expression owner = this.expressions.pop();
-		Expression fieldRead = new FieldRead(owner, fieldName, fieldType);
+		Expression fieldRead = new FieldRead(coordinate, owner, fieldName, fieldType);
 
 		this.expressions.push(fieldRead);
 	}

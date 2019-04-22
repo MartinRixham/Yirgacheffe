@@ -1,12 +1,15 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -61,22 +64,30 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(2, instructions.size());
+		assertEquals(4, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
 
-		InvokeDynamicInsnNode secondInstruction =
-			(InvokeDynamicInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
-		assertEquals("toString", secondInstruction.name);
-		assertEquals("bootstrapPublic", secondInstruction.bsm.getName());
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
+
+		assertEquals(label, thirdInstruction.start.getLabel());
+		assertEquals(0, thirdInstruction.line);
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("toString", fourthInstruction.name);
+		assertEquals("bootstrapPublic", fourthInstruction.bsm.getName());
 		assertEquals(
 			"(Ljava/lang/String;)Ljava/lang/String;",
-			secondInstruction.desc);
+			fourthInstruction.desc);
 
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
@@ -106,22 +117,30 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(2, instructions.size());
+		assertEquals(4, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		InvokeDynamicInsnNode secondInstruction =
-			(InvokeDynamicInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
-		assertEquals("method", secondInstruction.name);
-		assertEquals("bootstrapPrivate", secondInstruction.bsm.getName());
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
+
+		assertEquals(label, thirdInstruction.start.getLabel());
+		assertEquals(0, thirdInstruction.line);
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("method", fourthInstruction.name);
+		assertEquals("bootstrapPrivate", fourthInstruction.bsm.getName());
 		assertEquals(
 			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;)V",
-			secondInstruction.desc);
+			fourthInstruction.desc);
 
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 	}
@@ -149,7 +168,7 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(3, instructions.size());
+		assertEquals(5, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -161,14 +180,22 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
 		assertEquals("sumpt", secondInstruction.cst);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("concat", thirdInstruction.name);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
+
+		assertEquals(label, fourthInstruction.start.getLabel());
+		assertEquals(0, fourthInstruction.line);
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("concat", fifthInstruction.name);
 		assertEquals(
 			"(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
-			thirdInstruction.desc);
+			fifthInstruction.desc);
 
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 	}
@@ -241,50 +268,66 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(8, instructions.size());
+		assertEquals(12, instructions.size());
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
-		assertEquals("java/util/HashMap", thirdInstruction.owner);
-		assertEquals("()V", thirdInstruction.desc);
-		assertEquals("<init>", thirdInstruction.name);
-		assertFalse(thirdInstruction.itf);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.DCONST_1, fourthInstruction.getOpcode());
+		assertEquals(label, fourthInstruction.start.getLabel());
+		assertEquals(0, fourthInstruction.line);
 
 		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKESTATIC, fifthInstruction.getOpcode());
-		assertEquals("java/lang/Double", fifthInstruction.owner);
-		assertEquals("(D)Ljava/lang/Double;", fifthInstruction.desc);
-		assertEquals("valueOf", fifthInstruction.name);
+		assertEquals(Opcodes.INVOKESPECIAL, fifthInstruction.getOpcode());
+		assertEquals("java/util/HashMap", fifthInstruction.owner);
+		assertEquals("()V", fifthInstruction.desc);
+		assertEquals("<init>", fifthInstruction.name);
 		assertFalse(fifthInstruction.itf);
 
-		InvokeDynamicInsnNode sixthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(5);
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
-		assertEquals("get", sixthInstruction.name);
+		assertEquals(Opcodes.DCONST_1, sixthInstruction.getOpcode());
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESTATIC, seventhInstruction.getOpcode());
+		assertEquals("java/lang/Double", seventhInstruction.owner);
+		assertEquals("(D)Ljava/lang/Double;", seventhInstruction.desc);
+		assertEquals("valueOf", seventhInstruction.name);
+		assertFalse(seventhInstruction.itf);
+
+		LabelNode eighthInstruction = (LabelNode) instructions.get(7);
+		Label notherLabel = eighthInstruction.getLabel();
+
+		LineNumberNode ninthInstruction = (LineNumberNode) instructions.get(8);
+
+		assertEquals(notherLabel, ninthInstruction.start.getLabel());
+		assertEquals(0, ninthInstruction.line);
+
+		InvokeDynamicInsnNode tenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, tenthInstruction.getOpcode());
+		assertEquals("get", tenthInstruction.name);
 		assertEquals(
 			"(Ljava/util/HashMap;Ljava/lang/Object;)Ljava/lang/Object;",
-			sixthInstruction.desc);
+			tenthInstruction.desc);
 
-		TypeInsnNode seventhInstruction = (TypeInsnNode) instructions.get(6);
+		TypeInsnNode eleventhInstruction = (TypeInsnNode) instructions.get(10);
 
-		assertEquals(Opcodes.CHECKCAST, seventhInstruction.getOpcode());
-		assertEquals("java/lang/Double", seventhInstruction.desc);
+		assertEquals(Opcodes.CHECKCAST, eleventhInstruction.getOpcode());
+		assertEquals("java/lang/Double", eleventhInstruction.desc);
 
-		MethodInsnNode eightInstruction = (MethodInsnNode) instructions.get(7);
+		MethodInsnNode twelfthInstruction = (MethodInsnNode) instructions.get(11);
 
-		assertEquals(Opcodes.INVOKESTATIC, eightInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Boxer", eightInstruction.owner);
-		assertEquals("(Ljava/lang/Double;)D", eightInstruction.desc);
-		assertEquals("ofValue", eightInstruction.name);
-		assertFalse(eightInstruction.itf);
+		assertEquals(Opcodes.INVOKESTATIC, twelfthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Boxer", twelfthInstruction.owner);
+		assertEquals("(Ljava/lang/Double;)D", twelfthInstruction.desc);
+		assertEquals("ofValue", twelfthInstruction.name);
+		assertFalse(twelfthInstruction.itf);
 	}
 
 	@Test
@@ -313,7 +356,7 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(2, instructions.size());
+		assertEquals(4, instructions.size());
 		assertEquals("java.lang.Void", type.toFullyQualifiedType());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
@@ -321,12 +364,20 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		InvokeDynamicInsnNode secondInstruction =
-			(InvokeDynamicInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
-		assertEquals("run", secondInstruction.name);
-		assertEquals("(Ljava/lang/Runnable;)V", secondInstruction.desc);
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
+
+		assertEquals(label, thirdInstruction.start.getLabel());
+		assertEquals(0, thirdInstruction.line);
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("run", fourthInstruction.name);
+		assertEquals("(Ljava/lang/Runnable;)V", fourthInstruction.desc);
 	}
 
 	@Test

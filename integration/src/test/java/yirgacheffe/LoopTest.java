@@ -32,7 +32,7 @@ public class LoopTest
 				"}\n" +
 			"}";
 
-		Compiler compiler = new Compiler("", source);
+		Compiler compiler = new Compiler("MyClass.yg", source);
 		Classes classes = new Classes();
 
 		compiler.compileInterface(classes);

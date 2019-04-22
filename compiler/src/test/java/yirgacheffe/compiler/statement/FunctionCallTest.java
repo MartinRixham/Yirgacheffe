@@ -5,7 +5,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -23,6 +25,7 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FunctionCallTest
 {
@@ -48,19 +51,21 @@ public class FunctionCallTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
 		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
 		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-		assertEquals(Opcodes.POP2, fifthInstruction.getOpcode());
+		assertTrue(instructions.get(3) instanceof LabelNode);
+		assertTrue(instructions.get(4) instanceof LineNumberNode);
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.POP2, seventhInstruction.getOpcode());
 	}
 
 	@Test

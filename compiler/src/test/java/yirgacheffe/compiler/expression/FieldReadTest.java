@@ -1,9 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
@@ -21,6 +24,7 @@ public class FieldReadTest
 	@Test
 	public void testCompilingFieldRead()
 	{
+		Coordinate coordinate = new Coordinate(3, 4);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
@@ -28,6 +32,7 @@ public class FieldReadTest
 
 		FieldRead fieldRead =
 			new FieldRead(
+				coordinate,
 				new This(owner),
 				"length",
 				PrimitiveType.DOUBLE);
@@ -38,19 +43,27 @@ public class FieldReadTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(2, instructions.size());
+		assertEquals(4, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
-		assertEquals("java/lang/String", secondInstruction.owner);
-		assertEquals("length", secondInstruction.name);
-		assertEquals("D", secondInstruction.desc);
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
+
+		assertEquals(3, thirdInstruction.line);
+		assertEquals(label, thirdInstruction.start.getLabel());
+
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
+		assertEquals("java/lang/String", fourthInstruction.owner);
+		assertEquals("length", fourthInstruction.name);
+		assertEquals("D", fourthInstruction.desc);
 
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
@@ -61,7 +74,8 @@ public class FieldReadTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
-		Expression fieldRead = new FieldRead(read, "myField", PrimitiveType.DOUBLE);
+		Expression fieldRead =
+			new FieldRead(coordinate, read, "myField", PrimitiveType.DOUBLE);
 
 		Array<VariableRead> reads = fieldRead.getVariableReads();
 

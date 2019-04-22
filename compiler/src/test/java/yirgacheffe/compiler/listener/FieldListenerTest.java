@@ -2,13 +2,16 @@ package yirgacheffe.compiler.listener;
 
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -549,12 +552,12 @@ public class FieldListenerTest
 
 		InsnList instructions = initialiser.instructions;
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		FieldInsnNode seventhInstruction = (FieldInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.PUTFIELD, fifthInstruction.getOpcode());
-		assertEquals("MyClass", fifthInstruction.owner);
-		assertEquals("myObject", fifthInstruction.name);
-		assertEquals("Ljava/lang/Object;", fifthInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, seventhInstruction.getOpcode());
+		assertEquals("MyClass", seventhInstruction.owner);
+		assertEquals("myObject", seventhInstruction.name);
+		assertEquals("Ljava/lang/Object;", seventhInstruction.desc);
 
 		MethodNode constructor = (MethodNode) methods.get(1);
 
@@ -731,24 +734,31 @@ public class FieldListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(6, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
-		assertEquals("MyClass", secondInstruction.owner);
-		assertEquals("myStringField", secondInstruction.name);
-		assertEquals("Ljava/lang/String;", secondInstruction.desc);
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
 
-		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+		assertEquals(label, thirdInstruction.start.getLabel());
 
-		assertEquals(Opcodes.ASTORE, thirdInstruction.getOpcode());
-		assertEquals(1, thirdInstruction.var);
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("myStringField", fourthInstruction.name);
+		assertEquals("Ljava/lang/String;", fourthInstruction.desc);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ASTORE, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
 	}
 
 	@Test

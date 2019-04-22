@@ -77,6 +77,8 @@ public class InvokeConstructor implements Expression
 			errors = errors.concat(argument.compile(methodVisitor, variables));
 		}
 
+		this.coordinate.compile(methodVisitor);
+
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			typeWithSlashes,

@@ -2,11 +2,14 @@ package yirgacheffe.compiler.listener;
 
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
@@ -121,23 +124,31 @@ public class ExpressionListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(6, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		InvokeDynamicInsnNode secondInstruction =
-			(InvokeDynamicInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
-		assertEquals("getOne", secondInstruction.name);
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
 
-		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+		assertEquals(label, thirdInstruction.start.getLabel());
+		assertEquals(5, thirdInstruction.line);
 
-		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
-		assertEquals(1, thirdInstruction.var);
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("getOne", fourthInstruction.name);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
 
 		MethodNode secondMethod = (MethodNode) methods.get(1);
 

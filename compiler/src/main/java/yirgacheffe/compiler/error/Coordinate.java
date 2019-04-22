@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.error;
 
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 
@@ -24,6 +26,14 @@ public class Coordinate implements Comparable<Coordinate>
 	public Coordinate(ParserRuleContext context)
 	{
 		this(context.getStart());
+	}
+
+	public void compile(MethodVisitor methodVisitor)
+	{
+		Label label = new Label();
+
+		methodVisitor.visitLabel(label);
+		methodVisitor.visitLineNumber(this.line, label);
 	}
 
 	@Override

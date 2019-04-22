@@ -13,6 +13,7 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -56,7 +57,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -67,21 +68,28 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
-		assertEquals("java/lang/String", thirdInstruction.owner);
-		assertEquals("<init>", thirdInstruction.name);
-		assertEquals("()V", thirdInstruction.desc);
-		assertFalse(thirdInstruction.itf);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		assertEquals(label, fourthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		assertEquals(Opcodes.INVOKESPECIAL, fifthInstruction.getOpcode());
+		assertEquals("java/lang/String", fifthInstruction.owner);
+		assertEquals("<init>", fifthInstruction.name);
+		assertEquals("()V", fifthInstruction.desc);
+		assertFalse(fifthInstruction.itf);
 
-		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.POP, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.RETURN, seventhInstruction.getOpcode());
 	}
 
 	@Test
@@ -111,7 +119,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(8, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -127,21 +135,28 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
 		assertEquals("thingy", thirdInstruction.cst);
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
+		Label label = fourthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-		assertEquals("java/lang/String", fourthInstruction.owner);
-		assertEquals("<init>", fourthInstruction.name);
-		assertEquals("(Ljava/lang/String;)V", fourthInstruction.desc);
-		assertFalse(fourthInstruction.itf);
+		LineNumberNode fifthInstruction = (LineNumberNode) instructions.get(4);
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		assertEquals(label, fifthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals("java/lang/String", sixthInstruction.owner);
+		assertEquals("<init>", sixthInstruction.name);
+		assertEquals("(Ljava/lang/String;)V", sixthInstruction.desc);
+		assertFalse(sixthInstruction.itf);
 
-		assertEquals(Opcodes.RETURN, sixthInstruction.getOpcode());
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.RETURN, eighthInstruction.getOpcode());
 	}
 
 	@Test
@@ -171,7 +186,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(8, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -182,13 +197,20 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
+		Label label = fourthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-		assertEquals("java/lang/Double", fourthInstruction.owner);
-		assertEquals("<init>", fourthInstruction.name);
-		assertEquals("(D)V", fourthInstruction.desc);
-		assertFalse(fourthInstruction.itf);
+		LineNumberNode fifthInstruction = (LineNumberNode) instructions.get(4);
+
+		assertEquals(label, fifthInstruction.start.getLabel());
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals("java/lang/Double", sixthInstruction.owner);
+		assertEquals("<init>", sixthInstruction.name);
+		assertEquals("(D)V", sixthInstruction.desc);
+		assertFalse(sixthInstruction.itf);
 	}
 
 	@Test
@@ -281,29 +303,36 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(6, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
 
-		InvokeDynamicInsnNode secondInstruction =
-			(InvokeDynamicInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, secondInstruction.getOpcode());
-		assertEquals("toString", secondInstruction.name);
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
+
+		assertEquals(label, thirdInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("toString", fourthInstruction.name);
 		assertEquals(
 			"(Ljava/lang/String;)Ljava/lang/String;",
-			secondInstruction.desc);
+			fourthInstruction.desc);
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.POP, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.RETURN, sixthInstruction.getOpcode());
 	}
 
 	@Test
@@ -332,16 +361,16 @@ public class FunctionCallListenerTest
 		MethodNode firstMethod = (MethodNode) methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("equals", thirdInstruction.name);
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("equals", fifthInstruction.name);
 		assertEquals(
 			"(Ljava/lang/String;Ljava/lang/Object;)Z",
-			thirdInstruction.desc);
+			fifthInstruction.desc);
 	}
 
 	@Test
@@ -371,13 +400,13 @@ public class FunctionCallListenerTest
 		MethodNode firstMethod = (MethodNode) methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-		assertEquals("java/lang/ref/WeakReference", fourthInstruction.owner);
-		assertEquals("(Ljava/lang/Object;)V", fourthInstruction.desc);
-		assertEquals("<init>", fourthInstruction.name);
-		assertFalse(fourthInstruction.itf);
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals("java/lang/ref/WeakReference", sixthInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)V", sixthInstruction.desc);
+		assertEquals("<init>", sixthInstruction.name);
+		assertFalse(sixthInstruction.itf);
 	}
 
 	@Test
@@ -485,7 +514,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -500,14 +529,21 @@ public class FunctionCallListenerTest
 		assertEquals("(D)Ljava/lang/Double;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("toString", thirdInstruction.name);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
+
+		assertEquals(label, fourthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("toString", fifthInstruction.name);
 		assertEquals(
 			"(Ljava/lang/Double;)Ljava/lang/String;",
-			thirdInstruction.desc);
+			fifthInstruction.desc);
 	}
 
 	@Test
@@ -540,7 +576,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -554,14 +590,21 @@ public class FunctionCallListenerTest
 		assertEquals("(Z)Ljava/lang/Boolean;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("toString", thirdInstruction.name);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
+
+		assertEquals(label, fourthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("toString", fifthInstruction.name);
 		assertEquals(
 			"(Ljava/lang/Boolean;)Ljava/lang/String;",
-			thirdInstruction.desc);
+			fifthInstruction.desc);
 	}
 
 	@Test
@@ -591,7 +634,7 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -606,20 +649,27 @@ public class FunctionCallListenerTest
 		assertEquals("(D)Ljava/lang/Double;", secondInstruction.desc);
 		assertFalse(secondInstruction.itf);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("intValue", thirdInstruction.name);
-		assertEquals("(Ljava/lang/Double;)I", thirdInstruction.desc);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		assertEquals(label, fourthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.I2D, fourthInstruction.getOpcode());
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("intValue", fifthInstruction.name);
+		assertEquals("(Ljava/lang/Double;)I", fifthInstruction.desc);
 
-		assertEquals(Opcodes.DRETURN, fifthInstruction.getOpcode());
+		InsnNode sixthInsruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.I2D, sixthInsruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.DRETURN, seventhInstruction.getOpcode());
 	}
 
 	@Test
@@ -652,16 +702,16 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("longValue", thirdInstruction.name);
-		assertEquals("(Ljava/lang/Double;)J", thirdInstruction.desc);
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("longValue", fifthInstruction.name);
+		assertEquals("(Ljava/lang/Double;)J", fifthInstruction.desc);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.L2D, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.L2D, sixthInstruction.getOpcode());
 	}
 
 	@Test
@@ -691,16 +741,16 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("floatValue", thirdInstruction.name);
-		assertEquals("(Ljava/lang/Double;)F", thirdInstruction.desc);
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("floatValue", fifthInstruction.name);
+		assertEquals("(Ljava/lang/Double;)F", fifthInstruction.desc);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.F2D, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.F2D, sixthInstruction.getOpcode());
 	}
 
 	@Test
@@ -811,25 +861,39 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(8, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		assertEquals(label, thirdInstruction.start.getLabel());
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
 
-		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		Label notherLabel = fifthInstruction.getLabel();
+
+		LineNumberNode sixthInstruction = (LineNumberNode) instructions.get(5);
+
+		assertEquals(notherLabel, sixthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.RETURN, eighthInstruction.getOpcode());
 	}
 
 	@Test
@@ -867,41 +931,62 @@ public class FunctionCallListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(8, instructions.size());
+		assertEquals(14, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 
-		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+		LabelNode secondInstruction = (LabelNode) instructions.get(1);
+		Label label = secondInstruction.getLabel();
 
-		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+		LineNumberNode thirdInstruction = (LineNumberNode) instructions.get(2);
 
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+		assertEquals(label, thirdInstruction.start.getLabel());
 
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(1.1, thirdInstruction.cst);
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
 
-		assertEquals("valueOf", fourthInstruction.name);
+		LdcInsnNode fifthInstruction = (LdcInsnNode) instructions.get(4);
 
-		InvokeDynamicInsnNode fifthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(4);
+		assertEquals(Opcodes.LDC, fifthInstruction.getOpcode());
+		assertEquals(1.1, fifthInstruction.cst);
 
-		assertEquals("intValue", fifthInstruction.name);
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		assertEquals("valueOf", sixthInstruction.name);
 
-		assertEquals(Opcodes.I2D, sixthInstruction.getOpcode());
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+		Label notherLabel = seventhInstruction.getLabel();
 
-		InvokeDynamicInsnNode seventhInstruction =
-			(InvokeDynamicInsnNode) instructions.get(6);
+		LineNumberNode eighthInstruction = (LineNumberNode) instructions.get(7);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
-		assertEquals("println", seventhInstruction.name);
-		assertEquals("(Ljava/io/PrintStream;D)V", seventhInstruction.desc);
+		assertEquals(notherLabel, eighthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode ninthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(8);
+
+		assertEquals("intValue", ninthInstruction.name);
+
+		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.I2D, tenthInstruction.getOpcode());
+
+		LabelNode eleventhInstruction = (LabelNode) instructions.get(10);
+		Label ndAnotherLabel = eleventhInstruction.getLabel();
+
+		LineNumberNode twelfthInstruction = (LineNumberNode) instructions.get(11);
+
+		assertEquals(ndAnotherLabel, twelfthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode thirteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(12);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, thirteenthInstruction.getOpcode());
+		assertEquals("println", thirteenthInstruction.name);
+		assertEquals("(Ljava/io/PrintStream;D)V", thirteenthInstruction.desc);
 	}
 
 	@Test

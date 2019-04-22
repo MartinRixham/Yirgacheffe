@@ -1,11 +1,14 @@
 package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -167,7 +170,7 @@ public class BlockTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(6, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -178,15 +181,22 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
 		assertEquals("valueOf", secondInstruction.name);
 
-		InvokeDynamicInsnNode thirdInstruction =
-			(InvokeDynamicInsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		Label label = thirdInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, thirdInstruction.getOpcode());
-		assertEquals("toString", thirdInstruction.name);
+		LineNumberNode fourthInstruction = (LineNumberNode) instructions.get(3);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		assertEquals(label, fourthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("toString", fifthInstruction.name);
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.POP, sixthInstruction.getOpcode());
 	}
 
 	@Test
@@ -232,7 +242,7 @@ public class BlockTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(8, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -253,15 +263,22 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, fourthInstructionNode.getOpcode());
 		assertEquals("valueOf", fourthInstructionNode.name);
 
-		InvokeDynamicInsnNode fifthInstructionNode =
-			(InvokeDynamicInsnNode) instructions.get(4);
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		Label label = fifthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstructionNode.getOpcode());
-		assertEquals("equals", fifthInstructionNode.name);
+		LineNumberNode sixthInstruction = (LineNumberNode) instructions.get(5);
 
-		InsnNode sixthInstructionNode = (InsnNode) instructions.get(5);
+		assertEquals(label, sixthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.POP, sixthInstructionNode.getOpcode());
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("equals", seventhInstruction.name);
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.POP, eighthInstruction.getOpcode());
 	}
 
 	@Test
@@ -309,7 +326,7 @@ public class BlockTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(8, instructions.size());
+		assertEquals(10, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -330,23 +347,30 @@ public class BlockTest
 		assertEquals(Opcodes.INVOKESTATIC, fourthInstruction.getOpcode());
 		assertEquals("valueOf", fourthInstruction.name);
 
-		InvokeDynamicInsnNode fifthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(4);
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		Label label = fifthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
-		assertEquals("toString", fifthInstruction.name);
+		LineNumberNode sixthInstruction = (LineNumberNode) instructions.get(5);
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		assertEquals(label, sixthInstruction.start.getLabel());
 
-		assertEquals(Opcodes.POP, sixthInstruction.getOpcode());
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
 
-		VarInsnNode seventhInstruction = (VarInsnNode) instructions.get(6);
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("toString", seventhInstruction.name);
 
-		assertEquals(Opcodes.DLOAD, seventhInstruction.getOpcode());
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
 
-		InsnNode eigjthInstruction = (InsnNode) instructions.get(7);
+		assertEquals(Opcodes.POP, eighthInstruction.getOpcode());
 
-		assertEquals(Opcodes.DRETURN, eigjthInstruction.getOpcode());
+		VarInsnNode ninthInstruction = (VarInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.DLOAD, ninthInstruction.getOpcode());
+
+		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.DRETURN, tenthInstruction.getOpcode());
 	}
 
 	@Test
@@ -388,7 +412,7 @@ public class BlockTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -410,11 +434,18 @@ public class BlockTest
 		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
 		assertEquals(1, fourthInstruction.var);
 
-		InvokeDynamicInsnNode fifthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(4);
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		Label label = fifthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
-		assertEquals("add", fifthInstruction.name);
+		LineNumberNode sixthInstruction = (LineNumberNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("add", seventhInstruction.name);
 	}
 
 	@Test

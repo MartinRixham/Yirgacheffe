@@ -1,9 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -41,7 +44,7 @@ public class InvokeConstructorTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(6, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -56,13 +59,20 @@ public class InvokeConstructorTest
 
 		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
+		Label label = fourthInstruction.getLabel();
 
-		assertEquals(Opcodes.INVOKESPECIAL, fourthInstruction.getOpcode());
-		assertEquals("java/lang/Double", fourthInstruction.owner);
-		assertEquals("<init>", fourthInstruction.name);
-		assertEquals("(D)V", fourthInstruction.desc);
-		assertFalse(fourthInstruction.itf);
+		LineNumberNode fifthInstruction = (LineNumberNode) instructions.get(4);
+
+		assertEquals(1, fifthInstruction.line);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals("java/lang/Double", sixthInstruction.owner);
+		assertEquals("<init>", sixthInstruction.name);
+		assertEquals("(D)V", sixthInstruction.desc);
+		assertFalse(sixthInstruction.itf);
 
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}

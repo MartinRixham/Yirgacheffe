@@ -109,6 +109,8 @@ public class InvokeMethod implements Expression
 
 		errors.push(arguments.compile(parameters, methodVisitor, variables));
 
+		this.coordinate.compile(methodVisitor);
+
 		String ownerDescriptor = this.withSlashes(owner);
 
 		String descriptor =
