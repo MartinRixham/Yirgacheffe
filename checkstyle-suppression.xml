@@ -7,4 +7,5 @@
 	<suppress checks="MagicNumber" files="src/test/java"/>
 	<suppress checks="FileLength" files="src/test/java"/>
 	<suppress checks="FileLength" files="src/main/java/yirgacheffe/lang/Array.java"/>
+	<suppress checks="FileLength" files="src/main/java/yirgacheffe/compiler/parallel/RunnableClass.java"/>
 </suppressions>

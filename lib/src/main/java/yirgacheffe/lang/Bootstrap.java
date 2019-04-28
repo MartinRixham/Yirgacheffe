@@ -95,7 +95,30 @@ public final class Bootstrap
 		Object receiver,
 		Object[] arguments) throws IllegalAccessException
 	{
-		Method[] methods = receiver.getClass().getMethods();
+
+		Method[] methods;
+
+		try
+		{
+			methods = receiver.getClass().getMethods();
+		}
+		catch (NullPointerException e)
+		{
+			// Remove top line of stack trace.
+			StackTraceElement[] cleanedUpStackTrace =
+				new StackTraceElement[e.getStackTrace().length - 1];
+
+			java.lang.System.arraycopy(
+				e.getStackTrace(),
+				1,
+				cleanedUpStackTrace,
+				0,
+				cleanedUpStackTrace.length);
+
+			e.setStackTrace(cleanedUpStackTrace);
+
+			throw e;
+		}
 
 		if (isPrivate)
 		{

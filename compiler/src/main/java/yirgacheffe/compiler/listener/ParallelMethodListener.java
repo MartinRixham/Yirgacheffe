@@ -129,6 +129,7 @@ public class ParallelMethodListener extends MethodListener
 
 			RunnableClass runnableClass =
 				new RunnableClass(
+					this.sourceFile,
 					className,
 					className + "$" + methodName,
 					methodName,

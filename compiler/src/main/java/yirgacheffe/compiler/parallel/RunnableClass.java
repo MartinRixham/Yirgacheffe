@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 
 public class RunnableClass
 {
+	private String sourceFile;
+
 	private String parentClassName;
 
 	private String className;
@@ -24,12 +26,14 @@ public class RunnableClass
 	private Signature signature;
 
 	public RunnableClass(
+		String sourceFile,
 		String parentClassName,
 		String className,
 		String methodName,
 		Type type,
 		Signature signature)
 	{
+		this.sourceFile = sourceFile;
 		this.parentClassName = parentClassName;
 		this.className = className;
 		this.methodName = methodName;
@@ -39,6 +43,14 @@ public class RunnableClass
 
 	public GeneratedClass compile(ClassWriter writer)
 	{
+		writer.visitSource(this.sourceFile, null);
+
+		writer.visitField(
+			Opcodes.ACC_PRIVATE, "0exception", "Ljava/lang/Throwable;", null, null);
+
+		writer.visitField(
+			Opcodes.ACC_PRIVATE, "0ran", "Z", null, null);
+
 		writer.visitField(
 			Opcodes.ACC_PRIVATE, "0return", this.type.toJVMType(), null, null);
 
@@ -67,6 +79,14 @@ public class RunnableClass
 		MethodVisitor methodVisitor =
 			writer.visitMethod(
 				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
+
+		Label start = new Label();
+		Label end = new Label();
+		Label handler = new Label();
+
+		methodVisitor.visitTryCatchBlock(start, end, handler, "java/lang/Throwable");
+
+		methodVisitor.visitLabel(start);
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 		methodVisitor.visitInsn(Opcodes.DUP);
@@ -105,6 +125,34 @@ public class RunnableClass
 			this.className,
 			"0return",
 			this.type.toJVMType());
+
+		methodVisitor.visitLabel(end);
+
+		Label label = new Label();
+
+		methodVisitor.visitJumpInsn(Opcodes.GOTO, label);
+
+		methodVisitor.visitLabel(handler);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitInsn(Opcodes.SWAP);
+
+		methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			this.className,
+			"0exception",
+			"Ljava/lang/Throwable;");
+
+		methodVisitor.visitLabel(label);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodVisitor.visitInsn(Opcodes.ICONST_1);
+
+		methodVisitor.visitFieldInsn(
+			Opcodes.PUTFIELD,
+			this.className,
+			"0ran",
+			"Z");
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 		methodVisitor.visitInsn(Opcodes.MONITORENTER);
@@ -145,12 +193,12 @@ public class RunnableClass
 			methodVisitor.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
-				"0return",
-				this.type.toJVMType());
+				"0ran",
+				"Z");
 
 			Label label = new Label();
 
-			methodVisitor.visitJumpInsn(Opcodes.IFNONNULL, label);
+			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 			methodVisitor.visitInsn(Opcodes.MONITORENTER);
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
@@ -166,6 +214,31 @@ public class RunnableClass
 			methodVisitor.visitInsn(Opcodes.MONITOREXIT);
 
 			methodVisitor.visitLabel(label);
+
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitFieldInsn(
+				Opcodes.GETFIELD,
+				this.className,
+				"0exception",
+				"Ljava/lang/Throwable;");
+
+			Label secondExceptionLabel = new Label();
+
+			methodVisitor.visitJumpInsn(Opcodes.IFNULL, secondExceptionLabel);
+
+			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodVisitor.visitFieldInsn(
+				Opcodes.GETFIELD,
+				this.className,
+				"0exception",
+				"Ljava/lang/Throwable;");
+
+			methodVisitor.visitInsn(Opcodes.ATHROW);
+
+			methodVisitor.visitLabel(secondExceptionLabel);
+
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 			methodVisitor.visitFieldInsn(

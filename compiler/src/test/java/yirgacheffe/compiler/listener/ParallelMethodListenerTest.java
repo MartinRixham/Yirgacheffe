@@ -179,19 +179,29 @@ public class ParallelMethodListenerTest
 
 		List fields = classNode.fields;
 
-		assertEquals(3, fields.size());
+		assertEquals(5, fields.size());
 
-		FieldNode returnField = (FieldNode) fields.get(0);
+		FieldNode exceptionField = (FieldNode) fields.get(0);
+
+		assertEquals("Ljava/lang/Throwable;", exceptionField.desc);
+		assertEquals("0exception", exceptionField.name);
+
+		FieldNode ranField = (FieldNode) fields.get(1);
+
+		assertEquals("Z", ranField.desc);
+		assertEquals("0ran", ranField.name);
+
+		FieldNode returnField = (FieldNode) fields.get(2);
 
 		assertEquals("Ljava/lang/Comparable;", returnField.desc);
 		assertEquals("0return", returnField.name);
 
-		FieldNode firstField = (FieldNode) fields.get(1);
+		FieldNode firstField = (FieldNode) fields.get(3);
 
 		assertEquals("LmyPackage/MyClass;", firstField.desc);
 		assertEquals("0", firstField.name);
 
-		FieldNode secondField = (FieldNode) fields.get(2);
+		FieldNode secondField = (FieldNode) fields.get(4);
 
 		assertEquals("Ljava/lang/String;", secondField.desc);
 		assertEquals("1", secondField.name);
@@ -230,94 +240,145 @@ public class ParallelMethodListenerTest
 		InsnList instructions = method.instructions;
 
 		assertEquals("run", method.name);
-		assertEquals(14, instructions.size());
+		assertEquals(27, instructions.size());
 		assertEquals(1, method.maxLocals);
 		assertEquals(3, method.maxStack);
 
-		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+		assertTrue(instructions.get(0) instanceof LabelNode);
 
-		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
-		assertEquals(0, firstInstruction.var);
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
 
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
 
-		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
+		assertEquals(Opcodes.DUP, thirdInstruction.getOpcode());
 
-		assertEquals(Opcodes.GETFIELD, thirdInstruction.getOpcode());
-		assertEquals("myPackage/MyClass$method", thirdInstruction.owner);
-		assertEquals("0", thirdInstruction.name);
-		assertEquals("LmyPackage/MyClass;", thirdInstruction.desc);
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
 
-		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", fourthInstruction.owner);
+		assertEquals("0", fourthInstruction.name);
+		assertEquals("LmyPackage/MyClass;", fourthInstruction.desc);
 
-		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
-		assertEquals(0, fourthInstruction.var);
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
 
-		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+		assertEquals(Opcodes.ALOAD, fifthInstruction.getOpcode());
+		assertEquals(0, fifthInstruction.var);
 
-		assertEquals(Opcodes.GETFIELD, fifthInstruction.getOpcode());
-		assertEquals("myPackage/MyClass$method", fifthInstruction.owner);
-		assertEquals("1", fifthInstruction.name);
-		assertEquals("Ljava/lang/String;", fifthInstruction.desc);
+		FieldInsnNode sixthInstruction = (FieldInsnNode) instructions.get(5);
 
-		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
-
-		assertEquals(Opcodes.INVOKESTATIC, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.GETFIELD, sixthInstruction.getOpcode());
 		assertEquals("myPackage/MyClass$method", sixthInstruction.owner);
-		assertEquals("method", sixthInstruction.name);
+		assertEquals("1", sixthInstruction.name);
+		assertEquals("Ljava/lang/String;", sixthInstruction.desc);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESTATIC, seventhInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", seventhInstruction.owner);
+		assertEquals("method", seventhInstruction.name);
 		assertEquals(
 			"(LmyPackage/MyClass;Ljava/lang/String;)Ljava/lang/Comparable;",
-			sixthInstruction.desc);
+			seventhInstruction.desc);
 
-		FieldInsnNode seventhInstruction = (FieldInsnNode) instructions.get(6);
+		FieldInsnNode eighthInstruction = (FieldInsnNode) instructions.get(7);
 
-		assertEquals(Opcodes.PUTFIELD, seventhInstruction.getOpcode());
-		assertEquals("myPackage/MyClass$method", seventhInstruction.owner);
-		assertEquals("0return", seventhInstruction.name);
-		assertEquals("Ljava/lang/Comparable;", seventhInstruction.desc);
+		assertEquals(Opcodes.PUTFIELD, eighthInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", eighthInstruction.owner);
+		assertEquals("0return", eighthInstruction.name);
+		assertEquals("Ljava/lang/Comparable;", eighthInstruction.desc);
 
-		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
+		assertTrue(instructions.get(8) instanceof LabelNode);
 
-		assertEquals(Opcodes.ALOAD, eighthInstruction.getOpcode());
-		assertEquals(0, eighthInstruction.var);
+		JumpInsnNode tenthInstruction = (JumpInsnNode) instructions.get(9);
 
-		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+		assertEquals(Opcodes.GOTO, tenthInstruction.getOpcode());
 
-		assertEquals(Opcodes.MONITORENTER, ninthInstruction.getOpcode());
+		Label goToLabel = tenthInstruction.label.getLabel();
 
-		VarInsnNode tenthInstruction = (VarInsnNode) instructions.get(9);
+		assertTrue(instructions.get(10) instanceof LabelNode);
+		assertTrue(instructions.get(11) instanceof FrameNode);
 
-		assertEquals(Opcodes.ALOAD, tenthInstruction.getOpcode());
-		assertEquals(0, tenthInstruction.var);
+		VarInsnNode thirteenthInstruction = (VarInsnNode) instructions.get(12);
 
-		MethodInsnNode eleventhInstruction = (MethodInsnNode) instructions.get(10);
-
-		assertEquals(Opcodes.INVOKEVIRTUAL, eleventhInstruction.getOpcode());
-		assertEquals("java/lang/Object", eleventhInstruction.owner);
-		assertEquals("notifyAll", eleventhInstruction.name);
-		assertEquals("()V", eleventhInstruction.desc);
-
-		VarInsnNode twelfthInstruction = (VarInsnNode) instructions.get(11);
-
-		assertEquals(Opcodes.ALOAD, twelfthInstruction.getOpcode());
-		assertEquals(0, twelfthInstruction.var);
-
-		InsnNode thirteenthInstruction = (InsnNode) instructions.get(12);
-
-		assertEquals(Opcodes.MONITOREXIT, thirteenthInstruction.getOpcode());
+		assertEquals(Opcodes.ALOAD, thirteenthInstruction.getOpcode());
+		assertEquals(0, thirteenthInstruction.var);
 
 		InsnNode fourteenthInstruction = (InsnNode) instructions.get(13);
 
-		assertEquals(Opcodes.RETURN, fourteenthInstruction.getOpcode());
+		assertEquals(Opcodes.SWAP, fourteenthInstruction.getOpcode());
+
+		FieldInsnNode fifteenthInstruction = (FieldInsnNode) instructions.get(14);
+
+		assertEquals(Opcodes.PUTFIELD, fifteenthInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", fifteenthInstruction.owner);
+		assertEquals("0exception", fifteenthInstruction.name);
+		assertEquals("Ljava/lang/Throwable;", fifteenthInstruction.desc);
+
+		LabelNode sixteenthInstruction = (LabelNode) instructions.get(15);
+
+		assertEquals(goToLabel, sixteenthInstruction.getLabel());
+
+		assertTrue(instructions.get(16) instanceof FrameNode);
+
+		VarInsnNode varInstruction = (VarInsnNode) instructions.get(17);
+
+		assertEquals(Opcodes.ALOAD, varInstruction.getOpcode());
+		assertEquals(0, varInstruction.var);
+
+		InsnNode trueInstruction = (InsnNode) instructions.get(18);
+
+		assertEquals(Opcodes.ICONST_1, trueInstruction.getOpcode());
+
+		FieldInsnNode fieldInsnNode = (FieldInsnNode) instructions.get(19);
+
+		assertEquals(Opcodes.PUTFIELD, fieldInsnNode.getOpcode());
+		assertEquals("myPackage/MyClass$method", fieldInsnNode.owner);
+		assertEquals("0ran", fieldInsnNode.name);
+		assertEquals("Z", fieldInsnNode.desc);
+
+		VarInsnNode eighteenthInstruction = (VarInsnNode) instructions.get(20);
+
+		assertEquals(Opcodes.ALOAD, eighteenthInstruction.getOpcode());
+		assertEquals(0, eighteenthInstruction.var);
+
+		InsnNode nineteenthInstruction = (InsnNode) instructions.get(21);
+
+		assertEquals(Opcodes.MONITORENTER, nineteenthInstruction.getOpcode());
+
+		VarInsnNode twentiethInstruction = (VarInsnNode) instructions.get(22);
+
+		assertEquals(Opcodes.ALOAD, twentiethInstruction.getOpcode());
+		assertEquals(0, twentiethInstruction.var);
+
+		MethodInsnNode twentyFirstInstruction = (MethodInsnNode) instructions.get(23);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, twentyFirstInstruction.getOpcode());
+		assertEquals("java/lang/Object", twentyFirstInstruction.owner);
+		assertEquals("notifyAll", twentyFirstInstruction.name);
+		assertEquals("()V", twentyFirstInstruction.desc);
+
+		VarInsnNode twentySecondInstruction = (VarInsnNode) instructions.get(24);
+
+		assertEquals(Opcodes.ALOAD, twentySecondInstruction.getOpcode());
+		assertEquals(0, twentySecondInstruction.var);
+
+		InsnNode twentyThirdInstruction = (InsnNode) instructions.get(25);
+
+		assertEquals(Opcodes.MONITOREXIT, twentyThirdInstruction.getOpcode());
+
+		InsnNode twentyFourthInstruction = (InsnNode) instructions.get(26);
+
+		assertEquals(Opcodes.RETURN, twentyFourthInstruction.getOpcode());
 	}
 
 	private void testInterfaceMethod(MethodNode methodNode)
 	{
 		InsnList instructions = methodNode.instructions;
 
-		assertEquals(16, instructions.size());
+		assertEquals(24, instructions.size());
 		assertEquals("compareTo", methodNode.name);
 		assertEquals("(Ljava/lang/Object;)I", methodNode.desc);
 		assertEquals(2, methodNode.maxLocals);
@@ -332,13 +393,13 @@ public class ParallelMethodListenerTest
 
 		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
 		assertEquals("myPackage/MyClass$method", secondInstruction.owner);
-		assertEquals("0return", secondInstruction.name);
-		assertEquals("Ljava/lang/Comparable;", secondInstruction.desc);
+		assertEquals("0ran", secondInstruction.name);
+		assertEquals("Z", secondInstruction.desc);
 
 		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
 		Label label = thirdInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IFNONNULL, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IFNE, thirdInstruction.getOpcode());
 
 		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
@@ -385,24 +446,63 @@ public class ParallelMethodListenerTest
 
 		assertEquals(Opcodes.GETFIELD, thirteenthInstruction.getOpcode());
 		assertEquals("myPackage/MyClass$method", thirteenthInstruction.owner);
-		assertEquals("0return", thirteenthInstruction.name);
-		assertEquals("Ljava/lang/Comparable;", thirteenthInstruction.desc);
+		assertEquals("0exception", thirteenthInstruction.name);
+		assertEquals("Ljava/lang/Throwable;", thirteenthInstruction.desc);
 
-		VarInsnNode fourteenthInstruction = (VarInsnNode) instructions.get(13);
+		JumpInsnNode fourteenthInstruction = (JumpInsnNode) instructions.get(13);
+		Label secondExceptionLabel = fourteenthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.ALOAD, fourteenthInstruction.getOpcode());
-		assertEquals(1, fourteenthInstruction.var);
+		assertEquals(Opcodes.IFNULL, fourteenthInstruction.getOpcode());
 
-		MethodInsnNode fifteenthInstruction = (MethodInsnNode) instructions.get(14);
+		VarInsnNode fifteenthInstruction = (VarInsnNode) instructions.get(14);
 
-		assertEquals(Opcodes.INVOKEINTERFACE, fifteenthInstruction.getOpcode());
-		assertEquals("java/lang/Comparable", fifteenthInstruction.owner);
-		assertEquals("compareTo", fifteenthInstruction.name);
-		assertEquals("(Ljava/lang/Object;)I", fifteenthInstruction.desc);
+		assertEquals(Opcodes.ALOAD, fifteenthInstruction.getOpcode());
+		assertEquals(0, fifteenthInstruction.var);
 
-		InsnNode sixteenthInstruction = (InsnNode) instructions.get(15);
+		FieldInsnNode sixteenthInstruction = (FieldInsnNode) instructions.get(15);
 
-		assertEquals(Opcodes.IRETURN, sixteenthInstruction.getOpcode());
+		assertEquals(Opcodes.GETFIELD, sixteenthInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", sixteenthInstruction.owner);
+		assertEquals("0exception", sixteenthInstruction.name);
+		assertEquals("Ljava/lang/Throwable;", sixteenthInstruction.desc);
+
+		InsnNode seventeenthInstruction = (InsnNode) instructions.get(16);
+
+		assertEquals(Opcodes.ATHROW, seventeenthInstruction.getOpcode());
+
+		LabelNode eighteenthInstruction = (LabelNode) instructions.get(17);
+
+		assertEquals(secondExceptionLabel, eighteenthInstruction.getLabel());
+
+		assertTrue(instructions.get(18) instanceof FrameNode);
+
+		VarInsnNode twentiethInstruction = (VarInsnNode) instructions.get(19);
+
+		assertEquals(Opcodes.ALOAD, twentiethInstruction.getOpcode());
+		assertEquals(0, twentiethInstruction.var);
+
+		FieldInsnNode twentyFirstInstruction = (FieldInsnNode) instructions.get(20);
+
+		assertEquals(Opcodes.GETFIELD, twentyFirstInstruction.getOpcode());
+		assertEquals("myPackage/MyClass$method", twentyFirstInstruction.owner);
+		assertEquals("0return", twentyFirstInstruction.name);
+		assertEquals("Ljava/lang/Comparable;", twentyFirstInstruction.desc);
+
+		VarInsnNode twentySecondInstruction = (VarInsnNode) instructions.get(21);
+
+		assertEquals(Opcodes.ALOAD, twentySecondInstruction.getOpcode());
+		assertEquals(1, twentySecondInstruction.var);
+
+		MethodInsnNode twentyThirdInstruction = (MethodInsnNode) instructions.get(22);
+
+		assertEquals(Opcodes.INVOKEINTERFACE, twentyThirdInstruction.getOpcode());
+		assertEquals("java/lang/Comparable", twentyThirdInstruction.owner);
+		assertEquals("compareTo", twentyThirdInstruction.name);
+		assertEquals("(Ljava/lang/Object;)I", twentyThirdInstruction.desc);
+
+		InsnNode twentyFourthInstruction = (InsnNode) instructions.get(23);
+
+		assertEquals(Opcodes.IRETURN, twentyFourthInstruction.getOpcode());
 	}
 
 	private void testConstructor(MethodNode constructor)

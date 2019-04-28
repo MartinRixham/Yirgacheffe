@@ -12,7 +12,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class YirgacheffeListener extends YirgacheffeBaseListener
 {
-	private String sourceFile;
+	protected String sourceFile;
 
 	protected ClassWriter writer =
 		new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
