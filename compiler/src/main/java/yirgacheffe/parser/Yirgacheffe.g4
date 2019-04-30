@@ -89,7 +89,7 @@ postdecrementStatement: expression MinusMinus;
 
 block: forStatement? '{' statement* '}';
 
-forStatement: For '(' statementLine ';' expression ';' statementLine ')';
+forStatement: For '(' statementLine? ';' expression? ';' statementLine? ')';
 
 conditionalStatement: ifStatement elseStatement | ifStatement | elseStatement;
 

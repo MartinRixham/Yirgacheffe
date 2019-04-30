@@ -605,6 +605,81 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testMalformedLoop()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"for ()\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+	}
+
+	@Test
+	public void testMissingIncrementer()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"for (Num i = 0; i < 4;) {}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 5:0 Malformed for loop.\n", result.getErrors());
+	}
+
+	@Test
+	public void testMissingIncrementerInMain()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"String thingy = \"thingy\";\n" +
+					"for (Num i = 0; i < 4;) {}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 6:0 Malformed for loop.\n", result.getErrors());
+	}
+
+	@Test
+	public void testLoopAfterParameters()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method(String arg1, String arg2)\n" +
+				"{\n" +
+					"for (Num i = 0; i < 4; i++) {}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testPostincrement()
 	{
 		String source =

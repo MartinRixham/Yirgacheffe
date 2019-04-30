@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.statement.Block;
@@ -152,11 +153,21 @@ public class StatementListener extends FieldListener
 
 	public void exitForStatement(YirgacheffeParser.ForStatementContext context)
 	{
-		Statement incrementer = this.statements.pop();
-		Expression exitCondition = this.expressions.pop();
-		Statement initialiser = this.statements.pop();
+		if (this.expressions.length() == 0 ||
+			this.statements.get(this.statements.length() - 2).isEmpty())
+		{
+			String message = "Malformed for loop.";
 
-		this.forCondition = new ForCondition(initialiser, exitCondition, incrementer);
+			this.errors.push(new Error(context, message));
+		}
+		else
+		{
+			Statement incrementer = this.statements.pop();
+			Expression exitCondition = this.expressions.pop();
+			Statement initialiser = this.statements.pop();
+
+			this.forCondition = new ForCondition(initialiser, exitCondition, incrementer);
+		}
 	}
 
 	public void exitPostincrementStatement(
