@@ -42,6 +42,10 @@ public class InvokeMethodTest
 	{
 	}
 
+	public void takeInt(double num)
+	{
+	}
+
 	@Test
 	public void testCompilingToStringInvocation()
 	{
@@ -328,6 +332,60 @@ public class InvokeMethodTest
 		assertEquals("(Ljava/lang/Double;)D", twelfthInstruction.desc);
 		assertEquals("ofValue", twelfthInstruction.name);
 		assertFalse(twelfthInstruction.itf);
+	}
+
+	@Test
+	public void testPassingIntegerToNumberMethod()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(0, 1);
+		This testClass = new This(new ReferenceType(this.getClass()));
+		Array<Expression> arguments = new Array<>(new Num("1"));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"takeInt",
+				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				testClass,
+				arguments);
+
+		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(0, errors.length());
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.I2D, thirdInstruction.getOpcode());
+
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
+		Label label = fourthInstruction.getLabel();
+
+		LineNumberNode fifthInstruction = (LineNumberNode) instructions.get(4);
+
+		assertEquals(label, fifthInstruction.start.getLabel());
+
+		InvokeDynamicInsnNode sixthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
+		assertEquals("takeInt", sixthInstruction.name);
+		assertEquals(
+			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;D)V",
+			sixthInstruction.desc);
 	}
 
 	@Test

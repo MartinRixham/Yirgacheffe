@@ -111,6 +111,12 @@ public class Arguments
 
 			errors.push(argument.compile(methodVisitor, variables));
 
+			if (argumentType == PrimitiveType.INT &&
+				parameters.get(i) == PrimitiveType.DOUBLE)
+			{
+				methodVisitor.visitInsn(Opcodes.I2D);
+			}
+
 			if (argumentType instanceof PrimitiveType &&
 				parameters.get(i) instanceof ReferenceType)
 			{
