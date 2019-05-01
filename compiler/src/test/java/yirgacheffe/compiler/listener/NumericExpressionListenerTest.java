@@ -31,6 +31,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return 5.0 % 4.0 / 3.0 * 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -92,6 +93,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return 5.0 - 4.0 + 3.0;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -144,6 +146,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return -(5.0 + 4.0);\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -191,6 +194,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return \"6\" % \"5\" / \"4\" * \"3\" + \"2\" - \"1\";\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -217,6 +221,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return 5.0 && 4.0 && 3.0;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -261,6 +266,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return false || false || true;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -302,6 +308,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return i++;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -353,6 +360,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return ++i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -404,6 +412,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return i--;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -455,6 +464,7 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"return --i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

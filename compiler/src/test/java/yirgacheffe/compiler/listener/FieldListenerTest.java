@@ -34,6 +34,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Num myField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -64,6 +65,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"String myStringField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -95,6 +97,7 @@ public class FieldListenerTest
 			"{\n" +
 				"Num myNumberField;\n" +
 				"String myStringField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -147,6 +150,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				" myField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -166,6 +170,7 @@ public class FieldListenerTest
 			"{\n" +
 				"String myField;\n" +
 				"String myField = \"thingy\";\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -190,6 +195,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Thingy myStringField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -209,6 +215,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"java.util.List<String> myListField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -234,6 +241,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"java.thingy.List myListField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -253,6 +261,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"List<String> myListField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -278,6 +287,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"String myStringField = \"thingy\";\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -357,6 +367,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Num myNumberField = 5.0;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -405,6 +416,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Num myNumberField = 1.2;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -439,6 +451,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Char myCharacterField = 'a';\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -479,6 +492,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Bool myBooleanField = true;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -520,6 +534,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Object myObject = new Object();\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -653,6 +668,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"Num myBooleanField = true;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -677,6 +693,7 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"public Num myField;\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -705,6 +722,7 @@ public class FieldListenerTest
 				"{\n" +
 					"String read = this.myStringField;\n" +
 				"}" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Classes classes = new Classes();
@@ -771,6 +789,7 @@ public class FieldListenerTest
 				"{\n" +
 					"String read = this.myStringField;\n" +
 				"}" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Classes classes = new Classes();
@@ -902,6 +921,7 @@ public class FieldListenerTest
 					"Num number = 1;\n" +
 					"out.println(1);\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

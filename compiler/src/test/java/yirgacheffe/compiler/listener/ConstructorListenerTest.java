@@ -21,9 +21,9 @@ import static org.junit.Assert.assertTrue;
 public class ConstructorListenerTest
 {
 	@Test
-	public void testEmptyClassHasDefaultConstructor()
+	public void testMainClassHasDefaultConstructor()
 	{
-		String source = "class MyClass {}";
+		String source = "class MyClass { main method(Array<String> args) {} }";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -36,9 +36,9 @@ public class ConstructorListenerTest
 
 		List methods = classNode.methods;
 
-		assertEquals(1, methods.size());
+		assertEquals(3, methods.size());
 
-		MethodNode constructor = (MethodNode) methods.get(0);
+		MethodNode constructor = (MethodNode) methods.get(2);
 
 		assertEquals("()V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);

@@ -40,6 +40,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"new String();\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -101,6 +104,9 @@ public class FunctionCallListenerTest
 				"public Void method()" +
 				"{\n" +
 					"new String(\"thingy\");\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -168,6 +174,9 @@ public class FunctionCallListenerTest
 				"public Void method()" +
 				"{\n" +
 					"new Double(1.0);\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -283,6 +292,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"\"thingy\".toString();\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -345,6 +357,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"\"thingy\".equals(\"sumpt\");\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -384,6 +399,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"return new WeakReference<String>(\"thingy\");\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -420,6 +438,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"return new WeakReference<System>(\"thingy\");\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -444,6 +465,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"Map<String, String> map = " +
 						"new HashMap<String, Object>();\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -472,6 +496,9 @@ public class FunctionCallListenerTest
 						"new HashMap<String, String>();\n" +
 					"map.put(\"thingy\", new Object());\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -493,6 +520,9 @@ public class FunctionCallListenerTest
 				"public Void method()" +
 				"{\n" +
 					"123.0.toString();\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -556,6 +586,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"true.toString();\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -616,6 +649,9 @@ public class FunctionCallListenerTest
 				"public Num method()" +
 				"{\n" +
 					"return 1.23.intValue();\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -682,6 +718,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"return 1.23.longValue();\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -724,6 +763,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"return 1.23.floatValue();\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -764,6 +806,9 @@ public class FunctionCallListenerTest
 					"this.nothing();\n" +
 				"}\n" +
 				"private Void nothing() {}" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -790,6 +835,9 @@ public class FunctionCallListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"private Void nothing() {}" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		String second =
@@ -800,6 +848,9 @@ public class FunctionCallListenerTest
 				"{" +
 					"new MyClass().nothing();" +
 				"}" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler my = new Compiler("thingy/MyClass.java", first);
@@ -834,6 +885,9 @@ public class FunctionCallListenerTest
 				"public Void method()" +
 				"{\n" +
 					"this.map.clear();\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -907,6 +961,9 @@ public class FunctionCallListenerTest
 				"public Void method()\n" +
 				"{\n" +
 					"this.out.println(1.1.intValue());\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -1000,6 +1057,9 @@ public class FunctionCallListenerTest
 					"Num result = number + 1.0;" +
 					"this.method(result);\n" +
 				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -1072,6 +1132,9 @@ public class FunctionCallListenerTest
 					"{\n" +
 						"return result;\n" +
 					"}\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 
@@ -1154,6 +1217,9 @@ public class FunctionCallListenerTest
 				"{\n" +
 					"Num result = this.method(number + 1.0);\n" +
 					"return result;\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
 				"}\n" +
 			"}";
 

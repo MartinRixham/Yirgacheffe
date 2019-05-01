@@ -21,7 +21,10 @@ public class ArrayTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public Void hello()" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+				"public Void hello()\n" +
 				"{\n" +
 					"Array<String> numbers = " +
 						"new Array<String>(\"1,2,3,4,5\".split(\",\"));" +

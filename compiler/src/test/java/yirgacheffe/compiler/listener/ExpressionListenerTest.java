@@ -36,6 +36,7 @@ public class ExpressionListenerTest
 					"String anotherVariable = myVariable;\n" +
 					"anotherVariable = myVariable;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -68,6 +69,7 @@ public class ExpressionListenerTest
 				"{\n" +
 					"String myVariable = unknownVariable;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -93,6 +95,7 @@ public class ExpressionListenerTest
 				"{\n" +
 					"return 1.0;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Classes classes = new Classes();
@@ -179,6 +182,7 @@ public class ExpressionListenerTest
 				"{\n" +
 					"List<Integer> list = new ArrayList<Integer>();\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -208,6 +212,7 @@ public class ExpressionListenerTest
 				"{\n" +
 					"return new String(new String(\"thingy\"));\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

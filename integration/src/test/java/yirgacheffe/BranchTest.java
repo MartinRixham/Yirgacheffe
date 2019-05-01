@@ -21,6 +21,9 @@ public class BranchTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Void method()" +
 				"{\n" +
 					"this.branch(true);" +

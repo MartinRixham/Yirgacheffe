@@ -29,6 +29,7 @@ public class MainMethodListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"main myMainMethod(Array<String> args) {}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -51,7 +52,7 @@ public class MainMethodListenerTest
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
 		assertEquals("myMainMethod", method.name);
 
-		MethodNode mainMethod = (MethodNode) methods.get(1);
+		MethodNode mainMethod = (MethodNode) methods.get(2);
 
 		assertEquals("([Ljava/lang/String;)V", mainMethod.desc);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, mainMethod.access);
@@ -220,10 +221,7 @@ public class MainMethodListenerTest
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
 
-		assertFalse(result.isSuccessful());
-		assertEquals(
-			"line 1:0 Main class must have default constructor.\n",
-			result.getErrors());
+		assertTrue(result.isSuccessful());
 	}
 
 	@Test
@@ -247,5 +245,68 @@ public class MainMethodListenerTest
 		assertEquals(
 			"line 4:0 Cannot have multiple main methods.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testMainMethodWithInitialiser()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String string = \"thingy\";\n" +
+				"main myMainMethod(Array<String> args) {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+
+		assertEquals(4, methods.size());
+
+		MethodNode method = (MethodNode) methods.get(3);
+
+		assertEquals("()V", method.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals("<init>", method.name);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(5, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("<init>", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("()V", fourthInstruction.desc);
 	}
 }

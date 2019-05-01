@@ -26,8 +26,11 @@ public class Evaluator
 			String.join("\n", this.imports) +
 			"\nclass " + className + "\n" +
 			"{\n" +
-				"public String evaluate()" +
-				"{" +
+				"public " + className + "()\n" +
+				"{\n" +
+				"}\n" +
+				"public String evaluate()\n" +
+				"{\n" +
 					String.join(" ", this.statements) +
 					" return (" + this.expression + ").toString();" +
 				"}\n" +

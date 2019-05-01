@@ -11,7 +11,9 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ClassListener extends PackageListener
 {
-	protected boolean hasDefaultConstructor = true;
+	protected boolean hasConstructor = false;
+
+	protected boolean hasDefaultConstructor = false;
 
 	protected String mainMethodName;
 
@@ -125,15 +127,16 @@ public class ClassListener extends PackageListener
 			this.makeMainMethod();
 		}
 
-		if (this.hasDefaultConstructor)
+		if (!this.hasConstructor && this.mainMethodName == null)
 		{
-			this.makeDefaultConstructor();
-		}
-		else if (this.mainMethodName != null)
-		{
-			String message = "Main class must have default constructor.";
+			String message = "Class has no constructor.";
 
 			this.errors.push(new Error(context, message));
+		}
+
+		if (!this.hasDefaultConstructor && this.mainMethodName != null)
+		{
+			this.makeDefaultConstructor();
 		}
 
 		this.checkInterfaceMethodImplementations(context);

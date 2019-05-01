@@ -2,6 +2,8 @@ package example.reader;
 
 class Writer
 {
+    public Writer() {}
+
 	public Void write()
 	{
 		new Streeng().write();

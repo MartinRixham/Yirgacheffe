@@ -19,7 +19,7 @@ public class ImplementationListenerTest
 	public void testImplementsMissingType()
 	{
 		String source =
-			"class MyClass implements {}";
+			"class MyClass implements { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -34,7 +34,7 @@ public class ImplementationListenerTest
 	public void testFailToImplementPrimitiveType()
 	{
 		String source =
-			"class MyClass implements Bool {}";
+			"class MyClass implements Bool { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -49,7 +49,7 @@ public class ImplementationListenerTest
 	public void testFailToImplementClass()
 	{
 		String source =
-			"class MyClass implements Object {}";
+			"class MyClass implements Object { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -64,7 +64,7 @@ public class ImplementationListenerTest
 	public void testFailToImplementInterface()
 	{
 		String source =
-			"class MyClass implements Comparable<String> {}";
+			"class MyClass implements Comparable<String> { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
@@ -82,7 +82,8 @@ public class ImplementationListenerTest
 		String source =
 			"class MyClass implements Comparable<String>\n" +
 			"{\n" +
-				"public Num compareTo(String other) { return 0; }" +
+				"public Num compareTo(String other) { return 0; }\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

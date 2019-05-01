@@ -56,7 +56,7 @@ public class ClassListenerTest
 	@Test
 	public void testMultipleClassDeclarations()
 	{
-		String source = "interface MyInterface {} class MyClass {}";
+		String source = "interface MyInterface {} class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -75,14 +75,15 @@ public class ClassListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 1:0 Expected declaration of class or interface.\n",
+			"line 1:0 Expected declaration of class or interface.\n" +
+			"line 1:0 Class has no constructor.\n",
 			result.getErrors());
 	}
 
 	@Test
 	public void testNamedEmptyClass()
 	{
-		String source = "class MyClass {}";
+		String source = "class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -99,6 +100,17 @@ public class ClassListenerTest
 		assertEquals(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
 			classNode.access);
+	}
+
+	@Test
+	public void testMissingConstructor()
+	{
+		String source = "class MyClass {}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 1:0 Class has no constructor.\n", result.getErrors());
 	}
 
 	@Test
@@ -131,7 +143,8 @@ public class ClassListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 1:0 Class identifier expected.\n",
+			"line 1:0 Class identifier expected.\n" +
+			"line 1:0 Class has no constructor.\n",
 			result.getErrors());
 	}
 
@@ -155,7 +168,7 @@ public class ClassListenerTest
 	@Test
 	public void testClassInPackage()
 	{
-		String source = "package myPackage; class MyClass {}";
+		String source = "package myPackage; class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("myPackage/gile.gg", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -166,7 +179,7 @@ public class ClassListenerTest
 	@Test
 	public void testClassInNestedPackage()
 	{
-		String source = "package myPackage.thingy; class MyClass {}";
+		String source = "package myPackage.thingy; class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("myPackage/thingy/file.yg", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -177,7 +190,7 @@ public class ClassListenerTest
 	@Test
 	public void testClassWithMissingPackage()
 	{
-		String source = "class MyClass {}";
+		String source = "class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -191,7 +204,7 @@ public class ClassListenerTest
 	@Test
 	public void testClassInPackageWrongPackage()
 	{
-		String source = "package myPackage.wibble; class MyClass {}";
+		String source = "package myPackage.wibble; class MyClass { public MyClass() {} }";
 		Compiler compiler = new Compiler("anotherPackage/wibble/file.yg", source);
 		CompilationResult result = compiler.compile(new Classes());
 
@@ -242,6 +255,7 @@ public class ClassListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"String myMethod();\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -277,7 +291,7 @@ public class ClassListenerTest
 	{
 		String source =
 			"import java.util.Liszt;\n" +
-			"class MyClass {}";
+			"class MyClass { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());

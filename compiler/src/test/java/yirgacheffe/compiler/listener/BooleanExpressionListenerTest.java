@@ -28,6 +28,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 == 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -61,6 +62,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 != 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -94,6 +96,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 < 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -127,6 +130,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 > 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -160,6 +164,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 <= 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -193,6 +198,7 @@ public class BooleanExpressionListenerTest
 				"{\n" +
 					"return 1.0 >= 2.0;\n" +
 				"}\n" +
+				"public MyClass() {}" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

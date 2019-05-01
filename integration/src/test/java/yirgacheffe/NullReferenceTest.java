@@ -22,6 +22,9 @@ public class NullReferenceTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Void hello()" +
 				"{\n" +
 					"new MutableReference<String>().get().toString();" +
@@ -59,7 +62,7 @@ public class NullReferenceTest
 		}
 
 		assertEquals(
-			"MyClass.hello(MyClass.yg:4)",
+			"MyClass.hello(MyClass.yg:7)",
 			exception.getStackTrace()[0].toString());
 
 		System.setOut(originalOut);

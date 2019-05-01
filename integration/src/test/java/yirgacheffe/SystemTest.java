@@ -21,6 +21,9 @@ public class SystemTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Void hello()" +
 				"{\n" +
 					"new System().getOut().println(\"Eh up, planet.\");" +

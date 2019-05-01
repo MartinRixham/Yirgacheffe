@@ -20,6 +20,9 @@ public class TailCallOptimisationTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Num fib(Num n, Num a, Num b)" +
 				"{\n" +
 					"if (n == 0.0)\n" +

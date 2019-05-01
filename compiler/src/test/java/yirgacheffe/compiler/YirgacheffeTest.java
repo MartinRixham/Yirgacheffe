@@ -124,8 +124,8 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/more/MoreClass.yg:\n" +
-			"line 7:6 Unrecognised type: MyClass is not a type.\n" +
-			"line 10:1 Method requires method body.\n",
+			"line 9:6 Unrecognised type: MyClass is not a type.\n" +
+			"line 12:1 Method requires method body.\n",
 			spyError.toString());
 
 		System.setErr(originalError);
@@ -186,7 +186,7 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/reader/Writer.yg:\n" +
-			"line 7:15 Method example.reader.Streeng.write() not found.\n",
+			"line 9:15 Method example.reader.Streeng.write() not found.\n",
 			spyError.toString());
 
 		System.setErr(originalError);

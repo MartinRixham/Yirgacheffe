@@ -82,7 +82,12 @@ public class ConstructorListener extends MainMethodListener
 				false);
 		}
 
-		this.hasDefaultConstructor = false;
+		if (signature.parameter().size() == 0)
+		{
+			this.hasDefaultConstructor = true;
+		}
+
+		this.hasConstructor = true;
 		this.inConstructor = true;
 	}
 }

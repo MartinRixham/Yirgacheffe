@@ -2,6 +2,8 @@ package example;
 
 class Parallel
 {
+    public Parallel() {}
+
     parallel public Comparable<String> getString()
     {
         return "thingy";

@@ -23,6 +23,9 @@ public class LoopTest
 			"class MyClass\n" +
 			"{\n" +
 				"PrintStream out = new System().getOut();\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Void hello()\n" +
 				"{\n" +
 					"for (Num i = 0; i < 4; i++)\n" +

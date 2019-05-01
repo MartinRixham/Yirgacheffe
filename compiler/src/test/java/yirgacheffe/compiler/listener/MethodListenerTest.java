@@ -138,6 +138,7 @@ public class MethodListenerTest
 				"{" +
 					"return 1;" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -171,6 +172,7 @@ public class MethodListenerTest
 				"{" +
 					"return 1;" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -204,6 +206,7 @@ public class MethodListenerTest
 				"{" +
 					"return 1;" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -231,6 +234,7 @@ public class MethodListenerTest
 				"{" +
 					"return \"\";" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -274,6 +278,7 @@ public class MethodListenerTest
 				"{" +
 					"return new HashSet<String>();" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);

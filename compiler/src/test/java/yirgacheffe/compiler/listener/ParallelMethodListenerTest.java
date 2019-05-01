@@ -40,6 +40,7 @@ public class ParallelMethodListenerTest
 				"{\n" +
 					"return \"thingy\";\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -63,6 +64,7 @@ public class ParallelMethodListenerTest
 				"{\n" +
 					"return thingy;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("myPackage/MyClass.yg", source);

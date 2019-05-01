@@ -23,6 +23,9 @@ public class MutableReferenceTest
 			"{\n" +
 				"MutableReference<String> myString =" +
 					"new MutableReference<String>(\"Hello world.\");\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
 				"public Void hello()" +
 				"{\n" +
 					"new System().getOut().println(this.myString.get());\n" +

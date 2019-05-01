@@ -80,6 +80,7 @@ public class StatementListenerTest
 				"{\n" +
 					"Num myVariable = param;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -147,6 +148,7 @@ public class StatementListenerTest
 						"String thingy = \"thingy\";\n" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -180,6 +182,7 @@ public class StatementListenerTest
 						"myVariable = 50;" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -205,6 +208,7 @@ public class StatementListenerTest
 						"Num two = 2.0;" +
 					"}" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -297,6 +301,7 @@ public class StatementListenerTest
 						"Num one = 1.0;\n" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -356,6 +361,7 @@ public class StatementListenerTest
 						"return 1;\n" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -382,6 +388,7 @@ public class StatementListenerTest
 						"return 2;\n" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -422,6 +429,7 @@ public class StatementListenerTest
 				"{\n" +
 					"return 1000000.0;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -464,6 +472,7 @@ public class StatementListenerTest
 				"{\n" +
 					"return \"thingy\";\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -486,6 +495,7 @@ public class StatementListenerTest
 				"{\n" +
 					"new String(\"thingy\");\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -506,6 +516,7 @@ public class StatementListenerTest
 				"{\n" +
 					"return;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -527,6 +538,7 @@ public class StatementListenerTest
 						"Num index = i;\n" +
 					"}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -632,6 +644,7 @@ public class StatementListenerTest
 				"{\n" +
 					"for (Num i = 0; i < 4;) {}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -671,6 +684,7 @@ public class StatementListenerTest
 				"{\n" +
 					"for (Num i = 0; i < 4; i++) {}\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -690,6 +704,7 @@ public class StatementListenerTest
 					"i++;\n" +
 					"return i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -738,11 +753,12 @@ public class StatementListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-			"public Num method(Num i)" +
-			"{\n" +
-				"++i;\n" +
-				"return i;\n" +
+				"public Num method(Num i)" +
+				"{\n" +
+					"++i;\n" +
+					"return i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -796,6 +812,7 @@ public class StatementListenerTest
 					"i--;\n" +
 					"return i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -849,6 +866,7 @@ public class StatementListenerTest
 					"--i;\n" +
 					"return i;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
