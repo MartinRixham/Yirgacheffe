@@ -17,7 +17,7 @@ public class ClassListener extends PackageListener
 
 	protected String mainMethodName;
 
-	protected int initialiserCount = 0;
+	protected Array<String> initialisers = new Array<>();
 
 	protected Array<Function> interfaceMethods = new Array<>();
 
@@ -203,14 +203,14 @@ public class ClassListener extends PackageListener
 			"()V",
 			false);
 
-		for (int i = 0; i < this.initialiserCount; i++)
+		for (String initialiser: this.initialisers)
 		{
 			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				this.className,
-				i + "_init_field",
+				"0" + initialiser + "_init_field",
 				"()V",
 				false);
 		}

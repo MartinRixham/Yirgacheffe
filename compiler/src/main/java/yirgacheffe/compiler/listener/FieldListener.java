@@ -25,17 +25,19 @@ public class FieldListener extends FieldDeclarationListener
 	public void enterFieldInitialisation(
 		YirgacheffeParser.FieldInitialisationContext context)
 	{
+		String field = context.fieldDeclaration().Identifier().getSymbol().getText();
+
 		this.methodVisitor =
 			this.writer.visitMethod(
 				Opcodes.ACC_PRIVATE,
-				this.initialiserCount + "_init_field",
+				"0" + field + "_init_field",
 				"()V",
 				null,
 				null);
 
 		this.enterThisRead(null);
 
-		this.initialiserCount++;
+		this.initialisers.push(field);
 	}
 
 	@Override

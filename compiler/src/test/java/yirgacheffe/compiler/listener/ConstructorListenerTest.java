@@ -215,7 +215,7 @@ public class ConstructorListenerTest
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
 		assertEquals("MyClass", fourthInstruction.owner);
-		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("0thingy_init_field", fourthInstruction.name);
 		assertEquals("()V", fourthInstruction.desc);
 	}
 }

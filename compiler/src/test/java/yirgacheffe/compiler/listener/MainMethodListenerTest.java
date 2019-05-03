@@ -306,7 +306,7 @@ public class MainMethodListenerTest
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("0_init_field", fourthInstruction.name);
+		assertEquals("0string_init_field", fourthInstruction.name);
 		assertEquals("()V", fourthInstruction.desc);
 	}
 }
