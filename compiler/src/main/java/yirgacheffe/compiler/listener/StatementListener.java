@@ -1,14 +1,12 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Branch;
 import yirgacheffe.compiler.statement.ConditionalStatement;
 import yirgacheffe.compiler.statement.Else;
-import yirgacheffe.compiler.statement.ForCondition;
 import yirgacheffe.compiler.statement.If;
 import yirgacheffe.compiler.statement.OpenBlock;
 import yirgacheffe.compiler.statement.Return;
@@ -22,8 +20,6 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class StatementListener extends FieldListener
 {
-	private ForCondition forCondition;
-
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -64,7 +60,6 @@ public class StatementListener extends FieldListener
 	public void enterBlock(YirgacheffeParser.BlockContext context)
 	{
 		this.statements.push(new OpenBlock());
-		this.forCondition = null;
 	}
 
 	@Override
@@ -74,16 +69,7 @@ public class StatementListener extends FieldListener
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, blockStatements);
 
-		if (this.forCondition == null)
-		{
-			this.statements.push(new Block(coordinate, blockStatements));
-		}
-		else
-		{
-			Statement statement = this.forCondition.getStatement(block);
-
-			this.statements.push(new Block(coordinate, new Array<>(statement)));
-		}
+		this.statements.push(block);
 	}
 
 	private Array<Statement> getStatements(Array<Statement> blockStatements)
@@ -149,25 +135,6 @@ public class StatementListener extends FieldListener
 		Branch branch = new Branch(conditional);
 
 		this.statements.push(branch);
-	}
-
-	public void exitForStatement(YirgacheffeParser.ForStatementContext context)
-	{
-		if (this.expressions.length() == 0 ||
-			this.statements.get(this.statements.length() - 2).isEmpty())
-		{
-			String message = "Malformed for loop.";
-
-			this.errors.push(new Error(context, message));
-		}
-		else
-		{
-			Statement incrementer = this.statements.pop();
-			Expression exitCondition = this.expressions.pop();
-			Statement initialiser = this.statements.pop();
-
-			this.forCondition = new ForCondition(initialiser, exitCondition, incrementer);
-		}
 	}
 
 	public void exitPostincrementStatement(

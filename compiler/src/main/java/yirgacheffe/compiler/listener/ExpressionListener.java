@@ -11,7 +11,7 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class ExpressionListener extends StatementListener
+public class ExpressionListener extends LoopListener
 {
 	public ExpressionListener(String sourceFile, Classes classes)
 	{

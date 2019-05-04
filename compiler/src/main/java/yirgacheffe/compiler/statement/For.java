@@ -19,18 +19,18 @@ public class For implements Statement
 
 	private Statement incrementer;
 
-	private Block block;
+	private Statement statement;
 
 	public For(
 		Statement initialiser,
 		Expression exitCondition,
 		Statement incrementer,
-		Block block)
+		Statement statement)
 	{
 		this.initialiser = initialiser;
 		this.exitCondition = exitCondition;
 		this.incrementer = incrementer;
-		this.block = block;
+		this.statement = statement;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class For implements Statement
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, exitLabel);
 		}
 
-		errors = errors.concat(this.block.compile(methodVisitor, variables, caller));
+		errors = errors.concat(this.statement.compile(methodVisitor, variables, caller));
 
 		errors = errors.concat(
 			this.incrementer.compile(methodVisitor, variables, caller));
@@ -92,7 +92,7 @@ public class For implements Statement
 	@Override
 	public Expression getExpression()
 	{
-		return this.block.getExpression();
+		return this.statement.getExpression();
 	}
 
 	@Override

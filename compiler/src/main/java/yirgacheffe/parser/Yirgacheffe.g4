@@ -63,7 +63,7 @@ fieldDeclaration: modifier? type? Identifier;
 
 modifier: Public | Private;
 
-statement: block | conditionalStatement | (statementLine semicolon);
+statement: block | conditionalStatement | forStatement | (statementLine semicolon);
 
 statementLine:
     unaryStatement |
@@ -87,9 +87,15 @@ predecrementStatement: MinusMinus expression;
 
 postdecrementStatement: expression MinusMinus;
 
-block: forStatement? '{' statement* '}';
+block: '{' statement* '}';
 
-forStatement: For '(' statementLine? ';' expression? ';' statementLine? ')';
+forStatement: For '(' initialiser ';' exitCondition ';' incrementer ')' statement?;
+
+initialiser: statementLine?;
+
+exitCondition: expression?;
+
+incrementer: statementLine?;
 
 conditionalStatement: ifStatement elseStatement | ifStatement | elseStatement;
 
