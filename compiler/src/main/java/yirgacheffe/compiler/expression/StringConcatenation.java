@@ -44,11 +44,14 @@ public class StringConcatenation implements Expression
 
 			Array<Error> errors = this.binaryOperation.compile(methodVisitor, variables);
 
+			String secondOperandType =
+				this.binaryOperation.getSecondOperandType(variables);
+
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				"java/lang/StringBuilder",
 				"append",
-				"(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+				"(" + secondOperandType + ")Ljava/lang/StringBuilder;",
 				false);
 
 			methodVisitor.visitMethodInsn(

@@ -36,7 +36,12 @@ public class BinaryOperation implements Expression
 	{
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
+		Type string = new ReferenceType(String.class);
 
+		if (firstType.isAssignableTo(string) || secondType.isAssignableTo(string))
+		{
+			return string;
+		}
 		if (firstType == PrimitiveType.INT && secondType == PrimitiveType.INT)
 		{
 			return PrimitiveType.INT;
@@ -60,8 +65,7 @@ public class BinaryOperation implements Expression
 
 		if (
 			this.operator == Operator.ADD  &&
-			firstType.isAssignableTo(string) &&
-			secondType.isAssignableTo(string))
+			(firstType.isAssignableTo(string) || secondType.isAssignableTo(string)))
 		{
 			return this.compileStrings(methodVisitor, variables);
 		}
@@ -110,11 +114,13 @@ public class BinaryOperation implements Expression
 	{
 		Array<Error> errors = this.firstOperand.compile(methodVisitor, variables);
 
+		Type firstOperandType = this.firstOperand.getType(variables);
+
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			"java/lang/StringBuilder",
 			"append",
-			"(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+			"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
 			false);
 
 		errors.push(this.secondOperand.compile(methodVisitor, variables));
@@ -126,5 +132,10 @@ public class BinaryOperation implements Expression
 	{
 		return this.firstOperand.getVariableReads()
 			.concat(this.secondOperand.getVariableReads());
+	}
+
+	public String getSecondOperandType(Variables variables)
+	{
+		return this.secondOperand.getType(variables).toJVMType();
 	}
 }

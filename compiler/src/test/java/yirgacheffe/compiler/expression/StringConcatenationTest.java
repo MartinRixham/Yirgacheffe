@@ -49,7 +49,7 @@ public class StringConcatenationTest
 	}
 
 	@Test
-	public void testCompilingStringAddition()
+	public void testCompilingStringConcatenation()
 	{
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
@@ -80,7 +80,7 @@ public class StringConcatenationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		//assertEquals(3, instructions.size());
+		assertEquals(10, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -144,5 +144,159 @@ public class StringConcatenationTest
 		assertEquals("toString", tenthInstruction.name);
 		assertEquals(
 			"()Ljava/lang/String;", tenthInstruction.desc);
+	}
+
+	@Test
+	public void testConcatenateStringWithNumber()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(3, 5);
+		Operator operator = Operator.ADD;
+		Expression firstOperand = new Streeng("\"thingy\"");
+		Expression secondOperand = new Num("2.0");
+
+		BinaryOperation binaryOperation =
+			new BinaryOperation(coordinate, operator, firstOperand, secondOperand);
+
+		StringConcatenation concatenation = new StringConcatenation(binaryOperation);
+
+		Type type = concatenation.getType(variables);
+
+		Array<Error> errors = concatenation.compile(methodVisitor, variables);
+
+		assertEquals("Ljava/lang/String;", type.toJVMType());
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(8, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", thirdInstruction.owner);
+		assertEquals("<init>", thirdInstruction.name);
+		assertEquals("()V", thirdInstruction.desc);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals("thingy", fourthInstruction.cst);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", fifthInstruction.owner);
+		assertEquals("append", fifthInstruction.name);
+		assertEquals(
+			"(Ljava/lang/String;)Ljava/lang/StringBuilder;", fifthInstruction.desc);
+
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals(2.0, sixthInstruction.cst);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, seventhInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", seventhInstruction.owner);
+		assertEquals("append", seventhInstruction.name);
+		assertEquals(
+			"(D)Ljava/lang/StringBuilder;", seventhInstruction.desc);
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", eighthInstruction.owner);
+		assertEquals("toString", eighthInstruction.name);
+		assertEquals(
+			"()Ljava/lang/String;", eighthInstruction.desc);
+	}
+
+	@Test
+	public void testConcatenateNumberWithString()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+		Coordinate coordinate = new Coordinate(3, 5);
+		Operator operator = Operator.ADD;
+		Expression firstOperand = new Num("2.0");
+		Expression secondOperand = new Streeng("\"thingy\"");
+
+		BinaryOperation binaryOperation =
+			new BinaryOperation(coordinate, operator, firstOperand, secondOperand);
+
+		StringConcatenation concatenation = new StringConcatenation(binaryOperation);
+
+		Type type = concatenation.getType(variables);
+
+		Array<Error> errors = concatenation.compile(methodVisitor, variables);
+
+		assertEquals("Ljava/lang/String;", type.toJVMType());
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(8, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", thirdInstruction.owner);
+		assertEquals("<init>", thirdInstruction.name);
+		assertEquals("()V", thirdInstruction.desc);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(2.0, fourthInstruction.cst);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fifthInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", fifthInstruction.owner);
+		assertEquals("append", fifthInstruction.name);
+		assertEquals(
+			"(D)Ljava/lang/StringBuilder;", fifthInstruction.desc);
+
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals("thingy", sixthInstruction.cst);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, seventhInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", seventhInstruction.owner);
+		assertEquals("append", seventhInstruction.name);
+		assertEquals(
+			"(Ljava/lang/String;)Ljava/lang/StringBuilder;", seventhInstruction.desc);
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
+		assertEquals("java/lang/StringBuilder", eighthInstruction.owner);
+		assertEquals("toString", eighthInstruction.name);
+		assertEquals(
+			"()Ljava/lang/String;", eighthInstruction.desc);
 	}
 }

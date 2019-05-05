@@ -157,7 +157,7 @@ public class BinaryOperationTest
 		Variables variables = new Variables();
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
-		This secondOperand = new This(new ReferenceType(String.class));
+		This secondOperand = new This(new ReferenceType(Object.class));
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -173,7 +173,7 @@ public class BinaryOperationTest
 		assertEquals(1, errors.length());
 
 		assertEquals(errors.get(0).toString(),
-			"line 3:6 Cannot add Num and java.lang.String.");
+			"line 3:6 Cannot add Num and java.lang.Object.");
 	}
 
 	@Test
