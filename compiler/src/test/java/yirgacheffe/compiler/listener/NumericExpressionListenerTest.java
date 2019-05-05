@@ -204,7 +204,7 @@ public class NumericExpressionListenerTest
 
 		assertEquals(
 			"line 4:31 Cannot subtract java.lang.String and java.lang.String.\n" +
-			"line 4:37 Cannot add java.lang.String and java.lang.String.\n" +
+			//"line 4:37 Cannot add java.lang.String and java.lang.String.\n" +
 			"line 4:13 Cannot multiply java.lang.String and java.lang.String.\n" +
 			"line 4:19 Cannot divide java.lang.String and java.lang.String.\n" +
 			"line 4:25 Cannot find remainder of java.lang.String and java.lang.String.\n",

@@ -5,11 +5,12 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class BinaryNumericOperation implements Expression
+public class BinaryOperation implements Expression
 {
 	private Coordinate coordinate;
 
@@ -19,7 +20,7 @@ public class BinaryNumericOperation implements Expression
 
 	private Expression secondOperand;
 
-	public BinaryNumericOperation(
+	public BinaryOperation(
 		Coordinate coordinate,
 		Operator operator,
 		Expression firstOperand,
@@ -53,10 +54,19 @@ public class BinaryNumericOperation implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Array<Error> errors = new Array<>();
-
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
+		Type string = new ReferenceType(String.class);
+
+		if (
+			this.operator == Operator.ADD  &&
+			firstType.isAssignableTo(string) &&
+			secondType.isAssignableTo(string))
+		{
+			return this.compileStrings(methodVisitor, variables);
+		}
+
+		Array<Error> errors = new Array<>();
 
 		if (!firstType.isAssignableTo(PrimitiveType.DOUBLE) ||
 			!secondType.isAssignableTo(PrimitiveType.DOUBLE))
@@ -92,6 +102,22 @@ public class BinaryNumericOperation implements Expression
 		{
 			methodVisitor.visitInsn(this.operator.getDoubleOpcode());
 		}
+
+		return errors;
+	}
+
+	private Array<Error> compileStrings(MethodVisitor methodVisitor, Variables variables)
+	{
+		Array<Error> errors = this.firstOperand.compile(methodVisitor, variables);
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			"java/lang/StringBuilder",
+			"append",
+			"(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+			false);
+
+		errors.push(this.secondOperand.compile(methodVisitor, variables));
 
 		return errors;
 	}

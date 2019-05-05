@@ -14,7 +14,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.expression.BinaryNumericOperation;
+import yirgacheffe.compiler.expression.BinaryOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
@@ -575,7 +575,7 @@ public class BlockTest
 		Expression one = new Num("1.0");
 
 		Expression addition =
-			new BinaryNumericOperation(
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstRead, one);

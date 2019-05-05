@@ -17,7 +17,7 @@ import yirgacheffe.lang.Array;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BinaryNumericOperationTest
+public class BinaryOperationTest
 {
 	@Test
 	public void testCompilingIntegerAddition()
@@ -28,8 +28,8 @@ public class BinaryNumericOperationTest
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2");
 
-		BinaryNumericOperation operation =
-			new BinaryNumericOperation(
+		BinaryOperation operation =
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstOperand, secondOperand);
@@ -69,8 +69,8 @@ public class BinaryNumericOperationTest
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
 
-		BinaryNumericOperation operation =
-			new BinaryNumericOperation(
+		BinaryOperation operation =
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstOperand, secondOperand);
@@ -114,8 +114,8 @@ public class BinaryNumericOperationTest
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
 
-		BinaryNumericOperation operation =
-			new BinaryNumericOperation(
+		BinaryOperation operation =
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstOperand, secondOperand);
@@ -159,8 +159,8 @@ public class BinaryNumericOperationTest
 		Num firstOperand = new Num("3.0");
 		This secondOperand = new This(new ReferenceType(String.class));
 
-		BinaryNumericOperation operation =
-			new BinaryNumericOperation(
+		BinaryOperation operation =
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstOperand, secondOperand);
@@ -186,7 +186,7 @@ public class BinaryNumericOperationTest
 		Variables variables = new Variables();
 
 		Expression expression =
-			new BinaryNumericOperation(
+			new BinaryOperation(
 				coordinate,
 				Operator.ADD,
 				firstOperand,
@@ -205,7 +205,7 @@ public class BinaryNumericOperationTest
 		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
 
 		Expression operation =
-			new BinaryNumericOperation(
+			new BinaryOperation(
 				coordinate,
 				Operator.DIVIDE,
 				firstOperand,

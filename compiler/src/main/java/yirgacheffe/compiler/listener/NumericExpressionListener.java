@@ -2,11 +2,12 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.BinaryNumericOperation;
+import yirgacheffe.compiler.expression.BinaryOperation;
 import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
 import yirgacheffe.compiler.expression.Operator;
+import yirgacheffe.compiler.expression.StringConcatenation;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
@@ -51,12 +52,13 @@ public class NumericExpressionListener extends FunctionCallListener
 				operator = Operator.MULTIPLY;
 			}
 
-			expressions.push(new BinaryNumericOperation(
-				coordinates.pop(),
-				operator,
-				firstOperand,
-				secondOperand
-			));
+			expressions.push(
+				new BinaryOperation(
+					coordinates.pop(),
+					operator,
+					firstOperand,
+					secondOperand
+				));
 		}
 
 		this.expressions.push(expressions.pop());
@@ -90,15 +92,24 @@ public class NumericExpressionListener extends FunctionCallListener
 				operator = Operator.ADD;
 			}
 
-			expressions.push(new BinaryNumericOperation(
-				coordinates.pop(),
-				operator,
-				firstOperand,
-				secondOperand
-			));
+			expressions.push(
+				new BinaryOperation(
+					coordinates.pop(),
+					operator,
+					firstOperand,
+					secondOperand));
 		}
 
-		this.expressions.push(expressions.pop());
+		Expression expression = expressions.pop();
+
+		if (expression instanceof BinaryOperation)
+		{
+			this.expressions.push(new StringConcatenation((BinaryOperation) expression));
+		}
+		else
+		{
+			this.expressions.push(expression);
+		}
 	}
 
 	@Override
