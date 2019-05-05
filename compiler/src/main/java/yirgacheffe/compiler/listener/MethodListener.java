@@ -106,11 +106,61 @@ public class MethodListener extends TypeListener
 
 		for (int i = this.interfaceMethods.length() - 1; i >= 0; i--)
 		{
-			if (this.interfaceMethods.get(i).hasSignature(this.signature))
+			Signature signature = this.interfaceMethods.get(i).getSignature();
+
+			if (signature.isImplementedBy(this.signature))
 			{
 				this.interfaceMethods.splice(i, 1);
+
+				if (!signature.equals(this.signature))
+				{
+					this.createBridge(signature, this.signature);
+				}
 			}
 		}
+	}
+
+	private void createBridge(Signature from, Signature to)
+	{
+		MethodVisitor methodVisitor =
+			this.writer.visitMethod(
+				Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,
+				from.getName(),
+				from.getDescriptor(),
+				from.getSignature(),
+				null);
+
+		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+		Array<Type> parameters = from.getParameters();
+
+		for (int i = 0; i < parameters.length(); i++)
+		{
+			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
+		}
+
+		String owner;
+
+		if (this.packageName == null)
+		{
+			owner = this.className;
+		}
+		else
+		{
+			owner = this.packageName.replace(".", "/") + "/" + this.className;
+		}
+
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			owner,
+			to.getName(),
+			to.getDescriptor(),
+			false);
+
+		methodVisitor.visitInsn(to.getReturnType().getReturnInstruction());
+
+		methodVisitor.visitMaxs(0 , 0);
 	}
 
 	@Override

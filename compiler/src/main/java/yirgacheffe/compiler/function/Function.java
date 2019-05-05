@@ -155,7 +155,7 @@ public class Function implements Callable
 		return function + "(" + parameters.join(",") + ")";
 	}
 
-	public boolean hasSignature(Signature other)
+	public Signature getSignature()
 	{
 		Array<Type> parameters = new Array<>();
 
@@ -171,6 +171,6 @@ public class Function implements Callable
 				this.getName(),
 				parameters);
 
-		return signature.equalWithReturnType(other);
+		return signature;
 	}
 }

@@ -35,11 +35,24 @@ public class Signature
 		throw new RuntimeException();
 	}
 
-	public boolean equalWithReturnType(Signature signature)
+	public boolean isImplementedBy(Signature signature)
 	{
-		return this.name.equals(signature.name) &&
-			this.returnType.toString().equals(signature.returnType.toString()) &&
-			this.parameters.equals(signature.parameters);
+		if (this.name.equals(signature.name) &&
+			signature.returnType.isAssignableTo(this.returnType) &&
+			this.parameters.length() == signature.parameters.length())
+		{
+			for (int i = 0; i < this.parameters.length(); i++)
+			{
+				if (!this.parameters.get(i).isAssignableTo(signature.parameters.get(i)))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -113,6 +126,16 @@ public class Signature
 		}
 
 		return this.name + "(" + String.join(",", strings) + ")";
+	}
+
+	public String getName()
+	{
+		return this.name;
+	}
+
+	public Type getReturnType()
+	{
+		return this.returnType;
 	}
 
 	public Label getLabel()
