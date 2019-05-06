@@ -84,7 +84,7 @@ public class UnaryOperation implements Expression, Statement
 		}
 		else
 		{
-			errors.push(this.expression.compile(methodVisitor, variables));
+			errors = errors.concat(this.expression.compile(methodVisitor, variables));
 
 			methodVisitor.visitInsn(Opcodes.DCONST_1);
 			methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);

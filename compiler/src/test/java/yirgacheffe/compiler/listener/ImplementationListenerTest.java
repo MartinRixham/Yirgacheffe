@@ -110,6 +110,41 @@ public class ImplementationListenerTest
 		assertEquals(
 			"Ljava/lang/Object;Ljava/lang/Comparable<Ljava/lang/String;>;",
 			classNode.signature);
+
+		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
+
+		assertEquals("compareTo", bridgeMethod.name);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
+		assertEquals("(Ljava/lang/Object;)I", bridgeMethod.desc);
+
+		InsnList instructions = bridgeMethod.instructions;
+
+		assertEquals(5, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("compareTo", thirdInstruction.name);
+		assertEquals("(Ljava/lang/String;)D", thirdInstruction.desc);
+		assertEquals(false, thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.D2I, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.IRETURN, fifthInstruction.getOpcode());
 	}
 
 	@Test
@@ -153,7 +188,7 @@ public class ImplementationListenerTest
 			"Ljava/lang/Object;LObjectifier;",
 			classNode.signature);
 
-		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(1);
+		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
 
 		assertEquals("objectify", bridgeMethod.name);
 		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);

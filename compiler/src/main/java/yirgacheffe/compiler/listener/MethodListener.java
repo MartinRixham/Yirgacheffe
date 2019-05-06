@@ -96,14 +96,19 @@ public class MethodListener extends TypeListener
 			name = context.signature().Identifier().getText();
 		}
 
+		boolean hasBridgeMethod = this.checkInterfaceImplementation();
+
 		this.methodVisitor =
 			this.writer.visitMethod(
-				isPrivate ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
+				isPrivate || hasBridgeMethod ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
 				name,
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
+	}
 
+	private boolean checkInterfaceImplementation()
+	{
 		for (int i = this.interfaceMethods.length() - 1; i >= 0; i--)
 		{
 			Signature signature = this.interfaceMethods.get(i).getSignature();
@@ -112,12 +117,21 @@ public class MethodListener extends TypeListener
 			{
 				this.interfaceMethods.splice(i, 1);
 
-				if (!signature.equals(this.signature))
+				boolean signatureMatches =
+					signature.equals(this.signature) &&
+						this.signature.getReturnType()
+							.isAssignableTo(signature.getReturnType());
+
+				if (!signatureMatches)
 				{
 					this.createBridge(signature, this.signature);
+
+					return true;
 				}
 			}
 		}
+
+		return false;
 	}
 
 	private void createBridge(Signature from, Signature to)
@@ -150,7 +164,6 @@ public class MethodListener extends TypeListener
 			owner = this.packageName.replace(".", "/") + "/" + this.className;
 		}
 
-
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			owner,
@@ -158,9 +171,14 @@ public class MethodListener extends TypeListener
 			to.getDescriptor(),
 			false);
 
-		methodVisitor.visitInsn(to.getReturnType().getReturnInstruction());
+		if (!to.getReturnType().isAssignableTo(from.getReturnType()))
+		{
+			methodVisitor.visitInsn(Opcodes.D2I);
+		}
 
-		methodVisitor.visitMaxs(0 , 0);
+		methodVisitor.visitInsn(from.getReturnType().getReturnInstruction());
+
+		methodVisitor.visitMaxs(0, 0);
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public class BinaryOperation implements Expression
 			methodVisitor.visitInsn(Opcodes.I2D);
 		}
 
-		errors.push(this.secondOperand.compile(methodVisitor, variables));
+		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 
 		if (type != secondType)
 		{
@@ -123,7 +123,7 @@ public class BinaryOperation implements Expression
 			"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
 			false);
 
-		errors.push(this.secondOperand.compile(methodVisitor, variables));
+		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 
 		return errors;
 	}
