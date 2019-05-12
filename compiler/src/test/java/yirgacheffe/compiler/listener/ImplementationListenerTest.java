@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -21,6 +22,90 @@ import static org.junit.Assert.assertTrue;
 
 public class ImplementationListenerTest
 {
+	@Test
+	public void testImplementsInterface()
+	{
+		String source =
+			"class MyClass implements Appendable\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Appendable append(Char c) { return this; }\n" +
+				"public Appendable append(CharSequence csq) { return this; }\n" +
+				"public Appendable append(CharSequence csq, Num start, Num end)\n" +
+				"{\n" +
+					"return this;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testImplementsInterfaceWithoutBridgeMethod()
+	{
+		String source =
+			"import java.util.Observer;\n" +
+			"import java.util.Observable;\n" +
+			"class MyClass implements Observer\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Void update(Observable o, Object arg) { return; }\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+
+		assertEquals(2, methods.size());
+	}
+
+	@Test
+	public void testPrivateMethodDoesntImplementInterface()
+	{
+		String source =
+			"import java.util.Observer;\n" +
+			"import java.util.Observable;\n" +
+			"class MyClass implements Observer\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"private Void update(Observable o, Object arg) { return; }\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
+
 	@Test
 	public void testImplementsMissingType()
 	{
@@ -119,7 +204,87 @@ public class ImplementationListenerTest
 
 		InsnList instructions = bridgeMethod.instructions;
 
+		assertEquals(6, instructions.size());
+		assertEquals(2, bridgeMethod.maxLocals);
+		assertEquals(2, bridgeMethod.maxStack);
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		TypeInsnNode thirdInstruction = (TypeInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.CHECKCAST, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.desc);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("compareTo", fourthInstruction.name);
+		assertEquals("(Ljava/lang/String;)D", fourthInstruction.desc);
+		assertEquals(false, fourthInstruction.itf);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.D2I, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.IRETURN, sixthInstruction.getOpcode());
+
+		MethodNode method = (MethodNode) classNode.methods.get(1);
+
+		assertEquals("compareTo", method.name);
+		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals("(Ljava/lang/String;)D", method.desc);
+	}
+
+	@Test
+	public void testImplementsComparableWithObjectParameter()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public Num compareTo(Object other) { return 0; }\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List interfaces = classNode.interfaces;
+
+		assertEquals(1, classNode.interfaces.size());
+		assertEquals("java/lang/Comparable", interfaces.get(0));
+		assertEquals(
+			"Ljava/lang/Object;Ljava/lang/Comparable<Ljava/lang/String;>;",
+			classNode.signature);
+
+		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
+
+		assertEquals("compareTo", bridgeMethod.name);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
+		assertEquals("(Ljava/lang/Object;)I", bridgeMethod.desc);
+
+		InsnList instructions = bridgeMethod.instructions;
+
 		assertEquals(5, instructions.size());
+		assertEquals(2, bridgeMethod.maxLocals);
+		assertEquals(2, bridgeMethod.maxStack);
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -135,7 +300,7 @@ public class ImplementationListenerTest
 
 		assertEquals("MyClass", thirdInstruction.owner);
 		assertEquals("compareTo", thirdInstruction.name);
-		assertEquals("(Ljava/lang/String;)D", thirdInstruction.desc);
+		assertEquals("(Ljava/lang/Object;)D", thirdInstruction.desc);
 		assertEquals(false, thirdInstruction.itf);
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
@@ -145,6 +310,12 @@ public class ImplementationListenerTest
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
 		assertEquals(Opcodes.IRETURN, fifthInstruction.getOpcode());
+
+		MethodNode method = (MethodNode) classNode.methods.get(1);
+
+		assertEquals("compareTo", method.name);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
+		assertEquals("(Ljava/lang/Object;)D", method.desc);
 	}
 
 	@Test
@@ -218,5 +389,57 @@ public class ImplementationListenerTest
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.ARETURN, fourthInstruction.getOpcode());
+
+		MethodNode method = (MethodNode) classNode.methods.get(1);
+
+		assertEquals("objectify", method.name);
+		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/String;", method.desc);
+	}
+
+	@Test
+	public void testImplementGenericInterface()
+	{
+		String interfaceSource =
+			"interface MyInterface<T>\n" +
+			"{" +
+				"T getString(T string);\n" +
+			"}";
+
+		String source =
+			"class MyClass implements MyInterface<String>\n" +
+			"{\n" +
+				"public String getString(String str) { return str.toString(); }\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		new Compiler("", interfaceSource).compileInterface(classes);
+
+		classes.clearCache();
+
+		Compiler interfaceCompiler = new Compiler("", interfaceSource);
+		CompilationResult interfaceResult = interfaceCompiler.compile(classes);
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(interfaceResult.isSuccessful());
+		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List interfaces = classNode.interfaces;
+
+		assertEquals(1, classNode.interfaces.size());
+		assertEquals("MyInterface", interfaces.get(0));
+		assertEquals(
+			"Ljava/lang/Object;LMyInterface<Ljava/lang/String;>;",
+			classNode.signature);
 	}
 }

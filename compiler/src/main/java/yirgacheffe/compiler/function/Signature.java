@@ -28,8 +28,22 @@ public class Signature
 		{
 			Signature signature = (Signature) other;
 
-			return this.name.equals(signature.name) &&
-				this.parameters.equals(signature.parameters);
+			if (!this.name.equals(signature.name) ||
+				this.parameters.length() != signature.parameters.length())
+			{
+				return false;
+			}
+
+			for (int i = 0; i < this.parameters.length(); i++)
+			{
+				if (!this.parameters.get(i).toJVMType().equals(
+					signature.parameters.get(i).toJVMType()))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		throw new RuntimeException();

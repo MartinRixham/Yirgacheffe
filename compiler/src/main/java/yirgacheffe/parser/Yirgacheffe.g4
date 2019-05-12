@@ -19,15 +19,17 @@ classDefinition: classDeclaration
 		(function | parallelMethod | interfaceMethodDeclaration | field)*
 	'}';
 
-classDeclaration: (Class | Identifier) Identifier? implementation?;
+classDeclaration: (Class | Identifier) Identifier? genericTypes? implementation?;
 
 implementation: Implements type*;
 
 interfaceDeclaration:
-	Interface Identifier?
+	Interface Identifier? genericTypes?
 	'{'
 		(function | interfaceMethodDeclaration | field)*
 	'}';
+
+genericTypes: '<' Identifier? (',' Identifier)* '>';
 
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)

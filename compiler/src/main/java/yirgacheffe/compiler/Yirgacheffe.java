@@ -4,11 +4,10 @@ import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class Yirgacheffe
@@ -64,19 +63,16 @@ public final class Yirgacheffe
 		{
 			if (result.isSuccessful())
 			{
-				try (OutputStream outputStream =
-					new FileOutputStream(result.getClassFileName()))
-				{
-					outputStream.write(result.getBytecode());
-				}
+				Path path = Paths.get(result.getClassFileName());
+
+				Files.write(path, result.getBytecode());
 
 				for (GeneratedClass generatedClass: result.getGeneratedClasses())
 				{
-					try (OutputStream outputStream =
-						new FileOutputStream(generatedClass.getClassName() + ".class"))
-					{
-						outputStream.write(generatedClass.getBytecode());
-					}
+					Path generatedPath =
+						Paths.get(generatedClass.getClassName() + ".class");
+
+					Files.write(generatedPath, generatedClass.getBytecode());
 				}
 			}
 			else

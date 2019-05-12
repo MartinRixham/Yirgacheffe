@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TypeVarianceTest
+public class ImplementationTest
 {
 	@Test
 	public void testImplementingMethodWithTypeVariance() throws Exception
@@ -36,7 +36,7 @@ public class TypeVarianceTest
 			"{\n" +
 				"main hello(Array<String> args)" +
 				"{\n" +
-					"Objectifier objectifier = new Stringifier();" +
+					"Objectifier objectifier = new Stringifier();\n" +
 					"new System().getOut().println(objectifier.objectify(args.get(0)));" +
 				"}\n" +
 			"}";
@@ -87,7 +87,7 @@ public class TypeVarianceTest
 		String implementationSource =
 			"class Numberfier implements Comparable<String>\n" +
 			"{\n" +
-				"public Num compareTo(Object obj) { return obj.hashCode(); }\n" +
+				"public Num compareTo(String obj) { return obj.hashCode(); }\n" +
 				"public Numberfier() {}\n" +
 			"}";
 

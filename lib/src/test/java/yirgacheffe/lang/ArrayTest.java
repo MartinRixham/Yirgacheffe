@@ -909,4 +909,14 @@ public class ArrayTest
 		assertNotNull(exception);
 		assertEquals("-11", exception.getMessage());
 	}
+
+	@Test
+	public void arrayToArray()
+	{
+		Array<Integer> numbers = new Array<>(1, 2);
+
+		Object[] array = numbers.toArray();
+
+		assertEquals(2, array.length);
+	}
 }

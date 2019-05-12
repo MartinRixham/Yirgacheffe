@@ -15,7 +15,6 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -112,8 +111,7 @@ public class Block implements Statement
 
 			if (!optimised)
 			{
-				variableWrites.addAll(
-					Arrays.asList(statement.getVariableWrites().toArray()));
+				variableWrites.addAll(this.getList(statement.getVariableWrites()));
 			}
 
 			if (statement instanceof VariableDeclaration &&
@@ -123,9 +121,20 @@ public class Block implements Statement
 			}
 
 			variableReads.removeAll(Collections.singleton(statement));
-			variableReads.addAll(
-				Arrays.asList(statement.getVariableReads().toArray()));
+			variableReads.addAll(this.getList(statement.getVariableReads()));
 		}
+	}
+
+	private <T> List<T> getList(Array<T> array)
+	{
+		List<T> list = new ArrayList<>(array.length());
+
+		for (int i = 0; i < array.length(); i++)
+		{
+			list.add(array.get(i));
+		}
+
+		return list;
 	}
 
 	private boolean canOptimise(

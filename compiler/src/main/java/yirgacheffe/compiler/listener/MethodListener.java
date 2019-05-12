@@ -10,11 +10,13 @@ import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.function.Signature;
-import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -61,7 +63,7 @@ public class MethodListener extends TypeListener
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
 			context.signature().Identifier().getText(),
 			this.signature.getDescriptor(),
-			null,
+			this.signature.getSignature(),
 			null);
 	}
 
@@ -96,11 +98,11 @@ public class MethodListener extends TypeListener
 			name = context.signature().Identifier().getText();
 		}
 
-		boolean hasBridgeMethod = this.checkInterfaceImplementation();
+		boolean makePrivate = isPrivate || this.checkInterfaceImplementation();
 
 		this.methodVisitor =
 			this.writer.visitMethod(
-				isPrivate || hasBridgeMethod ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
+				makePrivate ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
 				name,
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
@@ -117,16 +119,22 @@ public class MethodListener extends TypeListener
 			{
 				this.interfaceMethods.splice(i, 1);
 
-				boolean signatureMatches =
-					signature.equals(this.signature) &&
-						this.signature.getReturnType()
-							.isAssignableTo(signature.getReturnType());
+				if (!signature.equals(this.signature))
+				{
+					this.createBridge(signature, this.signature);
 
-				if (!signatureMatches)
+					return false;
+				}
+				else if (!this.signature.getReturnType()
+					.isAssignableTo(signature.getReturnType()))
 				{
 					this.createBridge(signature, this.signature);
 
 					return true;
+				}
+				else
+				{
+					return false;
 				}
 			}
 		}
@@ -151,6 +159,16 @@ public class MethodListener extends TypeListener
 		for (int i = 0; i < parameters.length(); i++)
 		{
 			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
+
+			if (parameters.get(i) instanceof GenericType &&
+				!to.getParameters().get(i).equals(new ReferenceType(Object.class)))
+			{
+				String toType =
+					to.getParameters().get(i)
+						.toFullyQualifiedType().replace(".", "/");
+
+				methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, toType);
+			}
 		}
 
 		String owner;
@@ -171,9 +189,12 @@ public class MethodListener extends TypeListener
 			to.getDescriptor(),
 			false);
 
-		if (!to.getReturnType().isAssignableTo(from.getReturnType()))
+		if (!to.getReturnType().isAssignableTo(from.getReturnType()) &&
+			from.getReturnType() instanceof PrimitiveType)
 		{
-			methodVisitor.visitInsn(Opcodes.D2I);
+			PrimitiveType fromType = (PrimitiveType) from.getReturnType();
+
+			methodVisitor.visitInsn(fromType.getTypeConversionInstruction());
 		}
 
 		methodVisitor.visitInsn(from.getReturnType().getReturnInstruction());

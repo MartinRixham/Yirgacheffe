@@ -10,6 +10,8 @@ import yirgacheffe.lang.Array;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 public class SignatureTest
@@ -27,7 +29,7 @@ public class SignatureTest
 	}
 
 	@Test
-	public void testGenericSignature()
+	public void testSignatureWithGenericReturnType()
 	{
 		String name = "method";
 		Type string = new ReferenceType(String.class);
@@ -62,5 +64,30 @@ public class SignatureTest
 			signature.getSignature());
 
 		assertEquals(name.hashCode() + parameters.hashCode(), signature.hashCode());
+	}
+
+	@Test
+	public void testSignaturesWithUnequalNames()
+	{
+		Type dub = PrimitiveType.DOUBLE;
+		Array<Type> parameters = new Array<>(dub);
+		Signature firstSignature = new Signature(dub, "thingy", parameters);
+		Signature secondSignature = new Signature(dub, "sumpt", parameters);
+
+		assertNotEquals(firstSignature, secondSignature);
+		assertFalse(firstSignature.isImplementedBy(secondSignature));
+	}
+
+	@Test
+	public void testSignaturesWithUnequalParameters()
+	{
+		Type dub = PrimitiveType.DOUBLE;
+		Array<Type> firstParameters = new Array<>(dub);
+		Array<Type> secondParameters = new Array<>(new ReferenceType(String.class));
+		Signature firstSignature = new Signature(dub, "thingy", firstParameters);
+		Signature secondSignature = new Signature(dub, "thingy", secondParameters);
+
+		assertNotEquals(firstSignature, secondSignature);
+		assertFalse(firstSignature.isImplementedBy(secondSignature));
 	}
 }

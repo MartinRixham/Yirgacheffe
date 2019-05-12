@@ -98,6 +98,11 @@ public enum PrimitiveType implements Type
 		return this.instructions.getLoad();
 	}
 
+	public int getTypeConversionInstruction()
+	{
+		return this.instructions.getTypeConversion();
+	}
+
 	public int getZero()
 	{
 		return this.instructions.getZero();

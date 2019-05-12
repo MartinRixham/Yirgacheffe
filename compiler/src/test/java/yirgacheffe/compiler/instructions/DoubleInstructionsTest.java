@@ -1,0 +1,21 @@
+package yirgacheffe.compiler.instructions;
+
+import org.junit.Test;
+import org.objectweb.asm.Opcodes;
+
+import static org.junit.Assert.assertEquals;
+
+public class DoubleInstructionsTest
+{
+	@Test
+	public void testInstructions()
+	{
+		Instructions instructions = new DoubleInstructions();
+
+		assertEquals(Opcodes.DRETURN, instructions.getReturn());
+		assertEquals(Opcodes.DSTORE, instructions.getStore());
+		assertEquals(Opcodes.DLOAD, instructions.getLoad());
+		assertEquals(Opcodes.NOP, instructions.getTypeConversion());
+		assertEquals(Opcodes.DCONST_0, instructions.getZero());
+	}
+}

@@ -48,8 +48,7 @@ public class TypeListener extends ImplementationListener
 			if (typeParameters.length > 0)
 			{
 				String message =
-					"Missing type parameters for type " +
-					type.toFullyQualifiedType() + ".";
+					"Missing type parameters for type " + type + ".";
 
 				this.errors.push(new Error(context, message));
 			}

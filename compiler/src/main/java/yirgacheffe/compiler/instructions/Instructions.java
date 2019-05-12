@@ -8,5 +8,7 @@ public interface Instructions
 
 	int getLoad();
 
+	int getTypeConversion();
+
 	int getZero();
 }

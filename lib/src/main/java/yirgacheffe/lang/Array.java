@@ -317,9 +317,9 @@ public class Array<T> implements Iterable<T>
 		};
 	}
 
-	public T[] toArray()
+	public Object[] toArray()
 	{
-		return (T[]) Arrays.copyOf(this.array, this.length);
+		return Arrays.copyOf(this.array, this.length);
 	}
 
 	@Override
@@ -327,7 +327,7 @@ public class Array<T> implements Iterable<T>
 	{
 		if (other instanceof Array)
 		{
-			Array array = (Array) other;
+			Array<?> array = (Array) other;
 
 			if (this.length != array.length())
 			{

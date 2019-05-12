@@ -1,11 +1,14 @@
 package yirgacheffe.compiler.listener;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -57,12 +60,7 @@ public class ClassListener extends PackageListener
 				this.interfaces.get(i).toFullyQualifiedType().replace(".", "/");
 		}
 
-		StringBuilder signature = new StringBuilder("Ljava/lang/Object;");
-
-		for (Type type: this.interfaces)
-		{
-			signature.append(type.getSignature());
-		}
+		ClassSignature signature = this.getClassSignature(context.genericTypes());
 
 		this.writer.visit(
 			Opcodes.V1_8,
@@ -102,13 +100,34 @@ public class ClassListener extends PackageListener
 			this.errors.push(new Error(interfaceMethod, message));
 		}
 
+		ClassSignature signature = this.getClassSignature(context.genericTypes());
+
 		this.writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
 			this.directory + this.className,
-			null,
+			signature.toString(),
 			"java/lang/Object",
 			null);
+	}
+
+	private ClassSignature getClassSignature(
+		YirgacheffeParser.GenericTypesContext context)
+	{
+		Array<String> parameters = new Array<>();
+
+		if (context != null)
+		{
+			for (TerminalNode type: context.Identifier())
+			{
+				String name = type.getText();
+
+				parameters.push(name);
+				this.types.put(name, new VariableType(name));
+			}
+		}
+
+		return new ClassSignature(this.interfaces, parameters);
 	}
 
 	@Override
