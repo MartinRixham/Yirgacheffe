@@ -840,6 +840,70 @@ public class FieldListenerTest
 	}
 
 	@Test
+	public void testFieldWriteInInvalidConstructor()
+	{
+		String source =
+			"class MyClass\n" +
+			"{" +
+				"String myString;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+				"public method()\n" +
+				"{\n" +
+					"this.myString = \"thingy\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
+
+	@Test
+	public void testFieldWriteInInvalidMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{" +
+				"String myString;\n" +
+				"public Void method()\n" +
+				"{\n" +
+				"}\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"this.myString = \"thingy\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
+
+	@Test
 	public void testAssignFieldInConstructor()
 	{
 		String source =

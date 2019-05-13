@@ -23,6 +23,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.util.HashSet;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class MethodListener extends TypeListener
 {
@@ -42,6 +43,8 @@ public class MethodListener extends TypeListener
 
 	protected Signature signature;
 
+	private boolean isValid = true;
+
 	public MethodListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -59,9 +62,11 @@ public class MethodListener extends TypeListener
 			this.errors.push(new Error(context, message));
 		}
 
+		String name = context.signature().Identifier().getText();
+
 		this.writer.visitMethod(
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-			context.signature().Identifier().getText(),
+			this.isValid ? name : UUID.randomUUID().toString(),
 			this.signature.getDescriptor(),
 			this.signature.getSignature(),
 			null);
@@ -103,7 +108,7 @@ public class MethodListener extends TypeListener
 		this.methodVisitor =
 			this.writer.visitMethod(
 				makePrivate ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
-				name,
+				this.isValid ? name : UUID.randomUUID().toString(),
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
@@ -267,6 +272,7 @@ public class MethodListener extends TypeListener
 	public void enterSignature(YirgacheffeParser.SignatureContext context)
 	{
 		this.statements = new Array<>();
+		this.isValid = true;
 	}
 
 	@Override
@@ -284,6 +290,7 @@ public class MethodListener extends TypeListener
 				"Duplicate declaration of method " + this.signature.toString() + ".";
 
 			this.errors.push(new Error(context, message));
+			this.isValid = false;
 		}
 		else
 		{

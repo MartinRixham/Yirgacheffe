@@ -7,6 +7,8 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.UUID;
+
 public class ConstructorListener extends MainMethodListener
 {
 	public ConstructorListener(String sourceFile, Classes classes)
@@ -25,7 +27,12 @@ public class ConstructorListener extends MainMethodListener
 	public void exitConstructorDeclaration(
 		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
+		this.hasConstructor = true;
+		this.inConstructor = true;
+
 		YirgacheffeParser.SignatureContext signature = context.signature();
+
+		boolean isValid = true;
 
 		if (!signature.Identifier().getText().equals(this.className))
 		{
@@ -36,6 +43,8 @@ public class ConstructorListener extends MainMethodListener
 			Token token = signature.Identifier().getSymbol();
 
 			this.errors.push(new Error(token, message));
+
+			isValid = false;
 		}
 
 		boolean isPrivate = false;
@@ -56,10 +65,15 @@ public class ConstructorListener extends MainMethodListener
 		this.methodVisitor =
 			this.writer.visitMethod(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				"<init>",
+				isValid ? "<init>" : UUID.randomUUID().toString(),
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
+
+		if (!isValid)
+		{
+			return;
+		}
 
 		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
@@ -86,8 +100,5 @@ public class ConstructorListener extends MainMethodListener
 		{
 			this.hasDefaultConstructor = true;
 		}
-
-		this.hasConstructor = true;
-		this.inConstructor = true;
 	}
 }
