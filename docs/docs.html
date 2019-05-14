@@ -3,11 +3,64 @@
 <h3>Public Fields</h3>
 <h3>Mutable Fields</h3>
 <h3>Static Methods</h3>
+<p>OK this is a bit of an omission. There are some good uses of static methods such a factory methods, but you can do without them. There is always a temptation to abuse static members and when they are misused the implications are inherently non-local. So static methods, as well as non-constant static fields have been left out of Yirgacheffe.</p>
 <h3>Typecasting</h3>
+<p>You cannot cast an object down to it's specific subtype or check an object's subtype with <code>instanceof</code>. This has always been an undesirable thing to do in Java and a source of runtime errors.</p>
+<p>If you want to write subtype specific code you can use a method overload for that subtype. Something like this.</p>
+<pre><code>class MyClass
+{
+    main method(Array&lt;String&gt; args)
+    {
+        Object object = &quot;really a string&quot;;
+        
+        // returns &quot;it's a string&quot;
+        this.handleObject(object);
+    }
+    
+    private String handleObject(Object object)
+    {
+        return &quot;just an object&quot;;
+    }
+    
+    private String handleObject(String object)
+    {
+        return &quot;it's a string&quot;;
+    }
+}
+</code></pre>
 <h3>Null Literals</h3>
 <h3>Try/Catch Blocks</h3>
 <h3>Switch Statements</h3>
 <h3>Lambda Expressions</h3>
+<p>There are no lambda expressions or first class functions but that doesn't mean you can't pass a callback. Remember that an object is just a collection of callbacks attached to some data, so if you want to pass a callback just put it on an object.</p>
+<p>OK so you really wan't your code of execute out of order so you can do some sort of asynchronous operation such as making an HTTP call. In this case you can declare a method as parallel and it will be executed on a separate thread.</p>
+<pre><code>class MyClass
+{
+    main method(Array&lt;String&gt; args)
+    {
+        Result result = this.callServer();
+    }
+    
+    parallel public Result callServer()
+    {
+        // async operation here
+    }
+}
+</code></pre>
 <h3>Multiple Number Types</h3>
+<p>There's only one number type in Yirgacheffe. Just to keep things simple. It's called <code>Num</code> and its a 64 bit floating point number. This is a good fit for most numerical data.</p>
+<p>For some cases such a loop indices an integer would be better. Like this.</p>
+<pre><code>class MyClass
+{
+    main method(Array&lt;String&gt; args)
+    {
+        for (Num i = 0; i &lt; args.length(); i++)
+        {
+            args.get(i);
+        }
+    }
+}
+</code></pre>
+<p>In this case the compiler will optimise <code>i</code> to be a 32 bit integer.</p>
 <h3>Stream Processing</h3>
 <p>That's not all. There are even more features that Yirgacheffe lacks such as wildcard types, checked exceptions and inner classes. You'll just have to do without them. It really is possible if you're clever enough. Have fun!</p>
