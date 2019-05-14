@@ -59,6 +59,24 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>com.ruleoftech</groupId>
+        <artifactId>markdown-page-generator-plugin</artifactId>
+        <version>2.1.0</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <inputFileExtensions>md</inputFileExtensions>
+          <inputDirectory>docs</inputDirectory>
+          <outputDirectory>docs</outputDirectory>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

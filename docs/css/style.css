@@ -606,6 +606,10 @@ a:hover {
     border: 0;
 }
 
+.main-content .docs {
+    min-height: 700px;
+}
+
 .site-footer {
     padding-top: 2rem;
     margin-top: 2rem;

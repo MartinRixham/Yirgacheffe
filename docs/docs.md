@@ -13,6 +13,8 @@ Below are listed some of the features that Yirgacheffe lacks along with explanat
 
 ### Typecasting
 
+### Null Literals
+
 ### Try/Catch Blocks
 
 ### Switch Statements
