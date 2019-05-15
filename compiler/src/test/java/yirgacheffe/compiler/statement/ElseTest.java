@@ -34,7 +34,7 @@ public class ElseTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Expression condition = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 5);
-		Statement statement = new Return(coordinate);
+		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 		MethodNode methodVisitor = new MethodNode();
@@ -84,7 +84,7 @@ public class ElseTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
-		Statement statement = new Return(coordinate);
+		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		Statement ifStatement = new Block(coordinate, new Array<>());
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 		MethodNode methodVisitor = new MethodNode();

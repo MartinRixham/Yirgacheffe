@@ -29,7 +29,7 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Return returnStatement = new Return(coordinate);
+		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
 
@@ -46,6 +46,25 @@ public class ReturnTest
 
 		assertEquals(Opcodes.RETURN, firstInstruction.getOpcode());
 		assertTrue(returnStatement.getExpression() instanceof Nothing);
+	}
+
+	@Test
+	public void testVoidReturnWithNumReturnType()
+	{
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Coordinate coordinate = new Coordinate(5, 3);
+		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables();
+
+		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+
+		assertTrue(returnStatement.returns());
+		assertEquals(1, errors.length());
+		assertEquals(
+			"line 5:3 Mismatched return type: Cannot return expression of type Void " +
+			"from method of return type Num.",
+			errors.get(0).toString());
 	}
 
 	@Test

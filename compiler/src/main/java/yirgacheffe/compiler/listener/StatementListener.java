@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.statement.Block;
@@ -14,6 +15,7 @@ import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -33,6 +35,13 @@ public class StatementListener extends FieldListener
 		String name = context.Identifier().getText();
 
 		this.statements.push(new VariableDeclaration(name, type));
+
+		if (type == PrimitiveType.VOID)
+		{
+			String message = "Cannot declare variable of type Void.";
+
+			this.errors.push(new Error(context, message));
+		}
 	}
 
 	@Override
@@ -95,7 +104,7 @@ public class StatementListener extends FieldListener
 
 		if (context.expression() == null)
 		{
-			this.statements.push(new Return(coordinate));
+			this.statements.push(new Return(coordinate, this.returnType));
 		}
 		else
 		{

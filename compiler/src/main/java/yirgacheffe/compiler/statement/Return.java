@@ -7,7 +7,6 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -16,7 +15,7 @@ public class Return implements Statement
 {
 	private Coordinate coordinate;
 
-	private Type type = PrimitiveType.VOID;
+	private Type type;
 
 	private Expression expression = new Nothing();
 
@@ -27,9 +26,10 @@ public class Return implements Statement
 		this.expression = expression;
 	}
 
-	public Return(Coordinate coordinate)
+	public Return(Coordinate coordinate, Type type)
 	{
 		this.coordinate = coordinate;
+		this.type = type;
 	}
 
 	public boolean returns()

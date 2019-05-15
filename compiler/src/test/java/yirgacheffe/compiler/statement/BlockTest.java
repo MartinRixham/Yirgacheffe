@@ -68,7 +68,7 @@ public class BlockTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
-		Return returnStatement = new Return(coordinate);
+		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
@@ -85,7 +85,7 @@ public class BlockTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
-		Return returnStatement = new Return(coordinate);
+		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
@@ -382,7 +382,10 @@ public class BlockTest
 		This testClass = new This(new ReferenceType(this.getClass()));
 
 		VariableDeclaration variableDeclaration =
-			new VariableDeclaration("myVariable", new ReferenceType(this.getClass()));
+			new VariableDeclaration(
+				"myVariable",
+				new ReferenceType(this.getClass()));
+
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", testClass);
 

@@ -739,4 +739,25 @@ public class StatementListenerTest
 		assertEquals(Opcodes.DLOAD, fifthInstruction.getOpcode());
 		assertEquals(1, fifthInstruction.var);
 	}
+
+	@Test
+	public void testVoidVariableDeclaration()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"Void thingy;\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:0 Cannot declare variable of type Void.\n",
+			result.getErrors());
+	}
 }

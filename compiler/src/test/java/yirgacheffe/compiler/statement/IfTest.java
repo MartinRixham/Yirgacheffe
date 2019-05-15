@@ -32,7 +32,7 @@ public class IfTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Expression condition = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 5);
-		Statement statement = new Return(coordinate);
+		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables();
