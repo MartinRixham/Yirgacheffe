@@ -1,6 +1,6 @@
 Yirgacheffe is a simple language designed to run on the JVM and is in many ways similar to Java.
-It lacks many of the features of the modern Java language and even some of Java's more traditional ones.
-However it is still possible to write good object oriented code in Yirgacheffe.
+While it lacks many of the features of the modern Java language and even some of Java's more traditional ones,
+it is still possible to write good object oriented code in Yirgacheffe.
 Below are listed some of the features that Yirgacheffe lacks along with explanations of what can be used instead.
 
 ### Inheritance
@@ -56,7 +56,7 @@ Something like this.
 There are no lambda expressions or first class functions but that doesn't mean you can't pass a callback.
 Remember that an object is just a collection of callbacks attached to some data, so if you want to pass a callback just put it on an object.
 
-OK so you really wan't your code of execute out of order so you can do some sort of asynchronous operation such as making an HTTP call.
+OK so you really want your code to execute out of order so you can do some sort of asynchronous operation such as making an HTTP call.
 In this case you can declare a method as parallel and it will be executed on a separate thread.
 
     class MyClass
