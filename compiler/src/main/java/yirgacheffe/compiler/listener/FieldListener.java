@@ -86,6 +86,19 @@ public class FieldListener extends FieldDeclarationListener
 	}
 
 	@Override
+	public void exitField(YirgacheffeParser.FieldContext context)
+	{
+		if (context.fieldDeclaration() != null &&
+			context.fieldDeclaration().Const() != null &&
+			context.fieldInitialisation() == null)
+		{
+			String message = "Missing value of constant field myField.";
+
+			this.errors.push(new Error(context, message));
+		}
+	}
+
+	@Override
 	public void enterFieldRead(YirgacheffeParser.FieldReadContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);

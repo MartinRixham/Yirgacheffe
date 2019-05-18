@@ -61,7 +61,7 @@ field: (fieldInitialisation | fieldDeclaration) semicolon;
 
 fieldInitialisation: fieldDeclaration '=' expression;
 
-fieldDeclaration: modifier? type? Identifier;
+fieldDeclaration: Const? modifier? type? Identifier;
 
 modifier: Public | Private;
 
@@ -203,6 +203,7 @@ Class: 'class';
 Interface: 'interface';
 Public: 'public';
 Private: 'private';
+Const: 'const';
 Implements: 'implements';
 PrimitiveType: 'Void' | 'Bool' | 'Char' | 'Num';
 BooleanLiteral: 'true' | 'false';

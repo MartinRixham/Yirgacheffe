@@ -998,4 +998,98 @@ public class FieldListenerTest
 				"line 6:3 Method java.lang.Object.println(Num) not found.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testConstantField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"const String myField = \"thingy\";\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List fields = classNode.fields;
+
+		assertEquals(1, fields.size());
+
+		FieldNode field = (FieldNode) fields.get(0);
+
+		assertEquals("myField", field.name);
+		assertEquals("Ljava/lang/String;", field.desc);
+		assertEquals(
+			Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+			field.access);
+	}
+
+	@Test
+	public void testCantAssignToConstantField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"const String myField = \"thingy\";\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this.myField = \"sumpt\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Cannot assign to constant field myField.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testMissingValueOfConstantField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"const String myField;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Missing value of constant field myField.\n",
+			result.getErrors());
+	}
 }

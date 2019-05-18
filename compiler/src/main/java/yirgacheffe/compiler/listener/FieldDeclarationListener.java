@@ -48,8 +48,15 @@ public class FieldDeclarationListener extends ConstructorListener
 		String fieldName = context.Identifier().getText();
 		Type type = this.types.getType(context.type());
 
+		int access = Opcodes.ACC_PROTECTED;
+
+		if (context.Const() != null)
+		{
+			access |= Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+		}
+
 		this.writer.visitField(
-			Opcodes.ACC_PROTECTED,
+			access,
 			fieldName,
 			type.toJVMType(),
 			null,

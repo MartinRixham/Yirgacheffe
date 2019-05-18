@@ -14,6 +14,9 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 public class FieldWrite implements Statement
 {
 	private Coordinate coordinate;
@@ -52,8 +55,16 @@ public class FieldWrite implements Statement
 
 		try
 		{
-			Class<?> fieldClass =
-				ownerType.reflectionClass().getDeclaredField(this.name).getType();
+			Field field = ownerType.reflectionClass().getDeclaredField(this.name);
+
+			if (Modifier.isFinal(field.getModifiers()))
+			{
+				String message = "Cannot assign to constant field " + this.name + ".";
+
+				errors.push(new Error(this.coordinate, message));
+			}
+
+			Class<?> fieldClass = field.getType();
 			Class<?> expressionClass = type.reflectionClass();
 
 			if (!fieldClass.isAssignableFrom(expressionClass) &&
