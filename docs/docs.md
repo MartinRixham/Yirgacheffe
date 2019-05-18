@@ -9,6 +9,14 @@ Below are listed some of the features that Yirgacheffe lacks along with explanat
 
 ### Mutable Fields
 
+There's nothing wrong with mutable state, almost all programs have some, but it is important to distinguish between the global state of the program and the local state of a calculation.
+One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed.
+In Yirgacheffe fields are immutable, they can only be assigned in a constructor, so local state like the value of a loop index should be kept in a local variable.
+
+If the state of a programme really has changed then that may well involve mutating the state in a field.
+Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed.
+In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.
+
 ### Static Methods
 
 OK this is a bit of an omission.
@@ -21,8 +29,9 @@ So static methods, as well as non-constant static fields have been left out of Y
 You cannot cast an object down to it's specific subtype or check an object's subtype with `instanceof`.
 This has always been an undesirable thing to do in Java and a source of runtime errors.
 
-If you want to write subtype specific code you can use a method overload for that subtype.
-Something like this.
+Casting can often be avoided by using a generic class. If you know that the return value of a method will need to be cast down then putting that method in a generic class allows that subtype to be declared to the compiler by the client code.
+
+If you really want to write subtype specific code you can use a method overload for that subtype.
 
     class MyClass
     {
@@ -80,7 +89,6 @@ It's called `Num` and its a 64 bit floating point number.
 This is a good fit for most numerical data.
 
 For some cases such a loop indices an integer would be better.
-Like this.
 
     class MyClass
     {
