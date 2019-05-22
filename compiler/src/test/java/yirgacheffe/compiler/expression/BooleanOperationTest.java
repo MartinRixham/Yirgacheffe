@@ -17,6 +17,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +29,7 @@ public class BooleanOperationTest
 	public void testCompilingAndDoubles()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 
@@ -97,7 +99,7 @@ public class BooleanOperationTest
 	public void testCompilingAndBooleans()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 
@@ -153,7 +155,7 @@ public class BooleanOperationTest
 	public void testCompilingAndStrings()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Streeng firstOperand = new Streeng("\"mystring\"");
 		Streeng secondOperand = new Streeng("\"notherstring\"");
 
@@ -211,7 +213,7 @@ public class BooleanOperationTest
 	public void testOrDifferentTypesAreAssignableToCommonSupertype()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type arrayList = new ReferenceType(java.util.ArrayList.class);
 		Type linkedList = new ReferenceType(java.util.LinkedList.class);
 		Type list = new ReferenceType(java.util.List.class);
@@ -239,7 +241,7 @@ public class BooleanOperationTest
 	public void testSecondOperandShouldMatchFirstOperandDouble()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new Num("5.0");
 		Expression secondOperand = new Streeng("\"myString\"");
 
@@ -272,7 +274,7 @@ public class BooleanOperationTest
 	public void testSecondOperandShouldMatchFirstOperandNotDouble()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new Streeng("\"myString\"");
 		Expression secondOperand = new Num("5");
 

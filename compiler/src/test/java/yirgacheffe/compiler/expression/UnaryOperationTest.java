@@ -15,6 +15,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +27,7 @@ public class UnaryOperationTest
 	public void testPostincrementOfWrongType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 
@@ -46,7 +48,7 @@ public class UnaryOperationTest
 	public void testPostincrementStatementOfWrongType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 
@@ -82,7 +84,7 @@ public class UnaryOperationTest
 	public void testPostincrementInteger()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		variables.declare("variable", PrimitiveType.INT);
 

@@ -10,6 +10,8 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,7 +25,7 @@ public class OpenBlockTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		OpenBlock openBlock = new OpenBlock();
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = openBlock.compile(methodVisitor, variables, caller);
 

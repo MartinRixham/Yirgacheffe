@@ -12,6 +12,8 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -21,7 +23,7 @@ public class VariableReadTest
 	public void testCompilingStringRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type owner = new ReferenceType(String.class);
 
 		variables.declare("myVariable", owner);
@@ -49,7 +51,7 @@ public class VariableReadTest
 	public void testCompilingNumberRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type owner = PrimitiveType.DOUBLE;
 
 		variables.declare("myVariable", owner);
@@ -77,7 +79,7 @@ public class VariableReadTest
 	public void testCompilingIntegerRead()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type owner = PrimitiveType.INT;
 
 		variables.declare("myVariable", owner);

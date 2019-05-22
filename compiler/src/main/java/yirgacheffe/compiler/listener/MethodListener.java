@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class MethodListener extends TypeListener
+public class MethodListener extends FieldDeclarationListener
 {
 	protected boolean inConstructor = false;
 
@@ -238,7 +238,7 @@ public class MethodListener extends TypeListener
 
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
-		Variables variables = new Variables();
+		Variables variables = new Variables(this.constants);
 		boolean returns = block.returns();
 
 		Array<Error> errors =

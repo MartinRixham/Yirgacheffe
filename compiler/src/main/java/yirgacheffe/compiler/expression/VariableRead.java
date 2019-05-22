@@ -35,18 +35,26 @@ public class VariableRead implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Variable variable = variables.getVariable(this.name);
-		int loadInstruction = variable.getType().getLoadInstruction();
-		int index = variable.getIndex();
-
-		if (variables.canOptimise(this))
+		if (variables.hasConstant(this.name))
 		{
-			variables.getOptimisedExpression(this).compile(methodVisitor, variables);
+			methodVisitor.visitLdcInsn(variables.getConstant(this.name));
 		}
 		else
 		{
-			methodVisitor.visitVarInsn(loadInstruction, index);
-			variables.read(this);
+			Variable variable = variables.getVariable(this.name);
+
+			if (variables.canOptimise(this))
+			{
+				variables.getOptimisedExpression(this).compile(methodVisitor, variables);
+			}
+			else
+			{
+				int loadInstruction = variable.getType().getLoadInstruction();
+				int index = variable.getIndex();
+
+				methodVisitor.visitVarInsn(loadInstruction, index);
+				variables.read(this);
+			}
 		}
 
 		return new Array<>();

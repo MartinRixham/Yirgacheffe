@@ -10,6 +10,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -19,7 +21,7 @@ public class NegationTest
 	public void testNegationOfWrongType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 		Negation negation = new Negation(coordinate, operand);

@@ -59,7 +59,7 @@ public class FieldWrite implements Statement
 
 			if (Modifier.isFinal(field.getModifiers()))
 			{
-				String message = "Cannot assign to constant field " + this.name + ".";
+				String message = "Cannot assign to constant " + this.name + ".";
 
 				errors.push(new Error(this.coordinate, message));
 			}

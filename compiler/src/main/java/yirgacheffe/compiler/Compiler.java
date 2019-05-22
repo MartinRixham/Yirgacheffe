@@ -7,7 +7,7 @@ import yirgacheffe.compiler.error.ParseErrorStrategy;
 import yirgacheffe.compiler.error.ParseErrorListener;
 import yirgacheffe.compiler.listener.BooleanExpressionListener;
 import yirgacheffe.compiler.listener.ClassListener;
-import yirgacheffe.compiler.listener.FieldDeclarationListener;
+import yirgacheffe.compiler.listener.ConstructorListener;
 import yirgacheffe.compiler.listener.YirgacheffeListener;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
@@ -47,7 +47,7 @@ public class Compiler
 	public void compileInterface(Classes classes)
 	{
 		YirgacheffeListener listener =
-			new FieldDeclarationListener(this.sourceFile, classes);
+			new ConstructorListener(this.sourceFile, classes);
 
 		this.execute(listener);
 

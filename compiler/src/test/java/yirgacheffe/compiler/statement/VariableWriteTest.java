@@ -23,6 +23,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -40,7 +42,7 @@ public class VariableWriteTest
 			new VariableWrite(coordinate, "myVariable", value);
 		MethodNode methodVisitor = new MethodNode();
 
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", new ReferenceType(String.class));
 
 		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
@@ -72,7 +74,7 @@ public class VariableWriteTest
 			new VariableWrite(coordinate, "myVariable", value);
 		MethodNode methodVisitor = new MethodNode();
 
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 
 		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
@@ -108,7 +110,7 @@ public class VariableWriteTest
 			new VariableWrite(coordinate, "myVariable", value);
 		MethodNode methodVisitor = new MethodNode();
 
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", string);
 
 		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);

@@ -23,6 +23,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +44,7 @@ public class FieldWriteTest
 		Expression value = new Streeng("\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
@@ -81,7 +83,7 @@ public class FieldWriteTest
 		Expression value = new Streeng("\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
@@ -102,7 +104,7 @@ public class FieldWriteTest
 		Expression value = new Num("1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 
@@ -125,7 +127,7 @@ public class FieldWriteTest
 		Expression value = new InvalidExpression(string);
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
 

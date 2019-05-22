@@ -8,7 +8,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Bool implements Expression
+public class Bool implements Expression, Literal
 {
 	private String text;
 
@@ -39,5 +39,10 @@ public class Bool implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Object getValue()
+	{
+		return this.text.equals("true");
 	}
 }

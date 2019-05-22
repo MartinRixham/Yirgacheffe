@@ -14,6 +14,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -23,7 +25,7 @@ public class BinaryOperationTest
 	public void testCompilingIntegerAddition()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2");
@@ -64,7 +66,7 @@ public class BinaryOperationTest
 	public void testCompilingFloatAddition()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
@@ -109,7 +111,7 @@ public class BinaryOperationTest
 	public void testCompilingFloatAdditionWithCastOfSecondOperand()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
@@ -154,7 +156,7 @@ public class BinaryOperationTest
 	public void testAdditionOfWrongType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
 		This secondOperand = new This(new ReferenceType(Object.class));
@@ -183,7 +185,7 @@ public class BinaryOperationTest
 		Expression firstOperand = new InvalidExpression(PrimitiveType.DOUBLE);
 		Expression secondOperand = new InvalidExpression(PrimitiveType.DOUBLE);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Expression expression =
 			new BinaryOperation(

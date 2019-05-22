@@ -28,7 +28,7 @@ public class FunctionsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression string = new Streeng("\"\"");
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(args, variables);
@@ -61,7 +61,7 @@ public class FunctionsTest
 	@Test
 	public void testGettingBooleanPrintlnMethod()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression bool = new Bool("true");
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(args, variables);
@@ -94,7 +94,7 @@ public class FunctionsTest
 	@Test
 	public void testFailedToMatchFunction()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Callable> notMethods = new Array<>();
@@ -126,7 +126,7 @@ public class FunctionsTest
 	@Test
 	public void testAmbiguousMatching()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		ReferenceType hashMap = new ReferenceType(HashMap.class);
 		Type string = new ReferenceType(String.class);
 		Array<Type> strings = new Array<>(string, string);
@@ -164,7 +164,7 @@ public class FunctionsTest
 	@Test
 	public void testMismatchedParameters()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Callable> splitMethods = new Array<>();
@@ -197,7 +197,7 @@ public class FunctionsTest
 	@Test
 	public void testConstructorCallWithWrongArgument()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
 		Array<Callable> callables = new Array<>();
@@ -228,7 +228,7 @@ public class FunctionsTest
 	@Test
 	public void testMethodCallWithMismatchedTypeParameter()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		ReferenceType mutableReference = new ReferenceType(MutableReference.class);
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);

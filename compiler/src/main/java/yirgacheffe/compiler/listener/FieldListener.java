@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
+import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
 import yirgacheffe.compiler.type.Variables;
@@ -14,7 +15,7 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class FieldListener extends FieldDeclarationListener
+public class FieldListener extends ConstructorListener
 {
 	public FieldListener(String sourceFile, Classes classes)
 	{
@@ -57,11 +58,12 @@ public class FieldListener extends FieldDeclarationListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
-		Variables variables = new Variables();
+		Variables variables = new Variables(this.constants);
 		Expression expression = this.expressions.pop();
 		Expression self = this.expressions.pop();
 		Type expressionType = expression.getType(variables);
 		Type fieldType = this.types.getType(declaration.type());
+		String fieldName = declaration.Identifier().getText();
 
 		self.compile(this.methodVisitor, variables);
 		expression.compile(this.methodVisitor, variables);
@@ -69,8 +71,8 @@ public class FieldListener extends FieldDeclarationListener
 		this.methodVisitor.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
-			declaration.Identifier().getText(),
-			this.types.getType(declaration.type()).toJVMType());
+			fieldName,
+			fieldType.toJVMType());
 
 		this.methodVisitor.visitInsn(Opcodes.RETURN);
 		this.methodVisitor.visitMaxs(0, 0);
@@ -83,6 +85,16 @@ public class FieldListener extends FieldDeclarationListener
 
 			this.errors.push(new Error(context, message));
 		}
+
+		if (declaration.Const() != null)
+		{
+			if (expression instanceof Literal)
+			{
+				Object constant = ((Literal) expression).getValue();
+
+				this.constants.put(fieldName, constant);
+			}
+		}
 	}
 
 	@Override
@@ -92,7 +104,7 @@ public class FieldListener extends FieldDeclarationListener
 			context.fieldDeclaration().Const() != null &&
 			context.fieldInitialisation() == null)
 		{
-			String message = "Missing value of constant field myField.";
+			String message = "Missing value of constant myField.";
 
 			this.errors.push(new Error(context, message));
 		}

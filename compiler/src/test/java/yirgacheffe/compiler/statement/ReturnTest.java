@@ -19,6 +19,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +33,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
@@ -55,7 +57,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
@@ -75,7 +77,7 @@ public class ReturnTest
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
@@ -103,7 +105,7 @@ public class ReturnTest
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
@@ -137,7 +139,7 @@ public class ReturnTest
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 
@@ -164,7 +166,7 @@ public class ReturnTest
 		Expression expression = new Bool("1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
 

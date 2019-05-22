@@ -11,9 +11,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class FieldDeclarationListener extends ConstructorListener
+public class FieldDeclarationListener extends TypeListener
 {
 	protected Map<String, Type> fieldTypes = new HashMap<>();
+
+	protected Map<String, Object> constants = new HashMap<>();
 
 	private Set<String> fields = new HashSet<>();
 
@@ -62,6 +64,9 @@ public class FieldDeclarationListener extends ConstructorListener
 			null,
 			null);
 
-		this.fieldTypes.put(fieldName, type);
+		if (context.Const() == null)
+		{
+			this.fieldTypes.put(fieldName, type);
+		}
 	}
 }

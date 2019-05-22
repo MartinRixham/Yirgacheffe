@@ -20,6 +20,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,7 +31,7 @@ public class EquationTest
 	public void testCompilingEqualDoubles()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 		Comparison equals = new Equals();
@@ -92,7 +94,7 @@ public class EquationTest
 	public void testCompilingNotEqualDoubles()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 		Comparison notEquals = new NotEquals();
@@ -155,7 +157,7 @@ public class EquationTest
 	public void testCompilingEqualBooleans()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 		Comparison equals = new Equals();
@@ -212,7 +214,7 @@ public class EquationTest
 	public void testCompilingEqualIntegers()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0");
 		Comparison equals = new Equals();
@@ -269,7 +271,7 @@ public class EquationTest
 	public void testCompilingNotEqualBooleans()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 		Comparison notEquals = new NotEquals();
@@ -342,7 +344,7 @@ public class EquationTest
 	public void testCompilingIntegerEqualsDouble()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
 		Comparison equals = new Equals();
@@ -409,7 +411,7 @@ public class EquationTest
 	public void testCompilingDoubleEqualsInteger()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
 		Comparison equals = new Equals();

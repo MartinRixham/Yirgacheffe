@@ -8,6 +8,8 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 
 public class VariablesTest
@@ -15,7 +17,7 @@ public class VariablesTest
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -28,7 +30,7 @@ public class VariablesTest
 	@Test
 	public void testReadUndeclaredVariable()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -44,7 +46,7 @@ public class VariablesTest
 	@Test
 	public void testWriteDeclaredVariable()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
@@ -58,7 +60,7 @@ public class VariablesTest
 	@Test
 	public void testWriteUndeclaredVariable()
 	{
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);

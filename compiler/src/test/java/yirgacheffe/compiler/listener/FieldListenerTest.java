@@ -1007,6 +1007,10 @@ public class FieldListenerTest
 			"{\n" +
 				"const String myField = \"thingy\";\n" +
 				"public MyClass() {}\n" +
+				"public String method()\n" +
+				"{\n" +
+					"return myField;\n" +
+				"}\n" +
 			"}";
 
 		Classes classes = new Classes();
@@ -1036,6 +1040,25 @@ public class FieldListenerTest
 		assertEquals(
 			Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
 			field.access);
+
+		List methods = classNode.methods;
+
+		MethodNode method = (MethodNode) methods.get(2);
+
+		assertEquals("method", method.name);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(2, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("thingy", firstInstruction.cst);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ARETURN, secondInstruction.getOpcode());
 	}
 
 	@Test
@@ -1047,6 +1070,7 @@ public class FieldListenerTest
 				"const String myField = \"thingy\";\n" +
 				"public MyClass()\n" +
 				"{\n" +
+					"myField = \"sumpt\";\n" +
 					"this.myField = \"sumpt\";\n" +
 				"}\n" +
 			"}";
@@ -1062,7 +1086,8 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 6:0 Cannot assign to constant field myField.\n",
+			"line 6:0 Assignment to uninitialised variable 'myField'.\n" +
+			"line 7:0 Cannot assign to constant myField.\n",
 			result.getErrors());
 	}
 
@@ -1089,7 +1114,36 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:0 Missing value of constant field myField.\n",
+			"line 3:0 Missing value of constant myField.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testConstantFieldDoesntBelongToThis()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"const String myField = \"thingy\";\n" +
+				"public MyClass() {}\n" +
+				"public String method()" +
+				"{\n" +
+					"return this.myField;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:12 Unknown field 'myField'.\n",
 			result.getErrors());
 	}
 }

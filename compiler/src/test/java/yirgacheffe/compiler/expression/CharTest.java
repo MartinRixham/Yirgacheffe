@@ -10,6 +10,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 
 public class CharTest
@@ -18,7 +20,7 @@ public class CharTest
 	public void testCompilingCharacter()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Char literal = new Char("'r'");
 
@@ -28,6 +30,7 @@ public class CharTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals('r', literal.getValue());
 		assertEquals(0, literal.getVariableReads().length());
 		assertEquals(0, errors.length());
 		assertEquals(1, instructions.size());

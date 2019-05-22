@@ -7,7 +7,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Char implements Expression
+public class Char implements Expression, Literal
 {
 	private String text;
 
@@ -23,7 +23,7 @@ public class Char implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		methodVisitor.visitLdcInsn(this.text.charAt(1));
+		methodVisitor.visitLdcInsn(this.getValue());
 
 		return new Array<>();
 	}
@@ -31,5 +31,10 @@ public class Char implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Object getValue()
+	{
+		return this.text.charAt(1);
 	}
 }

@@ -29,6 +29,8 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +50,7 @@ public class BlockTest
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 		Block block = new Block(coordinate, new Array<>(variableDeclaration));
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		block.compile(methodVisitor, variables, caller);
 
@@ -72,7 +74,7 @@ public class BlockTest
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -89,7 +91,7 @@ public class BlockTest
 		Array<Statement> statements = new Array<>(returnStatement);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -117,7 +119,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -162,7 +164,7 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -234,7 +236,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -318,7 +320,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -407,7 +409,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -482,7 +484,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -541,7 +543,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -594,7 +596,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 
@@ -679,7 +681,7 @@ public class BlockTest
 
 		Block block = new Block(coordinate, statements);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = block.compile(methodVisitor, variables, caller);
 

@@ -24,6 +24,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +41,7 @@ public class TailCallTest
 	{
 		Statement invocation = new DoNothing();
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 
@@ -70,7 +72,7 @@ public class TailCallTest
 		Type stringType = new ReferenceType(String.class);
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE, stringType);
 		Signature caller = new Signature(new NullType(), "method", parameters);
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 		MethodNode methodVisitor = new MethodNode();

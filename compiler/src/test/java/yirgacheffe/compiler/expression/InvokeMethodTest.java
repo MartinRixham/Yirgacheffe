@@ -50,7 +50,7 @@ public class InvokeMethodTest
 	public void testCompilingToStringInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 
@@ -100,7 +100,7 @@ public class InvokeMethodTest
 	public void testCompilingPrivateMethodInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
 		Expression expression = new This(testClass);
@@ -153,7 +153,7 @@ public class InvokeMethodTest
 	public void testInvocationCallWithArgument()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
@@ -208,7 +208,7 @@ public class InvokeMethodTest
 	public void testCompileArguments()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
@@ -242,7 +242,7 @@ public class InvokeMethodTest
 	public void testCompilingInvocationWithGenericReturnType()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Array<Type> typeParameters =
 			new Array<>(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
@@ -338,7 +338,7 @@ public class InvokeMethodTest
 	public void testPassingIntegerToNumberMethod()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		This testClass = new This(new ReferenceType(this.getClass()));
 		Array<Expression> arguments = new Array<>(new Num("1"));
@@ -392,7 +392,7 @@ public class InvokeMethodTest
 	public void testInterfaceMethodInvocation()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 		Type owner = new ReferenceType(Runnable.class);
 
 		variables.declare("myVariable", owner);
@@ -456,7 +456,7 @@ public class InvokeMethodTest
 				arguments);
 
 		MethodVisitor methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
 
@@ -472,7 +472,7 @@ public class InvokeMethodTest
 		String name = "myMethod";
 		Num number = new Num("1.0");
 		Array<Expression> arguments = new Array<>(number);
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(

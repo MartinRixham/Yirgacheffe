@@ -24,6 +24,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -45,7 +47,7 @@ public class FunctionCallTest
 				arguments);
 
 		FunctionCall functionCall = new FunctionCall(invoke);
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		functionCall.compile(methodVisitor, variables, caller);
 

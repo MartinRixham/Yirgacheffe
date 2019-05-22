@@ -8,6 +8,8 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 
 public class StreengTest
@@ -18,7 +20,7 @@ public class StreengTest
 		MethodNode methodVisitor = new MethodNode();
 
 		Streeng literal = new Streeng("\"thingy\"");
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Type type = literal.getType(variables);
 
@@ -26,6 +28,7 @@ public class StreengTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals("thingy", literal.getValue());
 		assertEquals(1, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
@@ -40,7 +43,7 @@ public class StreengTest
 	public void testCompilingStringWithQuotes()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Streeng literal = new Streeng("\"thi\"ngy\"");
 
@@ -50,6 +53,7 @@ public class StreengTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals("thi\"ngy", literal.getValue());
 		assertEquals(1, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);

@@ -10,6 +10,8 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 
 public class ThisTest
@@ -18,7 +20,7 @@ public class ThisTest
 	public void testCompilingThis()
 	{
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
 

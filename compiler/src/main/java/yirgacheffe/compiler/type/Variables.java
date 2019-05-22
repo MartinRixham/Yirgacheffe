@@ -26,6 +26,13 @@ public class Variables
 
 	private Map<Expression, Expression> optimisedVariables = new IdentityHashMap<>();
 
+	private Map<String, Object> constants;
+
+	public Variables(Map<String, Object> constants)
+	{
+		this.constants = constants;
+	}
+
 	public Map<String, Variable> getDeclaredVariables()
 	{
 		return new HashMap<>(this.declaredVariables);
@@ -51,7 +58,10 @@ public class Variables
 
 	public void read(VariableRead variableRead)
 	{
-		if (!this.declaredVariables.containsKey(variableRead.getName()))
+		String name = variableRead.getName();
+
+		if (!this.declaredVariables.containsKey(name) &&
+			!this.constants.containsKey(name))
 		{
 			this.variableReads.push(variableRead);
 		}
@@ -121,5 +131,15 @@ public class Variables
 	public Expression getOptimisedExpression(Expression variableRead)
 	{
 		return this.optimisedVariables.get(variableRead);
+	}
+
+	public boolean hasConstant(String name)
+	{
+		return this.constants.containsKey(name);
+	}
+
+	public Object getConstant(String name)
+	{
+		return this.constants.get(name);
 	}
 }

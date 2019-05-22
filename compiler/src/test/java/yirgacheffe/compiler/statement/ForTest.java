@@ -16,6 +16,8 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +48,7 @@ public class ForTest
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);
 
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = forStatement.compile(methodVisitor, variables, null);
 

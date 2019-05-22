@@ -20,6 +20,8 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +37,7 @@ public class IfTest
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
 
@@ -65,7 +67,7 @@ public class IfTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -81,7 +83,7 @@ public class IfTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables();
+		Variables variables = new Variables(new HashMap<>());
 
 		If statement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());

@@ -8,7 +8,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Num implements Expression
+public class Num implements Expression, Literal
 {
 	private String text;
 
@@ -18,6 +18,11 @@ public class Num implements Expression
 	}
 
 	public Type getType(Variables variables)
+	{
+		return this.getType();
+	}
+
+	private Type getType()
 	{
 		for (char character: this.text.toCharArray())
 		{
@@ -34,7 +39,7 @@ public class Num implements Expression
 	{
 		if (this.getType(variables) == PrimitiveType.INT)
 		{
-			Integer integer = new Integer(this.text);
+			Integer integer = Integer.valueOf(this.text);
 
 			if (integer == 0)
 			{
@@ -51,7 +56,7 @@ public class Num implements Expression
 		}
 		else
 		{
-			Double dub = new Double(this.text);
+			Double dub = Double.valueOf(this.text);
 
 			if (dub == 0)
 			{
@@ -73,5 +78,17 @@ public class Num implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Object getValue()
+	{
+		if (this.getType() == PrimitiveType.INT)
+		{
+			return Integer.valueOf(this.text);
+		}
+		else
+		{
+			return Double.valueOf(this.text);
+		}
 	}
 }

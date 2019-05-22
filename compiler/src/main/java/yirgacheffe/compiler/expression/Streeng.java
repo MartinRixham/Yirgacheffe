@@ -7,9 +7,9 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Streeng implements Expression
+public class Streeng implements Expression, Literal
 {
-	private java.lang.String text;
+	private String text;
 
 	public Streeng(java.lang.String text)
 	{
@@ -23,7 +23,7 @@ public class Streeng implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		methodVisitor.visitLdcInsn(this.text.substring(1, this.text.length() - 1));
+		methodVisitor.visitLdcInsn(this.getValue());
 
 		return new Array<>();
 	}
@@ -31,5 +31,10 @@ public class Streeng implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Object getValue()
+	{
+		return this.text.substring(1, this.text.length() - 1);
 	}
 }
