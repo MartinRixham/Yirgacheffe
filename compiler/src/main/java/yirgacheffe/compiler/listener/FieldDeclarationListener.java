@@ -47,25 +47,20 @@ public class FieldDeclarationListener extends TypeListener
 			this.errors.push(new Error(context, message));
 		}
 
-		String fieldName = context.Identifier().getText();
-		Type type = this.types.getType(context.type());
-
-		int access = Opcodes.ACC_PROTECTED;
-
-		if (context.Const() != null)
-		{
-			access |= Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
-		}
-
-		this.writer.visitField(
-			access,
-			fieldName,
-			type.toJVMType(),
-			null,
-			null);
-
 		if (context.Const() == null)
 		{
+			String fieldName = context.Identifier().getText();
+			Type type = this.types.getType(context.type());
+
+			int access = Opcodes.ACC_PROTECTED;
+
+			this.writer.visitField(
+				access,
+				fieldName,
+				type.toJVMType(),
+				null,
+				null);
+
 			this.fieldTypes.put(fieldName, type);
 		}
 	}

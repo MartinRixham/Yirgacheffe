@@ -15,7 +15,6 @@ import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 public class FieldWrite implements Statement
 {
@@ -57,13 +56,6 @@ public class FieldWrite implements Statement
 		{
 			Field field = ownerType.reflectionClass().getDeclaredField(this.name);
 
-			if (Modifier.isFinal(field.getModifiers()))
-			{
-				String message = "Cannot assign to constant " + this.name + ".";
-
-				errors.push(new Error(this.coordinate, message));
-			}
-
 			Class<?> fieldClass = field.getType();
 			Class<?> expressionClass = type.reflectionClass();
 
@@ -81,7 +73,9 @@ public class FieldWrite implements Statement
 		}
 		catch (NoSuchFieldException e)
 		{
-			throw new RuntimeException(e);
+			String message = "Assignment to unknown field '" + this.name + "'.";
+
+			errors.push(new Error(this.coordinate, message));
 		}
 
 		errors.push(this.owner.compile(methodVisitor, variables));

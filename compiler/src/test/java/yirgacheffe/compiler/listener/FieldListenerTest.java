@@ -1031,15 +1031,7 @@ public class FieldListenerTest
 
 		List fields = classNode.fields;
 
-		assertEquals(1, fields.size());
-
-		FieldNode field = (FieldNode) fields.get(0);
-
-		assertEquals("myField", field.name);
-		assertEquals("Ljava/lang/String;", field.desc);
-		assertEquals(
-			Opcodes.ACC_PROTECTED | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
-			field.access);
+		assertEquals(0, fields.size());
 
 		List methods = classNode.methods;
 
@@ -1059,6 +1051,60 @@ public class FieldListenerTest
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.ARETURN, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testConstantNumberField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"const Num myField = 1;\n" +
+				"public MyClass() {}\n" +
+				"public Num method()\n" +
+				"{\n" +
+					"return myField;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List fields = classNode.fields;
+
+		assertEquals(0, fields.size());
+
+		List methods = classNode.methods;
+
+		MethodNode method = (MethodNode) methods.get(2);
+
+		assertEquals("method", method.name);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(2, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.cst);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
 	}
 
 	@Test
@@ -1087,7 +1133,7 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 6:0 Assignment to uninitialised variable 'myField'.\n" +
-			"line 7:0 Cannot assign to constant myField.\n",
+			"line 7:0 Assignment to unknown field 'myField'.\n",
 			result.getErrors());
 	}
 
@@ -1114,7 +1160,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:0 Missing value of constant myField.\n",
+			"line 3:0 Missing value of constant 'myField'.\n",
 			result.getErrors());
 	}
 

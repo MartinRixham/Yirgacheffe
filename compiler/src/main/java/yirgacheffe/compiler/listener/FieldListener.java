@@ -104,7 +104,8 @@ public class FieldListener extends ConstructorListener
 			context.fieldDeclaration().Const() != null &&
 			context.fieldInitialisation() == null)
 		{
-			String message = "Missing value of constant myField.";
+			String fieldName = context.fieldDeclaration().Identifier().getText();
+			String message = "Missing value of constant '" + fieldName + "'.";
 
 			this.errors.push(new Error(context, message));
 		}
