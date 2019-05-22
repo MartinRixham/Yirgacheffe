@@ -13,7 +13,7 @@ There's nothing wrong with mutable state, almost all programs have some, but it 
 One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed.
 In Yirgacheffe fields are immutable, they can only be assigned in a constructor, so local state like the value of a loop index should be kept in a local variable.
 
-If the state of a programme really has changed then that may well involve mutating the state in a field.
+If the state of a programme really changes then that may well involve mutating the state in a field.
 Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed.
 In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.
 
@@ -24,12 +24,13 @@ There are some good uses of static methods such a factory methods, but you can d
 There is always a temptation to abuse static members and when they are misused the implications are inherently non-local.
 So static methods, as well as non-constant static fields have been left out of Yirgacheffe.
 
-### Typecasting
+### Type Casting
 
 You cannot cast an object down to it's specific subtype or check an object's subtype with `instanceof`.
 This has always been an undesirable thing to do in Java and a source of runtime errors.
 
-Casting can often be avoided by using a generic class. If you know that the return value of a method will need to be cast down then putting that method in a generic class allows that subtype to be declared to the compiler by the client code.
+Casting can often be avoided by using a generic class.
+If you know that the return value of a method will need to be cast down to a subtype then putting that method in a generic class allows the subtype to be declared to the compiler by the client code.
 
 If you really want to write subtype specific code you can use a method overload for that subtype.
 
