@@ -119,7 +119,7 @@ public class ParameterisedType implements Type
 
 		for (TypeVariable type: primaryClass.getTypeParameters())
 		{
-			typeNames.push(this.typeParameters.get(type.getName()).toJVMType());
+			typeNames.push(this.typeParameters.get(type.getName()).getSignature());
 		}
 
 		String jvmType = this.toJVMType();

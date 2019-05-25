@@ -26,6 +26,8 @@ public class ClassListener extends PackageListener
 
 	protected Array<Type> interfaces = new Array<>();
 
+	private Array<String> typeParameters = new Array<>();
+
 	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -60,7 +62,8 @@ public class ClassListener extends PackageListener
 				this.interfaces.get(i).toFullyQualifiedType().replace(".", "/");
 		}
 
-		ClassSignature signature = this.getClassSignature(context.genericTypes());
+		ClassSignature signature =
+			new ClassSignature(this.interfaces, this.typeParameters);
 
 		this.writer.visit(
 			Opcodes.V1_8,
@@ -72,7 +75,7 @@ public class ClassListener extends PackageListener
 	}
 
 	@Override
-	public void enterInterfaceDeclaration(
+	public void exitInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
 		if (context.Identifier() == null)
@@ -86,21 +89,8 @@ public class ClassListener extends PackageListener
 			this.className = context.Identifier().getText();
 		}
 
-		if (context.field().size() > 0)
-		{
-			String message = "Interface cannot contain field.";
-
-			this.errors.push(new Error(context.field(0), message));
-		}
-
-		for (YirgacheffeParser.FunctionContext interfaceMethod: context.function())
-		{
-			String message = "Method body not permitted for interface method.";
-
-			this.errors.push(new Error(interfaceMethod, message));
-		}
-
-		ClassSignature signature = this.getClassSignature(context.genericTypes());
+		ClassSignature signature =
+			new ClassSignature(this.interfaces, this.typeParameters);
 
 		this.writer.visit(
 			Opcodes.V1_8,
@@ -111,8 +101,8 @@ public class ClassListener extends PackageListener
 			null);
 	}
 
-	private ClassSignature getClassSignature(
-		YirgacheffeParser.GenericTypesContext context)
+	@Override
+	public void exitGenericTypes(YirgacheffeParser.GenericTypesContext context)
 	{
 		Array<String> parameters = new Array<>();
 
@@ -127,7 +117,7 @@ public class ClassListener extends PackageListener
 			}
 		}
 
-		return new ClassSignature(this.interfaces, parameters);
+		this.typeParameters = parameters;
 	}
 
 	@Override
@@ -159,6 +149,25 @@ public class ClassListener extends PackageListener
 		}
 
 		this.checkInterfaceMethodImplementations(context);
+	}
+
+	@Override
+	public void exitInterfaceDefinition(
+		YirgacheffeParser.InterfaceDefinitionContext context)
+	{
+		if (context.field().size() > 0)
+		{
+			String message = "Interface cannot contain field.";
+
+			this.errors.push(new Error(context.field(0), message));
+		}
+
+		for (YirgacheffeParser.FunctionContext interfaceMethod: context.function())
+		{
+			String message = "Method body not permitted for interface method.";
+
+			this.errors.push(new Error(interfaceMethod, message));
+		}
 	}
 
 	private void makeMainMethod()

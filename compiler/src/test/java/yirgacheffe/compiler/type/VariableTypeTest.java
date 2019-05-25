@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,20 +14,18 @@ public class VariableTypeTest
 	{
 		Class<?> loadedClass = Object.class;
 
-		ReferenceType referenceType = new ReferenceType(loadedClass);
-
 		Type type = new VariableType("T");
 
 		assertEquals("T", type.toString());
 		assertEquals(loadedClass, type.reflectionClass());
-		assertEquals("T", type.toFullyQualifiedType());
+		assertEquals("java.lang.Object", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("TT;", type.getSignature());
 		assertEquals(1, type.width());
-		assertEquals(0, type.getReturnInstruction());
-		assertEquals(0, type.getStoreInstruction());
-		assertEquals(0, type.getLoadInstruction());
-		assertEquals(0, type.getZero());
+		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
+		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
+		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.isAssignableTo(new ReferenceType(Object.class)));
 		assertTrue(type.hasParameter());
 	}

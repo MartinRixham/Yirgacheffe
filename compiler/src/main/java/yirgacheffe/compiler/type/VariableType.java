@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+
 public class VariableType implements Type
 {
 	private String name;
@@ -21,7 +23,7 @@ public class VariableType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		return this.name;
+		return "java.lang.Object";
 	}
 
 	public int width()
@@ -31,27 +33,27 @@ public class VariableType implements Type
 
 	public int getReturnInstruction()
 	{
-		return 0;
+		return Opcodes.ARETURN;
 	}
 
 	public int getStoreInstruction()
 	{
-		return 0;
+		return Opcodes.ASTORE;
 	}
 
 	public int getLoadInstruction()
 	{
-		return 0;
+		return Opcodes.ALOAD;
 	}
 
 	public int getZero()
 	{
-		return 0;
+		return Opcodes.ACONST_NULL;
 	}
 
 	public boolean isAssignableTo(Type other)
 	{
-		return false;
+		return other instanceof VariableType;
 	}
 
 	public boolean hasParameter()

@@ -6,6 +6,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -316,6 +319,61 @@ public class ImplementationListenerTest
 		assertEquals("compareTo", method.name);
 		assertEquals(Opcodes.ACC_PROTECTED, method.access);
 		assertEquals("(Ljava/lang/Object;)D", method.desc);
+	}
+
+	@Test
+	public void testImplementsComparableWithTypeParameter()
+	{
+		String source =
+			"class MyClass<T> implements Comparable<T>\n" +
+			"{\n" +
+				"public Num compareTo(T other) { return other.hashCode(); }\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List interfaces = classNode.interfaces;
+
+		assertEquals(1, classNode.interfaces.size());
+		assertEquals("java/lang/Comparable", interfaces.get(0));
+		assertEquals(
+			"<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/Comparable<TT;>;",
+			classNode.signature);
+
+		assertEquals(3, classNode.methods.size());
+
+		MethodNode method = (MethodNode) classNode.methods.get(1);
+
+		assertEquals("compareTo", method.name);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
+		assertEquals("(Ljava/lang/Object;)D", method.desc);
+		assertEquals("(TT;)D", method.signature);
+
+		InsnList instructions = method.instructions;
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		assertTrue(instructions.get(1) instanceof LabelNode);
+		assertTrue(instructions.get(2) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("(Ljava/lang/Object;)I", fourthInstruction.desc);
 	}
 
 	@Test

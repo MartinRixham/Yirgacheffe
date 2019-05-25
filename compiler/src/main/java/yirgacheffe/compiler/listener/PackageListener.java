@@ -16,7 +16,7 @@ public class PackageListener extends YirgacheffeListener
 	public void enterCompilationUnit(YirgacheffeParser.CompilationUnitContext context)
 	{
 		int classCount =
-			context.interfaceDeclaration().size() + context.classDefinition().size();
+			context.interfaceDefinition().size() + context.classDefinition().size();
 
 		if (classCount > 1)
 		{

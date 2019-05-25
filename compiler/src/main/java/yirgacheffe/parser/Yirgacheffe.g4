@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration
 	importStatement*
-	(classDefinition | interfaceDeclaration)*
+	(classDefinition | interfaceDefinition)*
 	EOF;
 
 replLine: expression? | importStatement* | statement*;
@@ -21,13 +21,14 @@ classDefinition: classDeclaration
 
 classDeclaration: (Class | Identifier) Identifier? genericTypes? implementation?;
 
-implementation: Implements type*;
+implementation: Implements type? (',' type)*;
 
-interfaceDeclaration:
-	Interface Identifier? genericTypes?
+interfaceDefinition: interfaceDeclaration
 	'{'
 		(function | interfaceMethodDeclaration | field)*
 	'}';
+
+interfaceDeclaration: Interface Identifier? genericTypes?;
 
 genericTypes: '<' Identifier? (',' Identifier)* '>';
 
