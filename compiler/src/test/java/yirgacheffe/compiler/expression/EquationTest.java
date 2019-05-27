@@ -9,13 +9,14 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.comparison.Comparison;
+import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.GreaterThan;
 import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -30,13 +31,14 @@ public class EquationTest
 	@Test
 	public void testCompilingEqualDoubles()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
-		Comparison equals = new Equals();
+		Comparator equals = new Equals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, equals);
+		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -93,13 +95,15 @@ public class EquationTest
 	@Test
 	public void testCompilingNotEqualDoubles()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
-		Comparison notEquals = new NotEquals();
+		Comparator notEquals = new NotEquals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, notEquals);
+		Equation equation =
+			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -156,13 +160,14 @@ public class EquationTest
 	@Test
 	public void testCompilingEqualBooleans()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
-		Comparison equals = new Equals();
+		Comparator equals = new Equals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, equals);
+		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -213,13 +218,14 @@ public class EquationTest
 	@Test
 	public void testCompilingEqualIntegers()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0");
-		Comparison equals = new Equals();
+		Comparator equals = new Equals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, equals);
+		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -270,13 +276,15 @@ public class EquationTest
 	@Test
 	public void testCompilingNotEqualBooleans()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
-		Comparison notEquals = new NotEquals();
+		Comparator notEquals = new NotEquals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, notEquals);
+		Equation equation =
+			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -330,9 +338,10 @@ public class EquationTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		VariableRead firstOperand = new VariableRead(coordinate, "myVariable");
 		VariableRead secondOperand = new VariableRead(coordinate, "myVariable");
+		Comparator greaterThan = new GreaterThan();
 
 		Expression operation =
-			new Equation(firstOperand, secondOperand, new GreaterThan());
+			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
 
 		Array<VariableRead> reads = operation.getVariableReads();
 
@@ -343,13 +352,14 @@ public class EquationTest
 	@Test
 	public void testCompilingIntegerEqualsDouble()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
-		Comparison equals = new Equals();
+		Comparator equals = new Equals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, equals);
+		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -410,13 +420,14 @@ public class EquationTest
 	@Test
 	public void testCompilingDoubleEqualsInteger()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
-		Comparison equals = new Equals();
+		Comparator equals = new Equals();
 
-		Equation equation = new Equation(firstOperand, secondOperand, equals);
+		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
 
@@ -472,5 +483,53 @@ public class EquationTest
 		LabelNode tenthInstruction = (LabelNode) instructions.get(9);
 
 		assertEquals(falseLabel, tenthInstruction.getLabel());
+	}
+
+	@Test
+	public void testEquationOfWrongType()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Num firstOperand = new Num("3.0");
+		This secondOperand = new This(new ReferenceType(Object.class));
+		Comparator greaterThan = new GreaterThan();
+
+		Equation operation =
+			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(1, errors.length());
+
+		assertEquals(errors.get(0).toString(),
+			"line 3:6 Cannot compare Num and java.lang.Object.");
+	}
+
+	@Test
+	public void testEquationGreaterThanBooleans()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Bool firstOperand = new Bool("true");
+		Bool secondOperand = new Bool("false");
+		Comparator greaterThan = new GreaterThan();
+
+		Equation operation =
+			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(1, errors.length());
+
+		assertEquals(errors.get(0).toString(),
+			"line 3:6 Cannot compare Bool and Bool.");
 	}
 }

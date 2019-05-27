@@ -42,7 +42,7 @@ public class If implements ConditionalStatement
 		{
 			Equation equation = (Equation) this.condition;
 
-			equation.compileCondition(methodVisitor, variables, this.label);
+			equation.compileComparison(methodVisitor, variables, this.label);
 		}
 		else
 		{

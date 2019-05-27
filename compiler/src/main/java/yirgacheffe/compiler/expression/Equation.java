@@ -3,7 +3,11 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.comparison.BooleanComparison;
+import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Comparison;
+import yirgacheffe.compiler.comparison.NumberComparison;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -12,20 +16,24 @@ import yirgacheffe.lang.Array;
 
 public class Equation implements Expression
 {
+	private Coordinate coordinate;
+
+	private Comparator comparator;
+
 	private Expression firstOperand;
 
 	private Expression secondOperand;
 
-	private Comparison comparison;
-
 	public Equation(
+		Coordinate coordinate,
+		Comparator comparator,
 		Expression firstOperand,
-		Expression secondOperand,
-		Comparison comparison)
+		Expression secondOperand)
 	{
+		this.coordinate = coordinate;
+		this.comparator = comparator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
-		this.comparison = comparison;
 	}
 
 	public Type getType(Variables variables)
@@ -35,10 +43,10 @@ public class Equation implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		Array<Error> errors = new Array<>();
 		Label trueLabel	= new Label();
 
-		this.compileCondition(methodVisitor, variables, trueLabel);
+		Array<Error> errors =
+			this.compileComparison(methodVisitor, variables, trueLabel);
 
 		methodVisitor.visitInsn(Opcodes.ICONST_1);
 
@@ -52,39 +60,35 @@ public class Equation implements Expression
 		return errors;
 	}
 
-	public void compileCondition(
+	public Array<Error> compileComparison(
 		MethodVisitor methodVisitor,
 		Variables variables,
 		Label label)
 	{
-		PrimitiveType firstType = (PrimitiveType) this.firstOperand.getType(variables);
-		PrimitiveType secondType = (PrimitiveType) this.secondOperand.getType(variables);
+		Type firstType = this.firstOperand.getType(variables);
+		Comparison comparison = null;
 
-		if (firstType == secondType)
+		if (firstType == PrimitiveType.BOOLEAN)
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-			this.secondOperand.compile(methodVisitor, variables);
-			this.comparison.compile(methodVisitor, label, firstType);
+			comparison =
+				new BooleanComparison(
+					this.coordinate,
+					this.comparator,
+					this.firstOperand,
+					this.secondOperand);
 		}
-		else if (firstType.isAssignableTo(secondType))
+		else if (firstType.isAssignableTo(PrimitiveType.DOUBLE))
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-
-			methodVisitor.visitInsn(firstType.convertTo(secondType));
-
-			this.secondOperand.compile(methodVisitor, variables);
-			this.comparison.compile(methodVisitor, label, secondType);
-		}
-		else
-		{
-			this.firstOperand.compile(methodVisitor, variables);
-			this.secondOperand.compile(methodVisitor, variables);
-
-			methodVisitor.visitInsn(secondType.convertTo(firstType));
-
-			this.comparison.compile(methodVisitor, label, firstType);
+			comparison =
+				new NumberComparison(
+					this.coordinate,
+					this.comparator,
+					this.firstOperand,
+					this.secondOperand);
 
 		}
+
+		return comparison.compile(methodVisitor, variables, label);
 	}
 
 	public Array<VariableRead> getVariableReads()

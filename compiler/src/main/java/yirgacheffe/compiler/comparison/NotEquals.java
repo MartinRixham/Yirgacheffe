@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 
-public class NotEquals implements Comparison
+public class NotEquals implements Comparator
 {
 	@Override
 	public void compile(MethodVisitor methodVisitor, Label label, Type type)

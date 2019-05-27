@@ -6,7 +6,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 
-public class GreaterThan implements Comparison
+public class GreaterThan implements Comparator
 {
 	@Override
 	public void compile(MethodVisitor methodVisitor, Label label, Type type)
