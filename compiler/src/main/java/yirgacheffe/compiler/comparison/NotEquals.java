@@ -11,7 +11,11 @@ public class NotEquals implements Comparator
 	@Override
 	public void compile(MethodVisitor methodVisitor, Label label, Type type)
 	{
-		if (type == PrimitiveType.DOUBLE)
+		if (!type.isPrimitive())
+		{
+			methodVisitor.visitJumpInsn(Opcodes.IF_ACMPEQ, label);
+		}
+		else if (type == PrimitiveType.DOUBLE)
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);

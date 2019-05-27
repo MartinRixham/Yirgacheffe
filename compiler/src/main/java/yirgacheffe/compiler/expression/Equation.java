@@ -7,6 +7,7 @@ import yirgacheffe.compiler.comparison.BooleanComparison;
 import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Comparison;
 import yirgacheffe.compiler.comparison.NumberComparison;
+import yirgacheffe.compiler.comparison.ObjectComparison;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -66,7 +67,7 @@ public class Equation implements Expression
 		Label label)
 	{
 		Type firstType = this.firstOperand.getType(variables);
-		Comparison comparison = null;
+		Comparison comparison;
 
 		if (firstType == PrimitiveType.BOOLEAN)
 		{
@@ -85,7 +86,15 @@ public class Equation implements Expression
 					this.comparator,
 					this.firstOperand,
 					this.secondOperand);
-
+		}
+		else
+		{
+			comparison =
+				new ObjectComparison(
+					this.coordinate,
+					this.comparator,
+					this.firstOperand,
+					this.secondOperand);
 		}
 
 		return comparison.compile(methodVisitor, variables, label);

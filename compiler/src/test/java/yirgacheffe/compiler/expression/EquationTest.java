@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.GreaterThan;
@@ -531,5 +532,175 @@ public class EquationTest
 
 		assertEquals(errors.get(0).toString(),
 			"line 3:6 Cannot compare Bool and Bool.");
+	}
+
+	@Test
+	public void testEquationGreaterThanStrings()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Streeng firstOperand = new Streeng("\"thingy\"");
+		Streeng secondOperand = new Streeng("\"sumpt\"");
+		Comparator greaterThan = new GreaterThan();
+
+		Equation operation =
+			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(1, errors.length());
+
+		assertEquals(errors.get(0).toString(),
+			"line 3:6 Cannot compare java.lang.String and java.lang.String.");
+	}
+
+	@Test
+	public void testCompilingEqualObjects()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Expression firstOperand = new This(new ReferenceType(Object.class));
+		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Comparator notEquals = new Equals();
+
+		Equation equation =
+			new Equation(coordinate, notEquals, firstOperand, secondOperand);
+
+		Type type = equation.getType(variables);
+
+		Array<Error> errors = equation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(8, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label trueLabel = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IF_ACMPNE, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ICONST_1, fourthInstruction.getOpcode());
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
+		Label falseLabel = fifthInstruction.label.getLabel();
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(trueLabel, sixthInstruction.getLabel());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.ICONST_0, seventhInstruction.getOpcode());
+
+		LabelNode eightInstruction = (LabelNode) instructions.get(7);
+
+		assertEquals(falseLabel, eightInstruction.getLabel());
+	}
+
+	@Test
+	public void testCompilingNotEqualObjects()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Expression firstOperand = new This(new ReferenceType(Object.class));
+		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Comparator notEquals = new NotEquals();
+
+		Equation equation =
+			new Equation(coordinate, notEquals, firstOperand, secondOperand);
+
+		Type type = equation.getType(variables);
+
+		Array<Error> errors = equation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(8, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label trueLabel = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IF_ACMPEQ, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ICONST_1, fourthInstruction.getOpcode());
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
+		Label falseLabel = fifthInstruction.label.getLabel();
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(trueLabel, sixthInstruction.getLabel());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.ICONST_0, seventhInstruction.getOpcode());
+
+		LabelNode eightInstruction = (LabelNode) instructions.get(7);
+
+		assertEquals(falseLabel, eightInstruction.getLabel());
+	}
+
+	@Test
+	public void testEquationGreaterThanObjects()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Expression firstOperand = new This(new ReferenceType(Object.class));
+		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Comparator greaterThan = new GreaterThan();
+
+		Equation operation =
+			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(1, errors.length());
+
+		assertEquals(errors.get(0).toString(),
+			"line 3:6 Cannot compare java.lang.Object and java.lang.Object.");
 	}
 }
