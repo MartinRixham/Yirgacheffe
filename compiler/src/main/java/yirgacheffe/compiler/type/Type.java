@@ -23,4 +23,6 @@ public interface Type
 	boolean hasParameter();
 
 	String getSignature();
+
+	boolean isPrimitive();
 }

@@ -25,6 +25,7 @@ public class ArrayTypeTest
 		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, string.getZero());
 		assertFalse(string.hasParameter());
+		assertFalse(string.isPrimitive());
 	}
 
 	@Test

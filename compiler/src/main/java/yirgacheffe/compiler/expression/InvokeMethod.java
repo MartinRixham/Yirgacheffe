@@ -97,7 +97,7 @@ public class InvokeMethod implements Expression
 		Array<Type> parameters = function.getParameterTypes();
 		Array<Error> errors = this.owner.compile(methodVisitor, variables);
 
-		if (owner instanceof PrimitiveType)
+		if (owner.isPrimitive())
 		{
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
@@ -146,15 +146,14 @@ public class InvokeMethod implements Expression
 		{
 			methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, this.withSlashes(returnType));
 
-			Type type = ((GenericType) returnType).unwrap();
-
-			if (type instanceof PrimitiveType)
+			if (returnType.isPrimitive())
 			{
 				methodVisitor.visitMethodInsn(
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
 					"ofValue",
-					"(L" + this.withSlashes(type) + ";)" + type.toJVMType(),
+					"(L" + this.withSlashes(returnType) + ";)" +
+						returnType.getSignature(),
 					false);
 			}
 		}

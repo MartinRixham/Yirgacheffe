@@ -131,15 +131,18 @@ public enum PrimitiveType implements Type
 		}
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return false;
 	}
 
-	@Override
 	public String getSignature()
 	{
 		return this.jvmType;
+	}
+
+	public boolean isPrimitive()
+	{
+		return true;
 	}
 }

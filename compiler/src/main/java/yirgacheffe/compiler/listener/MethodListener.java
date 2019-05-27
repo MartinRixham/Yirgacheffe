@@ -195,7 +195,7 @@ public class MethodListener extends FieldDeclarationListener
 			false);
 
 		if (!to.getReturnType().isAssignableTo(from.getReturnType()) &&
-			from.getReturnType() instanceof PrimitiveType)
+			from.getReturnType().isPrimitive())
 		{
 			PrimitiveType fromType = (PrimitiveType) from.getReturnType();
 

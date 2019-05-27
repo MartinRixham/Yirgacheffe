@@ -63,15 +63,18 @@ public class IntersectionType implements Type
 			this.secondType.isAssignableTo(other);
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return this.firstType.hasParameter();
 	}
 
-	@Override
 	public String getSignature()
 	{
 		return this.firstType.getSignature();
+	}
+
+	public boolean isPrimitive()
+	{
+		return this.firstType.isPrimitive();
 	}
 }

@@ -30,6 +30,7 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
+		assertFalse(type.isPrimitive());
 	}
 
 	@Test

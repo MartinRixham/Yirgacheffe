@@ -66,6 +66,11 @@ public class VariableType implements Type
 		return "T" + this.name + ";";
 	}
 
+	public boolean isPrimitive()
+	{
+		return false;
+	}
+
 	@Override
 	public String toString()
 	{

@@ -49,16 +49,19 @@ public class NullType implements Type
 		return true;
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return false;
 	}
 
-	@Override
 	public String getSignature()
 	{
 		return null;
+	}
+
+	public boolean isPrimitive()
+	{
+		return false;
 	}
 
 	@Override

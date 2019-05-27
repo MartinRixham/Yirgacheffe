@@ -75,15 +75,18 @@ public class ArrayType implements Type
 		return other instanceof ArrayType;
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return false;
 	}
 
-	@Override
 	public String getSignature()
 	{
 		return this.jvmType;
+	}
+
+	public boolean isPrimitive()
+	{
+		return false;
 	}
 }

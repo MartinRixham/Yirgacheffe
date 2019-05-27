@@ -30,6 +30,7 @@ public class GenericTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertTrue(type.isAssignableTo(new ReferenceType(java.lang.String.class)));
 		assertFalse(type.hasParameter());
+		assertFalse(type.isPrimitive());
 		assertEquals(type, referenceType);
 		assertEquals(type.hashCode(), referenceType.hashCode());
 	}

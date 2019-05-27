@@ -61,16 +61,19 @@ public class ReferenceType implements Type
 		return other.reflectionClass().isAssignableFrom(this.reflectionClass());
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return false;
 	}
 
-	@Override
 	public String getSignature()
 	{
 		return this.toJVMType();
+	}
+
+	public boolean isPrimitive()
+	{
+		return false;
 	}
 
 	@Override

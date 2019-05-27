@@ -117,8 +117,8 @@ public class Arguments
 				methodVisitor.visitInsn(Opcodes.I2D);
 			}
 
-			if (argumentType instanceof PrimitiveType &&
-				parameters.get(i) instanceof ReferenceType)
+			if (argumentType.isPrimitive() &&
+				!parameters.get(i).isPrimitive())
 			{
 
 				String descriptor =

@@ -31,6 +31,7 @@ public class ParameterisedTypeTest
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertTrue(type.hasParameter());
+		assertFalse(type.isPrimitive());
 	}
 
 	@Test

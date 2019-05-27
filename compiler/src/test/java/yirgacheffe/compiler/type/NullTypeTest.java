@@ -24,6 +24,7 @@ public class NullTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertEquals("java.lang.Object", type.toString());
 		assertFalse(type.hasParameter());
+		assertFalse(type.isPrimitive());
 	}
 
 	@Test

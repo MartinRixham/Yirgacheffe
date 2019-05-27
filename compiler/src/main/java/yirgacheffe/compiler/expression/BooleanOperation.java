@@ -84,7 +84,7 @@ public class BooleanOperation implements Expression
 
 			methodVisitor.visitInsn(Opcodes.DUP);
 
-			if (firstType instanceof PrimitiveType)
+			if (firstType.isPrimitive())
 			{
 				methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
 			}

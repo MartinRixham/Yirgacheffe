@@ -105,13 +105,11 @@ public class ParameterisedType implements Type
 		}
 	}
 
-	@Override
 	public boolean hasParameter()
 	{
 		return true;
 	}
 
-	@Override
 	public String getSignature()
 	{
 		Array<String> typeNames = new Array<>();
@@ -126,6 +124,11 @@ public class ParameterisedType implements Type
 
 		return jvmType.substring(0, jvmType.length() - 1) +
 			"<" + String.join("", typeNames) + ">;";
+	}
+
+	public boolean isPrimitive()
+	{
+		return false;
 	}
 
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)

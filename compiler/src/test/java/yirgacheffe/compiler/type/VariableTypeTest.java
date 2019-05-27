@@ -28,5 +28,6 @@ public class VariableTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.isAssignableTo(new ReferenceType(Object.class)));
 		assertTrue(type.hasParameter());
+		assertFalse(type.isPrimitive());
 	}
 }

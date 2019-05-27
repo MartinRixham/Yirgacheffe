@@ -3,7 +3,6 @@ package yirgacheffe.compiler.listener;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -30,7 +29,7 @@ public class ImplementationListener extends ClassListener
 		{
 			Type type = this.types.getType(typeContext);
 
-			if (type instanceof PrimitiveType)
+			if (type.isPrimitive())
 			{
 				String message = "Cannot implement primitive type " + type + ".";
 
