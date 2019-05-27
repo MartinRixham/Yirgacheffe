@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.instructions;
 
+import yirgacheffe.compiler.type.PrimitiveType;
+
 public interface Instructions
 {
 	int getReturn();
@@ -8,7 +10,7 @@ public interface Instructions
 
 	int getLoad();
 
-	int getTypeConversion();
+	int convertTo(PrimitiveType type);
 
 	int getZero();
 }

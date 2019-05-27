@@ -3,30 +3,37 @@ package yirgacheffe.compiler.instructions;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.PrimitiveType;
 
-public class VoidInstructions implements Instructions
+public class LongIntegerInstructions implements Instructions
 {
 	public int getReturn()
 	{
-		return Opcodes.RETURN;
+		return Opcodes.LRETURN;
 	}
 
 	public int getStore()
 	{
-		return Opcodes.NOP;
+		return Opcodes.LSTORE;
 	}
 
 	public int getLoad()
 	{
-		return Opcodes.NOP;
+		return Opcodes.LLOAD;
 	}
 
 	public int convertTo(PrimitiveType type)
 	{
-		return Opcodes.NOP;
+		if (type == PrimitiveType.INT)
+		{
+			return Opcodes.L2I;
+		}
+		else
+		{
+			return Opcodes.L2D;
+		}
 	}
 
 	public int getZero()
 	{
-		return Opcodes.NOP;
+		return Opcodes.LCONST_0;
 	}
 }

@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.instructions;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.type.PrimitiveType;
 
 public class DoubleInstructions implements Instructions
 {
@@ -19,9 +20,16 @@ public class DoubleInstructions implements Instructions
 		return Opcodes.DLOAD;
 	}
 
-	public int getTypeConversion()
+	public int convertTo(PrimitiveType type)
 	{
-		return Opcodes.NOP;
+		if (type == PrimitiveType.INT)
+		{
+			return Opcodes.D2I;
+		}
+		else
+		{
+			return Opcodes.D2L;
+		}
 	}
 
 	public int getZero()

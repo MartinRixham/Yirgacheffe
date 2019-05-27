@@ -3,6 +3,7 @@ package yirgacheffe.compiler.type;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
 import yirgacheffe.compiler.instructions.Instructions;
 import yirgacheffe.compiler.instructions.IntegerInstructions;
+import yirgacheffe.compiler.instructions.LongIntegerInstructions;
 import yirgacheffe.compiler.instructions.VoidInstructions;
 
 public enum PrimitiveType implements Type
@@ -24,7 +25,7 @@ public enum PrimitiveType implements Type
 		java.lang.Integer.class, 3),
 
 	LONG(
-		"Num", "J", 2, new DoubleInstructions(),
+		"Num", "J", 2, new LongIntegerInstructions(),
 		java.lang.Long.class, 4),
 
 	FLOAT(
@@ -98,9 +99,9 @@ public enum PrimitiveType implements Type
 		return this.instructions.getLoad();
 	}
 
-	public int getTypeConversionInstruction()
+	public int convertTo(PrimitiveType type)
 	{
-		return this.instructions.getTypeConversion();
+		return this.instructions.convertTo(type);
 	}
 
 	public int getZero()

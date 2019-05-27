@@ -365,11 +365,11 @@ public class EquationTest
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(3, firstInstruction.cst);
+		assertEquals(3L, firstInstruction.cst);
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+		assertEquals(Opcodes.L2D, secondInstruction.getOpcode());
 
 		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
 
@@ -437,11 +437,11 @@ public class EquationTest
 		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(2, secondInstruction.cst);
+		assertEquals(2L, secondInstruction.cst);
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.I2D, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.L2D, thirdInstruction.getOpcode());
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 

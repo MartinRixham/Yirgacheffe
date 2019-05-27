@@ -16,6 +16,11 @@ public class LessThanOrEqual implements Comparison
 			methodVisitor.visitInsn(Opcodes.DCMPG);
 			methodVisitor.visitJumpInsn(Opcodes.IFGT, label);
 		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(Opcodes.LCMP);
+			methodVisitor.visitJumpInsn(Opcodes.IFGT, label);
+		}
 		else
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPGT, label);

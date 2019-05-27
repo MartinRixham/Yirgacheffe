@@ -42,9 +42,15 @@ public class BinaryOperation implements Expression
 		{
 			return string;
 		}
-		if (firstType == PrimitiveType.INT && secondType == PrimitiveType.INT)
+		else if (firstType.isAssignableTo(PrimitiveType.INT) &&
+			secondType.isAssignableTo(PrimitiveType.INT))
 		{
 			return PrimitiveType.INT;
+		}
+		else if (firstType.isAssignableTo(PrimitiveType.LONG) &&
+			secondType.isAssignableTo(PrimitiveType.LONG))
+		{
+			return PrimitiveType.LONG;
 		}
 		else if (firstType.isAssignableTo(PrimitiveType.DOUBLE) &&
 			secondType.isAssignableTo(PrimitiveType.DOUBLE))
@@ -80,27 +86,36 @@ public class BinaryOperation implements Expression
 				firstType + " and " + secondType + ".";
 
 			errors.push(new Error(this.coordinate, message));
+			errors.push(this.firstOperand.compile(methodVisitor, variables));
+
+			return errors;
 		}
 
-		Type type = this.getType(variables);
+		PrimitiveType type = (PrimitiveType) this.getType(variables);
+		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
+		PrimitiveType secondPrimitive = (PrimitiveType) secondType;
 
 		errors.push(this.firstOperand.compile(methodVisitor, variables));
 
-		if (type != firstType)
+		if (firstPrimitive != type)
 		{
-			methodVisitor.visitInsn(Opcodes.I2D);
+			methodVisitor.visitInsn(firstPrimitive.convertTo(type));
 		}
 
 		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 
-		if (type != secondType)
+		if (secondPrimitive != type)
 		{
-			methodVisitor.visitInsn(Opcodes.I2D);
+			methodVisitor.visitInsn(secondPrimitive.convertTo(type));
 		}
 
 		if (type == PrimitiveType.INT)
 		{
 			methodVisitor.visitInsn(this.operator.getIntOpcode());
+		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(this.operator.getLongOpcode());
 		}
 		else
 		{

@@ -198,8 +198,9 @@ public class MethodListener extends FieldDeclarationListener
 			from.getReturnType().isPrimitive())
 		{
 			PrimitiveType fromType = (PrimitiveType) from.getReturnType();
+			PrimitiveType toType = (PrimitiveType) to.getReturnType();
 
-			methodVisitor.visitInsn(fromType.getTypeConversionInstruction());
+			methodVisitor.visitInsn(toType.convertTo(fromType));
 		}
 
 		methodVisitor.visitInsn(from.getReturnType().getReturnInstruction());

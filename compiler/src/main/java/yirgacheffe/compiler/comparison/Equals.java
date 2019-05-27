@@ -16,6 +16,11 @@ public class Equals implements Comparison
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(Opcodes.LCMP);
+			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+		}
 		else
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPNE, label);

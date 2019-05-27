@@ -57,8 +57,8 @@ public class Equation implements Expression
 		Variables variables,
 		Label label)
 	{
-		Type firstType = this.firstOperand.getType(variables);
-		Type secondType = this.secondOperand.getType(variables);
+		PrimitiveType firstType = (PrimitiveType) this.firstOperand.getType(variables);
+		PrimitiveType secondType = (PrimitiveType) this.secondOperand.getType(variables);
 
 		if (firstType == secondType)
 		{
@@ -70,7 +70,7 @@ public class Equation implements Expression
 		{
 			this.firstOperand.compile(methodVisitor, variables);
 
-			methodVisitor.visitInsn(Opcodes.I2D);
+			methodVisitor.visitInsn(firstType.convertTo(secondType));
 
 			this.secondOperand.compile(methodVisitor, variables);
 			this.comparison.compile(methodVisitor, label, secondType);
@@ -80,7 +80,7 @@ public class Equation implements Expression
 			this.firstOperand.compile(methodVisitor, variables);
 			this.secondOperand.compile(methodVisitor, variables);
 
-			methodVisitor.visitInsn(Opcodes.I2D);
+			methodVisitor.visitInsn(secondType.convertTo(firstType));
 
 			this.comparison.compile(methodVisitor, label, firstType);
 

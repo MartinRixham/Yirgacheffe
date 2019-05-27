@@ -16,6 +16,11 @@ public class GreaterThan implements Comparison
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFLE, label);
 		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(Opcodes.LCMP);
+			methodVisitor.visitJumpInsn(Opcodes.IFLE, label);
+		}
 		else
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPLE, label);

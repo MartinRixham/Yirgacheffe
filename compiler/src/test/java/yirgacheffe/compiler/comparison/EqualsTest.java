@@ -34,6 +34,26 @@ public class EqualsTest
 	}
 
 	@Test
+	public void testEqualLongIntegers()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Label label = new Label();
+		Equals equals = new Equals();
+
+		equals.compile(methodVisitor, label, PrimitiveType.LONG);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LCMP, firstInstruction.getOpcode());
+
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.IFNE, secondInstruction.getOpcode());
+	}
+
+	@Test
 	public void testEqualBooleans()
 	{
 		MethodNode methodVisitor = new MethodNode();

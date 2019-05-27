@@ -16,6 +16,11 @@ public class GreaterThanOrEqual implements Comparison
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFLT, label);
 		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(Opcodes.LCMP);
+			methodVisitor.visitJumpInsn(Opcodes.IFLT, label);
+		}
 		else
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPLT, label);

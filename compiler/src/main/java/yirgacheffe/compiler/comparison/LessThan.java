@@ -16,6 +16,11 @@ public class LessThan implements Comparison
 			methodVisitor.visitInsn(Opcodes.DCMPG);
 			methodVisitor.visitJumpInsn(Opcodes.IFGE, label);
 		}
+		else if (type == PrimitiveType.LONG)
+		{
+			methodVisitor.visitInsn(Opcodes.LCMP);
+			methodVisitor.visitJumpInsn(Opcodes.IFGE, label);
+		}
 		else
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ICMPGE, label);

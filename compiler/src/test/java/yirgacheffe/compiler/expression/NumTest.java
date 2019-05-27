@@ -155,4 +155,28 @@ public class NumTest
 
 		assertEquals("java.lang.Double", type.toFullyQualifiedType());
 	}
+
+	@Test
+	public void testCompilingIntegerTwo()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+
+		Num literal = new Num("2");
+
+		Type type = literal.getType(variables);
+
+		literal.compile(methodVisitor, variables);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(2L, literal.getValue());
+		assertEquals(1, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(2L, firstInstruction.cst);
+		assertEquals("java.lang.Long", type.toFullyQualifiedType());
+	}
 }

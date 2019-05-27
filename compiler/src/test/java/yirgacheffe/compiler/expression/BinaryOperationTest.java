@@ -27,8 +27,8 @@ public class BinaryOperationTest
 		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num("0");
+		Num secondOperand = new Num("1");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -47,19 +47,102 @@ public class BinaryOperationTest
 
 		assertEquals(3, instructions.size());
 
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(3, firstInstruction.cst);
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
 
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(2, secondInstruction.cst);
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.IADD, thirdInstruction.getOpcode());
+	}
+
+	@Test
+	public void testCompilingLongIntegerAddition()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Num firstOperand = new Num("3");
+		Num secondOperand = new Num("2");
+
+		BinaryOperation operation =
+			new BinaryOperation(
+				coordinate,
+				Operator.ADD,
+				firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.LONG, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(3, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(3L, firstInstruction.cst);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals(2L, secondInstruction.cst);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LADD, thirdInstruction.getOpcode());
+	}
+
+	@Test
+	public void testAddIntegerAndLongInteger()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Num firstOperand = new Num("1");
+		Num secondOperand = new Num("2");
+
+		BinaryOperation operation =
+			new BinaryOperation(
+				coordinate,
+				Operator.ADD,
+				firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Array<Error> errors = operation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.LONG, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(4, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.I2L, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(2L, thirdInstruction.cst);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LADD, fourthInstruction.getOpcode());
 	}
 
 	@Test
@@ -91,11 +174,11 @@ public class BinaryOperationTest
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(3, firstInstruction.cst);
+		assertEquals(3L, firstInstruction.cst);
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+		assertEquals(Opcodes.L2D, secondInstruction.getOpcode());
 
 		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
 
@@ -141,11 +224,11 @@ public class BinaryOperationTest
 		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
 		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(2, secondInstruction.cst);
+		assertEquals(2L, secondInstruction.cst);
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.I2D, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.L2D, thirdInstruction.getOpcode());
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 

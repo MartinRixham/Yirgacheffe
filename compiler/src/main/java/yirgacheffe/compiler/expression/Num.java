@@ -32,7 +32,14 @@ public class Num implements Expression, Literal
 			}
 		}
 
-		return PrimitiveType.INT;
+		if (this.text.equals("0") || this.text.equals("1"))
+		{
+			return PrimitiveType.INT;
+		}
+		else
+		{
+			return PrimitiveType.LONG;
+		}
 	}
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
@@ -53,6 +60,12 @@ public class Num implements Expression, Literal
 			{
 				methodVisitor.visitLdcInsn(integer);
 			}
+		}
+		else if (this.getType(variables) == PrimitiveType.LONG)
+		{
+			Long longInteger = Long.valueOf(this.text);
+
+			methodVisitor.visitLdcInsn(longInteger);
 		}
 		else
 		{
@@ -82,9 +95,15 @@ public class Num implements Expression, Literal
 
 	public Object getValue()
 	{
-		if (this.getType() == PrimitiveType.INT)
+		Type type = this.getType();
+
+		if (type == PrimitiveType.INT)
 		{
 			return Integer.valueOf(this.text);
+		}
+		else if (type == PrimitiveType.LONG)
+		{
+			return Long.valueOf(this.text);
 		}
 		else
 		{

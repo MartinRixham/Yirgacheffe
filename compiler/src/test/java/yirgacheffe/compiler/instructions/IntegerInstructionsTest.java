@@ -2,6 +2,7 @@ package yirgacheffe.compiler.instructions;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.type.PrimitiveType;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,7 +16,8 @@ public class IntegerInstructionsTest
 		assertEquals(Opcodes.IRETURN, instructions.getReturn());
 		assertEquals(Opcodes.ISTORE, instructions.getStore());
 		assertEquals(Opcodes.ILOAD, instructions.getLoad());
-		assertEquals(Opcodes.D2I, instructions.getTypeConversion());
+		assertEquals(Opcodes.I2L, instructions.convertTo(PrimitiveType.LONG));
+		assertEquals(Opcodes.I2D, instructions.convertTo(PrimitiveType.DOUBLE));
 		assertEquals(Opcodes.ICONST_0, instructions.getZero());
 	}
 }
