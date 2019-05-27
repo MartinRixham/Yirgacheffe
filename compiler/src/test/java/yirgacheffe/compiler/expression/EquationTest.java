@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.comparison.Comparator;
@@ -702,5 +703,115 @@ public class EquationTest
 
 		assertEquals(errors.get(0).toString(),
 			"line 3:6 Cannot compare java.lang.Object and java.lang.Object.");
+	}
+
+	@Test
+	public void testCompilingEqualStrings()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Expression firstOperand = new This(new ReferenceType(String.class));
+		Expression secondOperand = new This(new ReferenceType(String.class));
+		Comparator equals = new Equals();
+
+		Equation equation =
+			new Equation(coordinate, equals, firstOperand, secondOperand);
+
+		Type type = equation.getType(variables);
+
+		Array<Error> errors = equation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(3, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.owner);
+		assertEquals("equals", thirdInstruction.name);
+		assertEquals("(Ljava/lang/Object;)Z", thirdInstruction.desc);
+	}
+
+	@Test
+	public void testCompilingNotEqualStrings()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Expression firstOperand = new This(new ReferenceType(String.class));
+		Expression secondOperand = new This(new ReferenceType(String.class));
+		Comparator notEquals = new NotEquals();
+
+		Equation equation =
+			new Equation(coordinate, notEquals, firstOperand, secondOperand);
+
+		Type type = equation.getType(variables);
+
+		Array<Error> errors = equation.compile(methodVisitor, variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(9, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.owner);
+		assertEquals("equals", thirdInstruction.name);
+		assertEquals("(Ljava/lang/Object;)Z", thirdInstruction.desc);
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label falseLabel = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFNE, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ICONST_1, fifthInstruction.getOpcode());
+
+		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
+		Label trueLabel = sixthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.GOTO, sixthInstruction.getOpcode());
+
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+
+		assertEquals(falseLabel, seventhInstruction.getLabel());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.ICONST_0, eighthInstruction.getOpcode());
+
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
+
+		assertEquals(trueLabel, ninthInstruction.getLabel());
 	}
 }

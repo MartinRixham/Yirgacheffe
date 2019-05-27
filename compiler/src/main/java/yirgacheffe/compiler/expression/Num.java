@@ -56,10 +56,6 @@ public class Num implements Expression, Literal
 			{
 				methodVisitor.visitInsn(Opcodes.ICONST_1);
 			}
-			else
-			{
-				methodVisitor.visitLdcInsn(integer);
-			}
 		}
 		else if (this.getType(variables) == PrimitiveType.LONG)
 		{

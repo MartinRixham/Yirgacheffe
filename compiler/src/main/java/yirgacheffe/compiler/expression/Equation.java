@@ -6,11 +6,14 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.comparison.BooleanComparison;
 import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Comparison;
+import yirgacheffe.compiler.comparison.Equals;
+import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.comparison.NumberComparison;
 import yirgacheffe.compiler.comparison.ObjectComparison;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -44,10 +47,25 @@ public class Equation implements Expression
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
+		Array<Error> errors = new Array<>();
+		Type string = new ReferenceType(String.class);
+
+		if (this.firstOperand.getType(variables).isAssignableTo(string) &&
+			this.secondOperand.getType(variables).isAssignableTo(string) &&
+			(this.comparator instanceof Equals))
+		{
+			errors = errors.concat(this.compareStrings(
+				methodVisitor,
+				variables,
+				this.firstOperand,
+				this.secondOperand));
+
+			return errors;
+		}
+
 		Label trueLabel	= new Label();
 
-		Array<Error> errors =
-			this.compileComparison(methodVisitor, variables, trueLabel);
+		errors = this.compileComparison(methodVisitor, variables, trueLabel);
 
 		methodVisitor.visitInsn(Opcodes.ICONST_1);
 
@@ -66,7 +84,33 @@ public class Equation implements Expression
 		Variables variables,
 		Label label)
 	{
+		Array<Error> errors = new Array<>();
+		Type string = new ReferenceType(String.class);
 		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
+
+		if (firstType.isAssignableTo(string) && secondType.isAssignableTo(string) &&
+			(this.comparator instanceof Equals || this.comparator instanceof NotEquals))
+		{
+			errors = errors.concat(
+				this.compareStrings(
+					methodVisitor,
+					variables,
+					this.firstOperand,
+					this.secondOperand));
+
+			if (this.comparator instanceof Equals)
+			{
+				methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
+			}
+			else
+			{
+				methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			}
+
+			return errors;
+		}
+
 		Comparison comparison;
 
 		if (firstType == PrimitiveType.BOOLEAN)
@@ -97,7 +141,30 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		return comparison.compile(methodVisitor, variables, label);
+		errors = errors.concat(comparison.compile(methodVisitor, variables, label));
+
+		return errors;
+	}
+
+	private Array<Error> compareStrings(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Expression firstOperand,
+		Expression secondOperand)
+	{
+		Array<Error> errors = new Array<>();
+
+		errors = errors.concat(firstOperand.compile(methodVisitor, variables));
+		errors = errors.concat(secondOperand.compile(methodVisitor, variables));
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKEVIRTUAL,
+			"java/lang/String",
+			"equals",
+			"(Ljava/lang/Object;)Z",
+			false);
+
+		return errors;
 	}
 
 	public Array<VariableRead> getVariableReads()
