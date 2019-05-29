@@ -124,7 +124,7 @@ public enum PrimitiveType implements Type
 		{
 			PrimitiveType otherPrimitive = (PrimitiveType) other;
 
-			return this.order < otherPrimitive.order;
+			return this.order > 0 && otherPrimitive.order > 0;
 		}
 		else
 		{
@@ -145,5 +145,10 @@ public enum PrimitiveType implements Type
 	public boolean isPrimitive()
 	{
 		return true;
+	}
+
+	public float order()
+	{
+		return this.order;
 	}
 }

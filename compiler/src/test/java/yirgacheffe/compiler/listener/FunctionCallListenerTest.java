@@ -1301,4 +1301,51 @@ public class FunctionCallListenerTest
 
 		assertFalse(result.isSuccessful());
 	}
+
+	@Test
+	public void testCallingMethodWithNumberParameter()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"args.get(0.0);\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DCONST_0, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.D2I, thirdInstruction.getOpcode());
+	}
 }

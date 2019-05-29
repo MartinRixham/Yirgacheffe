@@ -147,9 +147,7 @@ public final class Bootstrap
 
 				for (int j = 0; j < arguments.length; j++)
 				{
-					if (!parameterTypes[j].isAssignableFrom(arguments[j].getClass()) &&
-						!("java.lang." + parameterTypes[j].getName())
-							.equals(arguments[j].getClass().getName().toLowerCase()))
+					if (!typesMatch(parameterTypes[j], arguments[j].getClass()))
 					{
 						matches = false;
 						break;
@@ -170,5 +168,22 @@ public final class Bootstrap
 		}
 
 		return lookup.unreflect(matchedMethod);
+	}
+
+	private static boolean typesMatch(Class<?> parameter, Class<?> argument)
+	{
+		if (parameter.isAssignableFrom(argument))
+		{
+			return true;
+		}
+		else if (parameter.isPrimitive())
+		{
+			return argument.getSimpleName().substring(0, 2).toLowerCase()
+				.equals(parameter.getName().substring(0, 2));
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

@@ -108,13 +108,18 @@ public class Arguments
 		{
 			Expression argument = this.arguments.get(i);
 			Type argumentType = this.argumentTypes.get(i);
+			Type parameterType = parameters.get(i);
 
 			errors.push(argument.compile(methodVisitor, variables));
 
-			if (argumentType == PrimitiveType.INT &&
-				parameters.get(i) == PrimitiveType.DOUBLE)
+			if (argumentType.isPrimitive() &&
+				parameterType.isPrimitive() &&
+				argumentType != parameterType)
 			{
-				methodVisitor.visitInsn(Opcodes.I2D);
+				PrimitiveType argumentPrimitive = (PrimitiveType) argumentType;
+				PrimitiveType parameterPrimitive = (PrimitiveType) parameterType;
+
+				methodVisitor.visitInsn(argumentPrimitive.convertTo(parameterPrimitive));
 			}
 
 			if (argumentType.isPrimitive() &&

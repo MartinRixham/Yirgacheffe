@@ -90,4 +90,16 @@ public class SignatureTest
 		assertNotEquals(firstSignature, secondSignature);
 		assertFalse(firstSignature.isImplementedBy(secondSignature));
 	}
+
+	@Test
+	public void testSignaturesWithUnequalReturnType()
+	{
+		Type dub = PrimitiveType.DOUBLE;
+		Type bool = PrimitiveType.BOOLEAN;
+		Array<Type> parameters = new Array<>(new ReferenceType(String.class));
+		Signature firstSignature = new Signature(dub, "thingy", parameters);
+		Signature secondSignature = new Signature(bool, "thingy", parameters);
+
+		assertFalse(firstSignature.isImplementedBy(secondSignature));
+	}
 }

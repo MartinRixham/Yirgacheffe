@@ -52,7 +52,7 @@ public class Signature
 	public boolean isImplementedBy(Signature signature)
 	{
 		if (this.name.equals(signature.name) &&
-			this.returnTypesMatch(signature.returnType, this.returnType) &&
+			signature.returnType.isAssignableTo(this.returnType) &&
 			this.parameters.length() == signature.parameters.length())
 		{
 			for (int i = 0; i < this.parameters.length(); i++)
@@ -67,11 +67,6 @@ public class Signature
 		}
 
 		return false;
-	}
-
-	private boolean returnTypesMatch(Type from, Type to)
-	{
-		return from.isAssignableTo(to) || from.toString().equals(to.toString());
 	}
 
 	@Override

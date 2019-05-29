@@ -131,7 +131,7 @@ public class MethodListener extends FieldDeclarationListener
 					return false;
 				}
 				else if (!this.signature.getReturnType()
-					.isAssignableTo(signature.getReturnType()))
+					.equals(signature.getReturnType()))
 				{
 					this.createBridge(signature, this.signature);
 
@@ -194,7 +194,7 @@ public class MethodListener extends FieldDeclarationListener
 			to.getDescriptor(),
 			false);
 
-		if (!to.getReturnType().isAssignableTo(from.getReturnType()) &&
+		if (!to.getReturnType().equals(from.getReturnType()) &&
 			from.getReturnType().isPrimitive())
 		{
 			PrimitiveType fromType = (PrimitiveType) from.getReturnType();

@@ -42,24 +42,19 @@ public class BinaryOperation implements Expression
 		{
 			return string;
 		}
-		else if (firstType.isAssignableTo(PrimitiveType.INT) &&
-			secondType.isAssignableTo(PrimitiveType.INT))
-		{
-			return PrimitiveType.INT;
-		}
-		else if (firstType.isAssignableTo(PrimitiveType.LONG) &&
-			secondType.isAssignableTo(PrimitiveType.LONG))
-		{
-			return PrimitiveType.LONG;
-		}
-		else if (firstType.isAssignableTo(PrimitiveType.DOUBLE) &&
-			secondType.isAssignableTo(PrimitiveType.DOUBLE))
+		else if (firstType.equals(PrimitiveType.DOUBLE) ||
+			secondType.equals(PrimitiveType.DOUBLE))
 		{
 			return PrimitiveType.DOUBLE;
 		}
+		else if (firstType.equals(PrimitiveType.LONG) ||
+			secondType.equals(PrimitiveType.LONG))
+		{
+			return PrimitiveType.LONG;
+		}
 		else
 		{
-			return firstType;
+			return PrimitiveType.INT;
 		}
 	}
 
@@ -69,8 +64,7 @@ public class BinaryOperation implements Expression
 		Type secondType = this.secondOperand.getType(variables);
 		Type string = new ReferenceType(String.class);
 
-		if (
-			this.operator == Operator.ADD  &&
+		if (this.operator == Operator.ADD  &&
 			(firstType.isAssignableTo(string) || secondType.isAssignableTo(string)))
 		{
 			return this.compileStrings(methodVisitor, variables);

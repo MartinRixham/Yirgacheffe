@@ -52,13 +52,7 @@ public class NumberComparison implements Comparison
 		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
 		PrimitiveType secondPrimitive = (PrimitiveType) secondType;
 
-		if (firstPrimitive.equals(secondPrimitive))
-		{
-			this.firstOperand.compile(methodVisitor, variables);
-			this.secondOperand.compile(methodVisitor, variables);
-			this.comparator.compile(methodVisitor, label, firstType);
-		}
-		else if (firstPrimitive.isAssignableTo(secondPrimitive))
+		if (firstPrimitive.order() < secondPrimitive.order())
 		{
 			this.firstOperand.compile(methodVisitor, variables);
 
@@ -67,7 +61,7 @@ public class NumberComparison implements Comparison
 			this.secondOperand.compile(methodVisitor, variables);
 			this.comparator.compile(methodVisitor, label, secondType);
 		}
-		else
+		else if (firstPrimitive.order() > secondPrimitive.order())
 		{
 			this.firstOperand.compile(methodVisitor, variables);
 			this.secondOperand.compile(methodVisitor, variables);
@@ -75,7 +69,12 @@ public class NumberComparison implements Comparison
 			methodVisitor.visitInsn(secondPrimitive.convertTo(firstPrimitive));
 
 			this.comparator.compile(methodVisitor, label, firstType);
-
+		}
+		else
+		{
+			this.firstOperand.compile(methodVisitor, variables);
+			this.secondOperand.compile(methodVisitor, variables);
+			this.comparator.compile(methodVisitor, label, firstType);
 		}
 
 		return errors;
