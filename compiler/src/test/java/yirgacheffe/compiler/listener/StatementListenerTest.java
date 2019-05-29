@@ -397,6 +397,55 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testBranchWithEmptyReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"if (true)" +
+					"{" +
+						"return;\n" +
+					"}\n" +
+					"else" +
+					"{" +
+						"return;\n" +
+					"}\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+
+		InsnList instructions = method.instructions;
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label falseLabel = secondInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
+	}
+
+	@Test
 	public void testMismatchedTypeAssignment()
 	{
 		String source =
