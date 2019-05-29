@@ -32,7 +32,8 @@ public class Types
 			return new NullType();
 		}
 
-		if (context.typeParameters() != null)
+		if (context.typeParameters() != null &&
+			type instanceof ReferenceType)
 		{
 			Array<Type> typeParameters = new Array<>();
 

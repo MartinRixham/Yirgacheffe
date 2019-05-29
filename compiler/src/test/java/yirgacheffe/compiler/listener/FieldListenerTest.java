@@ -1192,4 +1192,32 @@ public class FieldListenerTest
 			"line 6:12 Unknown field 'myField'.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testFieldWithUnknownPrimaryType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"Wibble<String> ref;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}\n";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Unrecognised type: Wibble is not a type.\n" +
+			"line 3:0 Type java.lang.Object requires 0 parameter(s) but found 1.\n",
+			result.getErrors());
+	}
 }
