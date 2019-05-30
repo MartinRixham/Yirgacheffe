@@ -4,6 +4,18 @@ import org.objectweb.asm.Opcodes;
 
 public class NullType implements Type
 {
+	private String name;
+
+	public NullType(String name)
+	{
+		this.name = name;
+	}
+
+	public NullType()
+	{
+		this.name = "java.lang.Object";
+	}
+
 	public Class<?> reflectionClass()
 	{
 		return Object.class;
@@ -16,7 +28,7 @@ public class NullType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		return "java.lang.Object";
+		return this.name;
 	}
 
 	public int width()
@@ -67,6 +79,6 @@ public class NullType implements Type
 	@Override
 	public String toString()
 	{
-		return "java.lang.Object";
+		return this.name;
 	}
 }

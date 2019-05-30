@@ -1217,7 +1217,63 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Unrecognised type: Wibble is not a type.\n" +
-			"line 3:0 Type java.lang.Object requires 0 parameter(s) but found 1.\n",
+			"line 3:0 Type Wibble requires 0 parameter(s) but found 1.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testFieldWithUnknownFullyQualifiedPrimaryType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"java.lang.Wibble<String> ref;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}\n";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Unrecognised type: java.lang.Wibble is not a type.\n" +
+				"line 3:0 Type java.lang.Wibble requires 0 parameter(s) but found 1.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testFieldWithUnknownTypeParameter()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String<Wibble> ref;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}\n";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:7 Unrecognised type: Wibble is not a type.\n" +
+				"line 3:0 Type java.lang.String requires 0 parameter(s) but found 1.\n",
 			result.getErrors());
 	}
 }

@@ -25,11 +25,12 @@ public class Types
 			return new NullType();
 		}
 
+		String name = context.primaryType().getText();
 		Type type = this.types.get(context.primaryType().getText());
 
 		if (type == null)
 		{
-			return new NullType();
+			return new NullType(name);
 		}
 
 		if (context.typeParameters() != null &&

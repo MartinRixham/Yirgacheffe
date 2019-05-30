@@ -19,8 +19,9 @@ public class ParameterisedType implements Type
 
 		TypeVariable[] genericTypes = primaryType.reflectionClass().getTypeParameters();
 		Map<String, Type> types = new HashMap<>();
+		int typeCount = Math.min(genericTypes.length, typeParameters.length());
 
-		for (int i = 0; i < typeParameters.length(); i++)
+		for (int i = 0; i < typeCount; i++)
 		{
 			types.put(genericTypes[i].getName(), typeParameters.get(i));
 		}

@@ -69,24 +69,26 @@ public class TypeListener extends ImplementationListener
 	{
 		if (context.Identifier() != null)
 		{
-			if (this.types.containsKey(context.getText()))
+			String name = context.getText();
+
+			if (this.types.containsKey(name))
 			{
 				return;
 			}
 
-			Type type = new NullType();
+			Type type = new NullType(name);
 
 			try
 			{
 				if (this.packageName == null)
 				{
-					type = this.classes.loadClass(context.getText());
+					type = this.classes.loadClass(name);
 				}
 				else
 				{
 					type =
 						this.classes.loadClass(
-							this.packageName + "." + context.getText());
+							this.packageName + "." + name);
 				}
 			}
 			catch (ClassNotFoundException e)
@@ -94,25 +96,25 @@ public class TypeListener extends ImplementationListener
 				try
 				{
 					type =
-						this.classes.loadClass("yirgacheffe.lang." + context.getText());
+						this.classes.loadClass("yirgacheffe.lang." + name);
 				}
 				catch (ClassNotFoundException ex)
 				{
 					try
 					{
-						type = this.classes.loadClass("java.lang." + context.getText());
+						type = this.classes.loadClass("java.lang." + name);
 					}
 					catch (ClassNotFoundException exc)
 					{
 						String message =
-							"Unrecognised type: " + context.getText() + " is not a type.";
+							"Unrecognised type: " + name + " is not a type.";
 
 						this.errors.push(new Error(context, message));
 					}
 				}
 			}
 
-			this.types.put(context.getText(), type);
+			this.types.put(name, type);
 		}
 	}
 
@@ -120,21 +122,23 @@ public class TypeListener extends ImplementationListener
 	public void enterFullyQualifiedType(
 		YirgacheffeParser.FullyQualifiedTypeContext context)
 	{
-		if (this.types.containsKey(context.getText()))
+		String name = context.getText();
+
+		if (this.types.containsKey(name))
 		{
 			return;
 		}
 
 		try
 		{
-			Type type = this.classes.loadClass(context.getText());
+			Type type = this.classes.loadClass(name);
 
-			this.types.put(context.getText(), type);
+			this.types.put(name, type);
 		}
 		catch (ClassNotFoundException ex)
 		{
 			String message =
-				"Unrecognised type: " + context.getText() + " is not a type.";
+				"Unrecognised type: " + name + " is not a type.";
 
 			this.errors.push(new Error(context, message));
 		}
