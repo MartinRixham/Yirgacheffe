@@ -9,6 +9,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -37,6 +38,7 @@ public class If implements ConditionalStatement
 		Signature caller)
 	{
 		Array<Error> errors = new Array<>();
+		Type type = this.condition.getType(variables);
 
 		if (this.condition instanceof Equation)
 		{
@@ -44,11 +46,17 @@ public class If implements ConditionalStatement
 
 			equation.compileComparison(methodVisitor, variables, this.label);
 		}
-		else
+		else if (type.isPrimitive())
 		{
 			errors.push(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+		}
+		else
+		{
+			errors.push(this.condition.compile(methodVisitor, variables));
+
+			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.label);
 		}
 
 		errors.push(this.statement.compile(methodVisitor, variables, caller));

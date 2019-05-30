@@ -7,16 +7,19 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -112,5 +115,40 @@ public class IfTest
 
 		assertTrue(writes.indexOf(write) >= 0);
 		assertTrue(ifStatement.getExpression() instanceof Nothing);
+	}
+
+	@Test
+	public void testIfObject()
+	{
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new This(new ReferenceType(Object.class));
+		Coordinate coordinate = new Coordinate(3, 5);
+		Statement statement = new Return(coordinate, PrimitiveType.VOID);
+		If ifStatement = new If(condition, statement);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(3, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.IFNULL, secondInstruction.getOpcode());
+
+		Label label = secondInstruction.label.getLabel();
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
 	}
 }
