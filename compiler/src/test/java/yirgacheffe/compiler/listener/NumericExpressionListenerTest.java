@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -219,52 +220,11 @@ public class NumericExpressionListenerTest
 			"{\n" +
 				"public Num method()" +
 				"{\n" +
-					"return 5.0 && 4.0 && 3.0;\n" +
-				"}\n" +
-				"public MyClass() {}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-		InsnList instructions = method.instructions;
-
-		assertEquals(22, instructions.size());
-
-		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(3.0, firstInstruction.cst);
-
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(4.0, secondInstruction.cst);
-
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals(5.0, thirdInstruction.cst);
-	}
-
-	@Test
-	public void testOr()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Bool method()" +
-				"{\n" +
-					"return false || false || true;\n" +
+					"if (5.0 && 4.0)\n" +
+					"{\n" +
+						"return 0;\n" +
+					"}\n" +
+					"return 1;\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
 			"}";
@@ -285,17 +245,56 @@ public class NumericExpressionListenerTest
 
 		assertEquals(16, instructions.size());
 
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(5.0, firstInstruction.cst);
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testOr()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method()" +
+				"{\n" +
+					"if (true || false)\n" +
+					"{\n" +
+						"return 0;\n" +
+					"}\n" +
+					"return 1;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(14, instructions.size());
+
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.ICONST_0, secondInstruction.getOpcode());
-
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IFNE, thirdInstruction.getOpcode());
 	}
 
 	@Test

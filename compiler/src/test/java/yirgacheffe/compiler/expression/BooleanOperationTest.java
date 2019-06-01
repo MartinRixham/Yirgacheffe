@@ -49,50 +49,42 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(10, instructions.size());
+		assertEquals(8, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals(2.0, firstInstruction.cst);
+		assertEquals(3.0, firstInstruction.cst);
 
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(3.0, secondInstruction.cst);
+		assertEquals(Opcodes.DUP2, secondInstruction.getOpcode());
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DUP2, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_0, thirdInstruction.getOpcode());
 
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.DCONST_0, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.DCMPL, fourthInstruction.getOpcode());
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+		Label label = fifthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.DCMPL, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
 
-		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
-		Label label = sixthInstruction.label.getLabel();
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.IFEQ, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.POP2, sixthInstruction.getOpcode());
 
-		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.DUP2_X2, seventhInstruction.getOpcode());
+		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
+		assertEquals(2.0, seventhInstruction.cst);
 
-		InsnNode eightInstruction = (InsnNode) instructions.get(7);
+		LabelNode eightInstruction = (LabelNode) instructions.get(7);
 
-		assertEquals(Opcodes.POP2, eightInstruction.getOpcode());
-
-		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
-
-		assertEquals(label, ninthInstruction.getLabel());
-
-		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
-
-		assertEquals(Opcodes.POP2, tenthInstruction.getOpcode());
+		assertEquals(label, eightInstruction.getLabel());
 	}
 
 	@Test
@@ -119,36 +111,32 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(7, instructions.size());
+		assertEquals(6, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
 
-		assertEquals(Opcodes.DUP, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
 
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
-		Label label = fourthInstruction.label.getLabel();
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.SWAP, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, fifthInstruction.getOpcode());
 
 		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
 
 		assertEquals(label, sixthInstruction.getLabel());
-
-		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
-
-		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
 	}
 
 	@Test
@@ -175,38 +163,34 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(7, instructions.size());
+		assertEquals(6, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
-		assertEquals("notherstring", firstInstruction.cst);
+		assertEquals("mystring", firstInstruction.cst);
 
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals("mystring", secondInstruction.cst);
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
 
-		assertEquals(Opcodes.DUP, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IFNULL, thirdInstruction.getOpcode());
 
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
-		Label label = fourthInstruction.label.getLabel();
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.IFNULL, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		LdcInsnNode fifthInstruction = (LdcInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.SWAP, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.LDC, fifthInstruction.getOpcode());
+		assertEquals("notherstring", fifthInstruction.cst);
 
 		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
 
 		assertEquals(label, sixthInstruction.getLabel());
-
-		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
-
-		assertEquals(Opcodes.POP, seventhInstruction.getOpcode());
 	}
 
 	@Test
@@ -235,72 +219,6 @@ public class BooleanOperationTest
 		assertFalse(type.isAssignableTo(arrayList));
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
-	}
-
-	@Test
-	public void testSecondOperandShouldMatchFirstOperandDouble()
-	{
-		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables(new HashMap<>());
-		Expression firstOperand = new Num("5.0");
-		Expression secondOperand = new Streeng("\"myString\"");
-
-		BooleanOperation or =
-			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
-				firstOperand,
-				secondOperand);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
-
-		assertEquals(0, errors.length());
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(10, instructions.size());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
-
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals(5.0, secondInstruction.cst);
-	}
-
-	@Test
-	public void testSecondOperandShouldMatchFirstOperandNotDouble()
-	{
-		MethodNode methodVisitor = new MethodNode();
-		Variables variables = new Variables(new HashMap<>());
-		Expression firstOperand = new Streeng("\"myString\"");
-		Expression secondOperand = new Num("5");
-
-		BooleanOperation or =
-			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
-				firstOperand,
-				secondOperand);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
-
-		assertEquals(0, errors.length());
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(7, instructions.size());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
-
-		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
-		assertEquals("myString", secondInstruction.cst);
 	}
 
 	@Test

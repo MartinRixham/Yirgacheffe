@@ -173,8 +173,8 @@ public class NumericExpressionListener extends FunctionCallListener
 
 			BooleanOperation and =
 				new BooleanOperation(
-					Opcodes.IFNE,
-					Opcodes.IFNONNULL,
+					Opcodes.IFEQ,
+					Opcodes.IFNULL,
 					firstOperand,
 					secondOperand);
 
@@ -201,8 +201,8 @@ public class NumericExpressionListener extends FunctionCallListener
 
 			BooleanOperation or =
 				new BooleanOperation(
-					Opcodes.IFEQ,
-					Opcodes.IFNULL,
+					Opcodes.IFNE,
+					Opcodes.IFNONNULL,
 					firstOperand,
 					secondOperand);
 

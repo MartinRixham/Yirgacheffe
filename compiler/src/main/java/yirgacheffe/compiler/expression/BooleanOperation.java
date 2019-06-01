@@ -49,37 +49,20 @@ public class BooleanOperation implements Expression
 
 		if (firstType.isAssignableTo(PrimitiveType.DOUBLE))
 		{
-			if (secondType.isAssignableTo(PrimitiveType.DOUBLE))
-			{
-				this.secondOperand.compile(methodVisitor, variables);
-			}
-			else
-			{
-				methodVisitor.visitInsn(Opcodes.DCONST_0);
-			}
-
 			this.firstOperand.compile(methodVisitor, variables);
 
 			methodVisitor.visitInsn(Opcodes.DUP2);
 			methodVisitor.visitInsn(Opcodes.DCONST_0);
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-			methodVisitor.visitInsn(Opcodes.DUP2_X2);
 			methodVisitor.visitInsn(Opcodes.POP2);
+
+			this.secondOperand.compile(methodVisitor, variables);
+
 			methodVisitor.visitLabel(label);
-			methodVisitor.visitInsn(Opcodes.POP2);
 		}
 		else
 		{
-			if (secondType.isAssignableTo(PrimitiveType.DOUBLE))
-			{
-				methodVisitor.visitInsn(Opcodes.ICONST_0);
-			}
-			else
-			{
-				this.secondOperand.compile(methodVisitor, variables);
-			}
-
 			this.firstOperand.compile(methodVisitor, variables);
 
 			methodVisitor.visitInsn(Opcodes.DUP);
@@ -93,9 +76,11 @@ public class BooleanOperation implements Expression
 				methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
 			}
 
-			methodVisitor.visitInsn(Opcodes.SWAP);
-			methodVisitor.visitLabel(label);
 			methodVisitor.visitInsn(Opcodes.POP);
+
+			this.secondOperand.compile(methodVisitor, variables);
+
+			methodVisitor.visitLabel(label);
 		}
 
 		return errors;
