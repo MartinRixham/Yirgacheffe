@@ -9,6 +9,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -48,13 +49,26 @@ public class If implements ConditionalStatement
 		}
 		else if (type.isPrimitive())
 		{
-			errors.push(this.condition.compile(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
+
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+		}
+		else if (type.isAssignableTo(new ReferenceType(String.class)))
+		{
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/String",
+				"length",
+				"()I",
+				false);
 
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 		}
 		else
 		{
-			errors.push(this.condition.compile(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.label);
 		}

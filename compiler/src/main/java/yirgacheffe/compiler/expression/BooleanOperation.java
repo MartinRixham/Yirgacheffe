@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -68,6 +69,17 @@ public class BooleanOperation implements Expression
 
 			if (firstType.isPrimitive())
 			{
+				methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+			}
+			else if (firstType.isAssignableTo(new ReferenceType(String.class)))
+			{
+				methodVisitor.visitMethodInsn(
+					Opcodes.INVOKEVIRTUAL,
+					"java/lang/String",
+					"length",
+					"()I",
+					false);
+
 				methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
 			}
 			else

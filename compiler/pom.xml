@@ -70,6 +70,7 @@
               <excludedClasses>
                 <excludedClass>yirgacheffe.compiler.type.BytecodeClassLoader</excludedClass>
               </excludedClasses>
+              <withHistory>true</withHistory>
             </configuration>
             <goals>
               <goal>mutationCoverage</goal>

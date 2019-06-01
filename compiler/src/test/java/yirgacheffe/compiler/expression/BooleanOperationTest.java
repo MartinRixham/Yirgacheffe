@@ -8,7 +8,9 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -111,7 +113,7 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		//assertEquals(6, instructions.size());
+		assertEquals(6, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -192,6 +194,60 @@ public class BooleanOperationTest
 	}
 
 	@Test
+	public void testCompilingAndObjects()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Expression firstOperand = new This(new ReferenceType(Object.class));
+		Expression secondOperand = new This(new ReferenceType(Object.class));
+
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
+
+		Type type = or.getType(variables);
+
+		Array<Error> errors = or.compile(methodVisitor, variables);
+
+		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFNULL, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ALOAD, fifthInstruction.getOpcode());
+		assertEquals(0, fifthInstruction.var);
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.getLabel());
+	}
+
+	@Test
 	public void testCompilingAndStrings()
 	{
 		MethodNode methodVisitor = new MethodNode();
@@ -215,7 +271,7 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(7, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -226,23 +282,30 @@ public class BooleanOperationTest
 
 		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
 
-		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
-		Label label = thirdInstruction.label.getLabel();
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.IFNULL, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("java/lang/String", thirdInstruction.owner);
+		assertEquals("length", thirdInstruction.name);
+		assertEquals("()I", thirdInstruction.desc);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label label = fourthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 
-		LdcInsnNode fifthInstruction = (LdcInsnNode) instructions.get(4);
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.LDC, fifthInstruction.getOpcode());
-		assertEquals("notherstring", fifthInstruction.cst);
+		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
 
-		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
 
-		assertEquals(label, sixthInstruction.getLabel());
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals("notherstring", sixthInstruction.cst);
+
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+
+		assertEquals(label, seventhInstruction.getLabel());
 	}
 
 	@Test
