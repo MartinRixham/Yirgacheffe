@@ -88,6 +88,58 @@ public class BooleanOperationTest
 	}
 
 	@Test
+	public void testCompilingAndIntegers()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Num firstOperand = new Num("0");
+		Num secondOperand = new Num("0");
+
+		BooleanOperation or =
+			new BooleanOperation(
+				Opcodes.IFEQ,
+				Opcodes.IFNULL,
+				firstOperand,
+				secondOperand);
+
+		Type type = or.getType(variables);
+
+		Array<Error> errors = or.compile(methodVisitor, variables);
+
+		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		//assertEquals(6, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.POP, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ICONST_0, fifthInstruction.getOpcode());
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(label, sixthInstruction.getLabel());
+	}
+
+	@Test
 	public void testCompilingAndBooleans()
 	{
 		MethodNode methodVisitor = new MethodNode();

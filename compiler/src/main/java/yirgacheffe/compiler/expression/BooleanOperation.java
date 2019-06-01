@@ -45,9 +45,8 @@ public class BooleanOperation implements Expression
 		Array<Error> errors = new Array<>();
 		Label label = new Label();
 		Type firstType = this.firstOperand.getType(variables);
-		Type secondType = this.secondOperand.getType(variables);
 
-		if (firstType.isAssignableTo(PrimitiveType.DOUBLE))
+		if (firstType.equals(PrimitiveType.DOUBLE))
 		{
 			this.firstOperand.compile(methodVisitor, variables);
 
