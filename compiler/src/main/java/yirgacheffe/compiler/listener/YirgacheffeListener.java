@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
+import yirgacheffe.compiler.YirgacheffeClassWriter;
 import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
@@ -15,7 +16,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 	protected String sourceFile;
 
 	protected ClassWriter writer =
-		new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		new YirgacheffeClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
 	protected Array<Error> errors = new Array<>();
 

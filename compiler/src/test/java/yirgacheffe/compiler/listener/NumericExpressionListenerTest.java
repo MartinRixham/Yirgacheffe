@@ -298,6 +298,34 @@ public class NumericExpressionListenerTest
 	}
 
 	@Test
+	public void testAndThis()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"if (this && \"thingy\")\n" +
+					"{\n" +
+						"Num one = 1;\n" +
+					"}\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testPostincrement()
 	{
 		String source =
