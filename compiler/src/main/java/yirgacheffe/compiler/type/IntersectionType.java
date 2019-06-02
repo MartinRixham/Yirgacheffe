@@ -75,19 +75,18 @@ public class IntersectionType implements Type
 
 	public boolean isPrimitive()
 	{
-		return this.firstType.isPrimitive();
+		return this.secondType.isPrimitive();
 	}
 
 	@Override
 	public boolean equals(Object other)
 	{
-		return this.firstType.equals(other) &&
-			this.secondType.equals(other);
+		return this.secondType.equals(other);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.firstType.hashCode() + this.secondType.hashCode();
+		return this.secondType.hashCode();
 	}
 }

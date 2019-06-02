@@ -11,7 +11,7 @@ import static org.junit.Assert.assertFalse;
 public class IntersectionTypeTest
 {
 	@Test
-	public void testIntersectionOfTwoTypes()
+	public void testIntersectionOfStringAndDouble()
 	{
 		Type firstType = new ReferenceType(String.class);
 		Type secondType = PrimitiveType.DOUBLE;
@@ -29,9 +29,24 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
-		assertFalse(type.isPrimitive());
+		assertTrue(type.isPrimitive());
 		assertNotEquals(type, new ReferenceType(String.class));
-		assertTrue(type.hashCode() != 0);
+		assertEquals(type.hashCode(), secondType.hashCode());
+	}
+
+	@Test
+	public void testIntersectionOfDoubleAndString()
+	{
+		Type firstType = PrimitiveType.DOUBLE;
+		Type secondType = new ReferenceType(String.class);
+
+		Type type = new IntersectionType(firstType, secondType);
+
+		assertEquals("Num", type.toString());
+		assertFalse(type.hasParameter());
+		assertFalse(type.isPrimitive());
+		assertEquals(type, new ReferenceType(String.class));
+		assertEquals(type.hashCode(), secondType.hashCode());
 	}
 
 	@Test
@@ -47,7 +62,6 @@ public class IntersectionTypeTest
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
 		assertNotEquals(type, new ReferenceType(Object.class));
-		assertTrue(type.hashCode() != 0);
 	}
 
 }

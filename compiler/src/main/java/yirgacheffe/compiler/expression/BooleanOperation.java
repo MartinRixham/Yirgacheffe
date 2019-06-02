@@ -49,49 +49,23 @@ public class BooleanOperation implements Expression
 
 		this.firstOperand.compile(methodVisitor, variables);
 
-		if (firstType.equals(PrimitiveType.DOUBLE))
+		if (firstType.width() == 2)
 		{
 			methodVisitor.visitInsn(Opcodes.DUP2);
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(D)Z",
-				false);
-
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-			methodVisitor.visitInsn(Opcodes.POP2);
-		}
-		else if (firstType.isPrimitive())
-		{
-			methodVisitor.visitInsn(Opcodes.DUP);
-
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-
-			methodVisitor.visitInsn(Opcodes.POP);
-		}
-		else if (firstType.isAssignableTo(new ReferenceType(String.class)))
-		{
-			methodVisitor.visitInsn(Opcodes.DUP);
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(Ljava/lang/String;)Z",
-				false);
-
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-
-			methodVisitor.visitInsn(Opcodes.POP);
 		}
 		else
 		{
 			methodVisitor.visitInsn(Opcodes.DUP);
+		}
 
-			methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
+		this.compileComparison(methodVisitor, label, firstType);
 
+		if (firstType.width() == 2)
+		{
+			methodVisitor.visitInsn(Opcodes.POP2);
+		}
+		else
+		{
 			methodVisitor.visitInsn(Opcodes.POP);
 		}
 
@@ -100,6 +74,60 @@ public class BooleanOperation implements Expression
 		methodVisitor.visitLabel(label);
 
 		return errors;
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		Array<Error> errors = new Array<>();
+		Type firstType = this.firstOperand.getType(variables);
+
+		this.firstOperand.compile(methodVisitor, variables);
+
+		this.compileComparison(methodVisitor, label, firstType);
+
+		this.secondOperand.compile(methodVisitor, variables);
+
+		return errors;
+	}
+
+	private void compileComparison(
+		MethodVisitor methodVisitor,
+		Label label,
+		Type firstType)
+	{
+		if (firstType.equals(PrimitiveType.DOUBLE))
+		{
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(D)Z",
+				false);
+
+			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+		}
+		else if (firstType.isPrimitive())
+		{
+			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+		}
+		else if (firstType.isAssignableTo(new ReferenceType(String.class)))
+		{
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(Ljava/lang/String;)Z",
+				false);
+
+			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+		}
+		else
+		{
+			methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
+		}
 	}
 
 	public Array<VariableRead> getVariableReads()

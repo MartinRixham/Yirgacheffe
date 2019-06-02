@@ -10,6 +10,7 @@ import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.comparison.NumberComparison;
 import yirgacheffe.compiler.comparison.ObjectComparison;
+import yirgacheffe.compiler.comparison.StringComparison;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -89,31 +90,19 @@ public class Equation implements Expression
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
+		Comparison comparison;
+
 		if (firstType.isAssignableTo(string) && secondType.isAssignableTo(string) &&
 			(this.comparator instanceof Equals || this.comparator instanceof NotEquals))
 		{
-			errors = errors.concat(
-				this.compareStrings(
-					methodVisitor,
-					variables,
+			comparison =
+				new StringComparison(
+					this.coordinate,
+					this.comparator,
 					this.firstOperand,
-					this.secondOperand));
-
-			if (this.comparator instanceof Equals)
-			{
-				methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
-			}
-			else
-			{
-				methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
-			}
-
-			return errors;
+					this.secondOperand);
 		}
-
-		Comparison comparison;
-
-		if (firstType == PrimitiveType.BOOLEAN)
+		else if (firstType == PrimitiveType.BOOLEAN)
 		{
 			comparison =
 				new BooleanComparison(

@@ -2,12 +2,16 @@ package yirgacheffe.compiler.listener;
 
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
@@ -222,9 +226,9 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"if (5.0 && 4.0)\n" +
 					"{\n" +
-						"return 0;\n" +
+						"return 0.0;\n" +
 					"}\n" +
-					"return 1;\n" +
+					"return 1.0;\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
 			"}";
@@ -243,16 +247,64 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(16, instructions.size());
+		assertEquals(12, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(5.0, firstInstruction.cst);
 
-		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(3);
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", secondInstruction.owner);
+		assertEquals("isTruthy", secondInstruction.name);
+		assertEquals("(D)Z", secondInstruction.desc);
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label leftLabel = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(4.0, fourthInstruction.cst);
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKESTATIC, fifthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", fifthInstruction.owner);
+		assertEquals("isTruthy", fifthInstruction.name);
+		assertEquals("(D)Z", fifthInstruction.desc);
+
+		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
+		Label rightLabel = sixthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.DCONST_0, seventhInstruction.getOpcode());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.DRETURN, eighthInstruction.getOpcode());
+
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
+
+		assertEquals(leftLabel, ninthInstruction.getLabel());
+		assertEquals(rightLabel, ninthInstruction.getLabel());
+
+		assertTrue(instructions.get(9) instanceof FrameNode);
+
+		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DCONST_1, eleventhInstruction.getOpcode());
+
+		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.DRETURN, twelfthInstruction.getOpcode());
 	}
 
 	@Test
@@ -265,9 +317,9 @@ public class NumericExpressionListenerTest
 				"{\n" +
 					"if (true || false)\n" +
 					"{\n" +
-						"return 0;\n" +
+						"return 0.0;\n" +
 					"}\n" +
-					"return 1;\n" +
+					"return 1.0;\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
 			"}";
@@ -286,15 +338,48 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(14, instructions.size());
+		assertEquals(10, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
-		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label leftLabel = secondInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IFNE, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.IFNE, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label rightLabel = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DCONST_0, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DRETURN, sixthInstruction.getOpcode());
+
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+
+		assertEquals(leftLabel, seventhInstruction.getLabel());
+		assertEquals(rightLabel, seventhInstruction.getLabel());
+
+		assertTrue(instructions.get(7) instanceof FrameNode);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.DCONST_1, ninthInstruction.getOpcode());
+
+		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.DRETURN, tenthInstruction.getOpcode());
 	}
 
 	@Test
@@ -308,6 +393,34 @@ public class NumericExpressionListenerTest
 					"if (this && \"thingy\")\n" +
 					"{\n" +
 						"Num one = 1;\n" +
+					"}\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testStringAndDouble() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"if (\"thingy\" && 0.0)\n" +
+					"{\n" +
+					"	Num one = 1;\n" +
 					"}\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
