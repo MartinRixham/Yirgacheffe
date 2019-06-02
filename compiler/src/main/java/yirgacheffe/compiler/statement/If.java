@@ -9,6 +9,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -47,6 +48,19 @@ public class If implements ConditionalStatement
 
 			equation.compileComparison(methodVisitor, variables, this.label);
 		}
+		else if (type.equals(PrimitiveType.DOUBLE))
+		{
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(D)Z",
+				false);
+
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+		}
 		else if (type.isPrimitive())
 		{
 			errors = errors.concat(this.condition.compile(methodVisitor, variables));
@@ -58,10 +72,10 @@ public class If implements ConditionalStatement
 			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				"java/lang/String",
-				"length",
-				"()I",
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(Ljava/lang/String;)Z",
 				false);
 
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);

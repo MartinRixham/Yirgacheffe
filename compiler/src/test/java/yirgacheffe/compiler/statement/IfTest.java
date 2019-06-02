@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -181,10 +182,51 @@ public class IfTest
 
 		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, secondInstruction.getOpcode());
-		assertEquals("java/lang/String", secondInstruction.owner);
-		assertEquals("length", secondInstruction.name);
-		assertEquals("()I", secondInstruction.desc);
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", secondInstruction.owner);
+		assertEquals("isTruthy", secondInstruction.name);
+		assertEquals("(Ljava/lang/String;)Z", secondInstruction.desc);
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+		Label label = thirdInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testIfDouble()
+	{
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new Num("1.1");
+		Coordinate coordinate = new Coordinate(3, 5);
+		Statement statement = new Return(coordinate, PrimitiveType.VOID);
+		If ifStatement = new If(condition, statement);
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+
+		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(4, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals(1.1, firstInstruction.cst);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", secondInstruction.owner);
+		assertEquals("isTruthy", secondInstruction.name);
+		assertEquals("(D)Z", secondInstruction.desc);
 
 		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
 		Label label = thirdInstruction.label.getLabel();

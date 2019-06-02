@@ -47,52 +47,57 @@ public class BooleanOperation implements Expression
 		Label label = new Label();
 		Type firstType = this.firstOperand.getType(variables);
 
+		this.firstOperand.compile(methodVisitor, variables);
+
 		if (firstType.equals(PrimitiveType.DOUBLE))
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-
 			methodVisitor.visitInsn(Opcodes.DUP2);
-			methodVisitor.visitInsn(Opcodes.DCONST_0);
-			methodVisitor.visitInsn(Opcodes.DCMPL);
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(D)Z",
+				false);
+
 			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
 			methodVisitor.visitInsn(Opcodes.POP2);
+		}
+		else if (firstType.isPrimitive())
+		{
+			methodVisitor.visitInsn(Opcodes.DUP);
 
-			this.secondOperand.compile(methodVisitor, variables);
+			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
 
-			methodVisitor.visitLabel(label);
+			methodVisitor.visitInsn(Opcodes.POP);
+		}
+		else if (firstType.isAssignableTo(new ReferenceType(String.class)))
+		{
+			methodVisitor.visitInsn(Opcodes.DUP);
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				"yirgacheffe/lang/Falsyfier",
+				"isTruthy",
+				"(Ljava/lang/String;)Z",
+				false);
+
+			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+
+			methodVisitor.visitInsn(Opcodes.POP);
 		}
 		else
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-
 			methodVisitor.visitInsn(Opcodes.DUP);
 
-			if (firstType.isPrimitive())
-			{
-				methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-			}
-			else if (firstType.isAssignableTo(new ReferenceType(String.class)))
-			{
-				methodVisitor.visitMethodInsn(
-					Opcodes.INVOKEVIRTUAL,
-					"java/lang/String",
-					"length",
-					"()I",
-					false);
-
-				methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
-			}
-			else
-			{
-				methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
-			}
+			methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
 
 			methodVisitor.visitInsn(Opcodes.POP);
-
-			this.secondOperand.compile(methodVisitor, variables);
-
-			methodVisitor.visitLabel(label);
 		}
+
+		this.secondOperand.compile(methodVisitor, variables);
+
+		methodVisitor.visitLabel(label);
 
 		return errors;
 	}

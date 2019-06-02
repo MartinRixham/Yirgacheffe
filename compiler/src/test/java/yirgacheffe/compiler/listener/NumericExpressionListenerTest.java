@@ -250,7 +250,7 @@ public class NumericExpressionListenerTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(5.0, firstInstruction.cst);
 
-		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
 	}

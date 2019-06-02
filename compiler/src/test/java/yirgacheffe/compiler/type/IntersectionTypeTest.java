@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -12,15 +13,13 @@ public class IntersectionTypeTest
 	@Test
 	public void testIntersectionOfTwoTypes()
 	{
-		Class<?> stringClass = String.class;
-
 		Type firstType = new ReferenceType(String.class);
 		Type secondType = PrimitiveType.DOUBLE;
 
 		Type type = new IntersectionType(firstType, secondType);
 
 		assertEquals("java.lang.String", type.toString());
-		assertEquals(stringClass, type.reflectionClass());
+		assertEquals(String.class, type.reflectionClass());
 		assertEquals("java.lang.String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
@@ -31,6 +30,8 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
+		assertNotEquals(type, new ReferenceType(String.class));
+		assertTrue(type.hashCode() != 0);
 	}
 
 	@Test
@@ -45,6 +46,8 @@ public class IntersectionTypeTest
 		assertFalse(type.isAssignableTo(arrayList));
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
+		assertNotEquals(type, new ReferenceType(Object.class));
+		assertTrue(type.hashCode() != 0);
 	}
 
 }

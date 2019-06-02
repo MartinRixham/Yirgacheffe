@@ -51,7 +51,7 @@ public class BooleanOperationTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(8, instructions.size());
+		assertEquals(7, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -62,31 +62,30 @@ public class BooleanOperationTest
 
 		assertEquals(Opcodes.DUP2, secondInstruction.getOpcode());
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DCONST_0, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", thirdInstruction.owner);
+		assertEquals("isTruthy", thirdInstruction.name);
+		assertEquals("(D)Z", thirdInstruction.desc);
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label label = fourthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.DCMPL, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 
-		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
-		Label label = fifthInstruction.label.getLabel();
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
+		assertEquals(Opcodes.POP2, fifthInstruction.getOpcode());
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.POP2, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals(2.0, sixthInstruction.cst);
 
-		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
 
-		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
-		assertEquals(2.0, seventhInstruction.cst);
-
-		LabelNode eightInstruction = (LabelNode) instructions.get(7);
-
-		assertEquals(label, eightInstruction.getLabel());
+		assertEquals(label, seventhInstruction.getLabel());
 	}
 
 	@Test
@@ -284,10 +283,10 @@ public class BooleanOperationTest
 
 		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
-		assertEquals("java/lang/String", thirdInstruction.owner);
-		assertEquals("length", thirdInstruction.name);
-		assertEquals("()I", thirdInstruction.desc);
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", thirdInstruction.owner);
+		assertEquals("isTruthy", thirdInstruction.name);
+		assertEquals("(Ljava/lang/String;)Z", thirdInstruction.desc);
 
 		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
 		Label label = fourthInstruction.label.getLabel();
