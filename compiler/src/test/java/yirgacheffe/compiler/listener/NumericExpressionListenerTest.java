@@ -414,16 +414,16 @@ public class NumericExpressionListenerTest
 	}
 
 	@Test
-	public void testStringAndDouble() throws Exception
+	public void testObjectAndNumber()
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
 				"public Void method()\n" +
 				"{\n" +
-					"if (\"thingy\" && 0.0)\n" +
+					"if (this && 0)\n" +
 					"{\n" +
-					"	Num one = 1;\n" +
+					"	Num one = 1.0;\n" +
 					"}\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
@@ -439,6 +439,139 @@ public class NumericExpressionListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(9, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label leftLabel = secondInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFNULL, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ICONST_0, thirdInstruction.getOpcode());
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label rightLabel = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DCONST_1, fifthInstruction.getOpcode());
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
+		assertEquals(1, sixthInstruction.var);
+
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+
+		assertEquals(leftLabel, seventhInstruction.getLabel());
+		assertEquals(rightLabel, seventhInstruction.getLabel());
+
+		assertTrue(instructions.get(7) instanceof FrameNode);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.RETURN, ninthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testAssignStringAndDouble()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"Object obj = \"thingy\" && 0.0;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode method = (MethodNode) methods.get(0);
+		InsnList instructions = method.instructions;
+
+		//assertEquals(11, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("thingy", firstInstruction.cst);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Falsyfier", thirdInstruction.owner);
+		assertEquals("isTruthy", thirdInstruction.name);
+		assertEquals("(Ljava/lang/String;)Z", thirdInstruction.desc);
+
+		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		Label label = fourthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DCONST_0, sixthInstruction.getOpcode());
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESTATIC, seventhInstruction.getOpcode());
+		assertEquals("java/lang/Double", seventhInstruction.owner);
+		assertEquals("valueOf", seventhInstruction.name);
+		assertEquals("(D)Ljava/lang/Double;", seventhInstruction.desc);
+
+		LabelNode eighthInstruction = (LabelNode) instructions.get(7);
+
+		assertEquals(label, eighthInstruction.getLabel());
+
+		assertTrue(instructions.get(8) instanceof FrameNode);
+
+		VarInsnNode tenthInstruction = (VarInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.ASTORE, tenthInstruction.getOpcode());
+		assertEquals(1, tenthInstruction.var);
 	}
 
 	@Test
