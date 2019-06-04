@@ -22,7 +22,7 @@ public class NullFunction implements Callable
 
 	public String getDescriptor()
 	{
-		return "()V";
+		return "()" + this.getReturnType().toJVMType();
 	}
 
 	public Type getReturnType()

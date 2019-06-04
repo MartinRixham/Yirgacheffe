@@ -12,7 +12,7 @@ public class NullFunctionTest
 		Callable function = new NullFunction("MyClass.method");
 
 		assertEquals("MyClass.method", function.getName());
-		assertEquals("()V", function.getDescriptor());
+		assertEquals("()Ljava/lang/Object;", function.getDescriptor());
 		assertEquals(0, function.getParameterTypes().length());
 		assertEquals(0, function.checkTypeParameters(null).length());
 	}
