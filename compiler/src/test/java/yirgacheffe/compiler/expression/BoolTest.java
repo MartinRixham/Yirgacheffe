@@ -34,7 +34,7 @@ public class BoolTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
-		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());
+		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -58,6 +58,6 @@ public class BoolTest
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
-		assertEquals("java.lang.Boolean", type.toFullyQualifiedType());
+		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
 	}
 }

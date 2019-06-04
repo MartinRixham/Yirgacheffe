@@ -38,7 +38,7 @@ public class ThisTest
 		assertEquals(0, firstInstruction.var);
 
 		assertEquals(
-			"yirgacheffe.compiler.expression.ThisTest",
+			"yirgacheffe/compiler/expression/ThisTest",
 			type.toFullyQualifiedType());
 	}
 

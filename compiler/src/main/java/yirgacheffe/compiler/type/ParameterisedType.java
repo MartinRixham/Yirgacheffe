@@ -36,7 +36,7 @@ public class ParameterisedType implements Type
 
 	public String toJVMType()
 	{
-		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
+		return "L" + this.toFullyQualifiedType() + ";";
 	}
 
 	public String toFullyQualifiedType()
@@ -79,7 +79,7 @@ public class ParameterisedType implements Type
 			typeNames.push(this.typeParameters.get(type.getName()).toString());
 		}
 
-		return this.toFullyQualifiedType() +
+		return this.primaryType +
 			"<" + String.join(",", typeNames) + ">";
 	}
 

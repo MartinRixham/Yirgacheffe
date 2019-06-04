@@ -23,7 +23,7 @@ public class VariableType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		return "java.lang.Object";
+		return "java/lang/Object";
 	}
 
 	public int width()

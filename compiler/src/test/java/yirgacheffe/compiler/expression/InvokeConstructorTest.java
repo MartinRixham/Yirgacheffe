@@ -76,7 +76,7 @@ public class InvokeConstructorTest
 		assertEquals("(D)V", sixthInstruction.desc);
 		assertFalse(sixthInstruction.itf);
 
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test

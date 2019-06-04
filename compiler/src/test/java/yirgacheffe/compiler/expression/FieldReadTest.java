@@ -67,7 +67,7 @@ public class FieldReadTest
 		assertEquals("length", fourthInstruction.name);
 		assertEquals("D", fourthInstruction.desc);
 
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test

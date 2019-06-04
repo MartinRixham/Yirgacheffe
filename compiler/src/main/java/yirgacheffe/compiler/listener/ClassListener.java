@@ -59,7 +59,7 @@ public class ClassListener extends PackageListener
 		for (int i = 0; i < this.interfaces.length(); i++)
 		{
 			interfaces[i] =
-				this.interfaces.get(i).toFullyQualifiedType().replace(".", "/");
+				this.interfaces.get(i).toFullyQualifiedType();
 		}
 
 		ClassSignature signature =

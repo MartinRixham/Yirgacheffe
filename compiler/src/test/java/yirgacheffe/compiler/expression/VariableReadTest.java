@@ -44,7 +44,7 @@ public class VariableReadTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class VariableReadTest
 		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class VariableReadTest
 		assertEquals(Opcodes.ILOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+		assertEquals("java/lang/Integer", type.toFullyQualifiedType());
 	}
 
 	@Test

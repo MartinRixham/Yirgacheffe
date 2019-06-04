@@ -64,10 +64,7 @@ public class InvokeConstructor implements Expression
 			return matchResult.getErrors();
 		}
 
-		String typeWithSlashes =
-			this.owner.toFullyQualifiedType().replace(".", "/");
-
-		methodVisitor.visitTypeInsn(Opcodes.NEW, typeWithSlashes);
+		methodVisitor.visitTypeInsn(Opcodes.NEW, this.owner.toFullyQualifiedType());
 		methodVisitor.visitInsn(Opcodes.DUP);
 
 		Array<Error> errors = new Array<>();
@@ -81,7 +78,7 @@ public class InvokeConstructor implements Expression
 
 		methodVisitor.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
-			typeWithSlashes,
+			this.owner.toFullyQualifiedType(),
 			"<init>",
 			matchResult.getFunction().getDescriptor(),
 			false);

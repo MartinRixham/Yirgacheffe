@@ -39,7 +39,7 @@ public class FieldRead implements Expression
 
 		methodVisitor.visitFieldInsn(
 			Opcodes.GETFIELD,
-			this.owner.getType(variables).toFullyQualifiedType().replace(".", "/"),
+			this.owner.getType(variables).toFullyQualifiedType(),
 			this.name,
 			this.type.toJVMType());
 

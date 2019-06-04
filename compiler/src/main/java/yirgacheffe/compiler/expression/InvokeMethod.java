@@ -101,9 +101,9 @@ public class InvokeMethod implements Expression
 		{
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
-				this.withSlashes(owner),
+				owner.toFullyQualifiedType(),
 				"valueOf",
-				"(" + owner.toJVMType() + ")L" + this.withSlashes(owner) + ";",
+				"(" + owner.toJVMType() + ")L" + owner.toFullyQualifiedType() + ";",
 				false);
 		}
 
@@ -111,7 +111,7 @@ public class InvokeMethod implements Expression
 
 		this.coordinate.compile(methodVisitor);
 
-		String ownerDescriptor = this.withSlashes(owner);
+		String ownerDescriptor = owner.toFullyQualifiedType();
 
 		String descriptor =
 			'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
@@ -144,7 +144,9 @@ public class InvokeMethod implements Expression
 
 		if (returnType instanceof GenericType)
 		{
-			methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, this.withSlashes(returnType));
+			methodVisitor.visitTypeInsn(
+				Opcodes.CHECKCAST,
+				returnType.toFullyQualifiedType());
 
 			if (returnType.isPrimitive())
 			{
@@ -152,7 +154,7 @@ public class InvokeMethod implements Expression
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
 					"ofValue",
-					"(L" + this.withSlashes(returnType) + ";)" +
+					"(L" + returnType.toFullyQualifiedType() + ";)" +
 						returnType.getSignature(),
 					false);
 			}
@@ -188,11 +190,6 @@ public class InvokeMethod implements Expression
 		Array<Type> parameters = function.getParameterTypes();
 
 		return arguments.compile(parameters, methodVisitor, variables);
-	}
-
-	private String withSlashes(Type type)
-	{
-		return type.toFullyQualifiedType().replace(".", "/");
 	}
 
 	public Array<VariableRead> getVariableReads()

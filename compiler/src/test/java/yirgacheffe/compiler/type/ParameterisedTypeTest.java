@@ -22,7 +22,7 @@ public class ParameterisedTypeTest
 
 		assertEquals("java.util.List<java.lang.String>", type.toString());
 		assertEquals(List.class, type.reflectionClass());
-		assertEquals("java.util.List", type.toFullyQualifiedType());
+		assertEquals("java/util/List", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/List;", type.toJVMType());
 		assertEquals("Ljava/util/List<Ljava/lang/String;>;", type.getSignature());
 		assertEquals(1, type.width());

@@ -93,7 +93,7 @@ public class InvokeMethodTest
 			"(Ljava/lang/String;)Ljava/lang/String;",
 			fourthInstruction.desc);
 
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"yirgacheffe.compiler.expression.InvokeMethodTest",
+				"yirgacheffe/compiler/expression/InvokeMethodTest",
 				expression,
 				new Array<>());
 
@@ -146,7 +146,7 @@ public class InvokeMethodTest
 			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;)V",
 			fourthInstruction.desc);
 
-		assertEquals("java.lang.Void", type.toFullyQualifiedType());
+		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -201,7 +201,7 @@ public class InvokeMethodTest
 			"(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;",
 			fifthInstruction.desc);
 
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -235,7 +235,7 @@ public class InvokeMethodTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("sumpt", firstInstruction.cst);
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -273,7 +273,7 @@ public class InvokeMethodTest
 		InsnList instructions = methodVisitor.instructions;
 
 		assertEquals(12, instructions.size());
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 
 		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
 		Label label = thirdInstruction.getLabel();
@@ -415,7 +415,7 @@ public class InvokeMethodTest
 		InsnList instructions = methodVisitor.instructions;
 
 		assertEquals(4, instructions.size());
-		assertEquals("java.lang.Void", type.toFullyQualifiedType());
+		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

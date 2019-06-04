@@ -36,7 +36,7 @@ public class StreengTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thingy", firstInstruction.cst);
 
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -61,6 +61,6 @@ public class StreengTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("thi\"ngy", firstInstruction.cst);
 
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 	}
 }

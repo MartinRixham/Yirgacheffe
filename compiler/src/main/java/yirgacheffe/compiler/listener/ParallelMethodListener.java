@@ -80,7 +80,7 @@ public class ParallelMethodListener extends MethodListener
 
 		ClassWriter writer =
 			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-		String returnType = this.returnType.toFullyQualifiedType().replace(".", "/");
+		String returnType = this.returnType.toFullyQualifiedType();
 
 		writer.visit(
 			Opcodes.V1_8,

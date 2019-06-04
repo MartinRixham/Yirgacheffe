@@ -18,12 +18,12 @@ public class ReferenceType implements Type
 
 	public String toJVMType()
 	{
-		return "L" + this.toFullyQualifiedType().replace('.', '/') + ";";
+		return "L" + this.toFullyQualifiedType() + ";";
 	}
 
 	public String toFullyQualifiedType()
 	{
-		return this.reflectionClass.getName();
+		return this.reflectionClass.getName().replace('.', '/');
 	}
 
 	public int width()
@@ -53,7 +53,7 @@ public class ReferenceType implements Type
 
 	public String toString()
 	{
-		return this.toFullyQualifiedType();
+		return this.reflectionClass.getName();
 	}
 
 	public boolean isAssignableTo(Type other)

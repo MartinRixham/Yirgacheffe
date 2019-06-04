@@ -76,7 +76,7 @@ public enum PrimitiveType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		return this.reflectionClass.getName();
+		return this.reflectionClass.getName().replace('.', '/');
 	}
 
 	public int width()

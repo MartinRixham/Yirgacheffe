@@ -56,7 +56,7 @@ public class TypeListener extends ImplementationListener
 		else if (typeParameters.length != context.typeParameters().type().size())
 		{
 			String message =
-				"Type " + type.toFullyQualifiedType() + " requires " +
+				"Type " + type.toFullyQualifiedType().replace('/', '.') + " requires " +
 				typeParameters.length + " parameter(s) but found " +
 				context.typeParameters().type().size() + ".";
 

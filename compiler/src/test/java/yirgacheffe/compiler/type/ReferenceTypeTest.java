@@ -18,7 +18,7 @@ public class ReferenceTypeTest
 
 		assertEquals("java.lang.String", type.toString());
 		assertEquals(loadedClass, type.reflectionClass());
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
 		assertEquals(1, type.width());

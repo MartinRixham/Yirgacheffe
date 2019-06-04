@@ -128,11 +128,11 @@ public class Arguments
 
 				String descriptor =
 					"(" + argumentType.toJVMType() + ")L" +
-						this.withSlashes(argumentType) + ";";
+						argumentType.toFullyQualifiedType() + ";";
 
 				methodVisitor.visitMethodInsn(
 					Opcodes.INVOKESTATIC,
-					this.withSlashes(argumentType),
+					argumentType.toFullyQualifiedType(),
 					"valueOf",
 					descriptor,
 					false);
@@ -140,10 +140,5 @@ public class Arguments
 		}
 
 		return errors;
-	}
-
-	private String withSlashes(Type type)
-	{
-		return type.toFullyQualifiedType().replace(".", "/");
 	}
 }

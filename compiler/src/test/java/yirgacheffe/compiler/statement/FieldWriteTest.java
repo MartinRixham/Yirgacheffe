@@ -70,7 +70,7 @@ public class FieldWriteTest
 		assertEquals("myField", thirdInstruction.name);
 		assertEquals("Ljava/lang/String;", thirdInstruction.desc);
 		assertEquals(
-			"yirgacheffe.compiler.statement.FieldWriteTest",
+			"yirgacheffe/compiler/statement/FieldWriteTest",
 			thirdInstruction.owner);
 	}
 

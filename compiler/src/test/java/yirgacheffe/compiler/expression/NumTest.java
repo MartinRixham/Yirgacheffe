@@ -35,7 +35,7 @@ public class NumTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class NumTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 	@Test
 	public void testCompilingIntegerZero()
@@ -80,7 +80,7 @@ public class NumTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
-		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+		assertEquals("java/lang/Integer", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class NumTest
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
-		assertEquals("java.lang.Integer", type.toFullyQualifiedType());
+		assertEquals("java/lang/Integer", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -128,7 +128,7 @@ public class NumTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(2.0, firstInstruction.cst);
 
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class NumTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(0.5, firstInstruction.cst);
 
-		assertEquals("java.lang.Double", type.toFullyQualifiedType());
+		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -177,6 +177,6 @@ public class NumTest
 
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(2L, firstInstruction.cst);
-		assertEquals("java.lang.Long", type.toFullyQualifiedType());
+		assertEquals("java/lang/Long", type.toFullyQualifiedType());
 	}
 }

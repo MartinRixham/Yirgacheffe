@@ -40,6 +40,6 @@ public class CharTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals('r', firstInstruction.cst);
 
-		assertEquals("java.lang.Character", type.toFullyQualifiedType());
+		assertEquals("java/lang/Character", type.toFullyQualifiedType());
 	}
 }

@@ -20,7 +20,7 @@ public class IntersectionTypeTest
 
 		assertEquals("java.lang.String", type.toString());
 		assertEquals(String.class, type.reflectionClass());
-		assertEquals("java.lang.String", type.toFullyQualifiedType());
+		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
 		assertEquals(1, type.width());

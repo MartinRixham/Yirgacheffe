@@ -170,7 +170,7 @@ public class MethodListener extends FieldDeclarationListener
 			{
 				String toType =
 					to.getParameters().get(i)
-						.toFullyQualifiedType().replace(".", "/");
+						.toFullyQualifiedType();
 
 				methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, toType);
 			}

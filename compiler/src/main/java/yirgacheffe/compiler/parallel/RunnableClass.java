@@ -257,7 +257,7 @@ public class RunnableClass
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKEINTERFACE,
-				this.type.toFullyQualifiedType().replace(".", "/"),
+				this.type.toFullyQualifiedType(),
 				method.getName(),
 				function.getDescriptor(),
 				true);
