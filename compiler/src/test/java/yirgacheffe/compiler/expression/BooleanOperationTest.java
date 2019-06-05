@@ -13,6 +13,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -37,8 +38,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -98,8 +98,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -150,8 +149,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -202,8 +200,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -256,8 +253,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -320,8 +316,7 @@ public class BooleanOperationTest
 
 		BooleanOperation or =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 
@@ -344,8 +339,7 @@ public class BooleanOperationTest
 
 		Expression operation =
 			new BooleanOperation(
-				Opcodes.IFEQ,
-				Opcodes.IFNULL,
+				BooleanOperator.AND,
 				firstOperand,
 				secondOperand);
 

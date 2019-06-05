@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Opcodes;
 import org.junit.Test;
+import yirgacheffe.compiler.operator.Operator;
 
 import static org.junit.Assert.assertEquals;
 

@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -13,22 +14,18 @@ import yirgacheffe.lang.Array;
 
 public class BooleanOperation implements Expression
 {
-	private int integerComparisonOpcode;
-
-	private int referenceComparisonOpcode;
+	private BooleanOperator operator;
 
 	private Expression firstOperand;
 
 	private Expression secondOperand;
 
 	public BooleanOperation(
-		int comparisonOpcode,
-		int referenceComparisonOpcode,
+		BooleanOperator operator,
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-		this.integerComparisonOpcode = comparisonOpcode;
-		this.referenceComparisonOpcode = referenceComparisonOpcode;
+		this.operator = operator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
 	}
@@ -107,11 +104,11 @@ public class BooleanOperation implements Expression
 				"(D)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
 		}
 		else if (firstType.isPrimitive())
 		{
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
 		}
 		else if (firstType.isAssignableTo(new ReferenceType(String.class)))
 		{
@@ -122,11 +119,11 @@ public class BooleanOperation implements Expression
 				"(Ljava/lang/String;)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(this.integerComparisonOpcode, label);
+			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(this.referenceComparisonOpcode, label);
+			methodVisitor.visitJumpInsn(this.operator.referenceOpcode(), label);
 		}
 	}
 

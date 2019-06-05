@@ -338,7 +338,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(10, instructions.size());
+		assertEquals(11, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -358,28 +358,31 @@ public class NumericExpressionListenerTest
 
 		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
 
-		assertEquals(Opcodes.DCONST_0, fifthInstruction.getOpcode());
+		assertEquals(leftLabel, fifthInstruction.getLabel());
 
 		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.DRETURN, sixthInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_0, sixthInstruction.getOpcode());
 
-		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(leftLabel, seventhInstruction.getLabel());
-		assertEquals(rightLabel, seventhInstruction.getLabel());
+		assertEquals(Opcodes.DRETURN, seventhInstruction.getOpcode());
 
-		assertTrue(instructions.get(7) instanceof FrameNode);
+		LabelNode eighthInstruction = (LabelNode) instructions.get(7);
 
-		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+		assertEquals(rightLabel, eighthInstruction.getLabel());
 
-		assertEquals(Opcodes.DCONST_1, ninthInstruction.getOpcode());
+		assertTrue(instructions.get(8) instanceof FrameNode);
 
 		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
 
-		assertEquals(Opcodes.DRETURN, tenthInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_1, tenthInstruction.getOpcode());
+
+		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DRETURN, eleventhInstruction.getOpcode());
 	}
 
 	@Test

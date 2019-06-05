@@ -1,12 +1,12 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.BinaryOperation;
 import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
-import yirgacheffe.compiler.expression.Operator;
+import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.expression.StringConcatenation;
 import yirgacheffe.compiler.expression.UnaryOperation;
 import yirgacheffe.compiler.type.Classes;
@@ -173,8 +173,7 @@ public class NumericExpressionListener extends FunctionCallListener
 
 			BooleanOperation and =
 				new BooleanOperation(
-					Opcodes.IFEQ,
-					Opcodes.IFNULL,
+					BooleanOperator.AND,
 					firstOperand,
 					secondOperand);
 
@@ -201,8 +200,7 @@ public class NumericExpressionListener extends FunctionCallListener
 
 			BooleanOperation or =
 				new BooleanOperation(
-					Opcodes.IFNE,
-					Opcodes.IFNONNULL,
+					BooleanOperator.OR,
 					firstOperand,
 					secondOperand);
 

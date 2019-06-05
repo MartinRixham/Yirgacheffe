@@ -19,7 +19,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
-import yirgacheffe.compiler.expression.Operator;
+import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;

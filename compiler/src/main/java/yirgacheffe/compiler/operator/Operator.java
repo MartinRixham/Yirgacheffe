@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.expression;
+package yirgacheffe.compiler.operator;
 
 import org.objectweb.asm.Opcodes;
 
