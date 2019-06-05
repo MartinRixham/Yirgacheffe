@@ -29,7 +29,7 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
-		assertTrue(type.isPrimitive());
+		assertFalse(type.isPrimitive());
 		assertNotEquals(type, new ReferenceType(String.class));
 		assertEquals(type.hashCode(), secondType.hashCode());
 	}

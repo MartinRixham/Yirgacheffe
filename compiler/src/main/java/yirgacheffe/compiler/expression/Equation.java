@@ -19,7 +19,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Equation implements Expression
+public class Equation implements Expression, Condition
 {
 	private Coordinate coordinate;
 
@@ -66,7 +66,7 @@ public class Equation implements Expression
 
 		Label trueLabel	= new Label();
 
-		errors = this.compileComparison(methodVisitor, variables, trueLabel);
+		errors = this.compileCondition(methodVisitor, variables, trueLabel);
 
 		methodVisitor.visitInsn(Opcodes.ICONST_1);
 
@@ -80,7 +80,7 @@ public class Equation implements Expression
 		return errors;
 	}
 
-	public Array<Error> compileComparison(
+	public Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
 		Label label)

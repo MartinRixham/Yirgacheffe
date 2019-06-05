@@ -4,8 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.expression.BooleanOperation;
-import yirgacheffe.compiler.expression.Equation;
+import yirgacheffe.compiler.expression.Condition;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -43,15 +42,17 @@ public class If implements ConditionalStatement
 		Array<Error> errors = new Array<>();
 		Type type = this.condition.getType(variables);
 
-		if (this.condition instanceof Equation)
+		if (this.condition instanceof Condition)
 		{
-			Equation equation = (Equation) this.condition;
+			Condition condition = (Condition) this.condition;
 
-			equation.compileComparison(methodVisitor, variables, this.label);
+			errors =
+				errors.concat(
+					condition.compileCondition(methodVisitor, variables, this.label));
 		}
 		else if (type.equals(PrimitiveType.DOUBLE))
 		{
-			errors = errors.concat(this.compileCondition(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
@@ -64,13 +65,13 @@ public class If implements ConditionalStatement
 		}
 		else if (type.isPrimitive())
 		{
-			errors = errors.concat(this.compileCondition(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
 		}
 		else if (type.isAssignableTo(new ReferenceType(String.class)))
 		{
-			errors = errors.concat(this.compileCondition(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
@@ -83,7 +84,7 @@ public class If implements ConditionalStatement
 		}
 		else
 		{
-			errors = errors.concat(this.compileCondition(methodVisitor, variables));
+			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
 			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.label);
 		}
@@ -91,25 +92,6 @@ public class If implements ConditionalStatement
 		errors.push(this.statement.compile(methodVisitor, variables, caller));
 
 		return errors;
-	}
-
-	private Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables)
-	{
-		if (this.condition instanceof BooleanOperation)
-		{
-			BooleanOperation booleanOperation = (BooleanOperation) this.condition;
-
-			return booleanOperation.compileCondition(
-				methodVisitor,
-				variables,
-				this.label);
-		}
-		else
-		{
-			return this.condition.compile(methodVisitor, variables);
-		}
 	}
 
 	public Label getLabel()

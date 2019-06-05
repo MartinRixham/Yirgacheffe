@@ -338,7 +338,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(11, instructions.size());
+		assertEquals(12, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -362,27 +362,29 @@ public class NumericExpressionListenerTest
 
 		assertEquals(leftLabel, fifthInstruction.getLabel());
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
-
-		assertEquals(Opcodes.DCONST_0, sixthInstruction.getOpcode());
+		assertTrue(instructions.get(5) instanceof FrameNode);
 
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.DRETURN, seventhInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_0, seventhInstruction.getOpcode());
 
-		LabelNode eighthInstruction = (LabelNode) instructions.get(7);
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
 
-		assertEquals(rightLabel, eighthInstruction.getLabel());
+		assertEquals(Opcodes.DRETURN, eighthInstruction.getOpcode());
 
-		assertTrue(instructions.get(8) instanceof FrameNode);
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
 
-		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
+		assertEquals(rightLabel, ninthInstruction.getLabel());
 
-		assertEquals(Opcodes.DCONST_1, tenthInstruction.getOpcode());
+		assertTrue(instructions.get(9) instanceof FrameNode);
 
 		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
 
-		assertEquals(Opcodes.DRETURN, eleventhInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_1, eleventhInstruction.getOpcode());
+
+		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.DRETURN, twelfthInstruction.getOpcode());
 	}
 
 	@Test
@@ -524,7 +526,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		//assertEquals(11, instructions.size());
+		assertEquals(11, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 

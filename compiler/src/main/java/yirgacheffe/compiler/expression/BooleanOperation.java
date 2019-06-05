@@ -12,7 +12,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class BooleanOperation implements Expression
+public class BooleanOperation implements Expression, Condition
 {
 	private BooleanOperator operator;
 
@@ -43,8 +43,9 @@ public class BooleanOperation implements Expression
 		Array<Error> errors = new Array<>();
 		Label label = new Label();
 		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
 
-		this.firstOperand.compile(methodVisitor, variables);
+		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
 
 		if (firstType.width() == 2)
 		{
@@ -55,7 +56,7 @@ public class BooleanOperation implements Expression
 			methodVisitor.visitInsn(Opcodes.DUP);
 		}
 
-		this.compileComparison(methodVisitor, label, firstType);
+		this.compileComparison(methodVisitor, this.operator, label, firstType);
 
 		if (firstType.width() == 2)
 		{
@@ -66,7 +67,21 @@ public class BooleanOperation implements Expression
 			methodVisitor.visitInsn(Opcodes.POP);
 		}
 
-		this.secondOperand.compile(methodVisitor, variables);
+		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+
+		if (!firstType.isPrimitive() && secondType.isPrimitive())
+		{
+			String descriptor =
+				"(" + secondType.toJVMType() + ")L" +
+					secondType.toFullyQualifiedType() + ";";
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				secondType.toFullyQualifiedType(),
+				"valueOf",
+				descriptor,
+				false);
+		}
 
 		methodVisitor.visitLabel(label);
 
@@ -80,22 +95,50 @@ public class BooleanOperation implements Expression
 	{
 		Array<Error> errors = new Array<>();
 		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
 
-		this.firstOperand.compile(methodVisitor, variables);
+		Label leftLabel;
 
-		this.compileComparison(methodVisitor, label, firstType);
+		if (this.operator == BooleanOperator.OR)
+		{
+			leftLabel = new Label();
+		}
+		else
+		{
+			leftLabel = label;
+		}
 
-		this.secondOperand.compile(methodVisitor, variables);
+		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+
+		this.compileComparison(
+			methodVisitor,
+			this.operator,
+			leftLabel,
+			firstType);
+
+		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+
+		this.compileComparison(
+			methodVisitor,
+			BooleanOperator.AND,
+			label,
+			secondType);
+
+		if (this.operator == BooleanOperator.OR)
+		{
+			methodVisitor.visitLabel(leftLabel);
+		}
 
 		return errors;
 	}
 
 	private void compileComparison(
 		MethodVisitor methodVisitor,
+		BooleanOperator operator,
 		Label label,
-		Type firstType)
+		Type type)
 	{
-		if (firstType.equals(PrimitiveType.DOUBLE))
+		if (type.equals(PrimitiveType.DOUBLE))
 		{
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
@@ -104,13 +147,13 @@ public class BooleanOperation implements Expression
 				"(D)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
+			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
 		}
-		else if (firstType.isPrimitive())
+		else if (type.isPrimitive())
 		{
-			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
+			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
 		}
-		else if (firstType.isAssignableTo(new ReferenceType(String.class)))
+		else if (type.isAssignableTo(new ReferenceType(String.class)))
 		{
 			methodVisitor.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
@@ -119,11 +162,11 @@ public class BooleanOperation implements Expression
 				"(Ljava/lang/String;)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(this.operator.integerOpcode(), label);
+			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(this.operator.referenceOpcode(), label);
+			methodVisitor.visitJumpInsn(operator.referenceOpcode(), label);
 		}
 	}
 

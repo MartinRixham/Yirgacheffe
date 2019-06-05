@@ -125,7 +125,6 @@ public class Arguments
 			if (argumentType.isPrimitive() &&
 				!parameters.get(i).isPrimitive())
 			{
-
 				String descriptor =
 					"(" + argumentType.toJVMType() + ")L" +
 						argumentType.toFullyQualifiedType() + ";";
