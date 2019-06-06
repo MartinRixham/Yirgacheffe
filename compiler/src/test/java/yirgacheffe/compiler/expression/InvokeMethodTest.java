@@ -68,6 +68,7 @@ public class InvokeMethodTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertFalse(invokeMethod.isCondition(variables));
 		assertEquals(4, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
@@ -410,10 +411,12 @@ public class InvokeMethodTest
 
 		Type type = invokeMethod.getType(variables);
 
-		invokeMethod.compile(methodVisitor, variables);
+		Array<Error> errors =
+			invokeMethod.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals(0, errors.length());
 		assertEquals(4, instructions.size());
 		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 

@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -12,6 +13,7 @@ import yirgacheffe.compiler.type.Variables;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class NumTest
 {
@@ -29,6 +31,7 @@ public class NumTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertFalse(literal.isCondition(variables));
 		assertEquals(0.0, literal.getValue());
 		assertEquals(1, instructions.size());
 
@@ -166,7 +169,7 @@ public class NumTest
 
 		Type type = literal.getType(variables);
 
-		literal.compile(methodVisitor, variables);
+		literal.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 

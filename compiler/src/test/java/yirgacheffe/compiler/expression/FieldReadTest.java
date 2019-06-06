@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -19,6 +20,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FieldReadTest
@@ -41,10 +43,13 @@ public class FieldReadTest
 
 		Type type = fieldRead.getType(variables);
 
-		fieldRead.compile(methodVisitor, variables);
+		Array<Error> errors =
+			fieldRead.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals(0, errors.length());
+		assertFalse(fieldRead.isCondition(variables));
 		assertEquals(4, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);

@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -17,6 +18,19 @@ public class Nothing implements Expression
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
 		return new Array<>();
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		return this.compile(methodVisitor, variables);
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return false;
 	}
 
 	public Array<VariableRead> getVariableReads()

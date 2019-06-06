@@ -19,7 +19,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class Equation implements Expression, Condition
+public class Equation implements Expression
 {
 	private Coordinate coordinate;
 
@@ -154,6 +154,11 @@ public class Equation implements Expression, Condition
 			false);
 
 		return errors;
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return true;
 	}
 
 	public Array<VariableRead> getVariableReads()

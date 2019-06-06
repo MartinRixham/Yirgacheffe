@@ -46,6 +46,7 @@ public class BooleanOperationTest
 
 		Array<Error> errors = or.compile(methodVisitor, variables);
 
+		assertTrue(or.isCondition(variables));
 		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
 		assertEquals(0, errors.length());
 

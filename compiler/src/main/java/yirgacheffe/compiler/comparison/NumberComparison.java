@@ -54,17 +54,17 @@ public class NumberComparison implements Comparison
 
 		if (firstPrimitive.order() < secondPrimitive.order())
 		{
-			this.firstOperand.compile(methodVisitor, variables);
+			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
 
 			methodVisitor.visitInsn(firstPrimitive.convertTo(secondPrimitive));
 
-			this.secondOperand.compile(methodVisitor, variables);
+			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 			this.comparator.compile(methodVisitor, label, secondType);
 		}
 		else if (firstPrimitive.order() > secondPrimitive.order())
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-			this.secondOperand.compile(methodVisitor, variables);
+			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 
 			methodVisitor.visitInsn(secondPrimitive.convertTo(firstPrimitive));
 
@@ -72,8 +72,8 @@ public class NumberComparison implements Comparison
 		}
 		else
 		{
-			this.firstOperand.compile(methodVisitor, variables);
-			this.secondOperand.compile(methodVisitor, variables);
+			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 			this.comparator.compile(methodVisitor, label, firstType);
 		}
 

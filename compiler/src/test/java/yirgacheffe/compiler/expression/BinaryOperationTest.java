@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -18,6 +19,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BinaryOperationTest
@@ -41,6 +43,7 @@ public class BinaryOperationTest
 
 		Array<Error> errors = operation.compile(methodVisitor, variables);
 
+		assertFalse(operation.isCondition(variables));
 		assertEquals(PrimitiveType.INT, type);
 		assertEquals(0, errors.length());
 
@@ -253,7 +256,8 @@ public class BinaryOperationTest
 
 		Type type = operation.getType(variables);
 
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Array<Error> errors =
+			operation.compileCondition(methodVisitor, variables, new Label());
 
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, errors.length());

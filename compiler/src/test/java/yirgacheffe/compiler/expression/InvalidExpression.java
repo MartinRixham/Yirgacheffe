@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -27,6 +28,19 @@ public class InvalidExpression implements Expression
 		Error error = new Error(coordinate, "This expression is not valid.");
 
 		return new Array<>(error);
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		return new Array<>();
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return false;
 	}
 
 	public Array<VariableRead> getVariableReads()

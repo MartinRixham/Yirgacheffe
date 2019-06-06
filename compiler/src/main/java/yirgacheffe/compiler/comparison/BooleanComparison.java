@@ -51,8 +51,8 @@ public class BooleanComparison implements Comparison
 			return errors;
 		}
 
-		this.firstOperand.compile(methodVisitor, variables);
-		this.secondOperand.compile(methodVisitor, variables);
+		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
 		this.comparator.compile(methodVisitor, label, firstType);
 
 		return errors;

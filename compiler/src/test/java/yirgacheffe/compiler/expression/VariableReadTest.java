@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
@@ -15,6 +16,7 @@ import yirgacheffe.compiler.type.Type;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 public class VariableReadTest
@@ -37,6 +39,7 @@ public class VariableReadTest
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertFalse(expression.isCondition(variables));
 		assertEquals(1, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
@@ -89,7 +92,7 @@ public class VariableReadTest
 
 		Type type = expression.getType(variables);
 
-		expression.compile(methodVisitor, variables);
+		expression.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 

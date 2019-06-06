@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -58,6 +59,37 @@ public class VariableRead implements Expression
 		}
 
 		return new Array<>();
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		if (variables.canOptimise(this))
+		{
+			Expression expression = variables.getOptimisedExpression(this);
+
+			return expression.compileCondition(methodVisitor, variables, label);
+		}
+		else
+		{
+			return this.compile(methodVisitor, variables);
+		}
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		if (variables.canOptimise(this))
+		{
+			Expression expression = variables.getOptimisedExpression(this);
+
+			return expression.isCondition(variables);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public Coordinate getCoordinate()

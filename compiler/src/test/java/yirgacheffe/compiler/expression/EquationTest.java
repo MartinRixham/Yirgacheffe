@@ -46,6 +46,7 @@ public class EquationTest
 
 		Array<Error> errors = equation.compile(methodVisitor, variables);
 
+		assertTrue(equation.isCondition(variables));
 		assertEquals(PrimitiveType.BOOLEAN, type);
 		assertEquals(0, errors.length());
 

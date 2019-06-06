@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
@@ -31,7 +32,7 @@ public class Negation implements Expression
 		Array<Error> errors = this.expression.compile(methodVisitor, variables);
 		Type type = this.expression.getType(variables);
 
-		if (type != PrimitiveType.DOUBLE)
+		if (!type.isAssignableTo(PrimitiveType.DOUBLE))
 		{
 			String message = "Cannot negate " + type + ".";
 
@@ -41,6 +42,19 @@ public class Negation implements Expression
 		methodVisitor.visitInsn(Opcodes.DNEG);
 
 		return errors;
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		return this.compile(methodVisitor, variables);
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return false;
 	}
 
 	public Array<VariableRead> getVariableReads()

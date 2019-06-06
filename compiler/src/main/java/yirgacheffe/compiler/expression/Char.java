@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -26,6 +27,19 @@ public class Char implements Expression, Literal
 		methodVisitor.visitLdcInsn(this.getValue());
 
 		return new Array<>();
+	}
+
+	public Array<Error> compileCondition(
+		MethodVisitor methodVisitor,
+		Variables variables,
+		Label label)
+	{
+		return this.compile(methodVisitor, variables);
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return false;
 	}
 
 	public Array<VariableRead> getVariableReads()

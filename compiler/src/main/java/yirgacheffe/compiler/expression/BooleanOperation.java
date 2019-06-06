@@ -12,7 +12,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
-public class BooleanOperation implements Expression, Condition
+public class BooleanOperation implements Expression
 {
 	private BooleanOperator operator;
 
@@ -56,9 +56,24 @@ public class BooleanOperation implements Expression, Condition
 			methodVisitor.visitInsn(Opcodes.DUP);
 		}
 
+		if (firstType.isPrimitive() && !secondType.isPrimitive())
+		{
+			this.compileBoxingCall(methodVisitor, firstType);
+
+			if (firstType.width() == 2)
+			{
+				methodVisitor.visitInsn(Opcodes.DUP_X2);
+				methodVisitor.visitInsn(Opcodes.POP);
+			}
+			else
+			{
+				methodVisitor.visitInsn(Opcodes.SWAP);
+			}
+		}
+
 		this.compileComparison(methodVisitor, this.operator, label, firstType);
 
-		if (firstType.width() == 2)
+		if (firstType.width() == 2 && secondType.width() == 2)
 		{
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
@@ -67,25 +82,32 @@ public class BooleanOperation implements Expression, Condition
 			methodVisitor.visitInsn(Opcodes.POP);
 		}
 
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+		errors =
+			errors.concat(
+				this.secondOperand.compile(methodVisitor, variables));
 
 		if (!firstType.isPrimitive() && secondType.isPrimitive())
 		{
-			String descriptor =
-				"(" + secondType.toJVMType() + ")L" +
-					secondType.toFullyQualifiedType() + ";";
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				secondType.toFullyQualifiedType(),
-				"valueOf",
-				descriptor,
-				false);
+			this.compileBoxingCall(methodVisitor, secondType);
 		}
 
 		methodVisitor.visitLabel(label);
 
 		return errors;
+	}
+
+	private void compileBoxingCall(MethodVisitor methodVisitor, Type type)
+	{
+		String descriptor =
+			"(" + type.toJVMType() + ")L" +
+				type.toFullyQualifiedType() + ";";
+
+		methodVisitor.visitMethodInsn(
+			Opcodes.INVOKESTATIC,
+			type.toFullyQualifiedType(),
+			"valueOf",
+			descriptor,
+			false);
 	}
 
 	public Array<Error> compileCondition(
@@ -116,7 +138,9 @@ public class BooleanOperation implements Expression, Condition
 			leftLabel,
 			firstType);
 
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+		errors =
+			errors.concat(
+				this.secondOperand.compileCondition(methodVisitor, variables, label));
 
 		this.compileComparison(
 			methodVisitor,
@@ -168,6 +192,11 @@ public class BooleanOperation implements Expression, Condition
 		{
 			methodVisitor.visitJumpInsn(operator.referenceOpcode(), label);
 		}
+	}
+
+	public boolean isCondition(Variables variables)
+	{
+		return true;
 	}
 
 	public Array<VariableRead> getVariableReads()

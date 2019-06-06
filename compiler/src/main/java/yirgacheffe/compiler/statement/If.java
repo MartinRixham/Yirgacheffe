@@ -4,7 +4,6 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.expression.Condition;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -42,13 +41,14 @@ public class If implements ConditionalStatement
 		Array<Error> errors = new Array<>();
 		Type type = this.condition.getType(variables);
 
-		if (this.condition instanceof Condition)
+		if (this.condition.isCondition(variables))
 		{
-			Condition condition = (Condition) this.condition;
-
 			errors =
 				errors.concat(
-					condition.compileCondition(methodVisitor, variables, this.label));
+					this.condition.compileCondition(
+						methodVisitor,
+						variables,
+						this.label));
 		}
 		else if (type.equals(PrimitiveType.DOUBLE))
 		{

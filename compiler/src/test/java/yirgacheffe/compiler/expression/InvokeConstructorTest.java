@@ -42,10 +42,13 @@ public class InvokeConstructorTest
 
 		Type type = invokeConstructor.getType(variables);
 
-		invokeConstructor.compile(methodVisitor, variables);
+		Array<Error> errors =
+			invokeConstructor.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertFalse(invokeConstructor.isCondition(variables));
+		assertEquals(0, errors.length());
 		assertEquals(6, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
