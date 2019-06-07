@@ -6,8 +6,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
 
@@ -52,10 +54,12 @@ public class StreengTest
 
 		Type type = literal.getType(variables);
 
-		literal.compileCondition(methodVisitor, variables, new Label());
+		Array<Error> errors =
+			literal.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals(0, errors.length());
 		assertEquals("thi\"ngy", literal.getValue());
 		assertEquals(1, instructions.size());
 

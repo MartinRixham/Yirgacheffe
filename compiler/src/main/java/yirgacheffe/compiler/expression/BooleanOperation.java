@@ -138,19 +138,26 @@ public class BooleanOperation implements Expression
 			leftLabel,
 			firstType);
 
-		errors =
-			errors.concat(
-				this.secondOperand.compileCondition(methodVisitor, variables, label));
-
-		this.compileComparison(
-			methodVisitor,
-			BooleanOperator.AND,
-			label,
-			secondType);
-
-		if (this.operator == BooleanOperator.OR)
+		if (this.secondOperand.isCondition(variables))
 		{
-			methodVisitor.visitLabel(leftLabel);
+			errors =
+				errors.concat(
+					this.secondOperand.compileCondition(methodVisitor, variables, label));
+		}
+		else
+		{
+			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+
+			this.compileComparison(
+				methodVisitor,
+				BooleanOperator.AND,
+				label,
+				secondType);
+
+			if (this.operator == BooleanOperator.OR)
+			{
+				methodVisitor.visitLabel(leftLabel);
+			}
 		}
 
 		return errors;

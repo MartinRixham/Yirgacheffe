@@ -159,17 +159,10 @@ public class NumericExpressionListener extends FunctionCallListener
 	@Override
 	public void exitAnd(YirgacheffeParser.AndContext context)
 	{
-		Array<Expression> expressions = new Array<>();
-
-		for (YirgacheffeParser.EqualsContext c: context.equals())
-		{
-			expressions.push(this.expressions.pop());
-		}
-
 		for (int i = 0; i < context.equals().size() - 1; i++)
 		{
-			Expression firstOperand = expressions.pop();
-			Expression secondOperand = expressions.pop();
+			Expression secondOperand = this.expressions.pop();
+			Expression firstOperand = this.expressions.pop();
 
 			BooleanOperation and =
 				new BooleanOperation(
@@ -177,26 +170,17 @@ public class NumericExpressionListener extends FunctionCallListener
 					firstOperand,
 					secondOperand);
 
-			expressions.push(and);
+			this.expressions.push(and);
 		}
-
-		this.expressions.push(expressions.pop());
 	}
 
 	@Override
 	public void exitOr(YirgacheffeParser.OrContext context)
 	{
-		Array<Expression> expressions = new Array<>();
-
-		for (YirgacheffeParser.AndContext c: context.and())
-		{
-			expressions.push(this.expressions.pop());
-		}
-
 		for (int i = 0; i < context.and().size() - 1; i++)
 		{
-			Expression firstOperand = expressions.pop();
-			Expression secondOperand = expressions.pop();
+			Expression secondOperand = this.expressions.pop();
+			Expression firstOperand = this.expressions.pop();
 
 			BooleanOperation or =
 				new BooleanOperation(
@@ -204,9 +188,7 @@ public class NumericExpressionListener extends FunctionCallListener
 					firstOperand,
 					secondOperand);
 
-			expressions.push(or);
+			this.expressions.push(or);
 		}
-
-		this.expressions.push(expressions.pop());
 	}
 }

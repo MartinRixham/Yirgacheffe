@@ -7,11 +7,13 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
 
@@ -92,10 +94,12 @@ public class VariableReadTest
 
 		Type type = expression.getType(variables);
 
-		expression.compileCondition(methodVisitor, variables, new Label());
+		Array<Error> errors =
+			expression.compileCondition(methodVisitor, variables, new Label());
 
 		InsnList instructions = methodVisitor.instructions;
 
+		assertEquals(0, errors.length());
 		assertEquals(1, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
