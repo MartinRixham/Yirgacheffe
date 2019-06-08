@@ -29,7 +29,19 @@ public class IntersectionType implements Type
 
 	public int width()
 	{
-		return this.firstType.width();
+		if (!this.firstType.isPrimitive() || !this.secondType.isPrimitive())
+		{
+			return 1;
+		}
+		else if (this.firstType.equals(PrimitiveType.DOUBLE) ||
+			this.secondType.equals(PrimitiveType.DOUBLE))
+		{
+			return 2;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 
 	public int getReturnInstruction()
@@ -76,7 +88,7 @@ public class IntersectionType implements Type
 	public boolean isPrimitive()
 	{
 		return this.firstType.isPrimitive() &&
-			this.secondType.isPrimitive();
+			this.firstType.isAssignableTo(this.secondType);
 	}
 
 	@Override

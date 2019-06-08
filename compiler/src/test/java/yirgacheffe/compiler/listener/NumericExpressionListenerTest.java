@@ -504,7 +504,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = (MethodNode) methods.get(0);
 		InsnList instructions = method.instructions;
 
-		//assertEquals(12, instructions.size());
+		assertEquals(12, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -715,105 +715,6 @@ public class NumericExpressionListenerTest
 
 		assertEquals(Opcodes.ASTORE, tenthInstruction.getOpcode());
 		assertEquals(1, tenthInstruction.var);
-	}
-
-	@Test
-	public void testAssignDoubleAndString()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()\n" +
-				"{\n" +
-					"Object obj = 0.0 && \"thingy\";\n" +
-				"}\n" +
-				"public MyClass() {}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		Classes classes = new Classes();
-
-		compiler.compileInterface(classes);
-
-		classes.clearCache();
-
-		CompilationResult result = compiler.compile(classes);
-
-		assertTrue(result.isSuccessful());
-
-		ClassReader reader = new ClassReader(result.getBytecode());
-		ClassNode classNode = new ClassNode();
-
-		reader.accept(classNode, 0);
-
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-		InsnList instructions = method.instructions;
-
-		assertEquals(13, instructions.size());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
-
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.DUP2, secondInstruction.getOpcode());
-
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
-		assertEquals("java/lang/Double", thirdInstruction.owner);
-		assertEquals("valueOf", thirdInstruction.name);
-		assertEquals("(D)Ljava/lang/Double;", thirdInstruction.desc);
-
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.DUP_X2, fourthInstruction.getOpcode());
-
-		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.POP, fifthInstruction.getOpcode());
-
-		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
-
-		assertEquals(Opcodes.INVOKESTATIC, sixthInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Falsyfier", sixthInstruction.owner);
-		assertEquals("isTruthy", sixthInstruction.name);
-		assertEquals("(D)Z", sixthInstruction.desc);
-
-		JumpInsnNode seventhInstruction = (JumpInsnNode) instructions.get(6);
-
-		assertEquals(Opcodes.IFEQ, seventhInstruction.getOpcode());
-
-		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
-
-		assertEquals(Opcodes.POP, eighthInstruction.getOpcode());
-	}
-
-	@Test
-	public void testAssignIntegerAndString()
-	{
-		String source =
-			"class MyClass\n" +
-			"{\n" +
-				"public Void method()\n" +
-				"{\n" +
-					"Object obj = 0 && \"thingy\";\n" +
-				"}\n" +
-				"public MyClass() {}\n" +
-			"}";
-
-		Compiler compiler = new Compiler("", source);
-		Classes classes = new Classes();
-
-		compiler.compileInterface(classes);
-
-		classes.clearCache();
-
-		CompilationResult result = compiler.compile(classes);
-
-		assertTrue(result.isSuccessful());
 	}
 
 	@Test

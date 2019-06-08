@@ -44,6 +44,7 @@ public class BooleanOperation implements Expression
 		Label label = new Label();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
+		Type type = this.getType(variables);
 
 		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
 
@@ -56,24 +57,45 @@ public class BooleanOperation implements Expression
 			methodVisitor.visitInsn(Opcodes.DUP);
 		}
 
-		if (firstType.isPrimitive() && !secondType.isPrimitive())
+		if (firstType.isPrimitive())
 		{
-			this.compileBoxingCall(methodVisitor, firstType);
+			if (!type.isPrimitive())
+			{
+				this.compileBoxingCall(methodVisitor, firstType);
 
-			if (firstType.width() == 2)
-			{
-				methodVisitor.visitInsn(Opcodes.DUP_X2);
-				methodVisitor.visitInsn(Opcodes.POP);
+				if (firstType.width() == 2)
+				{
+					methodVisitor.visitInsn(Opcodes.DUP_X2);
+					methodVisitor.visitInsn(Opcodes.POP);
+				}
+				else
+				{
+					methodVisitor.visitInsn(Opcodes.SWAP);
+				}
 			}
-			else
+			else if (((PrimitiveType) firstType).order() <
+				((PrimitiveType) secondType).order())
 			{
-				methodVisitor.visitInsn(Opcodes.SWAP);
+				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
+				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
+
+				methodVisitor.visitInsn(firstPrimitive.convertTo(secondPrimitive));
+
+				if (secondPrimitive.width() == 2)
+				{
+					methodVisitor.visitInsn(Opcodes.DUP2_X1);
+					methodVisitor.visitInsn(Opcodes.POP2);
+				}
+				else
+				{
+					methodVisitor.visitInsn(Opcodes.SWAP);
+				}
 			}
 		}
 
 		this.compileComparison(methodVisitor, this.operator, label, firstType);
 
-		if (firstType.width() == 2 && secondType.width() == 2)
+		if (type.width() == 2)
 		{
 			methodVisitor.visitInsn(Opcodes.POP2);
 		}
@@ -86,9 +108,20 @@ public class BooleanOperation implements Expression
 			errors.concat(
 				this.secondOperand.compile(methodVisitor, variables));
 
-		if (!firstType.isPrimitive() && secondType.isPrimitive())
+		if (secondType.isPrimitive())
 		{
-			this.compileBoxingCall(methodVisitor, secondType);
+			if (!type.isPrimitive())
+			{
+				this.compileBoxingCall(methodVisitor, secondType);
+			}
+			else if (((PrimitiveType) secondType).order() <
+				((PrimitiveType) firstType).order())
+			{
+				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
+				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
+
+				methodVisitor.visitInsn(secondPrimitive.convertTo(firstPrimitive));
+			}
 		}
 
 		methodVisitor.visitLabel(label);
