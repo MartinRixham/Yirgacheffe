@@ -7,6 +7,12 @@ Below are listed some of the features that Yirgacheffe lacks along with suggesti
 
 ### Public Fields
 
+Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default.
+You may think that having to write accessor methods whenever you want to expose some data is too laborious but it shouldn't be necessary very often.
+To avoid that there's a simple rule to follow.
+Put the logic that acts on some data in the class that contains that data.
+Then you'll find you hardly ever need to write accessor methods.
+
 ### Mutable Fields
 
 There's nothing wrong with mutable state, almost all programs have some, but it is important to distinguish between the global state of the program and the local state of a calculation.
