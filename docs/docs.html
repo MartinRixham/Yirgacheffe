@@ -19,12 +19,12 @@
         // returns &quot;it's a string&quot;
         this.handleObject(object);
     }
-    
+
     private String handleObject(Object object)
     {
         return &quot;just an object&quot;;
     }
-    
+
     private String handleObject(String object)
     {
         return &quot;it's a string&quot;;
@@ -32,6 +32,22 @@
 }
 </code></pre>
 <h3>Null Literals</h3>
+<p>We all know not to pass null values between functions. But really there's not much reason to refer to <code>null</code> at all and since I'm trying to encourage myself to use better ways of handling exceptional cases there isn't a null literal in Yirgacheffe. We can't outlaw null values completely though or pretend they don't exist so you might need to check for nulls to avoid a null pointer exception.</p>
+<pre><code>class MyClass
+{
+    main method(Array&lt;String&gt; args)
+    {
+        // null string
+        String nullString = new MutableReference&lt;String&gt;().get();
+
+        if (nullString)
+        {
+            // this won't be executed
+        }
+    }
+}
+</code></pre>
+<p>Null values can be handled using conditional statements like this.</p>
 <h3>Try/Catch Blocks</h3>
 <h3>Switch Statements</h3>
 <h3>Lambda Expressions</h3>

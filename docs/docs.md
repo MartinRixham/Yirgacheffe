@@ -43,12 +43,12 @@ If you really want to write subtype specific code you can use a method overload 
             // returns "it's a string"
             this.handleObject(object);
         }
-        
+
         private String handleObject(Object object)
         {
             return "just an object";
         }
-        
+
         private String handleObject(String object)
         {
             return "it's a string";
@@ -56,6 +56,26 @@ If you really want to write subtype specific code you can use a method overload 
     }
 
 ### Null Literals
+
+We all know not to pass null values between functions.
+But really there's not much reason to refer to `null` at all and since I'm trying to encourage myself to use better ways of handling exceptional cases there isn't a null literal in Yirgacheffe.
+We can't outlaw null values completely though or pretend they don't exist so you might need to check for nulls to avoid a null pointer exception.
+
+    class MyClass
+    {
+        main method(Array<String> args)
+        {
+            // null string
+            String nullString = new MutableReference<String>().get();
+
+            if (nullString)
+            {
+                // this won't be executed
+            }
+        }
+    }
+
+Null values can be handled using conditional statements like this.
 
 ### Try/Catch Blocks
 
