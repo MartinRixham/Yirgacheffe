@@ -9,6 +9,8 @@ import java.lang.reflect.Method;
 
 public final class Bootstrap
 {
+	private static final int THOUSAND = 1000;
+
 	private static final MethodHandle DISPATCHER;
 
 	static
@@ -147,13 +149,20 @@ public final class Bootstrap
 
 				for (int j = 0; j < arguments.length; j++)
 				{
-					if (!typesMatch(parameterTypes[j], arguments[j].getClass()))
+					Class<?> parameterClass = parameterTypes[j];
+					Class<?> argumentClass = arguments[j].getClass();
+
+					if (!typesMatch(parameterClass, argumentClass))
 					{
 						matches = false;
 						break;
 					}
-					else if (parameterTypes[j].getName()
-						.equals(arguments[j].getClass().getName()))
+					else if (parameterClass.getName()
+						.equals(argumentClass.getName()))
+					{
+						exactMatches += THOUSAND;
+					}
+					else if (parameterClass.isPrimitive())
 					{
 						exactMatches++;
 					}

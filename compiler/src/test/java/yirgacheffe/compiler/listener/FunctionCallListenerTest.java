@@ -1348,4 +1348,45 @@ public class FunctionCallListenerTest
 
 		assertEquals(Opcodes.D2I, thirdInstruction.getOpcode());
 	}
+
+	@Test
+	public void testAmbiguousMethodCall()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.method(5);\n" +
+				"}\n" +
+				"public Void method(Object value) {}\n" +
+				"public Void method(Num value) {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		InsnList instructions = firstMethod.instructions;
+
+		InvokeDynamicInsnNode sixthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(5);
+
+		assertEquals("(LMyClass;D)V", sixthInstruction.desc);
+	}
 }

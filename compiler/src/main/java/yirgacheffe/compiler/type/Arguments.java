@@ -10,6 +10,8 @@ import java.lang.reflect.TypeVariable;
 
 public class Arguments
 {
+	private static final int THOUSAND = 1000;
+
 	private Array<Expression> arguments;
 
 	private Array<Type> argumentTypes = new Array<>();
@@ -69,13 +71,17 @@ public class Arguments
 		for (int i = 0; i < parameterTypes.length(); i++)
 		{
 			Type argumentType = this.argumentTypes.get(i);
+			Type parameterType = parameterTypes.get(i);
 
-			if (!argumentType.isAssignableTo(parameterTypes.get(i)))
+			if (!argumentType.isAssignableTo(parameterType))
 			{
 				return -1;
 			}
-
-			if (argumentType.toJVMType().equals(parameterTypes.get(i).toJVMType()))
+			else if (argumentType.toJVMType().equals(parameterType.toJVMType()))
+			{
+				exactMatches += THOUSAND;
+			}
+			else if (parameterType.isPrimitive())
 			{
 				exactMatches++;
 			}

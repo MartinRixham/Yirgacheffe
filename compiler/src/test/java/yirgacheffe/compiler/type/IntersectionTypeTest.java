@@ -44,8 +44,40 @@ public class IntersectionTypeTest
 
 		assertEquals("Num", type.toString());
 		assertFalse(type.hasParameter());
+		assertEquals(1, type.width());
 		assertFalse(type.isPrimitive());
 		assertEquals(type, new ReferenceType(String.class));
+		assertEquals(type.hashCode(), secondType.hashCode());
+	}
+
+	@Test
+	public void testIntersectionOfDoubleAndBoolean()
+	{
+		Type firstType = PrimitiveType.DOUBLE;
+		Type secondType = PrimitiveType.BOOLEAN;
+
+		Type type = new IntersectionType(firstType, secondType);
+
+		assertEquals("Num", type.toString());
+		assertFalse(type.hasParameter());
+		assertEquals(1, type.width());
+		assertFalse(type.isPrimitive());
+		assertEquals(type.hashCode(), secondType.hashCode());
+	}
+
+	@Test
+	public void testIntersectionOfDoubleAndInteger()
+	{
+		Type firstType = PrimitiveType.DOUBLE;
+		Type secondType = PrimitiveType.INT;
+
+		Type type = new IntersectionType(firstType, secondType);
+
+		assertEquals("Num", type.toString());
+		assertFalse(type.hasParameter());
+		assertEquals(2, type.width());
+		assertTrue(type.isPrimitive());
+		assertEquals(type, PrimitiveType.INT);
 		assertEquals(type.hashCode(), secondType.hashCode());
 	}
 
