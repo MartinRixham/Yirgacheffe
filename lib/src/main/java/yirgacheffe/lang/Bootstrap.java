@@ -6,6 +6,10 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public final class Bootstrap
 {
@@ -36,6 +40,26 @@ public final class Bootstrap
 		{
 			throw new ExceptionInInitializerError(ex);
 		}
+	}
+
+	private static Map<Class<?>, Class<?>> primitiveTypes = new HashMap<>();
+
+	static
+	{
+		primitiveTypes.put(Boolean.class, boolean.class);
+		primitiveTypes.put(Character.class, char.class);
+		primitiveTypes.put(Integer.class, int.class);
+		primitiveTypes.put(Long.class, long.class);
+		primitiveTypes.put(Double.class, double.class);
+	}
+
+	private static Set<Class<?>> numberTypes = new HashSet<>();
+
+	static
+	{
+		numberTypes.add(int.class);
+		numberTypes.add(long.class);
+		numberTypes.add(double.class);
 	}
 
 	private Bootstrap()
@@ -139,9 +163,10 @@ public final class Bootstrap
 
 		for (int i = 0; i < methods.length; i++)
 		{
-			Class<?>[] parameterTypes = methods[i].getParameterTypes();
+			Method method = methods[i];
+			Class<?>[] parameterTypes = method.getParameterTypes();
 
-			if (methods[i].getName().equals(methodName) &&
+			if (method.getName().equals(methodName) &&
 				arguments.length == parameterTypes.length)
 			{
 				boolean matches = true;
@@ -157,8 +182,7 @@ public final class Bootstrap
 						matches = false;
 						break;
 					}
-					else if (parameterClass.getName()
-						.equals(argumentClass.getName()))
+					else if (typesMatchExactly(parameterClass, argumentClass))
 					{
 						exactMatches += THOUSAND;
 					}
@@ -171,7 +195,7 @@ public final class Bootstrap
 				if (matches && exactMatches > bestMatches)
 				{
 					bestMatches = exactMatches;
-					matchedMethod = methods[i];
+					matchedMethod = method;
 				}
 			}
 		}
@@ -185,10 +209,29 @@ public final class Bootstrap
 		{
 			return true;
 		}
-		else if (parameter.isPrimitive())
+		else if (primitiveTypes.containsKey(argument))
 		{
-			return argument.getSimpleName().substring(0, 2).toLowerCase()
-				.equals(parameter.getName().substring(0, 2));
+			Class<?> primitiveArgument = primitiveTypes.get(argument);
+
+			return parameter.equals(primitiveArgument) ||
+				(numberTypes.contains(parameter) &&
+					numberTypes.contains(primitiveArgument));
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private static boolean typesMatchExactly(Class<?> parameter, Class<?> argument)
+	{
+		if (parameter.getName().equals(argument.getName()))
+		{
+			return true;
+		}
+		else if (primitiveTypes.containsKey(argument))
+		{
+			return parameter.getName().equals(primitiveTypes.get(argument).getName());
 		}
 		else
 		{
