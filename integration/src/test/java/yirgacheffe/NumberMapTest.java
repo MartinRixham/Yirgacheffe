@@ -1,11 +1,13 @@
 package yirgacheffe;
 
+import org.junit.Before;
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Bootstrap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -16,6 +18,12 @@ import static org.junit.Assert.assertTrue;
 
 public class NumberMapTest
 {
+	@Before
+	public void clearMethodCache()
+	{
+		Bootstrap.clearCache();
+	}
+
 	@Test
 	public void testNumberMap() throws Exception
 	{

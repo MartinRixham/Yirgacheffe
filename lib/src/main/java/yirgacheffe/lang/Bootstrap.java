@@ -42,6 +42,8 @@ public final class Bootstrap
 		}
 	}
 
+	private static Map<String, MethodHandle> methodHandles = new HashMap<>();
+
 	private static Map<Class<?>, Class<?>> primitiveTypes = new HashMap<>();
 
 	static
@@ -121,30 +123,34 @@ public final class Bootstrap
 		Object receiver,
 		Object[] arguments) throws IllegalAccessException
 	{
-
-		Method[] methods;
-
-		try
+		if (receiver == null)
 		{
-			methods = receiver.getClass().getMethods();
-		}
-		catch (NullPointerException e)
-		{
+			NullPointerException exception = new NullPointerException();
+
 			// Remove top line of stack trace.
 			StackTraceElement[] cleanedUpStackTrace =
-				new StackTraceElement[e.getStackTrace().length - 1];
+				new StackTraceElement[exception.getStackTrace().length - 1];
 
 			java.lang.System.arraycopy(
-				e.getStackTrace(),
+				exception.getStackTrace(),
 				1,
 				cleanedUpStackTrace,
 				0,
 				cleanedUpStackTrace.length);
 
-			e.setStackTrace(cleanedUpStackTrace);
+			exception.setStackTrace(cleanedUpStackTrace);
 
-			throw e;
+			throw exception;
 		}
+
+		String methodString = stringify(methodName, isPrivate, receiver, arguments);
+
+		if (methodHandles.containsKey(methodString))
+		{
+			return methodHandles.get(methodString);
+		}
+
+		Method[] methods = receiver.getClass().getMethods();
 
 		if (isPrivate)
 		{
@@ -200,7 +206,11 @@ public final class Bootstrap
 			}
 		}
 
-		return lookup.unreflect(matchedMethod);
+		MethodHandle methodHandle = lookup.unreflect(matchedMethod);
+
+		methodHandles.put(methodString, methodHandle);
+
+		return methodHandle;
 	}
 
 	private static boolean typesMatch(Class<?> parameter, Class<?> argument)
@@ -237,5 +247,28 @@ public final class Bootstrap
 		{
 			return false;
 		}
+	}
+
+	private static String stringify(
+		String methodName,
+		boolean isPrivate,
+		Object receiver,
+		Object[] arguments)
+	{
+		StringBuilder stringBuilder = new StringBuilder(methodName);
+		stringBuilder.append(isPrivate);
+		stringBuilder.append(receiver.getClass());
+
+		for (Object argument: arguments)
+		{
+			stringBuilder.append(argument.getClass());
+		}
+
+		return stringBuilder.toString();
+	}
+
+	public static void clearCache()
+	{
+		methodHandles = new HashMap<>();
 	}
 }
