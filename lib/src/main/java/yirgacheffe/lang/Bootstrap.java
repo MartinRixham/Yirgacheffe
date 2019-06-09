@@ -13,7 +13,9 @@ import java.util.Set;
 
 public final class Bootstrap
 {
-	private static final int THOUSAND = 1000;
+	private static final int THOUSAND = 1024;
+
+	private static final int MILLION = 1048576;
 
 	private static final MethodHandle DISPATCHER;
 
@@ -73,8 +75,26 @@ public final class Bootstrap
 		String name,
 		MethodType type)
 	{
+		return bootstrap(lookup, name, type, false);
+	}
+
+	public static CallSite bootstrapPrivate(
+			MethodHandles.Lookup lookup,
+			String name,
+			MethodType type)
+	{
+		return bootstrap(lookup, name, type, true);
+	}
+
+	private static CallSite bootstrap(
+		MethodHandles.Lookup lookup,
+		String name,
+		MethodType type,
+		boolean isPrivate)
+
+	{
 		MethodHandle dispatcher =
-			MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, false)
+			MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, isPrivate)
 				.asCollector(Object[].class, type.parameterCount() - 1);
 
 		MethodType dispatcherType = dispatcher.type();
@@ -88,30 +108,6 @@ public final class Bootstrap
 
 		MethodHandle target =
 			MethodHandles.foldArguments(MethodHandles.invoker(type), dispatcher);
-
-		return new ConstantCallSite(target);
-	}
-
-	public static CallSite bootstrapPrivate(
-			MethodHandles.Lookup lookup,
-			String name,
-			MethodType type)
-	{
-		MethodHandle dispatcher =
-				MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, true)
-						.asCollector(Object[].class, type.parameterCount() - 1);
-
-		MethodType dispatcherType = dispatcher.type();
-
-		for (int i = 0; i < type.parameterCount(); i++)
-		{
-			dispatcherType = dispatcherType.changeParameterType(i, type.parameterType(i));
-		}
-
-		dispatcher = dispatcher.asType(dispatcherType);
-
-		MethodHandle target =
-				MethodHandles.foldArguments(MethodHandles.invoker(type), dispatcher);
 
 		return new ConstantCallSite(target);
 	}
@@ -165,7 +161,7 @@ public final class Bootstrap
 		}
 
 		Method matchedMethod = null;
-		int bestMatches = -1;
+		int bestMatching = -1;
 
 		for (int i = 0; i < methods.length; i++)
 		{
@@ -175,32 +171,24 @@ public final class Bootstrap
 			if (method.getName().equals(methodName) &&
 				arguments.length == parameterTypes.length)
 			{
-				boolean matches = true;
-				int exactMatches = 0;
+				int matching = 0;
 
 				for (int j = 0; j < arguments.length; j++)
 				{
 					Class<?> parameterClass = parameterTypes[j];
 					Class<?> argumentClass = arguments[j].getClass();
 
-					if (!typesMatch(parameterClass, argumentClass))
+					matching += evaluateMatching(parameterClass, argumentClass);
+
+					if (matching < 0)
 					{
-						matches = false;
 						break;
-					}
-					else if (typesMatchExactly(parameterClass, argumentClass))
-					{
-						exactMatches += THOUSAND;
-					}
-					else if (parameterClass.isPrimitive())
-					{
-						exactMatches++;
 					}
 				}
 
-				if (matches && exactMatches > bestMatches)
+				if (matching > bestMatching)
 				{
-					bestMatches = exactMatches;
+					bestMatching = matching;
 					matchedMethod = method;
 				}
 			}
@@ -213,40 +201,36 @@ public final class Bootstrap
 		return methodHandle;
 	}
 
-	private static boolean typesMatch(Class<?> parameter, Class<?> argument)
+	private static int evaluateMatching(Class<?> parameter, Class<?> argument)
 	{
 		if (parameter.isAssignableFrom(argument))
 		{
-			return true;
+			if (parameter.getName().equals(argument.getName()))
+			{
+				return THOUSAND;
+			}
+
+			return 0;
 		}
 		else if (primitiveTypes.containsKey(argument))
 		{
 			Class<?> primitiveArgument = primitiveTypes.get(argument);
 
-			return parameter.equals(primitiveArgument) ||
-				(numberTypes.contains(parameter) &&
-					numberTypes.contains(primitiveArgument));
-		}
-		else
-		{
-			return false;
-		}
-	}
+			if (parameter.equals(primitiveArgument))
+			{
+					return THOUSAND;
+			}
 
-	private static boolean typesMatchExactly(Class<?> parameter, Class<?> argument)
-	{
-		if (parameter.getName().equals(argument.getName()))
-		{
-			return true;
+			if (numberTypes.contains(parameter) &&
+				numberTypes.contains(primitiveArgument))
+			{
+				return 1;
+			}
+
+			return -MILLION;
 		}
-		else if (primitiveTypes.containsKey(argument))
-		{
-			return parameter.getName().equals(primitiveTypes.get(argument).getName());
-		}
-		else
-		{
-			return false;
-		}
+
+		return -MILLION;
 	}
 
 	private static String stringify(
@@ -257,11 +241,11 @@ public final class Bootstrap
 	{
 		StringBuilder stringBuilder = new StringBuilder(methodName);
 		stringBuilder.append(isPrivate);
-		stringBuilder.append(receiver.getClass());
+		stringBuilder.append(receiver.getClass().getName());
 
 		for (Object argument: arguments)
 		{
-			stringBuilder.append(argument.getClass());
+			stringBuilder.append(argument.getClass().getName());
 		}
 
 		return stringBuilder.toString();
