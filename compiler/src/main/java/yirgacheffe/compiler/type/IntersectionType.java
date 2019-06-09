@@ -33,8 +33,9 @@ public class IntersectionType implements Type
 		{
 			return 1;
 		}
-		else if (this.firstType.equals(PrimitiveType.DOUBLE) ||
-			this.secondType.equals(PrimitiveType.DOUBLE))
+		else if ((this.firstType.width() == 2 ||
+				this.secondType.width() == 2) &&
+			this.firstType.isAssignableTo(this.secondType))
 		{
 			return 2;
 		}

@@ -626,6 +626,75 @@ public class BooleanOperationTest
 	}
 
 	@Test
+	public void testCompilingBooleanAndDouble()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Bool firstOperand = new Bool("true");
+		Num secondOperand = new Num("0.0");
+
+		BooleanOperation or =
+			new BooleanOperation(
+				BooleanOperator.AND,
+				firstOperand,
+				secondOperand);
+
+		Type type = or.getType(variables);
+
+		Array<Error> errors = or.compile(methodVisitor, variables);
+
+		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(9, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Boolean", thirdInstruction.owner);
+		assertEquals("valueOf", thirdInstruction.name);
+		assertEquals("(Z)Ljava/lang/Boolean;", thirdInstruction.desc);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.SWAP, fourthInstruction.getOpcode());
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+		Label label = fifthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.POP, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.DCONST_0, seventhInstruction.getOpcode());
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKESTATIC, eighthInstruction.getOpcode());
+		assertEquals("java/lang/Double", eighthInstruction.owner);
+		assertEquals("valueOf", eighthInstruction.name);
+		assertEquals("(D)Ljava/lang/Double;", eighthInstruction.desc);
+
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
+
+		assertEquals(label, ninthInstruction.getLabel());
+	}
+
+	@Test
 	public void testOrDifferentTypesAreAssignableToCommonSupertype()
 	{
 		MethodNode methodVisitor = new MethodNode();
