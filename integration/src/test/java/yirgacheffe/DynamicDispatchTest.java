@@ -280,3 +280,4 @@ public class DynamicDispatchTest
 // previous runs
 // ---------- execution took 50 seconds ----------
 // ---------- execution took 40 seconds ----------
+// ---------- execution took 38 seconds ----------

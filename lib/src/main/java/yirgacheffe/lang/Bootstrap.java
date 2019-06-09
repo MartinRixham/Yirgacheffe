@@ -15,8 +15,6 @@ public final class Bootstrap
 {
 	private static final int THOUSAND = 1024;
 
-	private static final int MILLION = 1048576;
-
 	private static final MethodHandle DISPATCHER;
 
 	static
@@ -124,17 +122,13 @@ public final class Bootstrap
 			NullPointerException exception = new NullPointerException();
 
 			// Remove top line of stack trace.
-			StackTraceElement[] cleanedUpStackTrace =
+			StackTraceElement[] stackTrace =
 				new StackTraceElement[exception.getStackTrace().length - 1];
 
 			java.lang.System.arraycopy(
-				exception.getStackTrace(),
-				1,
-				cleanedUpStackTrace,
-				0,
-				cleanedUpStackTrace.length);
+				exception.getStackTrace(), 1, stackTrace, 0, stackTrace.length);
 
-			exception.setStackTrace(cleanedUpStackTrace);
+			exception.setStackTrace(stackTrace);
 
 			throw exception;
 		}
@@ -171,20 +165,7 @@ public final class Bootstrap
 			if (method.getName().equals(methodName) &&
 				arguments.length == parameterTypes.length)
 			{
-				int matching = 0;
-
-				for (int j = 0; j < arguments.length; j++)
-				{
-					Class<?> parameterClass = parameterTypes[j];
-					Class<?> argumentClass = arguments[j].getClass();
-
-					matching += evaluateMatching(parameterClass, argumentClass);
-
-					if (matching < 0)
-					{
-						break;
-					}
-				}
+				int matching = evaluateMatching(parameterTypes, arguments);
 
 				if (matching > bestMatching)
 				{
@@ -201,36 +182,47 @@ public final class Bootstrap
 		return methodHandle;
 	}
 
-	private static int evaluateMatching(Class<?> parameter, Class<?> argument)
+	private static int evaluateMatching(Class<?>[] parameters, Object[] arguments)
 	{
-		if (parameter.isAssignableFrom(argument))
+		int matching = 0;
+
+		for (int i = 0; i < arguments.length; i++)
 		{
-			if (parameter.getName().equals(argument.getName()))
-			{
-				return THOUSAND;
-			}
+			Class<?> parameter = parameters[i];
+			Class<?> argument = arguments[i].getClass();
 
-			return 0;
+			if (parameter.isAssignableFrom(argument))
+			{
+				if (parameter.getName().equals(argument.getName()))
+				{
+					matching += THOUSAND;
+				}
+			}
+			else if (primitiveTypes.containsKey(argument))
+			{
+				Class<?> primitiveArgument = primitiveTypes.get(argument);
+
+				if (parameter.equals(primitiveArgument))
+				{
+					matching += THOUSAND;
+				}
+				else if (numberTypes.contains(parameter) &&
+					numberTypes.contains(primitiveArgument))
+				{
+					matching += 1;
+				}
+				else
+				{
+					return -1;
+				}
+			}
+			else
+			{
+				return -1;
+			}
 		}
-		else if (primitiveTypes.containsKey(argument))
-		{
-			Class<?> primitiveArgument = primitiveTypes.get(argument);
 
-			if (parameter.equals(primitiveArgument))
-			{
-					return THOUSAND;
-			}
-
-			if (numberTypes.contains(parameter) &&
-				numberTypes.contains(primitiveArgument))
-			{
-				return 1;
-			}
-
-			return -MILLION;
-		}
-
-		return -MILLION;
+		return matching;
 	}
 
 	private static String stringify(
