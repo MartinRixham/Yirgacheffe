@@ -1,5 +1,7 @@
 <p>Yirgacheffe is a simple language designed to run on the JVM and is in many ways similar to Java. While it lacks many of the features of the modern Java language and even some of Java's more traditional ones, it is still possible to write good object oriented code in Yirgacheffe. Below are listed some of the features that Yirgacheffe lacks along with suggestions of what can be used instead.</p>
 <h3>Inheritance</h3>
+<p>Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
+<p>To be clear while Yirgacheffe lacks Java's <code>extends</code> keyword you can still define and implement abstract interfaces and their use is greatly encouraged.</p>
 <h3>Public Fields</h3>
 <p>Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default. You may think that having to write accessor methods whenever you want to expose some data is too laborious but it shouldn't be necessary very often. To avoid that there's a simple rule to follow. Put the logic that acts on some data in the class that contains that data. Then you'll find you hardly ever need to write accessor methods.</p>
 <h3>Mutable Fields</h3>
@@ -69,7 +71,7 @@
 </code></pre>
 <h3>Multiple Number Types</h3>
 <p>There's only one number type in Yirgacheffe. Just to keep things simple. It's called <code>Num</code> and its a 64 bit floating point number. This is a good fit for most numerical data.</p>
-<p>For some cases such a loop indices an integer would be better.</p>
+<p>For some cases such as loop indices an integer would be better.</p>
 <pre><code>class MyClass
 {
     main method(Array&lt;String&gt; args)

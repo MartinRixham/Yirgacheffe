@@ -5,6 +5,10 @@ Below are listed some of the features that Yirgacheffe lacks along with suggesti
 
 ### Inheritance
 
+Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.
+
+To be clear while Yirgacheffe lacks Java's `extends` keyword you can still define and implement abstract interfaces and their use is greatly encouraged.
+
 ### Public Fields
 
 Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default.
@@ -115,7 +119,7 @@ Just to keep things simple.
 It's called `Num` and its a 64 bit floating point number.
 This is a good fit for most numerical data.
 
-For some cases such a loop indices an integer would be better.
+For some cases such as loop indices an integer would be better.
 
     class MyClass
     {
