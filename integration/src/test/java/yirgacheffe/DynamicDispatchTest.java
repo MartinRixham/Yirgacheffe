@@ -8,12 +8,15 @@ import yirgacheffe.compiler.type.Classes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
+import java.time.Duration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MultipleDispatchTest
+public class DynamicDispatchTest
 {
 	@Test
 	public void testMultipleDispatch() throws Exception
@@ -204,4 +207,65 @@ public class MultipleDispatchTest
 
 		java.lang.System.setOut(originalOut);
 	}
+
+	@Test
+	public void testDispatchPerformance() throws Exception
+	{
+		String source =
+			"import java.io.PrintStream;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"PrintStream out = new System().getOut();\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"Object obj = 1;\n" +
+					"for (Num i = 0; i < 10000000; i++)\n" +
+					"{\n" +
+						"this.out.print(obj);\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		classLoader.add("MyClass", result.getBytecode());
+
+		Class<?> myClass = classLoader.loadClass("MyClass");
+		Method hello = myClass.getMethod("main", String[].class);
+		String[] args = {};
+
+		long startTime = getCPUTime();
+		hello.invoke(null, (Object) args);
+		long endTime = getCPUTime();
+
+		System.out.println(
+			"---------- execution took " +
+				Duration.ofNanos(endTime - startTime).getSeconds() +
+				" seconds ----------");
+	}
+
+	private static long getCPUTime()
+	{
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+
+		return threadMXBean.getCurrentThreadCpuTime();
+	}
 }
+
+// previous runs
+// ---------- execution took 50 seconds ----------
