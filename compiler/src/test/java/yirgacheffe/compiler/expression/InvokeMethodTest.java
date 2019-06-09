@@ -412,7 +412,7 @@ public class InvokeMethodTest
 		Type type = invokeMethod.getType(variables);
 
 		Array<Error> errors =
-			invokeMethod.compileCondition(methodVisitor, variables, new Label());
+			invokeMethod.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

@@ -64,13 +64,15 @@ public class VariableRead implements Expression
 	public Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
-		Label label)
+		Label trueLabel,
+		Label falseLabel)
 	{
 		if (variables.canOptimise(this))
 		{
 			Expression expression = variables.getOptimisedExpression(this);
 
-			return expression.compileCondition(methodVisitor, variables, label);
+			return expression.compileCondition(
+				methodVisitor, variables, trueLabel, falseLabel);
 		}
 		else
 		{

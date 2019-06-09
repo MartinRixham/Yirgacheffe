@@ -43,7 +43,7 @@ public class InvokeConstructorTest
 		Type type = invokeConstructor.getType(variables);
 
 		Array<Error> errors =
-			invokeConstructor.compileCondition(methodVisitor, variables, new Label());
+			invokeConstructor.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

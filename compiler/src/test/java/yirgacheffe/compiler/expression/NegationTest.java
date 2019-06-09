@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -52,7 +51,7 @@ public class NegationTest
 		Type type = negation.getType(variables);
 
 		Array<Error> errors =
-			negation.compileCondition(methodVisitor, variables, new Label());
+			negation.compileCondition(methodVisitor, variables, null, null);
 
 		assertFalse(negation.isCondition(variables));
 		assertEquals(PrimitiveType.DOUBLE, type);

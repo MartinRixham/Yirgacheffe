@@ -16,7 +16,8 @@ public interface Expression
 	Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
-		Label label);
+		Label trueLabel,
+		Label falseLabel);
 
 	boolean isCondition(Variables variables);
 

@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -38,7 +37,7 @@ public class UnaryOperationTest
 		Type type = postincrement.getType(variables);
 
 		Array<Error> errors =
-			postincrement.compileCondition(methodVisitor, variables, new Label());
+			postincrement.compileCondition(methodVisitor, variables, null, null);
 
 		assertFalse(postincrement.isCondition(variables));
 		assertEquals(1, errors.length());

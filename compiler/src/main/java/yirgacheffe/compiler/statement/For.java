@@ -56,7 +56,7 @@ public class For implements Statement
 		{
 			Equation equation = (Equation) this.exitCondition;
 
-			equation.compileCondition(methodVisitor, variables, exitLabel);
+			equation.compileCondition(methodVisitor, variables, continueLabel, exitLabel);
 		}
 		else
 		{

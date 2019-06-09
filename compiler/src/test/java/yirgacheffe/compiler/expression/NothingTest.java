@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Variables;
@@ -24,7 +23,7 @@ public class NothingTest
 
 		nothing.compile(methodVisitor, variables);
 		Array<Error> errors =
-			nothing.compileCondition(methodVisitor, variables, new Label());
+			nothing.compileCondition(methodVisitor, variables, null, null);
 
 		Array<VariableRead> reads = nothing.getVariableReads();
 

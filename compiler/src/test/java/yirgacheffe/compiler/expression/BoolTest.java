@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -53,7 +52,7 @@ public class BoolTest
 		Type type = literal.getType(variables);
 
 		Array<Error> errors =
-			literal.compileCondition(methodVisitor, variables, new Label());
+			literal.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

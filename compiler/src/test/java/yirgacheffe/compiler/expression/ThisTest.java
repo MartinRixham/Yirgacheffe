@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
@@ -30,7 +29,7 @@ public class ThisTest
 		Type type = thisRead.getType(variables);
 
 		Array<Error> errors =
-			thisRead.compileCondition(methodVisitor, variables, new Label());
+			thisRead.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

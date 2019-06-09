@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
@@ -247,7 +246,7 @@ public class StringConcatenationTest
 		Type type = concatenation.getType(variables);
 
 		Array<Error> errors =
-			concatenation.compileCondition(methodVisitor, variables, new Label());
+			concatenation.compileCondition(methodVisitor, variables, null, null);
 
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals(0, errors.length());

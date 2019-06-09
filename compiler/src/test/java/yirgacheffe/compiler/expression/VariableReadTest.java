@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
@@ -95,7 +94,7 @@ public class VariableReadTest
 		Type type = expression.getType(variables);
 
 		Array<Error> errors =
-			expression.compileCondition(methodVisitor, variables, new Label());
+			expression.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

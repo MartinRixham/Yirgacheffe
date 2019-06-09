@@ -32,7 +32,8 @@ public class This implements Expression
 	public Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
-		Label label)
+		Label trueLabel,
+		Label falseLabel)
 	{
 		return this.compile(methodVisitor, variables);
 	}

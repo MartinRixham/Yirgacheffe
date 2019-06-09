@@ -44,7 +44,7 @@ public class FieldReadTest
 		Type type = fieldRead.getType(variables);
 
 		Array<Error> errors =
-			fieldRead.compileCondition(methodVisitor, variables, new Label());
+			fieldRead.compileCondition(methodVisitor, variables, null, null);
 
 		InsnList instructions = methodVisitor.instructions;
 

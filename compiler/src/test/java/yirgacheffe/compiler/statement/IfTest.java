@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class IfTest
@@ -52,21 +54,23 @@ public class IfTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(3, instructions.size());
+		assertEquals(4, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
 		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label label = secondInstruction.label.getLabel();
 
 		assertEquals(Opcodes.IFEQ, secondInstruction.getOpcode());
 
-		Label label = secondInstruction.label.getLabel();
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		assertNotEquals(label, thirdInstruction.getLabel());
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
 
 	@Test
@@ -138,7 +142,7 @@ public class IfTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(3, instructions.size());
+		assertEquals(4, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -146,14 +150,16 @@ public class IfTest
 		assertEquals(0, firstInstruction.var);
 
 		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label label = secondInstruction.label.getLabel();
 
 		assertEquals(Opcodes.IFNULL, secondInstruction.getOpcode());
 
-		Label label = secondInstruction.label.getLabel();
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+		assertNotEquals(label, thirdInstruction.getLabel());
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 	}
 
 	@Test
@@ -173,7 +179,7 @@ public class IfTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(5, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -192,9 +198,13 @@ public class IfTest
 
 		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
 
-		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
+		assertNotEquals(label, fourthInstruction.getLabel());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
 	}
 
 	@Test
@@ -214,7 +224,7 @@ public class IfTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(5, instructions.size());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -233,8 +243,12 @@ public class IfTest
 
 		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
 
-		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+		LabelNode fourthInstruction = (LabelNode) instructions.get(3);
 
-		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
+		assertNotEquals(label, fourthInstruction.getLabel());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.RETURN, fifthInstruction.getOpcode());
 	}
 }

@@ -64,16 +64,16 @@ public class Equation implements Expression
 			return errors;
 		}
 
-		Label trueLabel	= new Label();
+		Label label	= new Label();
 
-		errors = this.compileCondition(methodVisitor, variables, trueLabel);
+		errors = this.compileCondition(methodVisitor, variables, null, label);
 
 		methodVisitor.visitInsn(Opcodes.ICONST_1);
 
 		Label falseLabel = new Label();
 
 		methodVisitor.visitJumpInsn(Opcodes.GOTO, falseLabel);
-		methodVisitor.visitLabel(trueLabel);
+		methodVisitor.visitLabel(label);
 		methodVisitor.visitInsn(Opcodes.ICONST_0);
 		methodVisitor.visitLabel(falseLabel);
 
@@ -83,7 +83,8 @@ public class Equation implements Expression
 	public Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
-		Label label)
+		Label trueLabel,
+		Label falseLabel)
 	{
 		Array<Error> errors = new Array<>();
 		Type string = new ReferenceType(String.class);
@@ -130,7 +131,7 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		errors = errors.concat(comparison.compile(methodVisitor, variables, label));
+		errors = errors.concat(comparison.compile(methodVisitor, variables, falseLabel));
 
 		return errors;
 	}

@@ -48,35 +48,38 @@ public class ElseTest
 
 		InsnList instructions = methodVisitor.instructions;
 
-		assertEquals(6, instructions.size());
+		assertEquals(7, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
 
 		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
+		Label ifLabel = secondInstruction.label.getLabel();
 
 		assertEquals(Opcodes.IFEQ, secondInstruction.getOpcode());
 
-		Label ifLabel = secondInstruction.label.getLabel();
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		assertNotEquals(ifLabel, thirdInstruction.getLabel());
 
-		assertEquals(Opcodes.RETURN, thirdInstruction.getOpcode());
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		assertEquals(Opcodes.RETURN, fourthInstruction.getOpcode());
 
-		assertEquals(Opcodes.GOTO, fourthInstruction.getOpcode());
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
 
-		Label elseLabel = fourthInstruction.label.getLabel();
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
 
-		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		Label elseLabel = fifthInstruction.label.getLabel();
 
-		assertEquals(ifLabel, fifthInstruction.getLabel());
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		assertEquals(ifLabel, sixthInstruction.getLabel());
 
-		assertEquals(Opcodes.RETURN, sixthInstruction.getOpcode());
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.RETURN, seventhInstruction.getOpcode());
 
 		assertNotEquals(ifLabel, elseLabel);
 	}

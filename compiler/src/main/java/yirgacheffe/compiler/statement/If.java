@@ -20,7 +20,7 @@ public class If implements ConditionalStatement
 
 	private Statement statement;
 
-	private Label label = new Label();
+	private Label falseLabel = new Label();
 
 	public If(Expression condition, Statement statement)
 	{
@@ -41,6 +41,8 @@ public class If implements ConditionalStatement
 		Array<Error> errors = new Array<>();
 		Type type = this.condition.getType(variables);
 
+		Label trueLabel = new Label();
+
 		if (this.condition.isCondition(variables))
 		{
 			errors =
@@ -48,7 +50,8 @@ public class If implements ConditionalStatement
 					this.condition.compileCondition(
 						methodVisitor,
 						variables,
-						this.label));
+						trueLabel,
+						this.falseLabel));
 		}
 		else if (type.equals(PrimitiveType.DOUBLE))
 		{
@@ -61,13 +64,13 @@ public class If implements ConditionalStatement
 				"(D)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
 		}
 		else if (type.isPrimitive())
 		{
 			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
 		}
 		else if (type.isAssignableTo(new ReferenceType(String.class)))
 		{
@@ -80,14 +83,16 @@ public class If implements ConditionalStatement
 				"(Ljava/lang/String;)Z",
 				false);
 
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.label);
+			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
 		}
 		else
 		{
 			errors = errors.concat(this.condition.compile(methodVisitor, variables));
 
-			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.label);
+			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.falseLabel);
 		}
+
+		methodVisitor.visitLabel(trueLabel);
 
 		errors.push(this.statement.compile(methodVisitor, variables, caller));
 
@@ -96,7 +101,7 @@ public class If implements ConditionalStatement
 
 	public Label getLabel()
 	{
-		return this.label;
+		return this.falseLabel;
 	}
 
 	public Array<VariableRead> getVariableReads()

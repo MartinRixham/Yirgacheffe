@@ -146,36 +146,32 @@ public class BooleanOperation implements Expression
 	public Array<Error> compileCondition(
 		MethodVisitor methodVisitor,
 		Variables variables,
-		Label label)
+		Label trueLabel,
+		Label falseLabel)
 	{
 		Array<Error> errors = new Array<>();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
-		Label leftLabel;
-
-		if (this.operator == BooleanOperator.OR)
-		{
-			leftLabel = new Label();
-		}
-		else
-		{
-			leftLabel = label;
-		}
-
 		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+
+		Label label = this.operator == BooleanOperator.OR ? trueLabel : falseLabel;
 
 		this.compileComparison(
 			methodVisitor,
 			this.operator,
-			leftLabel,
+			label,
 			firstType);
 
 		if (this.secondOperand.isCondition(variables))
 		{
 			errors =
 				errors.concat(
-					this.secondOperand.compileCondition(methodVisitor, variables, label));
+					this.secondOperand.compileCondition(
+						methodVisitor,
+						variables,
+						trueLabel,
+						falseLabel));
 		}
 		else
 		{
@@ -184,13 +180,8 @@ public class BooleanOperation implements Expression
 			this.compileComparison(
 				methodVisitor,
 				BooleanOperator.AND,
-				label,
+				falseLabel,
 				secondType);
-
-			if (this.operator == BooleanOperator.OR)
-			{
-				methodVisitor.visitLabel(leftLabel);
-			}
 		}
 
 		return errors;
