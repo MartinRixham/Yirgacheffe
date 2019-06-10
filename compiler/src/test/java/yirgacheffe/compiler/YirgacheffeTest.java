@@ -135,68 +135,6 @@ public class YirgacheffeTest
 	}
 
 	@Test
-	public void testCompilingMultipleClasses() throws Exception
-	{
-		PrintStream originalError = System.err;
-		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
-		PrintStream error = new PrintStream(spyError);
-		String[] arguments =
-			new String[]
-				{
-					"example/reader/Reader.yg",
-					"example/reader/Streeng.yg"
-				};
-
-		System.setErr(error);
-
-		Yirgacheffe.main(arguments);
-
-		InputStream firstFile =
-			new FileInputStream("example/reader/Streeng.class");
-		InputStream secondFile =
-			new FileInputStream("example/reader/Reader.class");
-
-		assertEquals("", spyError.toString());
-		assertTrue(firstFile.read() != -1);
-		assertTrue(secondFile.read() != -1);
-
-		System.setErr(originalError);
-
-		new File("example/reader/Streeng.class").delete();
-		new File("example/reader/Reader.class").delete();
-	}
-
-	@Test
-	public void testMissingMethod() throws Exception
-	{
-		PrintStream originalError = System.err;
-		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
-		PrintStream error = new PrintStream(spyError);
-		String[] arguments =
-			new String[]
-				{
-					"example/reader/Writer.yg",
-					"example/reader/Streeng.yg",
-					"example/reader/Reader.yg"
-				};
-
-		System.setErr(error);
-
-		Yirgacheffe.main(arguments);
-
-		assertEquals(
-			"Errors in file example/reader/Writer.yg:\n" +
-			"line 9:15 Method example.reader.Streeng.write() not found.\n",
-			spyError.toString());
-
-		System.setErr(originalError);
-
-		new File("example/reader/Streeng.class").delete();
-		new File("example/reader/Writer.class").delete();
-		new File("example/reader/Reader.class").delete();
-	}
-
-	@Test
 	public void testThreadClassGeneratedForParallelMethod() throws Exception
 	{
 		PrintStream originalError = System.err;
@@ -244,5 +182,38 @@ public class YirgacheffeTest
 
 		new File("example/myinterface/MyInterface.class").delete();
 		new File("example/myinterface/MyImplementation.class").delete();
+	}
+
+	@Test
+	public void testCircularDependency() throws Exception
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[]
+				{
+					"example/codependency/A.yg",
+					"example/codependency/B.yg",
+				};
+
+		System.setErr(error);
+
+		Yirgacheffe.main(arguments);
+
+		assertEquals("", spyError.toString());
+
+		InputStream firstFile =
+			new FileInputStream("example/codependency/A.class");
+		InputStream secondFile =
+			new FileInputStream("example/codependency/B.class");
+
+		assertTrue(firstFile.read() != -1);
+		assertTrue(secondFile.read() != -1);
+
+		System.setErr(originalError);
+
+		new File("example/codependency/A.class").delete();
+		new File("example/codependency/B.class").delete();
 	}
 }

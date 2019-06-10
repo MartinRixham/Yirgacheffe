@@ -38,12 +38,12 @@ public final class Yirgacheffe
 			compilers.push(compiler);
 		}
 
-		/*for (Compiler compiler: compilers)
+		for (Compiler compiler: compilers)
 		{
 			compiler.compileClassDeclaration(classes);
 		}
 
-		classes.clearCache();*/
+		classes.clearCache();
 
 		for (Compiler compiler: compilers)
 		{

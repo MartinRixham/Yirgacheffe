@@ -1,0 +1,13 @@
+package example.codependency;
+
+class B
+{
+    public B()
+    {
+    }
+
+    public A method()
+    {
+        return this.method().method().method();
+    }
+}
