@@ -216,4 +216,33 @@ public class YirgacheffeTest
 		new File("example/codependency/A.class").delete();
 		new File("example/codependency/B.class").delete();
 	}
+
+	@Test
+	public void testMissingPackageDeclaration() throws Exception
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+		String[] arguments =
+			new String[]
+				{
+					"example/NoPackage.yg",
+					"example/NoPackageInterface.yg",
+				};
+
+		System.setErr(error);
+
+		Yirgacheffe.main(arguments);
+
+		assertEquals(
+			"Errors in file example/NoPackage.yg:\n" +
+			"line 1:0 Missing package declaration for file path example/.\n" +
+			"line 3:1 Unrecognised type: NoPackageInterface is not a type.\n" +
+			"Errors in file example/NoPackageInterface.yg:\n" +
+			"line 1:0 Missing package declaration for file path example/.\n" +
+			"line 3:1 Unrecognised type: NoPackage is not a type.\n",
+			spyError.toString());
+
+		System.setErr(originalError);
+	}
 }

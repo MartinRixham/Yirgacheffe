@@ -44,7 +44,7 @@ public class BytecodeClassLoader extends ClassLoader
 			{
 				return this.fileLoader.loadClass(name);
 			}
-			catch (ClassNotFoundException e)
+			catch (ClassNotFoundException | NoClassDefFoundError e)
 			{
 				return this.getParent().loadClass(name);
 			}

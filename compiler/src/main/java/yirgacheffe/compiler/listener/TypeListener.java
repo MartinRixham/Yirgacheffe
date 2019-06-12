@@ -28,7 +28,7 @@ public class TypeListener extends ImplementationListener
 
 			this.types.put(identifier, type);
 		}
-		catch (ClassNotFoundException e)
+		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
 			String message =
 				"Unrecognised type: " + className + " is not a type.";
@@ -91,20 +91,20 @@ public class TypeListener extends ImplementationListener
 							this.packageName + "." + name);
 				}
 			}
-			catch (ClassNotFoundException e)
+			catch (ClassNotFoundException | NoClassDefFoundError e)
 			{
 				try
 				{
 					type =
 						this.classes.loadClass("yirgacheffe.lang." + name);
 				}
-				catch (ClassNotFoundException ex)
+				catch (ClassNotFoundException | NoClassDefFoundError ex)
 				{
 					try
 					{
 						type = this.classes.loadClass("java.lang." + name);
 					}
-					catch (ClassNotFoundException exc)
+					catch (ClassNotFoundException | NoClassDefFoundError exc)
 					{
 						String message =
 							"Unrecognised type: " + name + " is not a type.";
@@ -135,7 +135,7 @@ public class TypeListener extends ImplementationListener
 
 			this.types.put(name, type);
 		}
-		catch (ClassNotFoundException ex)
+		catch (ClassNotFoundException | NoClassDefFoundError ex)
 		{
 			String message =
 				"Unrecognised type: " + name + " is not a type.";

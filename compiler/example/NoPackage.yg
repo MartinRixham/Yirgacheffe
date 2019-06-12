@@ -1,0 +1,8 @@
+class NoPackage
+{
+	NoPackageInterface myField;
+
+	public NoPackage() {}
+
+	public Void doThing(NoPackageInterface param) {}
+}

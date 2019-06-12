@@ -1,0 +1,4 @@
+interface NoPackageInterface
+{
+	NoPackage myMethod(Num param);
+}
