@@ -308,4 +308,30 @@ public class ClassListenerTest
 			"line 1:7 Unrecognised type: java.util.Liszt is not a type.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testWrongPackage()
+	{
+		String source =
+			"package yirgacheffe;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public MyClass method()\n" +
+				"{\n" +
+					"return this.method().method();\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:8 Package name yirgacheffe does not correspond to the file path .\n" +
+			"line 5:7 Unrecognised type: MyClass is not a type.\n" +
+			"line 7:20 Method java.lang.Object.method() not found.\n" +
+			"line 7:11 Method java.lang.Object.method() not found.\n",
+			result.getErrors());
+	}
 }

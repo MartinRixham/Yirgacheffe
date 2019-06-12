@@ -8,6 +8,7 @@ import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -42,9 +43,9 @@ public class ExpressionListener extends LoopListener
 
 			this.expressions.push(new This(thisType));
 		}
-		catch (ClassNotFoundException e)
+		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
-			throw new RuntimeException(e);
+			this.expressions.push(new This(new ReferenceType(Object.class)));
 		}
 	}
 
