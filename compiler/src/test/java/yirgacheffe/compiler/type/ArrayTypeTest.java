@@ -12,27 +12,32 @@ public class ArrayTypeTest
 	@Test
 	public void testArray()
 	{
-		Type string = new ArrayType("[Ljava.lang.String;");
+		Type stringArray =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
 
-		assertEquals("java.lang.String[]", string.toString());
-		assertEquals("[Ljava.lang.String;", string.reflectionClass().getName());
-		assertEquals("[Ljava/lang/String;", string.toJVMType());
-		assertEquals("[Ljava/lang/String;", string.getSignature());
-		assertEquals("java.lang.String[]", string.toFullyQualifiedType());
-		assertEquals(1, string.width());
-		assertEquals(Opcodes.ARETURN, string.getReturnInstruction());
-		assertEquals(Opcodes.ASTORE, string.getStoreInstruction());
-		assertEquals(Opcodes.ALOAD, string.getLoadInstruction());
-		assertEquals(Opcodes.ACONST_NULL, string.getZero());
-		assertFalse(string.hasParameter());
-		assertFalse(string.isPrimitive());
+		assertEquals("java.lang.String[]", stringArray.toString());
+		assertEquals("[Ljava.lang.String;", stringArray.reflectionClass().getName());
+		assertEquals("[Ljava/lang/String;", stringArray.toJVMType());
+		assertEquals("[Ljava/lang/String;", stringArray.getSignature());
+		assertEquals("java.lang.String[]", stringArray.toFullyQualifiedType());
+		assertEquals(1, stringArray.width());
+		assertEquals(Opcodes.ARETURN, stringArray.getReturnInstruction());
+		assertEquals(Opcodes.ASTORE, stringArray.getStoreInstruction());
+		assertEquals(Opcodes.AASTORE, stringArray.getArrayStoreInstruction());
+		assertEquals(Opcodes.ALOAD, stringArray.getLoadInstruction());
+		assertEquals(Opcodes.ACONST_NULL, stringArray.getZero());
+		assertFalse(stringArray.hasParameter());
+		assertFalse(stringArray.isPrimitive());
 	}
 
 	@Test
 	public void testArrayIsAssignableToArray()
 	{
-		Type first = new ArrayType("[Ljava.lang.Object;");
-		Type second = new ArrayType("[Ljava.lang.String;");
+		Type first =
+			new ArrayType("[Ljava.lang.Object;", new ReferenceType(String.class));
+
+		Type second =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(Object.class));
 
 		assertTrue(first.isAssignableTo(second));
 	}
@@ -40,7 +45,9 @@ public class ArrayTypeTest
 	@Test
 	public void testArrayIsNotAssignableToAnythingElse()
 	{
-		Type first = new ArrayType("[Ljava.lang.Object;");
+		Type first =
+			new ArrayType("[Ljava.lang.Object;", new ReferenceType(String.class));
+
 		Type second = PrimitiveType.BOOLEAN;
 
 		assertFalse(first.isAssignableTo(second));

@@ -69,11 +69,11 @@ public class InvokeConstructor implements Expression
 		methodVisitor.visitInsn(Opcodes.DUP);
 
 		Array<Error> errors = new Array<>();
+		Callable function = matchResult.getFunction();
+		boolean variableArugments = function.hasVariableArguments();
+		Array<Type> parameters = function.getParameterTypes();
 
-		for (Expression argument: this.arguments)
-		{
-			errors = errors.concat(argument.compile(methodVisitor, variables));
-		}
+		arguments.compile(parameters, methodVisitor, variables, variableArugments);
 
 		this.coordinate.compile(methodVisitor);
 

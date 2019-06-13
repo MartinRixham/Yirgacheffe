@@ -8,9 +8,13 @@ public interface Instructions
 
 	int getStore();
 
+	int getArrayStore();
+
 	int getLoad();
 
 	int convertTo(PrimitiveType type);
 
 	int getZero();
+
+	int getType();
 }

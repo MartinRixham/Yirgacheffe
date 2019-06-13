@@ -6,6 +6,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InvokeMethodTest
 {
@@ -42,7 +44,11 @@ public class InvokeMethodTest
 	{
 	}
 
-	public void takeInt(double num)
+	public void method(double num)
+	{
+	}
+
+	public void method(double... ints)
 	{
 	}
 
@@ -347,7 +353,7 @@ public class InvokeMethodTest
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
 				coordinate,
-				"takeInt",
+				"method",
 				"yirgacheffe/compiler/expression/InvokeMethodTest",
 				testClass,
 				arguments);
@@ -383,7 +389,7 @@ public class InvokeMethodTest
 			(InvokeDynamicInsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
-		assertEquals("takeInt", sixthInstruction.name);
+		assertEquals("method", sixthInstruction.name);
 		assertEquals(
 			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;D)V",
 			sixthInstruction.desc);
@@ -493,5 +499,94 @@ public class InvokeMethodTest
 
 		assertEquals(invokeMethod, tailCall);
 		assertEquals(name.hashCode() + arguments.hashCode(), invokeMethod.hashCode());
+	}
+
+	@Test
+	public void testVariableArguments()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(0, 1);
+		Type testClass = new ReferenceType(this.getClass());
+		Expression expression = new This(testClass);
+		Array<Expression> arguments = new Array<>(new Num("1.0"), new Num("2.0"));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"method",
+				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				expression,
+				arguments);
+
+		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+
+		assertEquals(0, errors.length());
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals(14, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals(2, secondInstruction.cst);
+
+		IntInsnNode thirdInstruction = (IntInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.NEWARRAY, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.T_DOUBLE, thirdInstruction.operand);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DUP, fourthInstruction.getOpcode());
+
+		LdcInsnNode fifthInstruction = (LdcInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.LDC, fifthInstruction.getOpcode());
+		assertEquals(0, fifthInstruction.cst);
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DCONST_1, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.DASTORE, seventhInstruction.getOpcode());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.DUP, eighthInstruction.getOpcode());
+
+		LdcInsnNode ninthInstruction = (LdcInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.LDC, ninthInstruction.getOpcode());
+		assertEquals(1, ninthInstruction.cst);
+
+		LdcInsnNode tenthInstruction = (LdcInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.LDC, tenthInstruction.getOpcode());
+		assertEquals(2.0, tenthInstruction.cst);
+
+		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DASTORE, eleventhInstruction.getOpcode());
+
+		assertTrue(instructions.get(11) instanceof LabelNode);
+		assertTrue(instructions.get(12) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fourteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(13);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourteenthInstruction.getOpcode());
+		assertEquals("method", fourteenthInstruction.name);
+		assertEquals(
+			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;[D)V",
+			fourteenthInstruction.desc);
 	}
 }

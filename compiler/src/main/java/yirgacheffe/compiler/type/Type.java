@@ -14,6 +14,8 @@ public interface Type
 
 	int getStoreInstruction();
 
+	int getArrayStoreInstruction();
+
 	int getLoadInstruction();
 
 	int getZero();

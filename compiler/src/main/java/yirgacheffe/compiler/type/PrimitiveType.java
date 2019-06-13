@@ -16,6 +16,9 @@ public enum PrimitiveType implements Type
 		"Bool", "Z", 1, new IntegerInstructions(),
 		java.lang.Boolean.class, Float.NaN),
 
+	BYTE("Num", "B", 1, new IntegerInstructions(),
+		java.lang.Byte.class, Float.NaN),
+
 	CHAR(
 		"Char", "C", 1, new IntegerInstructions(),
 		java.lang.Character.class, 2),
@@ -94,6 +97,11 @@ public enum PrimitiveType implements Type
 		return this.instructions.getStore();
 	}
 
+	public int getArrayStoreInstruction()
+	{
+		return this.instructions.getArrayStore();
+	}
+
 	public int getLoadInstruction()
 	{
 		return this.instructions.getLoad();
@@ -150,5 +158,10 @@ public enum PrimitiveType implements Type
 	public float order()
 	{
 		return this.order;
+	}
+
+	public int getTypeInstruction()
+	{
+		return this.instructions.getType();
 	}
 }

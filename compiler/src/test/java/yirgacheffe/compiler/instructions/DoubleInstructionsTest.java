@@ -15,9 +15,11 @@ public class DoubleInstructionsTest
 
 		assertEquals(Opcodes.DRETURN, instructions.getReturn());
 		assertEquals(Opcodes.DSTORE, instructions.getStore());
+		assertEquals(Opcodes.DASTORE, instructions.getArrayStore());
 		assertEquals(Opcodes.DLOAD, instructions.getLoad());
 		assertEquals(Opcodes.D2I, instructions.convertTo(PrimitiveType.INT));
 		assertEquals(Opcodes.D2L, instructions.convertTo(PrimitiveType.LONG));
 		assertEquals(Opcodes.DCONST_0, instructions.getZero());
+		assertEquals(Opcodes.T_DOUBLE, instructions.getType());
 	}
 }

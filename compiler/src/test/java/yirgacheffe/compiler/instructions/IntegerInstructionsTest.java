@@ -15,9 +15,11 @@ public class IntegerInstructionsTest
 
 		assertEquals(Opcodes.IRETURN, instructions.getReturn());
 		assertEquals(Opcodes.ISTORE, instructions.getStore());
+		assertEquals(Opcodes.IASTORE, instructions.getArrayStore());
 		assertEquals(Opcodes.ILOAD, instructions.getLoad());
 		assertEquals(Opcodes.I2L, instructions.convertTo(PrimitiveType.LONG));
 		assertEquals(Opcodes.I2D, instructions.convertTo(PrimitiveType.DOUBLE));
 		assertEquals(Opcodes.ICONST_0, instructions.getZero());
+		assertEquals(Opcodes.T_INT, instructions.getType());
 	}
 }

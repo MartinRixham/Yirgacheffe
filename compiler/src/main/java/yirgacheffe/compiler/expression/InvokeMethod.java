@@ -95,6 +95,7 @@ public class InvokeMethod implements Expression
 		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
 		MatchResult matchResult = functions.getMatchingExecutable(arguments);
 		Callable function = matchResult.getFunction();
+		boolean variableArugments = function.hasVariableArguments();
 		Array<Type> parameters = function.getParameterTypes();
 		Array<Error> errors = this.owner.compile(methodVisitor, variables);
 
@@ -108,7 +109,8 @@ public class InvokeMethod implements Expression
 				false);
 		}
 
-		errors.push(arguments.compile(parameters, methodVisitor, variables));
+		errors.push(
+			arguments.compile(parameters, methodVisitor, variables, variableArugments));
 
 		this.coordinate.compile(methodVisitor);
 
@@ -188,9 +190,10 @@ public class InvokeMethod implements Expression
 		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
 		MatchResult matchResult = functions.getMatchingExecutable(arguments);
 		Callable function = matchResult.getFunction();
+		boolean variableArugments = function.hasVariableArguments();
 		Array<Type> parameters = function.getParameterTypes();
 
-		return arguments.compile(parameters, methodVisitor, variables);
+		return arguments.compile(parameters, methodVisitor, variables, variableArugments);
 	}
 
 	public Array<Error> compileCondition(

@@ -26,6 +26,7 @@ public class IntersectionTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.AASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());

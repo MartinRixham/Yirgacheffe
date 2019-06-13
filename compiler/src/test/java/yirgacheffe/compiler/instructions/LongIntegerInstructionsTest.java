@@ -15,9 +15,11 @@ public class LongIntegerInstructionsTest
 
 		assertEquals(Opcodes.LRETURN, instructions.getReturn());
 		assertEquals(Opcodes.LSTORE, instructions.getStore());
+		assertEquals(Opcodes.LASTORE, instructions.getArrayStore());
 		assertEquals(Opcodes.LLOAD, instructions.getLoad());
 		assertEquals(Opcodes.L2I, instructions.convertTo(PrimitiveType.INT));
 		assertEquals(Opcodes.L2D, instructions.convertTo(PrimitiveType.DOUBLE));
 		assertEquals(Opcodes.LCONST_0, instructions.getZero());
+		assertEquals(Opcodes.T_LONG, instructions.getType());
 	}
 }

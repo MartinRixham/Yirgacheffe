@@ -39,4 +39,9 @@ public class NullFunction implements Callable
 	{
 		return new Array<>();
 	}
+
+	public boolean hasVariableArguments()
+	{
+		return false;
+	}
 }

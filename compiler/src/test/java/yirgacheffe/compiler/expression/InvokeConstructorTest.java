@@ -6,12 +6,14 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InvokeConstructorTest
 {
@@ -121,5 +124,102 @@ public class InvokeConstructorTest
 		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
 
 		assertEquals(0, errors.length());
+	}
+
+	@Test
+	public void testConstructArray()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(1, 0);
+		ReferenceType array = new ReferenceType(Array.class);
+		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
+		Type owner = new ParameterisedType(array, typeParameters);
+		Expression one = new Streeng("\"one\"");
+		Expression two = new Streeng("\"two\"");
+		Array<Expression> arguments = new Array<>(one, two);
+
+		InvokeConstructor invokeConstructor =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				arguments);
+
+		Type type = invokeConstructor.getType(variables);
+
+		Array<Error> errors =
+			invokeConstructor.compileCondition(methodVisitor, variables, null, null);
+
+		InsnList instructions = methodVisitor.instructions;
+
+		assertEquals("yirgacheffe/lang/Array", type.toFullyQualifiedType());
+		assertFalse(invokeConstructor.isCondition(variables));
+		assertEquals(0, errors.length());
+		assertEquals(15, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(2, thirdInstruction.cst);
+
+		TypeInsnNode fourthInstruction = (TypeInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ANEWARRAY, fourthInstruction.getOpcode());
+		assertEquals("java/lang/Object", fourthInstruction.desc);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DUP, fifthInstruction.getOpcode());
+
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals(0, sixthInstruction.cst);
+
+		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
+		assertEquals("one", seventhInstruction.cst);
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.AASTORE, eighthInstruction.getOpcode());
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.DUP, ninthInstruction.getOpcode());
+
+		LdcInsnNode tenthInstruction = (LdcInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.LDC, tenthInstruction.getOpcode());
+		assertEquals(1, tenthInstruction.cst);
+
+		LdcInsnNode eleventhInstruction = (LdcInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.LDC, eleventhInstruction.getOpcode());
+		assertEquals("two", eleventhInstruction.cst);
+
+		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.AASTORE, twelfthInstruction.getOpcode());
+
+		assertTrue(instructions.get(12) instanceof LabelNode);
+		assertTrue(instructions.get(13) instanceof LineNumberNode);
+
+		MethodInsnNode fifteenthInstruction = (MethodInsnNode) instructions.get(14);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fifteenthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", fifteenthInstruction.owner);
+		assertEquals("<init>", fifteenthInstruction.name);
+		assertEquals("([Ljava/lang/Object;)V", fifteenthInstruction.desc);
 	}
 }

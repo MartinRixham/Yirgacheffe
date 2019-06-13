@@ -32,6 +32,12 @@ public class Array<T> implements Iterable<T>
 		this.length = items.length;
 	}
 
+	public Array(Array<T> array)
+	{
+		this.array = Arrays.copyOf(array.array, array.length);
+		this.length = array.length;
+	}
+
 	public int length()
 	{
 		return this.length;
@@ -205,6 +211,11 @@ public class Array<T> implements Iterable<T>
 		this.length = this.length + items.length - deleteCount;
 
 		return new Array<T>((T[]) deleted);
+	}
+
+	public Array<T> slice()
+	{
+		return new Array<>(this);
 	}
 
 	public Array<T> slice(int startIndex)

@@ -15,6 +15,11 @@ public class IntegerInstructions implements Instructions
 		return Opcodes.ISTORE;
 	}
 
+	public int getArrayStore()
+	{
+		return Opcodes.IASTORE;
+	}
+
 	public int getLoad()
 	{
 		return Opcodes.ILOAD;
@@ -35,5 +40,10 @@ public class IntegerInstructions implements Instructions
 	public int getZero()
 	{
 		return Opcodes.ICONST_0;
+	}
+
+	public int getType()
+	{
+		return Opcodes.T_INT;
 	}
 }

@@ -39,6 +39,11 @@ public class GenericType implements Type
 		return this.type.getStoreInstruction();
 	}
 
+	public int getArrayStoreInstruction()
+	{
+		return this.type.getArrayStoreInstruction();
+	}
+
 	public int getLoadInstruction()
 	{
 		return this.type.getLoadInstruction();

@@ -55,6 +55,11 @@ public class IntersectionType implements Type
 		return this.firstType.getStoreInstruction();
 	}
 
+	public int getArrayStoreInstruction()
+	{
+		return this.firstType.getArrayStoreInstruction();
+	}
+
 	public int getLoadInstruction()
 	{
 		return this.firstType.getLoadInstruction();

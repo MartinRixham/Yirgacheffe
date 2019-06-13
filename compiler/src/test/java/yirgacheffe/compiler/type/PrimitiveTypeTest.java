@@ -12,7 +12,7 @@ public class PrimitiveTypeTest
 	@Test
 	public void testVoidIsPrimitive()
 	{
-		Type type = PrimitiveType.VOID;
+		PrimitiveType type = PrimitiveType.VOID;
 
 		assertEquals("Void", type.toString());
 		assertEquals("java/lang/Void", type.toFullyQualifiedType());
@@ -21,8 +21,10 @@ public class PrimitiveTypeTest
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.NOP, type.getStoreInstruction());
+		assertEquals(Opcodes.NOP, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.NOP, type.getLoadInstruction());
 		assertEquals(Opcodes.NOP, type.getZero());
+		assertEquals(Opcodes.NOP, type.getTypeInstruction());
 		assertFalse(type.hasParameter());
 		assertTrue(type.isPrimitive());
 	}
@@ -30,7 +32,7 @@ public class PrimitiveTypeTest
 	@Test
 	public void testBoolIsPrimitive()
 	{
-		Type type = PrimitiveType.BOOLEAN;
+		PrimitiveType type = PrimitiveType.BOOLEAN;
 
 		assertEquals("Bool", type.toString());
 		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
@@ -38,6 +40,7 @@ public class PrimitiveTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.IASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ICONST_0, type.getZero());
 	}
@@ -45,7 +48,7 @@ public class PrimitiveTypeTest
 	@Test
 	public void testCharIsPrimitive()
 	{
-		Type type = PrimitiveType.CHAR;
+		PrimitiveType type = PrimitiveType.CHAR;
 
 		assertEquals("Char", type.toString());
 		assertEquals("java/lang/Character", type.toFullyQualifiedType());
@@ -53,6 +56,7 @@ public class PrimitiveTypeTest
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.IRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ISTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.IASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.ILOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ICONST_0, type.getZero());
 	}
@@ -60,7 +64,7 @@ public class PrimitiveTypeTest
 	@Test
 	public void testNumIsPrimitive()
 	{
-		Type type = PrimitiveType.DOUBLE;
+		PrimitiveType type = PrimitiveType.DOUBLE;
 
 		assertEquals("Num", type.toString());
 		assertEquals("java/lang/Double", type.toFullyQualifiedType());
@@ -68,8 +72,10 @@ public class PrimitiveTypeTest
 		assertEquals(2, type.width());
 		assertEquals(Opcodes.DRETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.DSTORE, type.getStoreInstruction());
+		assertEquals(Opcodes.DASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.DLOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.DCONST_0, type.getZero());
+		assertEquals(Opcodes.T_DOUBLE, type.getTypeInstruction());
 	}
 
 	@Test

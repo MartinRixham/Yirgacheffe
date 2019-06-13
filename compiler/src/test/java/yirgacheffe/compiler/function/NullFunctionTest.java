@@ -3,6 +3,7 @@ package yirgacheffe.compiler.function;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class NullFunctionTest
 {
@@ -15,5 +16,6 @@ public class NullFunctionTest
 		assertEquals("()Ljava/lang/Object;", function.getDescriptor());
 		assertEquals(0, function.getParameterTypes().length());
 		assertEquals(0, function.checkTypeParameters(null).length());
+		assertFalse(function.hasVariableArguments());
 	}
 }

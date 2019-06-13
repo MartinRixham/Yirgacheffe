@@ -15,6 +15,11 @@ public class LongIntegerInstructions implements Instructions
 		return Opcodes.LSTORE;
 	}
 
+	public int getArrayStore()
+	{
+		return Opcodes.LASTORE;
+	}
+
 	public int getLoad()
 	{
 		return Opcodes.LLOAD;
@@ -35,5 +40,10 @@ public class LongIntegerInstructions implements Instructions
 	public int getZero()
 	{
 		return Opcodes.LCONST_0;
+	}
+
+	public int getType()
+	{
+		return Opcodes.T_LONG;
 	}
 }

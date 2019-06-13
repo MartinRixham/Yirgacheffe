@@ -59,6 +59,11 @@ public class ParameterisedType implements Type
 		return Opcodes.ASTORE;
 	}
 
+	public int getArrayStoreInstruction()
+	{
+		return Opcodes.AASTORE;
+	}
+
 	public int getLoadInstruction()
 	{
 		return Opcodes.ALOAD;

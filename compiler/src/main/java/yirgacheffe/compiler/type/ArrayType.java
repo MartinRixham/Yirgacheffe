@@ -10,10 +10,13 @@ public class ArrayType implements Type
 
 	private Class<?> reflectionClass;
 
-	public ArrayType(String name)
+	private Type type;
+
+	public ArrayType(String name, Type type)
 	{
 		this.jvmType = name.replace(".", "/");
 		this.fullyQualifiedType = name.substring(2).replace(";", "[]");
+		this.type = type;
 
 		try
 		{
@@ -55,6 +58,11 @@ public class ArrayType implements Type
 		return Opcodes.ASTORE;
 	}
 
+	public int getArrayStoreInstruction()
+	{
+		return Opcodes.AASTORE;
+	}
+
 	public int getLoadInstruction()
 	{
 		return Opcodes.ALOAD;
@@ -72,7 +80,16 @@ public class ArrayType implements Type
 
 	public boolean isAssignableTo(Type other)
 	{
-		return other instanceof ArrayType;
+		if (other instanceof ArrayType)
+		{
+			ArrayType otherType = (ArrayType) other;
+
+			return this.type.isAssignableTo(otherType.type);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public boolean hasParameter()
@@ -88,5 +105,10 @@ public class ArrayType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Type getElementType()
+	{
+		return this.type;
 	}
 }

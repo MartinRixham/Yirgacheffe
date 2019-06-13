@@ -1389,4 +1389,22 @@ public class FunctionCallListenerTest
 
 		assertEquals("(LMyClass;D)V", sixthInstruction.desc);
 	}
+
+	@Test
+	public void testVariableArguments()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{\n" +
+					"new Array<Num>(1, 3, 5);\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
 }

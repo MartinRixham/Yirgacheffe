@@ -15,6 +15,11 @@ public class VoidInstructions implements Instructions
 		return Opcodes.NOP;
 	}
 
+	public int getArrayStore()
+	{
+		return Opcodes.NOP;
+	}
+
 	public int getLoad()
 	{
 		return Opcodes.NOP;
@@ -26,6 +31,11 @@ public class VoidInstructions implements Instructions
 	}
 
 	public int getZero()
+	{
+		return Opcodes.NOP;
+	}
+
+	public int getType()
 	{
 		return Opcodes.NOP;
 	}

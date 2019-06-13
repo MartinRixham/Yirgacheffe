@@ -59,19 +59,43 @@ public class Arguments
 		return mismatchedParameters;
 	}
 
-	public int matches(Array<Type> parameterTypes)
+	public int matches(Array<Type> parameters, boolean variableArguments)
 	{
 		int exactMatches = 0;
 
-		if (parameterTypes.length() != this.argumentTypes.length())
+		Array<Type> argumentTypes = this.argumentTypes.slice();
+
+		if (this.hasVariableArguments(variableArguments))
+		{
+			ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
+			Type elementType = arrayType.getElementType();
+			Type intersectionType = elementType;
+			int argumentCount = argumentTypes.length();
+
+			for (int i = parameters.length() - 1; i < argumentCount; i++)
+			{
+				Type type = argumentTypes.pop();
+				intersectionType = new IntersectionType(intersectionType, type);
+			}
+
+			if (!intersectionType.isAssignableTo(elementType))
+			{
+				return -1;
+			}
+		}
+		else if (parameters.length() != argumentTypes.length())
 		{
 			return -1;
 		}
-
-		for (int i = 0; i < parameterTypes.length(); i++)
+		else if (parameters.length() == 0)
 		{
-			Type argumentType = this.argumentTypes.get(i);
-			Type parameterType = parameterTypes.get(i);
+			return 1;
+		}
+
+		for (int i = 0; i < argumentTypes.length(); i++)
+		{
+			Type argumentType = argumentTypes.get(i);
+			Type parameterType = parameters.get(i);
 
 			if (!argumentType.isAssignableTo(parameterType))
 			{
@@ -104,46 +128,140 @@ public class Arguments
 	}
 
 	public Array<Error> compile(
-			Array<Type> parameters,
+		Array<Type> parameters,
 		MethodVisitor methodVisitor,
-		Variables variables)
+		Variables variables,
+		boolean variableArguments)
 	{
 		Array<Error> errors = new Array<>();
 
 		for (int i = 0; i < Math.min(this.arguments.length(), parameters.length()); i++)
 		{
-			Expression argument = this.arguments.get(i);
-			Type argumentType = this.argumentTypes.get(i);
-			Type parameterType = parameters.get(i);
-
-			errors.push(argument.compile(methodVisitor, variables));
-
-			if (argumentType.isPrimitive() &&
-				parameterType.isPrimitive() &&
-				argumentType != parameterType)
+			if (this.hasVariableArguments(variableArguments) &&
+				i == parameters.length() - 1)
 			{
-				PrimitiveType argumentPrimitive = (PrimitiveType) argumentType;
-				PrimitiveType parameterPrimitive = (PrimitiveType) parameterType;
+				Array<Expression> arguments =
+					this.arguments.slice(parameters.length() - 1);
 
-				methodVisitor.visitInsn(argumentPrimitive.convertTo(parameterPrimitive));
+				Array<Error> argumentErrors =
+					this.compileVariableArguments(
+						arguments,
+						parameters,
+						methodVisitor,
+						variables);
+
+				errors = errors.concat(argumentErrors);
 			}
-
-			if (argumentType.isPrimitive() &&
-				!parameters.get(i).isPrimitive())
+			else
 			{
-				String descriptor =
-					"(" + argumentType.toJVMType() + ")L" +
-						argumentType.toFullyQualifiedType() + ";";
+				Expression argument = this.arguments.get(i);
+				Type parameterType = parameters.get(i);
 
-				methodVisitor.visitMethodInsn(
-					Opcodes.INVOKESTATIC,
-					argumentType.toFullyQualifiedType(),
-					"valueOf",
-					descriptor,
-					false);
+				Array<Error> argumentErrors =
+					this.compileArgument(
+						argument,
+						parameterType,
+						methodVisitor,
+						variables);
+
+				errors = errors.concat(argumentErrors);
 			}
 		}
 
 		return errors;
+	}
+
+	private Array<Error> compileVariableArguments(
+		Array<Expression> arguments,
+		Array<Type> parameters,
+		MethodVisitor methodVisitor,
+		Variables variables)
+	{
+		ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
+		Type elementType = arrayType.getElementType();
+
+		int arrayLength = this.arguments.length() - parameters.length() + 1;
+
+		methodVisitor.visitLdcInsn(arrayLength);
+
+		if (elementType.isPrimitive())
+		{
+			PrimitiveType primitiveType = (PrimitiveType) elementType;
+			int typeInstruction = primitiveType.getTypeInstruction();
+
+			methodVisitor.visitIntInsn(Opcodes.NEWARRAY, typeInstruction);
+		}
+		else
+		{
+			methodVisitor.visitTypeInsn(
+				Opcodes.ANEWARRAY,
+				elementType.toFullyQualifiedType());
+		}
+
+		for (int i = 0; i < arrayLength; i++)
+		{
+			methodVisitor.visitInsn(Opcodes.DUP);
+			methodVisitor.visitLdcInsn(i);
+
+			this.compileArgument(
+				arguments.get(i),
+				elementType,
+				methodVisitor,
+				variables);
+
+			methodVisitor.visitInsn(elementType.getArrayStoreInstruction());
+		}
+
+		return new Array<>();
+	}
+
+	private Array<Error> compileArgument(
+		Expression argument,
+		Type parameter,
+		MethodVisitor methodVisitor,
+		Variables variables)
+	{
+		Array<Error> errors = argument.compile(methodVisitor, variables);
+		Type argumentType = argument.getType(variables);
+
+		if (argumentType.isPrimitive() &&
+			parameter.isPrimitive() &&
+			argumentType != parameter)
+		{
+			PrimitiveType argumentPrimitive = (PrimitiveType) argumentType;
+			PrimitiveType parameterPrimitive = (PrimitiveType) parameter;
+
+			methodVisitor.visitInsn(argumentPrimitive.convertTo(parameterPrimitive));
+		}
+		else if (argumentType.isPrimitive() && !parameter.isPrimitive())
+		{
+			String descriptor =
+				"(" + argumentType.toJVMType() + ")L" +
+					argumentType.toFullyQualifiedType() + ";";
+
+			methodVisitor.visitMethodInsn(
+				Opcodes.INVOKESTATIC,
+				argumentType.toFullyQualifiedType(),
+				"valueOf",
+				descriptor,
+				false);
+		}
+
+		return errors;
+	}
+
+	private boolean hasVariableArguments(boolean variableArguments)
+	{
+		if (this.argumentTypes.length() > 0)
+		{
+			Type lastArgumentType =
+				this.argumentTypes.get(this.argumentTypes.length() - 1);
+
+			return variableArguments && !(lastArgumentType instanceof ArrayType);
+		}
+		else
+		{
+			return variableArguments;
+		}
 	}
 }

@@ -35,8 +35,9 @@ public class Functions
 
 		for (Callable function: this.functions)
 		{
+			boolean variableArguments = function.hasVariableArguments();
 			Array<Type> parameterTypes = function.getParameterTypes();
-			int exactMatches = arguments.matches(parameterTypes);
+			int exactMatches = arguments.matches(parameterTypes, variableArguments);
 
 			if (exactMatches > highestExactMatches)
 			{

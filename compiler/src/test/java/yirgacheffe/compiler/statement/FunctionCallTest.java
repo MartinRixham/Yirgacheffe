@@ -39,7 +39,7 @@ public class FunctionCallTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		MethodNode methodVisitor = new MethodNode();
 		Array<Expression> arguments =
-			new Array<>(new Num("3"));
+			new Array<>(new Num("3.0"));
 
 		InvokeConstructor invoke =
 			new InvokeConstructor(
@@ -57,17 +57,28 @@ public class FunctionCallTest
 		assertEquals(7, instructions.size());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
-		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
-		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
 		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/lang/Double", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
 		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
 		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals(3.0, thirdInstruction.cst);
+
 		assertTrue(instructions.get(3) instanceof LabelNode);
 		assertTrue(instructions.get(4) instanceof LineNumberNode);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
 		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
 		assertEquals(Opcodes.POP2, seventhInstruction.getOpcode());
 	}
 

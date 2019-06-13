@@ -15,8 +15,10 @@ public class VoidInstructionsTest
 
 		assertEquals(Opcodes.RETURN, instructions.getReturn());
 		assertEquals(Opcodes.NOP, instructions.getStore());
+		assertEquals(Opcodes.NOP, instructions.getArrayStore());
 		assertEquals(Opcodes.NOP, instructions.getLoad());
 		assertEquals(Opcodes.NOP, instructions.convertTo(PrimitiveType.INT));
 		assertEquals(Opcodes.NOP, instructions.getZero());
+		assertEquals(Opcodes.NOP, instructions.getType());
 	}
 }

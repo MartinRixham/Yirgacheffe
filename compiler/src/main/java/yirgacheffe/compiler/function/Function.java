@@ -13,6 +13,7 @@ import yirgacheffe.lang.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 
 public class Function implements Callable
@@ -111,7 +112,9 @@ public class Function implements Callable
 	{
 		if (clazz.isArray())
 		{
-			return new ArrayType(clazz.getName());
+			Type arrayType = this.getType(clazz.getComponentType());
+
+			return new ArrayType(clazz.getName(), arrayType);
 		}
 		else if (clazz.isPrimitive())
 		{
@@ -137,6 +140,11 @@ public class Function implements Callable
 		{
 			return new Array<>();
 		}
+	}
+
+	public boolean hasVariableArguments()
+	{
+		return Modifier.isTransient(this.executable.getModifiers());
 	}
 
 	@Override

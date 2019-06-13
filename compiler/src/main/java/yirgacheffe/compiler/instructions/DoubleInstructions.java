@@ -15,6 +15,11 @@ public class DoubleInstructions implements Instructions
 		return Opcodes.DSTORE;
 	}
 
+	public int getArrayStore()
+	{
+		return Opcodes.DASTORE;
+	}
+
 	public int getLoad()
 	{
 		return Opcodes.DLOAD;
@@ -35,5 +40,10 @@ public class DoubleInstructions implements Instructions
 	public int getZero()
 	{
 		return Opcodes.DCONST_0;
+	}
+
+	public int getType()
+	{
+		return Opcodes.T_DOUBLE;
 	}
 }
