@@ -7,7 +7,6 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
-import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;

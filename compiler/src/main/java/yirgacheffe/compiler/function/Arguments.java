@@ -1,11 +1,19 @@
-package yirgacheffe.compiler.type;
+package yirgacheffe.compiler.function;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.type.ArrayType;
+import yirgacheffe.compiler.type.IntersectionType;
+import yirgacheffe.compiler.type.MismatchedTypes;
+import yirgacheffe.compiler.type.ParameterisedType;
+import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.TypeVariable;
 
 public class Arguments
@@ -32,11 +40,14 @@ public class Arguments
 	{
 		Array<MismatchedTypes> mismatchedParameters = new Array<>();
 
-		for (int i = 0; i < parameters.length(); i++)
+		for (int i = 0; i < this.argumentTypes.length(); i++)
 		{
-			if (parameters.get(i) instanceof TypeVariable)
+			java.lang.reflect.Type parameter =
+				parameters.get(Math.min(parameters.length() - 1, i));
+
+			if (parameter instanceof TypeVariable)
 			{
-				TypeVariable typeVariable = (TypeVariable) parameters.get(i);
+				TypeVariable typeVariable = (TypeVariable) parameter;
 				Type argumentType = this.argumentTypes.get(i);
 
 				boolean hasTypeParameter =
@@ -50,6 +61,25 @@ public class Arguments
 						new MismatchedTypes(
 							argumentType.toString(),
 							owner.getTypeParameterName(typeVariable.getName()));
+
+					mismatchedParameters.push(mismatchedTypes);
+				}
+			}
+			else if (parameter instanceof GenericArrayType)
+			{
+				GenericArrayType arrayType = (GenericArrayType) parameter;
+				Type argumentType = this.argumentTypes.get(i);
+
+				String name = arrayType.getGenericComponentType().getTypeName();
+
+				boolean hasTypeParameter = owner.hasTypeParameter(name, argumentType);
+
+				if (!hasTypeParameter)
+				{
+					MismatchedTypes mismatchedTypes =
+						new MismatchedTypes(
+							argumentType.toString(),
+							owner.getTypeParameterName(name));
 
 					mismatchedParameters.push(mismatchedTypes);
 				}

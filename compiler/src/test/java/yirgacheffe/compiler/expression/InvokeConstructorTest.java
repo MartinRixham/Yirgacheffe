@@ -222,4 +222,38 @@ public class InvokeConstructorTest
 		assertEquals("<init>", fifteenthInstruction.name);
 		assertEquals("([Ljava/lang/Object;)V", fifteenthInstruction.desc);
 	}
+
+	@Test
+	public void testConstructArrayWithInvalidArgument()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(1, 0);
+		ReferenceType array = new ReferenceType(Array.class);
+		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
+		Type owner = new ParameterisedType(array, typeParameters);
+		Expression one = new Num("1");
+		Expression two = new Num("2");
+		Array<Expression> arguments = new Array<>(one, two);
+
+		InvokeConstructor invokeConstructor =
+			new InvokeConstructor(
+				coordinate,
+				owner,
+				arguments);
+
+		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+
+		assertEquals(2, errors.length());
+
+		assertEquals(
+			"line 1:0 Argument of type Num cannot be assigned to " +
+				"generic parameter of type java.lang.String.",
+			errors.get(0).toString());
+
+		assertEquals(
+			"line 1:0 Argument of type Num cannot be assigned to " +
+				"generic parameter of type java.lang.String.",
+			errors.get(1).toString());
+	}
 }

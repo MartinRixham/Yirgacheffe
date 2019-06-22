@@ -589,4 +589,34 @@ public class InvokeMethodTest
 			"(Lyirgacheffe/compiler/expression/InvokeMethodTest;[D)V",
 			fourteenthInstruction.desc);
 	}
+
+	@Test
+	public void testInvalidVariableArguments()
+	{
+		MethodNode methodVisitor = new MethodNode();
+		Variables variables = new Variables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(0, 1);
+		Type testClass = new ReferenceType(this.getClass());
+		Expression expression = new This(testClass);
+
+		Array<Expression> arguments =
+			new Array<>(new Streeng("\"one\""), new Streeng("\"two\""));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"method",
+				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				expression,
+				arguments);
+
+		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+
+		assertEquals(1, errors.length());
+		assertEquals(
+			"line 0:1 Method " +
+			"yirgacheffe.compiler.expression.InvokeMethodTest" +
+			".method(java.lang.String,java.lang.String) not found.",
+			errors.get(0).toString());
+	}
 }

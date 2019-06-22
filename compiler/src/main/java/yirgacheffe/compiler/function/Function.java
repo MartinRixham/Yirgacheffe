@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.function;
 
-import yirgacheffe.compiler.type.Arguments;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;

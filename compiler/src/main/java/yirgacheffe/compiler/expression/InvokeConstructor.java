@@ -10,7 +10,7 @@ import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.compiler.type.Arguments;
+import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;

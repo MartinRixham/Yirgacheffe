@@ -12,7 +12,7 @@ import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.function.Methods;
 import yirgacheffe.compiler.statement.TailCall;
-import yirgacheffe.compiler.type.Arguments;
+import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
