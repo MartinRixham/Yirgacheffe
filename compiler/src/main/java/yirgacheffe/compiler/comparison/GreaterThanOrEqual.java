@@ -11,12 +11,12 @@ public class GreaterThanOrEqual implements Comparator
 	@Override
 	public void compile(MethodVisitor methodVisitor, Label label, Type type)
 	{
-		if (type == PrimitiveType.DOUBLE)
+		if (type.equals(PrimitiveType.DOUBLE))
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFLT, label);
 		}
-		else if (type == PrimitiveType.LONG)
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			methodVisitor.visitInsn(Opcodes.LCMP);
 			methodVisitor.visitJumpInsn(Opcodes.IFLT, label);

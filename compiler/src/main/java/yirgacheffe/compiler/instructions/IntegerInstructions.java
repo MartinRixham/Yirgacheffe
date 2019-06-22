@@ -27,7 +27,7 @@ public class IntegerInstructions implements Instructions
 
 	public int convertTo(PrimitiveType type)
 	{
-		if (type == PrimitiveType.LONG)
+		if (type.equals(PrimitiveType.LONG))
 		{
 			return Opcodes.I2L;
 		}

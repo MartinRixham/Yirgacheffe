@@ -103,7 +103,7 @@ public class Equation implements Expression
 					this.firstOperand,
 					this.secondOperand);
 		}
-		else if (firstType == PrimitiveType.BOOLEAN)
+		else if (firstType.equals(PrimitiveType.BOOLEAN))
 		{
 			comparison =
 				new BooleanComparison(

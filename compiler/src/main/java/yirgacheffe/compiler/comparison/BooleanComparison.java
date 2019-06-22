@@ -39,7 +39,7 @@ public class BooleanComparison implements Comparison
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
-		if (secondType != PrimitiveType.BOOLEAN ||
+		if (!secondType.equals(PrimitiveType.BOOLEAN) ||
 			!(this.comparator instanceof Equals ||
 			this.comparator instanceof NotEquals))
 		{

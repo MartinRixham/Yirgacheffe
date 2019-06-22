@@ -36,7 +36,7 @@ public class StatementListener extends FieldListener
 
 		this.statements.push(new VariableDeclaration(name, type));
 
-		if (type == PrimitiveType.VOID)
+		if (type.equals(PrimitiveType.VOID))
 		{
 			String message = "Cannot declare variable of type Void.";
 

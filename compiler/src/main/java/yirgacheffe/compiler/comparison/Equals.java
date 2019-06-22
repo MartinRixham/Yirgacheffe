@@ -15,12 +15,12 @@ public class Equals implements Comparator
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ACMPNE, label);
 		}
-		else if (type == PrimitiveType.DOUBLE)
+		else if (type.equals(PrimitiveType.DOUBLE))
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
 		}
-		else if (type == PrimitiveType.LONG)
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			methodVisitor.visitInsn(Opcodes.LCMP);
 			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);

@@ -73,7 +73,7 @@ public class UnaryOperation implements Expression, Statement
 		Type type = this.expression.getType(variables);
 		Array<Error> errors = new Array<>();
 
-		if (type == PrimitiveType.INT)
+		if (type.equals(PrimitiveType.INT))
 		{
 			if (this.expression instanceof VariableRead)
 			{

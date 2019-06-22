@@ -245,12 +245,12 @@ public class MethodListener extends FieldDeclarationListener
 		Array<Error> errors =
 			block.compile(this.methodVisitor, variables, this.signature);
 
-		if (this.returnType != PrimitiveType.VOID && block.isEmpty())
+		if (!this.returnType.equals(PrimitiveType.VOID) && block.isEmpty())
 		{
 			this.methodVisitor.visitInsn(this.returnType.getZero());
 			this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
 		}
-		else if (!returns && this.returnType == PrimitiveType.VOID)
+		else if (!returns && this.returnType.equals(PrimitiveType.VOID))
 		{
 			this.methodVisitor.visitInsn(Opcodes.RETURN);
 		}

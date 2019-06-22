@@ -45,7 +45,7 @@ public class Num implements Expression, Literal
 
 	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
 	{
-		if (this.getType(variables) == PrimitiveType.INT)
+		if (this.getType(variables).equals(PrimitiveType.INT))
 		{
 			Integer integer = Integer.valueOf(this.text);
 
@@ -58,7 +58,7 @@ public class Num implements Expression, Literal
 				methodVisitor.visitInsn(Opcodes.ICONST_1);
 			}
 		}
-		else if (this.getType(variables) == PrimitiveType.LONG)
+		else if (this.getType(variables).equals(PrimitiveType.LONG))
 		{
 			Long longInteger = Long.valueOf(this.text);
 
@@ -108,11 +108,11 @@ public class Num implements Expression, Literal
 	{
 		Type type = this.getType();
 
-		if (type == PrimitiveType.INT)
+		if (type.equals(PrimitiveType.INT))
 		{
 			return Integer.valueOf(this.text);
 		}
-		else if (type == PrimitiveType.LONG)
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			return Long.valueOf(this.text);
 		}

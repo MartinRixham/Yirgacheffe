@@ -105,11 +105,11 @@ public class BinaryOperation implements Expression
 			methodVisitor.visitInsn(secondPrimitive.convertTo(type));
 		}
 
-		if (type == PrimitiveType.INT)
+		if (type.equals(PrimitiveType.INT))
 		{
 			methodVisitor.visitInsn(this.operator.getIntOpcode());
 		}
-		else if (type == PrimitiveType.LONG)
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			methodVisitor.visitInsn(this.operator.getLongOpcode());
 		}

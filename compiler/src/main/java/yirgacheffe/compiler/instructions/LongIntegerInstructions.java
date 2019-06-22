@@ -27,7 +27,7 @@ public class LongIntegerInstructions implements Instructions
 
 	public int convertTo(PrimitiveType type)
 	{
-		if (type == PrimitiveType.INT)
+		if (type.equals(PrimitiveType.INT))
 		{
 			return Opcodes.L2I;
 		}

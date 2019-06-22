@@ -15,12 +15,12 @@ public class NotEquals implements Comparator
 		{
 			methodVisitor.visitJumpInsn(Opcodes.IF_ACMPEQ, label);
 		}
-		else if (type == PrimitiveType.DOUBLE)
+		else if (type.equals(PrimitiveType.DOUBLE))
 		{
 			methodVisitor.visitInsn(Opcodes.DCMPL);
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
 		}
-		else if (type == PrimitiveType.LONG)
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			methodVisitor.visitInsn(Opcodes.LCMP);
 			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);

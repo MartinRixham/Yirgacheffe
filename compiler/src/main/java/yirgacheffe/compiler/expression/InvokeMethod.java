@@ -68,9 +68,9 @@ public class InvokeMethod implements Expression
 			}
 		}
 
-		if (returnType == PrimitiveType.INT ||
-			returnType == PrimitiveType.LONG ||
-			returnType == PrimitiveType.FLOAT)
+		if (returnType.equals(PrimitiveType.INT) ||
+			returnType.equals(PrimitiveType.LONG) ||
+			returnType.equals(PrimitiveType.FLOAT))
 		{
 			return PrimitiveType.DOUBLE;
 		}

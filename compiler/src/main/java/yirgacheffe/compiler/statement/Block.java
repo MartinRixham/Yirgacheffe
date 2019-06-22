@@ -185,7 +185,7 @@ public class Block implements Statement
 			{
 				Type type = variableWrite.getExpression().getType(variables);
 
-				if (type == PrimitiveType.INT)
+				if (type.equals(PrimitiveType.INT))
 				{
 					variableWrites.add(variableWrite);
 				}
@@ -198,7 +198,7 @@ public class Block implements Statement
 			{
 				Type type = variableWrite.getExpression().getType(variables);
 
-				if (type == PrimitiveType.DOUBLE)
+				if (type.equals(PrimitiveType.DOUBLE))
 				{
 					variableWrites.remove(variableWrite);
 				}
