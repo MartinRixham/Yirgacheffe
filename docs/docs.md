@@ -5,17 +5,17 @@ Below are listed some of the features that Yirgacheffe lacks along with suggesti
 
 ### Inheritance
 
-Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.
+There is no `extends` keyword in yirgacheffe so you can't have one class inherit functionality from another.
 
-To be clear while Yirgacheffe lacks Java's `extends` keyword you can still define and implement abstract interfaces and their use is greatly encouraged.
+Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.
 
 ### Public Fields
 
 Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default.
 You may think that having to write accessor methods whenever you want to expose some data is too laborious but it shouldn't be necessary very often.
-To avoid that there's a simple rule to follow.
+There's a simple rule to follow.
 Put the logic that acts on some data in the class that contains that data.
-Then you'll find you hardly ever need to write accessor methods.
+If you follow it you'll find you hardly ever need to write accessor methods.
 
 ### Mutable Fields
 
