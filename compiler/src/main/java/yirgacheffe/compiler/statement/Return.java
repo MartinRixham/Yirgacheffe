@@ -1,12 +1,14 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -47,11 +49,20 @@ public class Return implements Statement
 
 		if (type.isAssignableTo(this.type))
 		{
-			errors.push(this.expression.compile(methodVisitor, variables));
+			errors = errors.concat(this.expression.compile(methodVisitor, variables));
+
+			methodVisitor.visitInsn(this.type.getReturnInstruction());
+		}
+		else if (type.isAssignableTo(new ReferenceType(Throwable.class)))
+		{
+			errors = errors.concat(this.expression.compile(methodVisitor, variables));
+
+			methodVisitor.visitInsn(Opcodes.ATHROW);
 		}
 		else
 		{
 			methodVisitor.visitInsn(this.type.getZero());
+			methodVisitor.visitInsn(this.type.getReturnInstruction());
 
 			String message =
 				"Mismatched return type: Cannot return expression of type " +
@@ -60,8 +71,6 @@ public class Return implements Statement
 
 			errors.push(new Error(this.coordinate, message));
 		}
-
-		methodVisitor.visitInsn(this.type.getReturnInstruction());
 
 		return errors;
 	}
