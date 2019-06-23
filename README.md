@@ -1,4 +1,4 @@
-# Yirgacheffe
+# Yirgacheffe [![Build Status](https://travis-ci.com/MartinRixham/Yirgacheffe.svg?branch=master)](https://travis-ci.com/MartinRixham/Yirgacheffe)
 
 Like Java but for pretentious people.
 
