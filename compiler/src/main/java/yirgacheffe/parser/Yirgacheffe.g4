@@ -60,7 +60,7 @@ signature: Identifier '(' parameter? (',' parameter)* ')';
 
 field: (fieldInitialisation | fieldDeclaration) semicolon;
 
-fieldInitialisation: fieldDeclaration '=' expression;
+fieldInitialisation: fieldDeclaration '=' attemptedExpression;
 
 fieldDeclaration: Const? modifier? type? Identifier;
 
@@ -106,7 +106,7 @@ ifStatement: If '(' expression ')' statement;
 
 elseStatement: Else statement;
 
-variableAssignment: (variableDeclaration | variableWrite) '=' expression;
+variableAssignment: (variableDeclaration | variableWrite) '=' attemptedExpression;
 
 variableDeclaration: type Identifier;
 
@@ -131,6 +131,8 @@ methodCall: '.' Identifier arguments;
 instantiation: New type arguments;
 
 arguments: '(' expression? (',' expression)* ')';
+
+attemptedExpression: expression | Try expression;
 
 expression: or;
 
@@ -184,7 +186,7 @@ fieldRead: '.' Identifier;
 
 parenthesis: '(' expression ')';
 
-fieldWrite: expression '.' Identifier '=' expression;
+fieldWrite: expression '.' Identifier '=' attemptedExpression;
 
 returnStatement: Return expression?;
 
@@ -216,6 +218,7 @@ If: 'if';
 Else: 'else';
 For: 'for';
 Parallel: 'parallel';
+Try: 'try';
 
 // operators
 Remainder: '%';

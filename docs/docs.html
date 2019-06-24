@@ -1,12 +1,12 @@
 <p>Yirgacheffe is a simple language designed to run on the JVM and is in many ways similar to Java. While it lacks many of the features of the modern Java language and even some of Java's more traditional ones, it is still possible to write good object oriented code in Yirgacheffe. Below are listed some of the features that Yirgacheffe lacks along with suggestions of what can be used instead.</p>
 <h3>Inheritance</h3>
 <p>There is no <code>extends</code> keyword in yirgacheffe so you can't have one class inherit functionality from another.</p>
-<p>Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
+<p>Use composition instead... No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
 <h3>Public Fields</h3>
 <p>Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default. You may think that having to write accessor methods whenever you want to expose some data is too laborious but it shouldn't be necessary very often. There's a simple rule to follow. Put the logic that acts on some data in the class that contains that data. If you follow it you'll find you hardly ever need to write accessor methods.</p>
 <h3>Mutable Fields</h3>
-<p>There's nothing wrong with mutable state, almost all programs have some, but it is important to distinguish between the global state of the program and the local state of a calculation. One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed. In Yirgacheffe fields are immutable, they can only be assigned in a constructor, so local state like the value of a loop index should be kept in a local variable.</p>
-<p>If the state of a programme really changes then that may well involve mutating the state in a field. Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed. In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.</p>
+<p>There's nothing wrong with mutable state, almost all programs have some, but it is important to distinguish between the global state of the program and the local state of a calculation. One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed. In Yirgacheffe fields are immutable, they can only be assigned in a constructor or field initialiser, so local state like the value of a loop index should be kept in a local variable.</p>
+<p>If the state of a programme really changes then that may involve mutating the state in a field. Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed. In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.</p>
 <h3>Static Methods</h3>
 <p>OK this is a bit of an omission. There are some good uses of static methods such a factory methods, but you can do without them. There is always a temptation to abuse static members and when they are misused the implications are inherently non-local. So static methods, as well as non-constant static fields have been left out of Yirgacheffe.</p>
 <h3>Type Casting</h3>
@@ -52,6 +52,7 @@
 </code></pre>
 <p>Null values can be handled using conditional statements like this.</p>
 <h3>Try/Catch Blocks</h3>
+<h3>While, Break and Continue</h3>
 <h3>Switch Statements</h3>
 <h3>Lambda Expressions</h3>
 <p>There are no lambda expressions or first class functions but that doesn't mean you can't pass a callback. Remember that an object is just a collection of callbacks attached to some data, so if you want to pass a callback just put it on an object.</p>

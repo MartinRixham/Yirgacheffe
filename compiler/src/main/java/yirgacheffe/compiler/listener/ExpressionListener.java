@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.Char;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.expression.Try;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -46,6 +47,16 @@ public class ExpressionListener extends LoopListener
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
 			this.expressions.push(new This(new ReferenceType(Object.class)));
+		}
+	}
+
+	@Override
+	public void exitAttemptedExpression(
+		YirgacheffeParser.AttemptedExpressionContext context)
+	{
+		if (context.Try() != null)
+		{
+			this.expressions.push(new Try(this.expressions.pop()));
 		}
 	}
 

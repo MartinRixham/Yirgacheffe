@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -562,6 +563,77 @@ public class StatementListenerTest
 		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.ATHROW, sixthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testHandleException()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{" +
+					"Num number = try this.getNumber();\n" +
+					"this.handle(number);" +
+				"}\n" +
+				"public Num getNumber()" +
+				"{\n" +
+					"return new Exception();\n" +
+				"}\n" +
+				"public Void handle(Num number) {}\n" +
+				"public Void handle(Exception e) {}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List methods = classNode.methods;
+		MethodNode firstMethod = (MethodNode) methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		InsnList instructions = firstMethod.instructions;
+
+		//assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		assertTrue(instructions.get(1) instanceof LabelNode);
+		assertTrue(instructions.get(2) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+
+		/*MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKESTATIC, fifthInstruction.getOpcode());
+		assertEquals("java/lang/Double", fifthInstruction.owner);
+		assertEquals("valueOf", fifthInstruction.name);
+		assertEquals("(D)java/lang", fifthInstruction.desc);
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.ASTORE, sixthInstruction.getOpcode());
+		assertEquals(0, sixthInstruction.var);*/
 	}
 
 	@Test
