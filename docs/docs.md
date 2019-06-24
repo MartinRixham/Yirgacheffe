@@ -7,7 +7,8 @@ Below are listed some of the features that Yirgacheffe lacks along with suggesti
 
 There is no `extends` keyword in yirgacheffe so you can't have one class inherit functionality from another.
 
-Use composition instead... No seriously readers of your code will be very grateful if you take the trouble to define clear interfaces between your classes instead of just smooshing them together into one class hierarchy.
+Use composition instead...
+No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.
 
 ### Public Fields
 
@@ -21,9 +22,9 @@ If you follow it you'll find you hardly ever need to write accessor methods.
 
 There's nothing wrong with mutable state, almost all programs have some, but it is important to distinguish between the global state of the program and the local state of a calculation.
 One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed.
-In Yirgacheffe fields are immutable, they can only be assigned in a constructor, so local state like the value of a loop index should be kept in a local variable.
+In Yirgacheffe fields are immutable, they can only be assigned in a constructor or field initialiser, so local state like the value of a loop index should be kept in a local variable.
 
-If the state of a programme really changes then that may well involve mutating the state in a field.
+If the state of a programme really changes then that may involve mutating the state in a field.
 Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed.
 In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.
 
@@ -88,6 +89,8 @@ We can't outlaw null values completely though or pretend they don't exist so you
 Null values can be handled using conditional statements like this.
 
 ### Try/Catch Blocks
+
+### While, Break and Continue
 
 ### Switch Statements
 
