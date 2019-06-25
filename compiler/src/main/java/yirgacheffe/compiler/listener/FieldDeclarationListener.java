@@ -54,7 +54,7 @@ public class FieldDeclarationListener extends TypeListener
 
 			int access = Opcodes.ACC_PROTECTED;
 
-			this.writer.visitField(
+			this.classNode.visitField(
 				access,
 				fieldName,
 				type.toJVMType(),

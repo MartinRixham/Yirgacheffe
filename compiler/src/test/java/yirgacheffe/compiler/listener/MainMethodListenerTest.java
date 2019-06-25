@@ -51,6 +51,8 @@ public class MainMethodListenerTest
 		assertEquals("(Lyirgacheffe/lang/Array;)V", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
 		assertEquals("myMainMethod", method.name);
+		assertEquals(2, method.maxLocals);
+		assertEquals(0, method.maxStack);
 
 		MethodNode mainMethod = (MethodNode) methods.get(2);
 

@@ -1,8 +1,9 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.parallel.RunnableClass;
 import yirgacheffe.compiler.type.Classes;
@@ -12,7 +13,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class ParallelMethodListener extends MethodListener
 {
-	private ClassWriter generatedClassWriter;
+	private ClassNode generatedClassWriter;
 
 	public ParallelMethodListener(String sourceFile, Classes classes)
 	{
@@ -23,7 +24,7 @@ public class ParallelMethodListener extends MethodListener
 	public void exitParallelMethodDeclaration(
 		YirgacheffeParser.ParallelMethodDeclarationContext context)
 	{
-		MethodVisitor methodVisitor = this.methodVisitor;
+		MethodVisitor methodVisitor = this.methodNode;
 
 		String methodName =
 			context.classMethodDeclaration().signature().Identifier().getText();
@@ -76,10 +77,9 @@ public class ParallelMethodListener extends MethodListener
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, parameters.length() + 1);
 		methodVisitor.visitInsn(Opcodes.ARETURN);
-		methodVisitor.visitMaxs(0, 0);
 
-		ClassWriter writer =
-			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		ClassNode writer = new ClassNode();
+
 		String returnType = this.returnType.toFullyQualifiedType();
 
 		writer.visit(
@@ -95,13 +95,15 @@ public class ParallelMethodListener extends MethodListener
 				.getDescriptor()
 				.replace("(", "(L" + className + ";");
 
-		this.methodVisitor =
-			writer.visitMethod(
+		this.methodNode =
+			new MethodNode(
 				Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC,
 				methodName,
 				signature,
 				null,
 				null);
+
+		writer.methods.add(this.methodNode);
 
 		this.generatedClassWriter = writer;
 	}

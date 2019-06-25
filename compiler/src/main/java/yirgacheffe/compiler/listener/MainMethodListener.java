@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -54,13 +55,15 @@ public class MainMethodListener extends ParallelMethodListener
 
 		this.mainMethodName = signature.Identifier().getText();
 
-		this.methodVisitor =
-			this.writer.visitMethod(
+		this.methodNode =
+			new MethodNode(
 				Opcodes.ACC_PUBLIC,
 				this.mainMethodName,
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
+
+		this.classNode.methods.add(this.methodNode);
 	}
 
 	private void checkMultipleMainMethods(

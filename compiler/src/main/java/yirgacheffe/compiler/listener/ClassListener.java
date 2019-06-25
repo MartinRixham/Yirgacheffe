@@ -65,7 +65,7 @@ public class ClassListener extends PackageListener
 		ClassSignature signature =
 			new ClassSignature(this.interfaces, this.typeParameters);
 
-		this.writer.visit(
+		this.classNode.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
 			this.directory + this.className,
@@ -92,7 +92,7 @@ public class ClassListener extends PackageListener
 		ClassSignature signature =
 			new ClassSignature(this.interfaces, this.typeParameters);
 
-		this.writer.visit(
+		this.classNode.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
 			this.directory + this.className,
@@ -173,7 +173,7 @@ public class ClassListener extends PackageListener
 	private void makeMainMethod()
 	{
 		MethodVisitor methodVisitor =
-			this.writer.visitMethod(
+			this.classNode.visitMethod(
 				Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
 				"main",
 				"([Ljava/lang/String;)V",
@@ -209,13 +209,12 @@ public class ClassListener extends PackageListener
 			false);
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
 	}
 
 	private void makeDefaultConstructor()
 	{
 		MethodVisitor methodVisitor =
-			this.writer.visitMethod(
+			this.classNode.visitMethod(
 				Opcodes.ACC_PUBLIC,
 				"<init>",
 				"()V",
@@ -244,7 +243,6 @@ public class ClassListener extends PackageListener
 		}
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
 	}
 
 	private void checkInterfaceMethodImplementations(

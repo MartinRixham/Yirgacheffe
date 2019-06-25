@@ -4,6 +4,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
@@ -41,20 +42,20 @@ public class RunnableClass
 		this.signature = signature;
 	}
 
-	public GeneratedClass compile(ClassWriter writer)
+	public GeneratedClass compile(ClassNode classNode)
 	{
-		writer.visitSource(this.sourceFile, null);
+		classNode.visitSource(this.sourceFile, null);
 
-		writer.visitField(
+		classNode.visitField(
 			Opcodes.ACC_PRIVATE, "0exception", "Ljava/lang/Throwable;", null, null);
 
-		writer.visitField(
+		classNode.visitField(
 			Opcodes.ACC_PRIVATE, "0ran", "Z", null, null);
 
-		writer.visitField(
+		classNode.visitField(
 			Opcodes.ACC_PRIVATE, "0return", this.type.toJVMType(), null, null);
 
-		writer.visitField(
+		classNode.visitField(
 			Opcodes.ACC_PRIVATE, "0", "L" + this.parentClassName + ";", null, null);
 
 		Array<Type> parameters = this.signature.getParameters();
@@ -63,9 +64,14 @@ public class RunnableClass
 		{
 			String name = 1 + i + "";
 
-			writer.visitField(
+			classNode.visitField(
 				Opcodes.ACC_PRIVATE, name, parameters.get(i).toJVMType(), null, null);
 		}
+
+		ClassWriter writer =
+			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+
+		classNode.accept(writer);
 
 		this.compileRunMethod(writer);
 		this.compileInterfaceMethods(writer);

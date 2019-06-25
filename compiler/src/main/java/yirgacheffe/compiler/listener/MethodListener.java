@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -35,7 +35,7 @@ public class MethodListener extends FieldDeclarationListener
 
 	protected Array<Statement> statements = new Array<>();
 
-	protected MethodVisitor methodVisitor;
+	protected MethodNode methodNode;
 
 	private Set<Signature> methods = new HashSet<>();
 
@@ -64,12 +64,13 @@ public class MethodListener extends FieldDeclarationListener
 
 		String name = context.signature().Identifier().getText();
 
-		this.writer.visitMethod(
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
-			this.isValid ? name : UUID.randomUUID().toString(),
-			this.signature.getDescriptor(),
-			this.signature.getSignature(),
-			null);
+		this.classNode.methods.add(
+			new MethodNode(
+				Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT,
+				this.isValid ? name : UUID.randomUUID().toString(),
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
+				null));
 	}
 
 	@Override
@@ -105,13 +106,15 @@ public class MethodListener extends FieldDeclarationListener
 
 		boolean makePrivate = isPrivate || this.checkInterfaceImplementation();
 
-		this.methodVisitor =
-			this.writer.visitMethod(
+		this.methodNode =
+			new MethodNode(
 				makePrivate ? Opcodes.ACC_PROTECTED : Opcodes.ACC_PUBLIC,
 				this.isValid ? name : UUID.randomUUID().toString(),
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
+
+		this.classNode.methods.add(this.methodNode);
 	}
 
 	private boolean checkInterfaceImplementation()
@@ -149,21 +152,23 @@ public class MethodListener extends FieldDeclarationListener
 
 	private void createBridge(Signature from, Signature to)
 	{
-		MethodVisitor methodVisitor =
-			this.writer.visitMethod(
+		MethodNode methodNode =
+			new MethodNode(
 				Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC,
 				from.getName(),
 				from.getDescriptor(),
 				from.getSignature(),
 				null);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		this.classNode.methods.add(methodNode);
+
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
 		Array<Type> parameters = from.getParameters();
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
-			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
+			methodNode.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
 
 			if (parameters.get(i) instanceof GenericType &&
 				!to.getParameters().get(i).equals(new ReferenceType(Object.class)))
@@ -172,7 +177,7 @@ public class MethodListener extends FieldDeclarationListener
 					to.getParameters().get(i)
 						.toFullyQualifiedType();
 
-				methodVisitor.visitTypeInsn(Opcodes.CHECKCAST, toType);
+				methodNode.visitTypeInsn(Opcodes.CHECKCAST, toType);
 			}
 		}
 
@@ -187,7 +192,7 @@ public class MethodListener extends FieldDeclarationListener
 			owner = this.packageName.replace(".", "/") + "/" + this.className;
 		}
 
-		methodVisitor.visitMethodInsn(
+		methodNode.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			owner,
 			to.getName(),
@@ -200,12 +205,10 @@ public class MethodListener extends FieldDeclarationListener
 			PrimitiveType fromType = (PrimitiveType) from.getReturnType();
 			PrimitiveType toType = (PrimitiveType) to.getReturnType();
 
-			methodVisitor.visitInsn(toType.convertTo(fromType));
+			methodNode.visitInsn(toType.convertTo(fromType));
 		}
 
-		methodVisitor.visitInsn(from.getReturnType().getReturnInstruction());
-
-		methodVisitor.visitMaxs(0, 0);
+		methodNode.visitInsn(from.getReturnType().getReturnInstruction());
 	}
 
 	@Override
@@ -243,16 +246,16 @@ public class MethodListener extends FieldDeclarationListener
 		boolean returns = block.returns();
 
 		Array<Error> errors =
-			block.compile(this.methodVisitor, variables, this.signature);
+			block.compile(this.methodNode, variables, this.signature);
 
 		if (!this.returnType.equals(PrimitiveType.VOID) && block.isEmpty())
 		{
-			this.methodVisitor.visitInsn(this.returnType.getZero());
-			this.methodVisitor.visitInsn(this.returnType.getReturnInstruction());
+			this.methodNode.visitInsn(this.returnType.getZero());
+			this.methodNode.visitInsn(this.returnType.getReturnInstruction());
 		}
 		else if (!returns && this.returnType.equals(PrimitiveType.VOID))
 		{
-			this.methodVisitor.visitInsn(Opcodes.RETURN);
+			this.methodNode.visitInsn(Opcodes.RETURN);
 		}
 		else if (!returns)
 		{
@@ -263,8 +266,6 @@ public class MethodListener extends FieldDeclarationListener
 
 		this.errors.push(variables.getErrors());
 		this.errors.push(errors);
-
-		this.methodVisitor.visitMaxs(0, 0);
 
 		this.inConstructor = false;
 	}

@@ -28,7 +28,7 @@ public class Try implements Expression
 
 		/*if (type.isPrimitive())
 		{
-			methodVisitor.visitMethodInsn(
+			methodNode.visitMethodInsn(
 				Opcodes.INVOKESTATIC,
 				type.toFullyQualifiedType(),
 				"valueOf",

@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -28,13 +29,15 @@ public class FieldListener extends ConstructorListener
 	{
 		String field = context.fieldDeclaration().Identifier().getSymbol().getText();
 
-		this.methodVisitor =
-			this.writer.visitMethod(
+		this.methodNode =
+			new MethodNode(
 				Opcodes.ACC_PRIVATE,
 				"0" + field + "_init_field",
 				"()V",
 				null,
 				null);
+
+		this.classNode.methods.add(this.methodNode);
 
 		this.enterThisRead(null);
 
@@ -65,17 +68,16 @@ public class FieldListener extends ConstructorListener
 		Type fieldType = this.types.getType(declaration.type());
 		String fieldName = declaration.Identifier().getText();
 
-		self.compile(this.methodVisitor, variables);
-		expression.compile(this.methodVisitor, variables);
+		self.compile(this.methodNode, variables);
+		expression.compile(this.methodNode, variables);
 
-		this.methodVisitor.visitFieldInsn(
+		this.methodNode.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
 			fieldName,
 			fieldType.toJVMType());
 
-		this.methodVisitor.visitInsn(Opcodes.RETURN);
-		this.methodVisitor.visitMaxs(0, 0);
+		this.methodNode.visitInsn(Opcodes.RETURN);
 
 		if (!expressionType.isAssignableTo(fieldType))
 		{

@@ -222,6 +222,8 @@ public class ParallelMethodListenerTest
 
 		assertEquals(Opcodes.ACC_PRIVATE + Opcodes.ACC_STATIC, method.access);
 		assertEquals("method", method.name);
+		assertEquals(1, method.maxStack);
+		assertEquals(2, method.maxLocals);
 		assertEquals(2, instructions.size());
 		assertEquals(
 			"(LmyPackage/MyClass;Ljava/lang/String;)Ljava/lang/Comparable;",

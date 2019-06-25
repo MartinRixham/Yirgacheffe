@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.ClassNode;
 import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
@@ -14,8 +15,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 {
 	protected String sourceFile;
 
-	protected ClassWriter writer =
-		new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	protected ClassNode classNode = new ClassNode();
 
 	protected Array<Error> errors = new Array<>();
 
@@ -54,7 +54,12 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 	public void exportDefinedTypes()
 	{
-		byte[] bytes = this.writer.toByteArray();
+		ClassWriter writer =
+			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+
+		this.classNode.accept(writer);
+
+		byte[] bytes = writer.toByteArray();
 
 		String fullyQualifiedType =
 			this.packageName == null ?
@@ -72,10 +77,14 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 		}
 		else
 		{
-			this.writer.visitSource(this.sourceFile, null);
+			ClassWriter writer =
+				new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+
+			this.classNode.visitSource(this.sourceFile, null);
+			this.classNode.accept(writer);
 
 			String classFileName = this.directory + this.className + ".class";
-			byte[] bytes = this.writer.toByteArray();
+			byte[] bytes = writer.toByteArray();
 
 			return new CompilationResult(classFileName, bytes, this.generatedClasses);
 		}

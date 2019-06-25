@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -62,22 +63,24 @@ public class ConstructorListener extends MainMethodListener
 			isPrivate = context.modifier().Private() != null;
 		}
 
-		this.methodVisitor =
-			this.writer.visitMethod(
+		this.methodNode =
+			new MethodNode(
 				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
 				isValid ? "<init>" : UUID.randomUUID().toString(),
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
 
+		this.classNode.methods.add(this.methodNode);
+
 		if (!isValid)
 		{
 			return;
 		}
 
-		this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		this.methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-		this.methodVisitor.visitMethodInsn(
+		this.methodNode.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/Object",
 			"<init>",
@@ -86,9 +89,9 @@ public class ConstructorListener extends MainMethodListener
 
 		for (String initialiser: this.initialisers)
 		{
-			this.methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			this.methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			this.methodVisitor.visitMethodInsn(
+			this.methodNode.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				this.className,
 				"0" + initialiser + "_init_field",

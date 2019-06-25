@@ -199,7 +199,7 @@ public class ImplementationListenerTest
 			"Ljava/lang/Object;Ljava/lang/Comparable<Ljava/lang/String;>;",
 			classNode.signature);
 
-		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
+		MethodNode bridgeMethod = classNode.methods.get(0);
 
 		assertEquals("compareTo", bridgeMethod.name);
 		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
