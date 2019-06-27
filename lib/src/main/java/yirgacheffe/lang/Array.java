@@ -280,16 +280,16 @@ public class Array<T> implements Iterable<T>
 
 	private void grow(int minimum)
 	{
-		int length = this.array.length;
+		int newLength = this.array.length;
 
-		while (length <= minimum)
+		while (newLength <= minimum)
 		{
-			length = length << 1;
+			newLength = newLength << 1;
 		}
 
-		if (length > this.array.length)
+		if (newLength > this.array.length)
 		{
-			this.array = Arrays.copyOf(this.array, length);
+			this.array = Arrays.copyOf(this.array, newLength);
 		}
 	}
 
