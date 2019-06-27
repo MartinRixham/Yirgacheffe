@@ -2,7 +2,11 @@ package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -68,16 +72,19 @@ public class FieldListener extends ConstructorListener
 		Type fieldType = this.types.getType(declaration.type());
 		String fieldName = declaration.Identifier().getText();
 
-		self.compile(this.methodNode, variables);
-		expression.compile(this.methodNode, variables);
+		Result result = self.compile(variables)
+			.concat(expression.compile(variables)
+			.add(new FieldInsnNode(
+				Opcodes.PUTFIELD,
+				this.className,
+				fieldName,
+				fieldType.toJVMType()))
+			.add(new InsnNode(Opcodes.RETURN)));
 
-		this.methodNode.visitFieldInsn(
-			Opcodes.PUTFIELD,
-			this.className,
-			fieldName,
-			fieldType.toJVMType());
-
-		this.methodNode.visitInsn(Opcodes.RETURN);
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			this.methodNode.instructions.add(instruction);
+		}
 
 		if (!expressionType.isAssignableTo(fieldType))
 		{

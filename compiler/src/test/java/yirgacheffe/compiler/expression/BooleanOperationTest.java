@@ -3,16 +3,15 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -31,7 +30,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndDoubles()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
@@ -43,16 +41,15 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = and.getType(variables);
-
-		Array<Error> errors = and.compile(methodVisitor, variables);
+		Result result = and.compile(variables);
 
 		assertTrue(and.isCondition(variables));
 		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(7, instructions.size());
+		assertEquals(7, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -92,7 +89,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndIntegers()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("0");
 		Num secondOperand = new Num("0");
@@ -104,15 +100,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = and.getType(variables);
-
-		Array<Error> errors = and.compile(methodVisitor, variables);
+		Result result = and.compile(variables);
 
 		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(6, instructions.size());
+		assertEquals(6, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -143,7 +138,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndBooleans()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
@@ -155,15 +149,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = and.getType(variables);
-
-		Array<Error> errors = and.compile(methodVisitor, variables);
+		Result result = and.compile(variables);
 
 		assertTrue(type.isAssignableTo(PrimitiveType.BOOLEAN));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(6, instructions.size());
+		assertEquals(6, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -194,7 +187,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndObjects()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
@@ -206,15 +198,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = and.getType(variables);
-
-		Array<Error> errors = and.compile(methodVisitor, variables);
+		Result result = and.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(6, instructions.size());
+		assertEquals(6, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -247,7 +238,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndStrings()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Streeng firstOperand = new Streeng("\"mystring\"");
 		Streeng secondOperand = new Streeng("\"notherstring\"");
@@ -259,15 +249,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(String.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(7, instructions.size());
+		assertEquals(7, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -307,7 +296,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingDoubleAndString()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("0.0");
 		Streeng secondOperand = new Streeng("\"thingy\"");
@@ -319,15 +307,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(10, instructions.size());
+		assertEquals(10, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -371,7 +358,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompileIntegerAndString()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("0");
 		Streeng secondOperand = new Streeng("\"thingy\"");
@@ -383,15 +369,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -434,7 +419,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingIntegerAndDouble()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0.0");
@@ -446,15 +430,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -497,7 +480,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingIntegerAndBoolean()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Bool secondOperand = new Bool("false");
@@ -509,15 +491,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -566,7 +547,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingDoubleAndInteger()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1.0");
 		Num secondOperand = new Num("0");
@@ -578,15 +558,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -628,7 +607,6 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingBooleanAndDouble()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Num secondOperand = new Num("0.0");
@@ -640,15 +618,14 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
-
-		Array<Error> errors = or.compile(methodVisitor, variables);
+		Result result = or.compile(variables);
 
 		assertTrue(type.isAssignableTo(new ReferenceType(Object.class)));
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -697,7 +674,6 @@ public class BooleanOperationTest
 	@Test
 	public void testOrDifferentTypesAreAssignableToCommonSupertype()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Type arrayList = new ReferenceType(java.util.ArrayList.class);
 		Type linkedList = new ReferenceType(java.util.LinkedList.class);
@@ -712,10 +688,9 @@ public class BooleanOperationTest
 				secondOperand);
 
 		Type type = or.getType(variables);
+		Result result = or.compile(variables);
 
-		Array<Error> errors = or.compile(methodVisitor, variables);
-
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 		assertFalse(type.isAssignableTo(arrayList));
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));

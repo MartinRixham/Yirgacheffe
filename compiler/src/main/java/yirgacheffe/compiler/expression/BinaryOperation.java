@@ -1,8 +1,10 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.operator.Operator;
@@ -60,7 +62,7 @@ public class BinaryOperation implements Expression
 		}
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
@@ -69,10 +71,10 @@ public class BinaryOperation implements Expression
 		if (this.operator == Operator.ADD  &&
 			(firstType.isAssignableTo(string) || secondType.isAssignableTo(string)))
 		{
-			return this.compileStrings(methodVisitor, variables);
+			return this.compileStrings(variables);
 		}
 
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		if (!firstType.isAssignableTo(PrimitiveType.DOUBLE) ||
 			!secondType.isAssignableTo(PrimitiveType.DOUBLE))
@@ -81,53 +83,48 @@ public class BinaryOperation implements Expression
 				"Cannot " + this.operator.getDescription() + " " +
 				firstType + " and " + secondType + ".";
 
-			errors.push(new Error(this.coordinate, message));
-			errors.push(this.firstOperand.compile(methodVisitor, variables));
-
-			return errors;
+			return result
+				.add(new Error(this.coordinate, message))
+				.concat(this.firstOperand.compile(variables));
 		}
 
 		PrimitiveType type = (PrimitiveType) this.getType(variables);
 		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
 		PrimitiveType secondPrimitive = (PrimitiveType) secondType;
 
-		errors.push(this.firstOperand.compile(methodVisitor, variables));
+		result = result.concat(this.firstOperand.compile(variables));
 
 		if (firstPrimitive != type)
 		{
-			methodVisitor.visitInsn(firstPrimitive.convertTo(type));
+			result = result.add(new InsnNode(firstPrimitive.convertTo(type)));
 		}
 
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+		result = result.concat(this.secondOperand.compile(variables));
 
 		if (secondPrimitive != type)
 		{
-			methodVisitor.visitInsn(secondPrimitive.convertTo(type));
+			result = result.add(new InsnNode(secondPrimitive.convertTo(type)));
 		}
 
 		if (type.equals(PrimitiveType.INT))
 		{
-			methodVisitor.visitInsn(this.operator.getIntOpcode());
+			result = result.add(new InsnNode(this.operator.getIntOpcode()));
 		}
 		else if (type.equals(PrimitiveType.LONG))
 		{
-			methodVisitor.visitInsn(this.operator.getLongOpcode());
+			result = result.add(new InsnNode(this.operator.getLongOpcode()));
 		}
 		else
 		{
-			methodVisitor.visitInsn(this.operator.getDoubleOpcode());
+			result = result.add(new InsnNode(this.operator.getDoubleOpcode()));
 		}
 
-		return errors;
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)
@@ -135,22 +132,22 @@ public class BinaryOperation implements Expression
 		return false;
 	}
 
-	private Array<Error> compileStrings(MethodVisitor methodVisitor, Variables variables)
+	private Result compileStrings(Variables variables)
 	{
-		Array<Error> errors = this.firstOperand.compile(methodVisitor, variables);
+		Result result = this.firstOperand.compile(variables);
 
 		Type firstOperandType = this.firstOperand.getType(variables);
 
-		methodVisitor.visitMethodInsn(
+		result = result.add(new MethodInsnNode(
 			Opcodes.INVOKEVIRTUAL,
 			"java/lang/StringBuilder",
 			"append",
 			"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
-			false);
+			false));
 
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
+		result = result.concat(this.secondOperand.compile(variables));
 
-		return errors;
+		return result;
 	}
 
 	public Array<VariableRead> getVariableReads()

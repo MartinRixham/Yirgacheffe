@@ -1,9 +1,11 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -33,70 +35,69 @@ public class If implements ConditionalStatement
 		return this.statement.returns();
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 		Type type = this.condition.getType(variables);
 
 		Label trueLabel = new Label();
 
 		if (this.condition.isCondition(variables))
 		{
-			errors =
-				errors.concat(
-					this.condition.compileCondition(
-						methodVisitor,
-						variables,
-						trueLabel,
-						this.falseLabel));
+			result = result.concat(
+				this.condition.compileCondition(
+					variables,
+					trueLabel,
+					this.falseLabel));
 		}
 		else if (type.equals(PrimitiveType.DOUBLE))
 		{
-			errors = errors.concat(this.condition.compile(methodVisitor, variables));
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(D)Z",
-				false);
-
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
+			result = result
+				.concat(this.condition.compile(variables))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Falsyfier",
+					"isTruthy",
+					"(D)Z",
+					false))
+				.add(new JumpInsnNode(
+					Opcodes.IFEQ,
+					new LabelNode(this.falseLabel)));
 		}
 		else if (type.isPrimitive())
 		{
-			errors = errors.concat(this.condition.compile(methodVisitor, variables));
-
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
+			result = result
+				.concat(this.condition.compile(variables))
+				.add(new JumpInsnNode(
+					Opcodes.IFEQ,
+					new LabelNode(this.falseLabel)));
 		}
 		else if (type.isAssignableTo(new ReferenceType(String.class)))
 		{
-			errors = errors.concat(this.condition.compile(methodVisitor, variables));
-
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(Ljava/lang/String;)Z",
-				false);
-
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, this.falseLabel);
+			result = result
+				.concat(this.condition.compile(variables))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Falsyfier",
+					"isTruthy",
+					"(Ljava/lang/String;)Z",
+					false))
+				.add(new JumpInsnNode(
+					Opcodes.IFEQ,
+					new LabelNode(this.falseLabel)));
 		}
 		else
 		{
-			errors = errors.concat(this.condition.compile(methodVisitor, variables));
-
-			methodVisitor.visitJumpInsn(Opcodes.IFNULL, this.falseLabel);
+			result = result
+				.concat(this.condition.compile(variables))
+				.add(new JumpInsnNode(
+					Opcodes.IFNULL,
+					new LabelNode(this.falseLabel)));
 		}
 
-		methodVisitor.visitLabel(trueLabel);
-
-		errors.push(this.statement.compile(methodVisitor, variables, caller));
-
-		return errors;
+		return result
+			.add(new LabelNode(trueLabel))
+			.concat(this.statement.compile(variables, caller));
 	}
 
 	public Label getLabel()

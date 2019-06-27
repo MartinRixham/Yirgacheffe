@@ -2,9 +2,8 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
@@ -12,11 +11,10 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.statement.TailCall;
@@ -55,7 +53,6 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingToStringInvocation()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
@@ -69,13 +66,11 @@ public class InvokeMethodTest
 				new Array<>());
 
 		Type type = invokeMethod.getType(variables);
-
-		invokeMethod.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = invokeMethod.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(invokeMethod.isCondition(variables));
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -106,7 +101,6 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingPrivateMethodInvocation()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
@@ -121,14 +115,13 @@ public class InvokeMethodTest
 				new Array<>());
 
 		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compile(variables);
 
-		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -159,7 +152,6 @@ public class InvokeMethodTest
 	@Test
 	public void testInvocationCallWithArgument()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
@@ -174,12 +166,10 @@ public class InvokeMethodTest
 				arguments);
 
 		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		invokeMethod.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(5, instructions.size());
+		assertEquals(5, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -214,7 +204,6 @@ public class InvokeMethodTest
 	@Test
 	public void testCompileArguments()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
@@ -229,14 +218,13 @@ public class InvokeMethodTest
 				arguments);
 
 		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compileArguments(variables);
 
-		Array<Error> errors = invokeMethod.compileArguments(methodVisitor, variables);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -248,7 +236,6 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Array<Type> typeParameters =
@@ -274,12 +261,10 @@ public class InvokeMethodTest
 				arguments);
 
 		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		invokeMethod.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(12, instructions.size());
+		assertEquals(12, instructions.length());
 		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 
 		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
@@ -344,7 +329,6 @@ public class InvokeMethodTest
 	@Test
 	public void testPassingIntegerToNumberMethod()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		This testClass = new This(new ReferenceType(this.getClass()));
@@ -358,12 +342,11 @@ public class InvokeMethodTest
 				testClass,
 				arguments);
 
-		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+		Result result = invokeMethod.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
-		assertEquals(6, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(6, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -398,7 +381,6 @@ public class InvokeMethodTest
 	@Test
 	public void testInterfaceMethodInvocation()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Type owner = new ReferenceType(Runnable.class);
 
@@ -416,14 +398,11 @@ public class InvokeMethodTest
 				new Array<>());
 
 		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			invokeMethod.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
-		assertEquals(4, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(4, instructions.length());
 		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
@@ -464,13 +443,15 @@ public class InvokeMethodTest
 				testClass,
 				arguments);
 
-		MethodVisitor methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+		Result result = invokeMethod.compile(variables);
 
-		assertEquals(1, errors.length());
-		assertEquals("line 0:0 This expression is not valid.", errors.get(0).toString());
+		assertEquals(1, result.getErrors().length());
+
+		assertEquals(
+			"line 0:0 This expression is not valid.",
+			result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -504,7 +485,6 @@ public class InvokeMethodTest
 	@Test
 	public void testVariableArguments()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
@@ -519,13 +499,13 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+		Result result = invokeMethod.compile(variables);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(14, instructions.size());
+		assertEquals(14, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -593,7 +573,6 @@ public class InvokeMethodTest
 	@Test
 	public void testInvalidVariableArguments()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
@@ -610,13 +589,13 @@ public class InvokeMethodTest
 				expression,
 				arguments);
 
-		Array<Error> errors = invokeMethod.compile(methodVisitor, variables);
+		Result result = invokeMethod.compile(variables);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 0:1 Method " +
 			"yirgacheffe.compiler.expression.InvokeMethodTest" +
 			".method(java.lang.String,java.lang.String) not found.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 	}
 }

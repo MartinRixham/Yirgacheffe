@@ -1,9 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -38,39 +41,40 @@ public class BooleanOperation implements Expression
 		return new IntersectionType(firstType, secondType);
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 		Label label = new Label();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 		Type type = this.getType(variables);
 
-		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
+		result = result.concat(this.firstOperand.compile(variables));
 
 		if (firstType.width() == 2)
 		{
-			methodVisitor.visitInsn(Opcodes.DUP2);
+			result = result.add(new InsnNode(Opcodes.DUP2));
 		}
 		else
 		{
-			methodVisitor.visitInsn(Opcodes.DUP);
+			result = result.add(new InsnNode(Opcodes.DUP));
 		}
 
 		if (firstType.isPrimitive())
 		{
 			if (!type.isPrimitive())
 			{
-				this.compileBoxingCall(methodVisitor, firstType);
+				result = result.concat(this.compileBoxingCall(firstType));
 
 				if (firstType.width() == 2)
 				{
-					methodVisitor.visitInsn(Opcodes.DUP_X2);
-					methodVisitor.visitInsn(Opcodes.POP);
+					result = result
+						.add(new InsnNode(Opcodes.DUP_X2))
+						.add(new InsnNode(Opcodes.POP));
 				}
 				else
 				{
-					methodVisitor.visitInsn(Opcodes.SWAP);
+					result = result.add(new InsnNode(Opcodes.SWAP));
 				}
 			}
 			else if (((PrimitiveType) firstType).order() <
@@ -79,40 +83,40 @@ public class BooleanOperation implements Expression
 				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
 				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
 
-				methodVisitor.visitInsn(firstPrimitive.convertTo(secondPrimitive));
+				result = result.add(
+					new InsnNode(firstPrimitive.convertTo(secondPrimitive)));
 
 				if (secondPrimitive.width() == 2)
 				{
-					methodVisitor.visitInsn(Opcodes.DUP2_X1);
-					methodVisitor.visitInsn(Opcodes.POP2);
+					result = result
+						.add(new InsnNode(Opcodes.DUP2_X1))
+						.add(new InsnNode(Opcodes.POP2));
 				}
 				else
 				{
-					methodVisitor.visitInsn(Opcodes.SWAP);
+					result = result.add(new InsnNode(Opcodes.SWAP));
 				}
 			}
 		}
 
-		this.compileComparison(methodVisitor, this.operator, label, firstType);
+		result = result.concat(this.compileComparison(this.operator, label, firstType));
 
 		if (type.width() == 2)
 		{
-			methodVisitor.visitInsn(Opcodes.POP2);
+			result = result.add(new InsnNode(Opcodes.POP2));
 		}
 		else
 		{
-			methodVisitor.visitInsn(Opcodes.POP);
+			result = result.add(new InsnNode(Opcodes.POP));
 		}
 
-		errors =
-			errors.concat(
-				this.secondOperand.compile(methodVisitor, variables));
+		result = result.concat(this.secondOperand.compile(variables));
 
 		if (secondType.isPrimitive())
 		{
 			if (!type.isPrimitive())
 			{
-				this.compileBoxingCall(methodVisitor, secondType);
+				result = result.concat(this.compileBoxingCall(secondType));
 			}
 			else if (((PrimitiveType) secondType).order() <
 				((PrimitiveType) firstType).order())
@@ -120,109 +124,114 @@ public class BooleanOperation implements Expression
 				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
 				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
 
-				methodVisitor.visitInsn(secondPrimitive.convertTo(firstPrimitive));
+				result = result.add(
+					new InsnNode(secondPrimitive.convertTo(firstPrimitive)));
 			}
 		}
 
-		methodVisitor.visitLabel(label);
+		result = result.add(new LabelNode(label));
 
-		return errors;
+		return result;
 	}
 
-	private void compileBoxingCall(MethodVisitor methodVisitor, Type type)
+	private Result compileBoxingCall(Type type)
 	{
+		Result result = new Result();
+
 		String descriptor =
 			"(" + type.toJVMType() + ")L" +
 				type.toFullyQualifiedType() + ";";
 
-		methodVisitor.visitMethodInsn(
+		return result.add(new MethodInsnNode(
 			Opcodes.INVOKESTATIC,
 			type.toFullyQualifiedType(),
 			"valueOf",
 			descriptor,
-			false);
+			false));
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
-
-		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-
 		Label label = this.operator == BooleanOperator.OR ? trueLabel : falseLabel;
 
-		this.compileComparison(
-			methodVisitor,
-			this.operator,
-			label,
-			firstType);
+		result = result
+			.concat(this.firstOperand.compile(variables))
+			.concat(this.compileComparison(
+				this.operator,
+				label,
+				firstType));
 
 		if (this.secondOperand.isCondition(variables))
 		{
-			errors =
-				errors.concat(
-					this.secondOperand.compileCondition(
-						methodVisitor,
-						variables,
-						trueLabel,
-						falseLabel));
+			result = result.concat(
+				this.secondOperand.compileCondition(
+					variables,
+					trueLabel,
+					falseLabel));
 		}
 		else
 		{
-			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-
-			this.compileComparison(
-				methodVisitor,
-				BooleanOperator.AND,
-				falseLabel,
-				secondType);
+			result = result
+				.concat(this.secondOperand.compile(variables))
+				.concat(this.compileComparison(
+					BooleanOperator.AND,
+					falseLabel,
+					secondType));
 		}
 
-		return errors;
+		return result;
 	}
 
-	private void compileComparison(
-		MethodVisitor methodVisitor,
-		BooleanOperator operator,
-		Label label,
-		Type type)
+	private Result compileComparison(BooleanOperator operator, Label label, Type type)
 	{
+		Result result = new Result();
+
 		if (type.equals(PrimitiveType.DOUBLE))
 		{
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(D)Z",
-				false);
-
-			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
+			result = result
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Falsyfier",
+					"isTruthy",
+					"(D)Z",
+					false))
+				.add(new JumpInsnNode(
+					operator.integerOpcode(),
+					new LabelNode(label)));
 		}
 		else if (type.isPrimitive())
 		{
-			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
+			result = result
+				.add(new JumpInsnNode(
+					operator.integerOpcode(),
+					new LabelNode(label)));
 		}
 		else if (type.isAssignableTo(new ReferenceType(String.class)))
 		{
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				"yirgacheffe/lang/Falsyfier",
-				"isTruthy",
-				"(Ljava/lang/String;)Z",
-				false);
+			result = result
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Falsyfier",
+					"isTruthy",
+					"(Ljava/lang/String;)Z",
+					false))
+				.add(new JumpInsnNode(
+					operator.integerOpcode(),
+					new LabelNode(label)));
 
-			methodVisitor.visitJumpInsn(operator.integerOpcode(), label);
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(operator.referenceOpcode(), label);
+			result = result.add(
+				new JumpInsnNode(
+					operator.referenceOpcode(),
+					new LabelNode(label)));
 		}
+
+		return result;
 	}
 
 	public boolean isCondition(Variables variables)

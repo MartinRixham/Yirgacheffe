@@ -1,12 +1,11 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -32,17 +31,15 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
-
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+		Result result = returnStatement.compile(variables, caller);
 
 		assertTrue(returnStatement.returns());
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -56,17 +53,15 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
-
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+		Result result = returnStatement.compile(variables, caller);
 
 		assertTrue(returnStatement.returns());
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 5:3 Mismatched return type: Cannot return expression of type Void " +
 			"from method of return type Num.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -76,16 +71,14 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = returnStatement.compile(variables, caller);
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -104,22 +97,20 @@ public class ReturnTest
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = returnStatement.compile(variables, caller);
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
-
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
 		assertEquals(
 			"line 5:3 Mismatched return type: " +
 				"Cannot return expression of type Num " +
 				"from method of return type java.lang.String.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -138,16 +129,14 @@ public class ReturnTest
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = returnStatement.compile(variables, caller);
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(1, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -165,16 +154,14 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Bool("1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = returnStatement.compile(variables, caller);
 
-		Array<Error> errors = returnStatement.compile(methodVisitor, variables, caller);
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(1, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 

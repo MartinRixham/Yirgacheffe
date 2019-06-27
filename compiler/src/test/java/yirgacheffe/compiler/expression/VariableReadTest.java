@@ -2,11 +2,10 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -25,7 +24,6 @@ public class VariableReadTest
 	@Test
 	public void testCompilingStringRead()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Type owner = new ReferenceType(String.class);
 
@@ -35,13 +33,11 @@ public class VariableReadTest
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
-
-		expression.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = expression.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(expression.isCondition(variables));
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -54,7 +50,6 @@ public class VariableReadTest
 	@Test
 	public void testCompilingNumberRead()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Type owner = PrimitiveType.DOUBLE;
 
@@ -64,12 +59,10 @@ public class VariableReadTest
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
+		Result result = expression.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		expression.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -82,7 +75,6 @@ public class VariableReadTest
 	@Test
 	public void testCompilingIntegerRead()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Type owner = PrimitiveType.INT;
 
@@ -92,14 +84,11 @@ public class VariableReadTest
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
+		Result result = expression.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			expression.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
-		assertEquals(1, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

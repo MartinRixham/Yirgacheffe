@@ -1,10 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
@@ -40,7 +42,7 @@ public class InvokeConstructor implements Expression
 		return this.owner;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
 
@@ -62,38 +64,30 @@ public class InvokeConstructor implements Expression
 
 		if (this.owner instanceof NullType)
 		{
-			return matchResult.getErrors();
+			return matchResult.getResult();
 		}
 
-		methodVisitor.visitTypeInsn(Opcodes.NEW, this.owner.toFullyQualifiedType());
-		methodVisitor.visitInsn(Opcodes.DUP);
-
-		Array<Error> errors = new Array<>();
 		Callable function = matchResult.getFunction();
-		boolean variableArugments = function.hasVariableArguments();
+		boolean variableArguments = function.hasVariableArguments();
 		Array<Type> parameters = function.getParameterTypes();
 
-		arguments.compile(parameters, methodVisitor, variables, variableArugments);
-
-		this.coordinate.compile(methodVisitor);
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			this.owner.toFullyQualifiedType(),
-			"<init>",
-			matchResult.getFunction().getDescriptor(),
-			false);
-
-		return matchResult.getErrors().concat(errors);
+		return new Result()
+			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
+			.add(new InsnNode(Opcodes.DUP))
+			.concat(arguments.compile(parameters, variables, variableArguments))
+			.concat(this.coordinate.compile())
+			.add(new MethodInsnNode(
+				Opcodes.INVOKESPECIAL,
+				this.owner.toFullyQualifiedType(),
+				"<init>",
+				matchResult.getFunction().getDescriptor(),
+				false))
+			.concat(matchResult.getResult());
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

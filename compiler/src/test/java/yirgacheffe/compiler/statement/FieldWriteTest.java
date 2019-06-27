@@ -2,13 +2,12 @@ package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -43,16 +42,14 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Streeng("\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = fieldWrite.compile(variables, caller);
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions =  methodVisitor.instructions;
-
-		assertEquals(3, instructions.size());
+		assertEquals(3, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -82,17 +79,15 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Streeng("\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
-
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
+		Result result = fieldWrite.compile(variables, caller);
 
 		assertFalse(fieldWrite.returns());
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
 				"java.lang.String to field of type Num.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -103,17 +98,15 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Num("1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = fieldWrite.compile(variables, caller);
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
-
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
 		assertEquals(
 			"line 6:0 Cannot assign expression of type " +
 				"Num to field of type java.lang.String.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -126,12 +119,10 @@ public class FieldWriteTest
 		Expression owner = new InvalidExpression(testClass);
 		Expression value = new InvalidExpression(string);
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = fieldWrite.compile(variables, caller);
 
-		Array<Error> errors = fieldWrite.compile(methodVisitor, variables, caller);
-
-		assertEquals(2, errors.length());
+		assertEquals(2, result.getErrors().length());
 	}
 
 	@Test

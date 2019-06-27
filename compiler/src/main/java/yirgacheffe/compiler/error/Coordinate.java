@@ -1,9 +1,11 @@
 package yirgacheffe.compiler.error;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
+import yirgacheffe.compiler.Result;
 
 public class Coordinate implements Comparable<Coordinate>
 {
@@ -28,12 +30,13 @@ public class Coordinate implements Comparable<Coordinate>
 		this(context.getStart());
 	}
 
-	public void compile(MethodVisitor methodVisitor)
+	public Result compile()
 	{
 		Label label = new Label();
 
-		methodVisitor.visitLabel(label);
-		methodVisitor.visitLineNumber(this.line, label);
+		return new Result()
+			.add(new LabelNode(label))
+			.add(new LineNumberNode(this.line, new LabelNode(label)));
 	}
 
 	@Override
@@ -45,6 +48,15 @@ public class Coordinate implements Comparable<Coordinate>
 	@Override
 	public int compareTo(Coordinate other)
 	{
-		return Integer.compare(this.line, other.line);
+		int comparison = Integer.compare(this.line, other.line);
+
+		if (comparison == 0)
+		{
+			return Integer.compare(this.charPosition, other.charPosition);
+		}
+		else
+		{
+			return comparison;
+		}
 	}
 }

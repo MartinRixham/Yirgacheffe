@@ -1,7 +1,8 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.FieldInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -43,14 +44,11 @@ public class FieldWrite implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Type ownerType = this.owner.getType(variables);
 		Type type = this.value.getType(variables);
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		try
 		{
@@ -68,26 +66,24 @@ public class FieldWrite implements Statement
 					"Cannot assign expression of type " + type +
 					" to field of type " + fieldType + ".";
 
-				errors.push(new Error(this.coordinate, message));
+				result = result.add(new Error(this.coordinate, message));
 			}
 		}
 		catch (NoSuchFieldException e)
 		{
 			String message = "Assignment to unknown field '" + this.name + "'.";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
-		errors.push(this.owner.compile(methodVisitor, variables));
-		errors.push(this.value.compile(methodVisitor, variables));
-
-		methodVisitor.visitFieldInsn(
-			Opcodes.PUTFIELD,
-			ownerType.toFullyQualifiedType(),
-			this.name,
-			type.toJVMType());
-
-		return errors;
+		return result
+			.concat(this.owner.compile(variables))
+			.concat(this.value.compile(variables))
+			.add(new FieldInsnNode(
+				Opcodes.PUTFIELD,
+				ownerType.toFullyQualifiedType(),
+				this.name,
+				type.toJVMType()));
 	}
 
 	private Type getType(Class<?> clazz)

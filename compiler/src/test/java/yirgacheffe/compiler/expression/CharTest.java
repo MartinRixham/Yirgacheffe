@@ -2,10 +2,9 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -20,22 +19,19 @@ public class CharTest
 	@Test
 	public void testCompilingCharacter()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Char literal = new Char("'r'");
 
 		Type type = literal.getType(variables);
-
-		Array<Error> errors = literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(literal.isCondition(variables));
 		assertEquals('r', literal.getValue());
 		assertEquals(0, literal.getVariableReads().length());
-		assertEquals(0, errors.length());
-		assertEquals(1, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -48,23 +44,19 @@ public class CharTest
 	@Test
 	public void testCompilingWhitespace()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Char literal = new Char("'\n'");
 
 		Type type = literal.getType(variables);
-
-		Array<Error> errors =
-			literal.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(literal.isCondition(variables));
 		assertEquals('\n', literal.getValue());
 		assertEquals(0, literal.getVariableReads().length());
-		assertEquals(0, errors.length());
-		assertEquals(1, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 

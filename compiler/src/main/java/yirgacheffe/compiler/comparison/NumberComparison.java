@@ -1,14 +1,14 @@
 package yirgacheffe.compiler.comparison;
 
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.lang.Array;
 
 public class NumberComparison implements Comparison
 {
@@ -30,12 +30,9 @@ public class NumberComparison implements Comparison
 		this.secondOperand = secondOperand;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label label)
+	public Result compile(Variables variables, Label label)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = this.firstOperand.compile(variables);
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
@@ -44,9 +41,7 @@ public class NumberComparison implements Comparison
 			String message =
 				"Cannot compare " + firstType + " and " + secondType + ".";
 
-			errors.push(new Error(this.coordinate, message));
-
-			return errors;
+			return result.add(new Error(this.coordinate, message));
 		}
 
 		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
@@ -54,29 +49,23 @@ public class NumberComparison implements Comparison
 
 		if (firstPrimitive.order() < secondPrimitive.order())
 		{
-			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(firstPrimitive.convertTo(secondPrimitive));
-
-			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-			this.comparator.compile(methodVisitor, label, secondType);
+			return result
+				.add(new InsnNode(firstPrimitive.convertTo(secondPrimitive)))
+				.concat(this.secondOperand.compile(variables))
+				.concat(this.comparator.compile(label, secondType));
 		}
 		else if (firstPrimitive.order() > secondPrimitive.order())
 		{
-			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(secondPrimitive.convertTo(firstPrimitive));
-
-			this.comparator.compile(methodVisitor, label, firstType);
+			return result
+				.concat(this.secondOperand.compile(variables))
+				.add(new InsnNode(secondPrimitive.convertTo(firstPrimitive)))
+				.concat(this.comparator.compile(label, firstType));
 		}
 		else
 		{
-			errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-			errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-			this.comparator.compile(methodVisitor, label, firstType);
+			return result
+				.concat(this.secondOperand.compile(variables))
+				.concat(this.comparator.compile(label, firstType));
 		}
-
-		return errors;
 	}
 }

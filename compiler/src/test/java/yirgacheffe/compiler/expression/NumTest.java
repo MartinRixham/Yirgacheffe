@@ -2,11 +2,10 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -21,20 +20,17 @@ public class NumTest
 	@Test
 	public void testCompilingZero()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("0.0");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(literal.isCondition(variables));
 		assertEquals(0.0, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -45,19 +41,16 @@ public class NumTest
 	@Test
 	public void testCompilingOne()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("1.0");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(1.0, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -67,19 +60,16 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerZero()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("0");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(0, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -90,19 +80,16 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerOne()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("1");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(1, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -113,19 +100,16 @@ public class NumTest
 	@Test
 	public void testCompilingInteger()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("2.0");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(2.0, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -138,19 +122,16 @@ public class NumTest
 	@Test
 	public void testCompilingDecimal()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("0.5");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(0.5, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -163,21 +144,17 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerTwo()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Num literal = new Num("2");
 
 		Type type = literal.getType(variables);
+		Result result = literal.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			literal.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 		assertEquals(2L, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 

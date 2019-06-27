@@ -1,8 +1,10 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
@@ -32,10 +34,7 @@ public class TailCall implements Statement
 		return this.invocation.returns();
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Expression invocation = this.invocation.getExpression();
 
@@ -48,7 +47,7 @@ public class TailCall implements Statement
 		{
 			InvokeMethod invokeMethod = (InvokeMethod) invocation;
 
-			invokeMethod.compileArguments(methodVisitor, variables);
+			Result result = invokeMethod.compileArguments(variables);
 
 			Array<Type> parameters = invokeMethod.getParameters(variables);
 
@@ -60,16 +59,16 @@ public class TailCall implements Statement
 
 				width -= parameters.get(i).width();
 
-				methodVisitor.visitVarInsn(storeInstruction, width);
+				result = result.add(new VarInsnNode(storeInstruction, width));
 			}
 
-			methodVisitor.visitJumpInsn(Opcodes.GOTO, caller.getLabel());
-
-			return new Array<>();
+			return result.add(new JumpInsnNode(
+				Opcodes.GOTO,
+				new LabelNode(caller.getLabel())));
 		}
 		else
 		{
-			return this.invocation.compile(methodVisitor, variables, caller);
+			return this.invocation.compile(variables, caller);
 		}
 	}
 

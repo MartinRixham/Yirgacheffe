@@ -2,10 +2,9 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -20,20 +19,16 @@ public class StreengTest
 	@Test
 	public void testCompilingStringLiteral()
 	{
-		MethodNode methodVisitor = new MethodNode();
-
 		Streeng literal = new Streeng("\"thingy\"");
 		Variables variables = new Variables(new HashMap<>());
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(literal.isCondition(variables));
 		assertEquals("thingy", literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -46,21 +41,17 @@ public class StreengTest
 	@Test
 	public void testCompilingStringWithQuotes()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Streeng literal = new Streeng("\"thi\"ngy\"");
 
 		Type type = literal.getType(variables);
+		Result result = literal.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			literal.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 		assertEquals("thi\"ngy", literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 

@@ -3,11 +3,12 @@ package yirgacheffe.compiler.comparison;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,13 +17,10 @@ public class LessThanOrEqualTest
 	@Test
 	public void testLessThanOrEqualDoubles()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Label label = new Label();
 		LessThanOrEqual lessThanOrEqual = new LessThanOrEqual();
-
-		lessThanOrEqual.compile(methodVisitor, label, PrimitiveType.DOUBLE);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = lessThanOrEqual.compile(label, PrimitiveType.DOUBLE);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -36,13 +34,10 @@ public class LessThanOrEqualTest
 	@Test
 	public void testLessThanOrEqualLongIntegers()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Label label = new Label();
 		LessThanOrEqual lessThanOrEqual = new LessThanOrEqual();
-
-		lessThanOrEqual.compile(methodVisitor, label, PrimitiveType.LONG);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = lessThanOrEqual.compile(label, PrimitiveType.LONG);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -56,13 +51,10 @@ public class LessThanOrEqualTest
 	@Test
 	public void testLessThanOrEqualBooleans()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Label label = new Label();
 		LessThanOrEqual lessThanOrEqual = new LessThanOrEqual();
-
-		lessThanOrEqual.compile(methodVisitor, label, PrimitiveType.BOOLEAN);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = lessThanOrEqual.compile(label, PrimitiveType.BOOLEAN);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		JumpInsnNode firstInstruction = (JumpInsnNode) instructions.get(0);
 

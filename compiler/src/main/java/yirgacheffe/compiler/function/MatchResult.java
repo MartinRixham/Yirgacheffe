@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.function;
 
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.MismatchedTypes;
@@ -45,9 +46,9 @@ public class MatchResult
 		return this.function;
 	}
 
-	public Array<Error> getErrors()
+	public Result getResult()
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		if (this.function instanceof NullFunction)
 		{
@@ -59,14 +60,14 @@ public class MatchResult
 					"Ambiguous call to " + function.toLowerCase() + " " +
 					this.function.getName() + ".";
 
-				errors.push(new Error(this.coordinate, message));
+				result = result.add(new Error(this.coordinate, message));
 			}
 			else
 			{
 				String message =
 					function + " " + this.function.getName() + " not found.";
 
-				errors.push(new Error(this.coordinate, message));
+				result = result.add(new Error(this.coordinate, message));
 			}
 		}
 
@@ -76,9 +77,9 @@ public class MatchResult
 				"Argument of type " + types.from() + " cannot be assigned to " +
 				"generic parameter of type " + types.to() + ".";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
-		return errors;
+		return result;
 	}
 }

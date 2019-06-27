@@ -2,10 +2,13 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Callable;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Functions;
@@ -85,7 +88,7 @@ public class InvokeMethod implements Expression
 		return returnType;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
 		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
@@ -97,22 +100,21 @@ public class InvokeMethod implements Expression
 		Callable function = matchResult.getFunction();
 		boolean variableArugments = function.hasVariableArguments();
 		Array<Type> parameters = function.getParameterTypes();
-		Array<Error> errors = this.owner.compile(methodVisitor, variables);
+		Result result = this.owner.compile(variables);
 
 		if (owner.isPrimitive())
 		{
-			methodVisitor.visitMethodInsn(
+			result = result.add(new MethodInsnNode(
 				Opcodes.INVOKESTATIC,
 				owner.toFullyQualifiedType(),
 				"valueOf",
 				"(" + owner.toJVMType() + ")L" + owner.toFullyQualifiedType() + ";",
-				false);
+				false));
 		}
 
-		errors.push(
-			arguments.compile(parameters, methodVisitor, variables, variableArugments));
-
-		this.coordinate.compile(methodVisitor);
+		result = result
+			.concat(arguments.compile(parameters, variables, variableArugments))
+			.concat(this.coordinate.compile());
 
 		String ownerDescriptor = owner.toFullyQualifiedType();
 
@@ -138,49 +140,50 @@ public class InvokeMethod implements Expression
 				methodType.toMethodDescriptorString(),
 				false);
 
-		methodVisitor.visitInvokeDynamicInsn(
-			function.getName(),
-			descriptor,
-			bootstrapMethod);
+		result = result.add(
+			new InvokeDynamicInsnNode(
+				function.getName(),
+				descriptor,
+				bootstrapMethod));
 
 		Type returnType = function.getReturnType();
 
 		if (returnType instanceof GenericType)
 		{
-			methodVisitor.visitTypeInsn(
-				Opcodes.CHECKCAST,
-				returnType.toFullyQualifiedType());
+			result = result.add(
+				new TypeInsnNode(
+					Opcodes.CHECKCAST,
+					returnType.toFullyQualifiedType()));
 
 			if (returnType.isPrimitive())
 			{
-				methodVisitor.visitMethodInsn(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Boxer",
-					"ofValue",
-					"(L" + returnType.toFullyQualifiedType() + ";)" +
-						returnType.getSignature(),
-					false);
+				result = result.add(
+					new MethodInsnNode(
+						Opcodes.INVOKESTATIC,
+						"yirgacheffe/lang/Boxer",
+						"ofValue",
+						"(L" + returnType.toFullyQualifiedType() + ";)" +
+							returnType.getSignature(),
+						false));
 			}
 		}
 		else if (returnType.equals(PrimitiveType.INT))
 		{
-			methodVisitor.visitInsn(Opcodes.I2D);
+			result = result.add(new InsnNode(Opcodes.I2D));
 		}
 		else if (returnType.equals(PrimitiveType.LONG))
 		{
-			methodVisitor.visitInsn(Opcodes.L2D);
+			result = result.add(new InsnNode(Opcodes.L2D));
 		}
 		else if (returnType.equals(PrimitiveType.FLOAT))
 		{
-			methodVisitor.visitInsn(Opcodes.F2D);
+			result = result.add(new InsnNode(Opcodes.F2D));
 		}
 
-		return matchResult.getErrors().concat(errors);
+		return result.concat(matchResult.getResult());
 	}
 
-	public Array<Error> compileArguments(
-		MethodVisitor methodVisitor,
-		Variables variables)
+	public Result compileArguments(Variables variables)
 	{
 		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
@@ -193,16 +196,12 @@ public class InvokeMethod implements Expression
 		boolean variableArugments = function.hasVariableArguments();
 		Array<Type> parameters = function.getParameterTypes();
 
-		return arguments.compile(parameters, methodVisitor, variables, variableArugments);
+		return arguments.compile(parameters, variables, variableArugments);
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

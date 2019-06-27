@@ -1,13 +1,14 @@
 package yirgacheffe.compiler.comparison;
 
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.lang.Array;
 
 public class StringComparison implements Comparison
 {
@@ -22,39 +23,31 @@ public class StringComparison implements Comparison
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-
 		this.coordinate = coordinate;
 		this.comparator = comparator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label label)
+	public Result compile(Variables variables, Label label)
 	{
-		Array<Error> errors = new Array<>();
-
-		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
-			"java/lang/String",
-			"equals",
-			"(Ljava/lang/Object;)Z",
-			false);
+		Result result =
+			this.firstOperand.compile(variables)
+				.concat(this.secondOperand.compile(variables))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKEVIRTUAL,
+					"java/lang/String",
+					"equals",
+					"(Ljava/lang/Object;)Z",
+					false));
 
 		if (this.comparator instanceof Equals)
 		{
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, label);
+			return result.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(label)));
 		}
 		else
 		{
-			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
+			return result.add(new JumpInsnNode(Opcodes.IFNE, new LabelNode(label)));
 		}
-
-		return errors;
 	}
 }

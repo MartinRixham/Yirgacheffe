@@ -1,9 +1,10 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -43,26 +44,28 @@ public class Num implements Expression, Literal
 		}
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
+		Result result = new Result();
+
 		if (this.getType(variables).equals(PrimitiveType.INT))
 		{
 			Integer integer = Integer.valueOf(this.text);
 
 			if (integer == 0)
 			{
-				methodVisitor.visitInsn(Opcodes.ICONST_0);
+				result = result.add(new InsnNode(Opcodes.ICONST_0));
 			}
 			else if (integer == 1)
 			{
-				methodVisitor.visitInsn(Opcodes.ICONST_1);
+				result = result.add(new InsnNode(Opcodes.ICONST_1));
 			}
 		}
 		else if (this.getType(variables).equals(PrimitiveType.LONG))
 		{
 			Long longInteger = Long.valueOf(this.text);
 
-			methodVisitor.visitLdcInsn(longInteger);
+			result = result.add(new LdcInsnNode(longInteger));
 		}
 		else
 		{
@@ -70,28 +73,24 @@ public class Num implements Expression, Literal
 
 			if (dub == 0)
 			{
-				methodVisitor.visitInsn(Opcodes.DCONST_0);
+				result = result.add(new InsnNode(Opcodes.DCONST_0));
 			}
 			else if (dub == 1)
 			{
-				methodVisitor.visitInsn(Opcodes.DCONST_1);
+				result = result.add(new InsnNode(Opcodes.DCONST_1));
 			}
 			else
 			{
-				methodVisitor.visitLdcInsn(dub);
+				result = result.add(new LdcInsnNode(dub));
 			}
 		}
 
-		return new Array<>();
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

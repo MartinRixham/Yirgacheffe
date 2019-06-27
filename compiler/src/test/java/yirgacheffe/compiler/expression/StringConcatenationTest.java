@@ -2,14 +2,13 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -26,7 +25,6 @@ public class StringConcatenationTest
 	@Test
 	public void testNumberAddition()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
@@ -42,11 +40,11 @@ public class StringConcatenationTest
 		assertEquals(PrimitiveType.DOUBLE, concatenation.getType(variables));
 		assertEquals(0, concatenation.getVariableReads().length());
 
-		Array<Error> errors = concatenation.compile(methodVisitor, variables);
+		Result result = concatenation.compile(variables);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		InsnNode nthInstruction = (InsnNode) instructions.get(2);
 
@@ -56,7 +54,6 @@ public class StringConcatenationTest
 	@Test
 	public void testCompilingStringConcatenation()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Streeng firstOperand = new Streeng("\"this\"");
@@ -77,15 +74,14 @@ public class StringConcatenationTest
 		StringConcatenation concatenation = new StringConcatenation(operation);
 
 		Type type = concatenation.getType(variables);
-
-		Array<Error> errors = concatenation.compile(methodVisitor, variables);
+		Result result = concatenation.compile(variables);
 
 		assertEquals("Ljava/lang/String;", type.toJVMType());
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(10, instructions.size());
+		assertEquals(10, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -154,7 +150,6 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateStringWithNumber()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
@@ -167,15 +162,14 @@ public class StringConcatenationTest
 		StringConcatenation concatenation = new StringConcatenation(binaryOperation);
 
 		Type type = concatenation.getType(variables);
-
-		Array<Error> errors = concatenation.compile(methodVisitor, variables);
+		Result result = concatenation.compile(variables);
 
 		assertEquals("Ljava/lang/String;", type.toJVMType());
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -231,7 +225,6 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateNumberWithString()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
@@ -244,16 +237,14 @@ public class StringConcatenationTest
 		StringConcatenation concatenation = new StringConcatenation(binaryOperation);
 
 		Type type = concatenation.getType(variables);
-
-		Array<Error> errors =
-			concatenation.compileCondition(methodVisitor, variables, null, null);
+		Result result = concatenation.compileCondition(variables, null, null);
 
 		assertEquals("Ljava/lang/String;", type.toJVMType());
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 

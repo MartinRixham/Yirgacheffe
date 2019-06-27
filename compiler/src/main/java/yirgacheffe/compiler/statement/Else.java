@@ -1,8 +1,10 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -34,32 +36,26 @@ public class Else implements ConditionalStatement
 		return this.precondition.returns() && this.statement.returns();
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		Array<Error> errors =
-			this.precondition.compile(methodVisitor, variables, caller);
-
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, this.label);
+		Result result =
+			this.precondition.compile(variables, caller)
+				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(this.label)));
 
 		if (this.precondition instanceof If)
 		{
 			If ifStatement = (If) this.precondition;
 
-			methodVisitor.visitLabel(ifStatement.getLabel());
+			result = result.add(new LabelNode(ifStatement.getLabel()));
 		}
 		else
 		{
 			String message = "Else not preceded by if statement.";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
-		errors.push(this.statement.compile(methodVisitor, variables, caller));
-
-		return errors;
+		return result.concat(this.statement.compile(variables, caller));
 	}
 
 	public Label getLabel()

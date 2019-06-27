@@ -1,8 +1,9 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -27,30 +28,26 @@ public class Negation implements Expression
 		return PrimitiveType.DOUBLE;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
-		Array<Error> errors = this.expression.compile(methodVisitor, variables);
+		Result result = this.expression.compile(variables);
 		Type type = this.expression.getType(variables);
 
 		if (!type.isAssignableTo(PrimitiveType.DOUBLE))
 		{
 			String message = "Cannot negate " + type + ".";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
-		methodVisitor.visitInsn(Opcodes.DNEG);
+		result = result.add(new InsnNode(Opcodes.DNEG));
 
-		return errors;
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

@@ -3,7 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -11,12 +11,12 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.GreaterThan;
 import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -34,7 +34,6 @@ public class EquationTest
 	public void testCompilingEqualDoubles()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
@@ -43,16 +42,15 @@ public class EquationTest
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertTrue(equation.isCondition(variables));
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -99,7 +97,6 @@ public class EquationTest
 	public void testCompilingNotEqualDoubles()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
@@ -109,15 +106,14 @@ public class EquationTest
 			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -164,7 +160,6 @@ public class EquationTest
 	public void testCompilingEqualBooleans()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
@@ -173,15 +168,14 @@ public class EquationTest
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -222,7 +216,6 @@ public class EquationTest
 	public void testCompilingEqualIntegers()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0");
@@ -231,15 +224,14 @@ public class EquationTest
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -280,7 +272,6 @@ public class EquationTest
 	public void testCompilingNotEqualBooleans()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
@@ -290,15 +281,14 @@ public class EquationTest
 			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -356,7 +346,6 @@ public class EquationTest
 	public void testCompilingIntegerEqualsDouble()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
@@ -365,15 +354,14 @@ public class EquationTest
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(10, instructions.size());
+		assertEquals(10, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -424,7 +412,6 @@ public class EquationTest
 	public void testCompilingDoubleEqualsInteger()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
@@ -433,15 +420,14 @@ public class EquationTest
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(10, instructions.size());
+		assertEquals(10, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -491,7 +477,6 @@ public class EquationTest
 	@Test
 	public void testEquationOfWrongType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
@@ -502,20 +487,18 @@ public class EquationTest
 			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot compare Num and java.lang.Object.");
 	}
 
 	@Test
 	public void testEquationGreaterThanBooleans()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Bool firstOperand = new Bool("true");
@@ -526,20 +509,18 @@ public class EquationTest
 			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot compare Bool and Bool.");
 	}
 
 	@Test
 	public void testEquationGreaterThanStrings()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Streeng firstOperand = new Streeng("\"thingy\"");
@@ -550,13 +531,12 @@ public class EquationTest
 			new Equation(coordinate, greaterThan, firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot compare java.lang.String and java.lang.String.");
 	}
 
@@ -564,7 +544,6 @@ public class EquationTest
 	public void testCompilingEqualObjects()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
@@ -574,15 +553,14 @@ public class EquationTest
 			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -625,7 +603,6 @@ public class EquationTest
 	public void testCompilingNotEqualObjects()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
@@ -635,15 +612,14 @@ public class EquationTest
 			new Equation(coordinate, notEquals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -685,7 +661,6 @@ public class EquationTest
 	@Test
 	public void testEquationGreaterThanObjects()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Expression firstOperand = new This(new ReferenceType(Object.class));
@@ -697,12 +672,12 @@ public class EquationTest
 
 		Type type = operation.getType(variables);
 
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot compare java.lang.Object and java.lang.Object.");
 	}
 
@@ -710,7 +685,6 @@ public class EquationTest
 	public void testCompilingEqualStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(String.class));
 		Expression secondOperand = new This(new ReferenceType(String.class));
@@ -720,15 +694,14 @@ public class EquationTest
 			new Equation(coordinate, equals, firstOperand, secondOperand);
 
 		Type type = equation.getType(variables);
-
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(3, instructions.size());
+		assertEquals(3, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -763,14 +736,14 @@ public class EquationTest
 
 		Type type = equation.getType(variables);
 
-		Array<Error> errors = equation.compile(methodVisitor, variables);
+		Result result = equation.compile(variables);
 
 		assertEquals(PrimitiveType.BOOLEAN, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(9, instructions.size());
+		assertEquals(9, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

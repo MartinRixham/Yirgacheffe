@@ -1,9 +1,10 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -40,41 +41,34 @@ public class For implements Statement
 	}
 
 	@Override
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		Array<Error> errors = this.initialiser.compile(methodVisitor, variables, caller);
-
 		Label exitLabel = new Label();
 		Label continueLabel = new Label();
 
-		methodVisitor.visitLabel(continueLabel);
+		Result result =
+			this.initialiser.compile(variables, caller)
+				.add(new LabelNode(continueLabel));
 
 		if (this.exitCondition instanceof Equation)
 		{
 			Equation equation = (Equation) this.exitCondition;
 
-			equation.compileCondition(methodVisitor, variables, continueLabel, exitLabel);
+			result = result.concat(
+				equation.compileCondition(variables, continueLabel, exitLabel));
 		}
 		else
 		{
-			errors = errors.concat(this.exitCondition.compile(methodVisitor, variables));
-
-			methodVisitor.visitJumpInsn(Opcodes.IFEQ, exitLabel);
+			result = result
+				.concat(this.exitCondition.compile(variables))
+				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(exitLabel)));
 		}
 
-		errors = errors.concat(this.statement.compile(methodVisitor, variables, caller));
-
-		errors = errors.concat(
-			this.incrementer.compile(methodVisitor, variables, caller));
-
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, continueLabel);
-
-		methodVisitor.visitLabel(exitLabel);
-
-		return errors;
+		return result
+			.concat(this.statement.compile(variables, caller))
+			.concat(this.incrementer.compile(variables, caller))
+			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(continueLabel)))
+			.add(new LabelNode(exitLabel));
 	}
 
 	@Override

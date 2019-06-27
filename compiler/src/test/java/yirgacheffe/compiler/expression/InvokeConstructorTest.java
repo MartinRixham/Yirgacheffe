@@ -3,16 +3,15 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -30,7 +29,6 @@ public class InvokeConstructorTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
@@ -44,15 +42,12 @@ public class InvokeConstructorTest
 				arguments);
 
 		Type type = invokeConstructor.getType(variables);
-
-		Array<Error> errors =
-			invokeConstructor.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = invokeConstructor.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(invokeConstructor.isCondition(variables));
-		assertEquals(0, errors.length());
-		assertEquals(6, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(6, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -88,7 +83,6 @@ public class InvokeConstructorTest
 	@Test
 	public void testGettingFirstOperand()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
@@ -101,15 +95,14 @@ public class InvokeConstructorTest
 				owner,
 				arguments);
 
-		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+		Result result = invokeConstructor.compile(variables);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 	}
 
 	@Test
 	public void testGettingNoFirstOperand()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(String.class);
@@ -121,15 +114,14 @@ public class InvokeConstructorTest
 				owner,
 				arguments);
 
-		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+		Result result = invokeConstructor.compile(variables);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 	}
 
 	@Test
 	public void testConstructArray()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
@@ -146,16 +138,14 @@ public class InvokeConstructorTest
 				arguments);
 
 		Type type = invokeConstructor.getType(variables);
+		Result result = invokeConstructor.compileCondition(variables, null, null);
 
-		Array<Error> errors =
-			invokeConstructor.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals("yirgacheffe/lang/Array", type.toFullyQualifiedType());
 		assertFalse(invokeConstructor.isCondition(variables));
-		assertEquals(0, errors.length());
-		assertEquals(15, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(15, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -226,7 +216,6 @@ public class InvokeConstructorTest
 	@Test
 	public void testConstructArrayWithInvalidArgument()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
@@ -242,18 +231,18 @@ public class InvokeConstructorTest
 				owner,
 				arguments);
 
-		Array<Error> errors = invokeConstructor.compile(methodVisitor, variables);
+		Result result = invokeConstructor.compile(variables);
 
-		assertEquals(2, errors.length());
-
-		assertEquals(
-			"line 1:0 Argument of type Num cannot be assigned to " +
-				"generic parameter of type java.lang.String.",
-			errors.get(0).toString());
+		assertEquals(2, result.getErrors().length());
 
 		assertEquals(
 			"line 1:0 Argument of type Num cannot be assigned to " +
 				"generic parameter of type java.lang.String.",
-			errors.get(1).toString());
+			result.getErrors().get(0).toString());
+
+		assertEquals(
+			"line 1:0 Argument of type Num cannot be assigned to " +
+				"generic parameter of type java.lang.String.",
+			result.getErrors().get(1).toString());
 	}
 }

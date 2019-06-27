@@ -1,9 +1,9 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.InsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -23,27 +23,25 @@ public class Bool implements Expression, Literal
 		return PrimitiveType.BOOLEAN;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
+		Result result = new Result();
+
 		if (this.text.equals("true"))
 		{
-			methodVisitor.visitInsn(Opcodes.ICONST_1);
+			result = result.add(new InsnNode(Opcodes.ICONST_1));
 		}
 		else
 		{
-			methodVisitor.visitInsn(Opcodes.ICONST_0);
+			result = result.add(new InsnNode(Opcodes.ICONST_0));
 		}
 
-		return new Array<>();
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

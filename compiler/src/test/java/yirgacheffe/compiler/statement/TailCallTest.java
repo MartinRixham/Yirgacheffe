@@ -1,15 +1,14 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
@@ -73,17 +72,14 @@ public class TailCallTest
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE, stringType);
 		Signature caller = new Signature(new NullType(), "method", parameters);
 		Variables variables = new Variables(new HashMap<>());
-
 		TailCall tailCall = new TailCall(invocation, caller, variables);
-		MethodNode methodVisitor = new MethodNode();
+		Result result = tailCall.compile(variables, caller);
 
-		Array<Error> errors = tailCall.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(5, instructions.size());
+		assertEquals(5, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 

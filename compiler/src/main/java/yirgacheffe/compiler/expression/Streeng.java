@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.LdcInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -22,20 +22,14 @@ public class Streeng implements Expression, Literal
 		return new ReferenceType(String.class);
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
-		methodVisitor.visitLdcInsn(this.getValue());
-
-		return new Array<>();
+		return new Result().add(new LdcInsnNode(this.getValue()));
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

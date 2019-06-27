@@ -1,8 +1,7 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.function.Signature;
@@ -24,12 +23,11 @@ public class OpenBlockTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		OpenBlock openBlock = new OpenBlock();
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = openBlock.compile(methodVisitor, variables, caller);
+		Result result = openBlock.compile(variables, caller);
 
-		assertNotNull(errors);
+		assertNotNull(result.getErrors());
 		assertFalse(openBlock.returns());
 		assertTrue(openBlock.isEmpty());
 	}

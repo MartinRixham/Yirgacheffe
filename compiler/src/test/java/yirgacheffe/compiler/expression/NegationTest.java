@@ -1,9 +1,8 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -21,41 +20,36 @@ public class NegationTest
 	@Test
 	public void testNegationOfWrongType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 		Negation negation = new Negation(coordinate, operand);
 
 		Type type = negation.getType(variables);
-
-		Array<Error> errors = negation.compile(methodVisitor, variables);
+		Result result = negation.compile(variables);
 
 		assertFalse(negation.isCondition(variables));
 		assertEquals(PrimitiveType.DOUBLE, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot negate java.lang.String.");
 	}
 
 	@Test
 	public void testNegation()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression operand = new Num("1");
 		Negation negation = new Negation(coordinate, operand);
 
 		Type type = negation.getType(variables);
-
-		Array<Error> errors =
-			negation.compileCondition(methodVisitor, variables, null, null);
+		Result result = negation.compileCondition(variables, null, null);
 
 		assertFalse(negation.isCondition(variables));
 		assertEquals(PrimitiveType.DOUBLE, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 	}
 
 	@Test

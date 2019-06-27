@@ -1,13 +1,12 @@
 package yirgacheffe.compiler.comparison;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
-import yirgacheffe.lang.Array;
 
 public class ObjectComparison implements Comparison
 {
@@ -22,19 +21,15 @@ public class ObjectComparison implements Comparison
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-
 		this.coordinate = coordinate;
 		this.comparator = comparator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label label)
+	public Result compile(Variables variables, Label label)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
@@ -45,15 +40,12 @@ public class ObjectComparison implements Comparison
 			String message =
 				"Cannot compare " + firstType + " and " + secondType + ".";
 
-			errors.push(new Error(this.coordinate, message));
-
-			return errors;
+			return result.add(new Error(this.coordinate, message));
 		}
 
-		errors = errors.concat(this.firstOperand.compile(methodVisitor, variables));
-		errors = errors.concat(this.secondOperand.compile(methodVisitor, variables));
-		this.comparator.compile(methodVisitor, label, firstType);
-
-		return errors;
+		return result
+			.concat(this.firstOperand.compile(variables))
+			.concat(this.secondOperand.compile(variables))
+			.concat(this.comparator.compile(label, firstType));
 	}
 }

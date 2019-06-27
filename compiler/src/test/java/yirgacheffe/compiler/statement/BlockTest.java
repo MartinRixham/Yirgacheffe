@@ -3,17 +3,16 @@ package yirgacheffe.compiler.statement;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.BinaryOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
@@ -49,15 +48,14 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 		Block block = new Block(coordinate, new Array<>(variableDeclaration));
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		block.compile(methodVisitor, variables, caller);
+		block.compile(variables, caller);
 
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
 		variableRead.getType(variables);
-		variableRead.compile(methodVisitor, variables);
+		variableRead.compile(variables);
 
 		assertEquals(1, variables.getErrors().length());
 		assertEquals(
@@ -73,13 +71,11 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = block.compile(variables, caller);
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
-
-		assertEquals(1, errors.length());
-		assertEquals("line 4:0 Unreachable code.", errors.get(0).toString());
+		assertEquals(1, result.getErrors().length());
+		assertEquals("line 4:0 Unreachable code.", result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -90,12 +86,10 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement);
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = block.compile(variables, caller);
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
-
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 	}
 
 	@Test
@@ -118,16 +112,15 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -163,16 +156,15 @@ public class BlockTest
 		Array<Statement> statements =
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(6, instructions.size());
+		assertEquals(6, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -235,16 +227,15 @@ public class BlockTest
 				variableDeclaration, variableWrite, notherVariableWrite, functionCall);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(8, instructions.size());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -319,16 +310,15 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(10, instructions.size());
+		assertEquals(10, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -408,16 +398,15 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(7, instructions.size());
+		assertEquals(7, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -483,16 +472,15 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -542,16 +530,15 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -595,16 +582,15 @@ public class BlockTest
 				secondWrite);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -680,16 +666,15 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = block.compile(methodVisitor, variables, caller);
+		Result result = block.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(6, instructions.size());
+		assertEquals(6, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 

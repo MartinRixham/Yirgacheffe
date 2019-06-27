@@ -2,12 +2,11 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -26,7 +25,6 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingIntegerAddition()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("0");
@@ -40,15 +38,15 @@ public class BinaryOperationTest
 
 		Type type = operation.getType(variables);
 
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertFalse(operation.isCondition(variables));
 		assertEquals(PrimitiveType.INT, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(3, instructions.size());
+		assertEquals(3, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -66,7 +64,6 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingLongIntegerAddition()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
@@ -79,15 +76,14 @@ public class BinaryOperationTest
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.LONG, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(3, instructions.size());
+		assertEquals(3, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -107,7 +103,6 @@ public class BinaryOperationTest
 	@Test
 	public void testAddIntegerAndLongInteger()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("1");
@@ -120,15 +115,14 @@ public class BinaryOperationTest
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.LONG, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -151,7 +145,6 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingFloatAddition()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
@@ -164,15 +157,14 @@ public class BinaryOperationTest
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -196,7 +188,6 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingFloatAdditionWithCastOfSecondOperand()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
@@ -209,15 +200,14 @@ public class BinaryOperationTest
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors = operation.compile(methodVisitor, variables);
+		Result result = operation.compile(variables);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -241,7 +231,6 @@ public class BinaryOperationTest
 	@Test
 	public void testAdditionOfWrongType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
@@ -254,14 +243,12 @@ public class BinaryOperationTest
 				firstOperand, secondOperand);
 
 		Type type = operation.getType(variables);
-
-		Array<Error> errors =
-			operation.compileCondition(methodVisitor, variables, null, null);
+		Result result = operation.compileCondition(variables, null, null);
 
 		assertEquals(PrimitiveType.DOUBLE, type);
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot add Num and java.lang.Object.");
 	}
 
@@ -271,7 +258,6 @@ public class BinaryOperationTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression firstOperand = new InvalidExpression(PrimitiveType.DOUBLE);
 		Expression secondOperand = new InvalidExpression(PrimitiveType.DOUBLE);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Expression expression =
@@ -281,9 +267,9 @@ public class BinaryOperationTest
 				firstOperand,
 				secondOperand);
 
-		Array<Error> errors = expression.compile(methodVisitor, variables);
+		Result result = expression.compile(variables);
 
-		assertEquals(2, errors.length());
+		assertEquals(2, result.getErrors().length());
 	}
 
 	@Test

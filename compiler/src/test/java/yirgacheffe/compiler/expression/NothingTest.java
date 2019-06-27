@@ -1,8 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
-import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
 
@@ -16,18 +15,16 @@ public class NothingTest
 	@Test
 	public void testGettingVariableReads()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Expression nothing = new Nothing();
 
-		nothing.compile(methodVisitor, variables);
-		Array<Error> errors =
-			nothing.compileCondition(methodVisitor, variables, null, null);
+		nothing.compile(variables);
+		Result result = nothing.compileCondition(variables, null, null);
 
 		Array<VariableRead> reads = nothing.getVariableReads();
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 		assertFalse(nothing.isCondition(variables));
 		assertEquals(0, reads.length());
 	}

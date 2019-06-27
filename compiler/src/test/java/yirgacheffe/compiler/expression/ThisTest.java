@@ -2,10 +2,9 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -21,20 +20,16 @@ public class ThisTest
 	@Test
 	public void testCompilingThis()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
 
 		Type type = thisRead.getType(variables);
+		Result result = thisRead.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			thisRead.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
-		assertEquals(1, instructions.size());
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

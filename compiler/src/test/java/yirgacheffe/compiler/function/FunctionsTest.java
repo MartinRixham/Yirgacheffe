@@ -52,7 +52,7 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getResult().getErrors().length());
 		assertEquals("(Ljava/lang/String;)V", result.getFunction().getDescriptor());
 		assertEquals("Void println(java.lang.String)", result.getFunction().toString());
 	}
@@ -85,7 +85,7 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getResult().getErrors().length());
 		assertEquals("(Z)V", result.getFunction().getDescriptor());
 		assertEquals("Void println(Bool)", result.getFunction().toString());
 	}
@@ -116,10 +116,10 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, result.getResult().getErrors().length());
 		assertEquals(
 			"line 2:3 Method java.lang.String.notAMethod() not found.",
-			result.getErrors().get(0).toString());
+			result.getResult().getErrors().get(0).toString());
 	}
 
 	@Test
@@ -153,11 +153,11 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, result.getResult().getErrors().length());
 		assertEquals(
 			"line 4:4 Ambiguous call to method FunctionsTest.mapIt" +
 			"(java.util.HashMap<java.lang.String,java.lang.String>).",
-			result.getErrors().get(0).toString());
+			result.getResult().getErrors().get(0).toString());
 	}
 
 	@Test
@@ -187,10 +187,10 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, result.getResult().getErrors().length());
 		assertEquals(
 			"line 2:3 Method java.lang.String.split(Bool) not found.",
-			result.getErrors().get(0).toString());
+			result.getResult().getErrors().get(0).toString());
 	}
 
 	@Test
@@ -218,10 +218,10 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, result.getResult().getErrors().length());
 		assertEquals(
 			"line 3:5 Constructor java.lang.String(Num) not found.",
-			result.getErrors().get(0).toString());
+			result.getResult().getErrors().get(0).toString());
 	}
 
 	@Test
@@ -254,11 +254,11 @@ public class FunctionsTest
 
 		MatchResult result = functions.getMatchingExecutable(arguments);
 
-		assertEquals(1, result.getErrors().length());
+		assertEquals(1, result.getResult().getErrors().length());
 		assertEquals(
 			"line 3:5 Argument of type java.lang.Object cannot be assigned to " +
 				"generic parameter of type java.lang.String.",
-			result.getErrors().get(0).toString());
+			result.getResult().getErrors().get(0).toString());
 	}
 
 	public void mapIt(Map<String, String> map)

@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.LabelNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -24,14 +24,9 @@ public class LabelStatement implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		methodVisitor.visitLabel(this.label);
-
-		return new Array<>();
+		return new Result().add(new LabelNode((this.label)));
 	}
 
 	public Array<VariableRead> getVariableReads()

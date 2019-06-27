@@ -3,13 +3,12 @@ package yirgacheffe.compiler.statement;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -47,14 +46,12 @@ public class ForTest
 
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);
 
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = forStatement.compile(variables, null);
 
-		Array<Error> errors = forStatement.compile(methodVisitor, variables, null);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
-
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 

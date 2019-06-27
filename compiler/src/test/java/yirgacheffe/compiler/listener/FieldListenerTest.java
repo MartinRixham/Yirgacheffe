@@ -1272,8 +1272,8 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:7 Unrecognised type: Wibble is not a type.\n" +
-				"line 3:0 Type java.lang.String requires 0 parameter(s) but found 1.\n",
+			"line 3:0 Type java.lang.String requires 0 parameter(s) but found 1.\n" +
+			"line 3:7 Unrecognised type: Wibble is not a type.\n",
 			result.getErrors());
 	}
 

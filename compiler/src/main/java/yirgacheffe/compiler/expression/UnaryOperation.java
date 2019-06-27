@@ -1,8 +1,11 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.IincInsnNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
@@ -41,37 +44,34 @@ public class UnaryOperation implements Expression, Statement
 		return this.expression.getType(variables);
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
 		Type type = this.expression.getType(variables);
-		Array<Error> errors = this.expression.compile(methodVisitor, variables);
+		Result result = this.expression.compile(variables);
 
 		if (!this.pre)
 		{
-			methodVisitor.visitInsn(Opcodes.DUP2);
+			result = result.add(new InsnNode(Opcodes.DUP2));
 		}
 
-		methodVisitor.visitInsn(Opcodes.DCONST_1);
-		methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
+		result = result
+			.add(new InsnNode(Opcodes.DCONST_1))
+			.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DNEG));
 
 		if (this.pre)
 		{
-			methodVisitor.visitInsn(Opcodes.DUP2);
+			result = result.add(new InsnNode(Opcodes.DUP2));
 		}
 
-		this.checkType(type, errors);
-		this.updateVariable(variables, methodVisitor);
-
-		return errors;
+		return result
+			.concat(this.checkType(type))
+			.concat(this.updateVariable(variables));
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Type type = this.expression.getType(variables);
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		if (type.equals(PrimitiveType.INT))
 		{
@@ -80,53 +80,56 @@ public class UnaryOperation implements Expression, Statement
 				VariableRead read = (VariableRead) this.expression;
 				Variable variable = variables.getVariable(read.getName());
 
-				methodVisitor.visitIincInsn(variable.getIndex(), this.increment ? 1 : -1);
+				result = result.add(
+					new IincInsnNode(variable.getIndex(), this.increment ? 1 : -1));
 			}
 		}
 		else
 		{
-			errors = errors.concat(this.expression.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(Opcodes.DCONST_1);
-			methodVisitor.visitInsn(this.increment ? Opcodes.DADD : Opcodes.DNEG);
-
-			this.updateVariable(variables, methodVisitor);
+			result = result
+				.concat(this.expression.compile(variables))
+				.add(new InsnNode(Opcodes.DCONST_1))
+				.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DNEG))
+				.concat(this.updateVariable(variables));
 		}
 
-		this.checkType(type, errors);
-
-		return errors;
+		return result.concat(this.checkType(type));
 	}
 
-	private void checkType(Type type, Array<Error> errors)
+	private Result checkType(Type type)
 	{
+		Result result = new Result();
+
 		if (!type.isAssignableTo(PrimitiveType.DOUBLE))
 		{
 			String increment = this.increment ? "increment" : "decrement";
 			String message = "Cannot " + increment + " " + type + ".";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
+
+		return result;
 	}
 
-	private void updateVariable(Variables variables, MethodVisitor methodVisitor)
+	private Result updateVariable(Variables variables)
 	{
+		Result result = new Result();
+
 		if (this.expression instanceof VariableRead)
 		{
 			VariableRead read = (VariableRead) this.expression;
 			Variable variable = variables.getVariable(read.getName());
 
-			methodVisitor.visitVarInsn(Opcodes.DSTORE, variable.getIndex());
+			result = result.add(
+				new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
 		}
+
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return this.compile(methodVisitor, variables);
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

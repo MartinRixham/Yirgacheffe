@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
@@ -22,20 +22,17 @@ public class InvalidExpression implements Expression
 		return this.type;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
 		Coordinate coordinate = new Coordinate(0, 0);
 		Error error = new Error(coordinate, "This expression is not valid.");
 
-		return new Array<>(error);
+		return new Result().add(error);
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel, Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		return new Array<>();
+		return new Result();
 	}
 
 	public boolean isCondition(Variables variables)

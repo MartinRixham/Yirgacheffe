@@ -1,8 +1,12 @@
 package yirgacheffe.compiler.function;
 
-import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.IntersectionType;
@@ -157,13 +161,12 @@ public class Arguments
 		return "(" + String.join(",", arguments) + ")";
 	}
 
-	public Array<Error> compile(
+	public Result compile(
 		Array<Type> parameters,
-		MethodVisitor methodVisitor,
 		Variables variables,
 		boolean variableArguments)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		for (int i = 0; i < Math.min(this.arguments.length(), parameters.length()); i++)
 		{
@@ -173,38 +176,31 @@ public class Arguments
 				Array<Expression> arguments =
 					this.arguments.slice(parameters.length() - 1);
 
-				Array<Error> argumentErrors =
+				result = result.concat(
 					this.compileVariableArguments(
 						arguments,
 						parameters,
-						methodVisitor,
-						variables);
-
-				errors = errors.concat(argumentErrors);
+						variables));
 			}
 			else
 			{
 				Expression argument = this.arguments.get(i);
 				Type parameterType = parameters.get(i);
 
-				Array<Error> argumentErrors =
-					this.compileArgument(
+				result = result.concat(
+						this.compileArgument(
 						argument,
 						parameterType,
-						methodVisitor,
-						variables);
-
-				errors = errors.concat(argumentErrors);
+						variables));
 			}
 		}
 
-		return errors;
+		return result;
 	}
 
-	private Array<Error> compileVariableArguments(
+	private Result compileVariableArguments(
 		Array<Expression> arguments,
 		Array<Type> parameters,
-		MethodVisitor methodVisitor,
 		Variables variables)
 	{
 		ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
@@ -212,46 +208,42 @@ public class Arguments
 
 		int arrayLength = this.arguments.length() - parameters.length() + 1;
 
-		methodVisitor.visitLdcInsn(arrayLength);
+		Result result = new Result().add(new LdcInsnNode(arrayLength));
 
 		if (elementType.isPrimitive())
 		{
 			PrimitiveType primitiveType = (PrimitiveType) elementType;
 			int typeInstruction = primitiveType.getTypeInstruction();
 
-			methodVisitor.visitIntInsn(Opcodes.NEWARRAY, typeInstruction);
+			result = result.add(new IntInsnNode(Opcodes.NEWARRAY, typeInstruction));
 		}
 		else
 		{
-			methodVisitor.visitTypeInsn(
-				Opcodes.ANEWARRAY,
-				elementType.toFullyQualifiedType());
+			result = result.add(
+				new TypeInsnNode(Opcodes.ANEWARRAY, elementType.toFullyQualifiedType()));
 		}
 
 		for (int i = 0; i < arrayLength; i++)
 		{
-			methodVisitor.visitInsn(Opcodes.DUP);
-			methodVisitor.visitLdcInsn(i);
-
-			this.compileArgument(
-				arguments.get(i),
-				elementType,
-				methodVisitor,
-				variables);
-
-			methodVisitor.visitInsn(elementType.getArrayStoreInstruction());
+			result = result
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new LdcInsnNode(i))
+				.concat(this.compileArgument(
+					arguments.get(i),
+					elementType,
+					variables))
+				.add(new InsnNode(elementType.getArrayStoreInstruction()));
 		}
 
-		return new Array<>();
+		return result;
 	}
 
-	private Array<Error> compileArgument(
+	private Result compileArgument(
 		Expression argument,
 		Type parameter,
-		MethodVisitor methodVisitor,
 		Variables variables)
 	{
-		Array<Error> errors = argument.compile(methodVisitor, variables);
+		Result result = argument.compile(variables);
 		Type argumentType = argument.getType(variables);
 
 		if (argumentType.isPrimitive() &&
@@ -261,7 +253,8 @@ public class Arguments
 			PrimitiveType argumentPrimitive = (PrimitiveType) argumentType;
 			PrimitiveType parameterPrimitive = (PrimitiveType) parameter;
 
-			methodVisitor.visitInsn(argumentPrimitive.convertTo(parameterPrimitive));
+			return result.add(
+				new InsnNode(argumentPrimitive.convertTo(parameterPrimitive)));
 		}
 		else if (argumentType.isPrimitive() && !parameter.isPrimitive())
 		{
@@ -269,15 +262,18 @@ public class Arguments
 				"(" + argumentType.toJVMType() + ")L" +
 					argumentType.toFullyQualifiedType() + ";";
 
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				argumentType.toFullyQualifiedType(),
-				"valueOf",
-				descriptor,
-				false);
+			return result.add(
+				new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					argumentType.toFullyQualifiedType(),
+					"valueOf",
+					descriptor,
+					false));
 		}
-
-		return errors;
+		else
+		{
+			return result;
+		}
 	}
 
 	private boolean hasVariableArguments(boolean variableArguments)

@@ -330,8 +330,8 @@ public class ClassListenerTest
 		assertEquals(
 			"line 1:8 Package name yirgacheffe does not correspond to the file path .\n" +
 			"line 5:7 Unrecognised type: MyClass is not a type.\n" +
-			"line 7:20 Method java.lang.Object.method() not found.\n" +
-			"line 7:11 Method java.lang.Object.method() not found.\n",
+			"line 7:11 Method java.lang.Object.method() not found.\n" +
+			"line 7:20 Method java.lang.Object.method() not found.\n",
 			result.getErrors());
 	}
 }

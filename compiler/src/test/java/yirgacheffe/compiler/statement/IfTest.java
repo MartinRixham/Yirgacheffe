@@ -3,16 +3,15 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.junit.Test;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
@@ -45,16 +44,14 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = ifStatement.compile(variables, caller);
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -77,15 +74,14 @@ public class IfTest
 	public void testInvalidCondition()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		Result result = ifStatement.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 		assertFalse(ifStatement.isEmpty());
 	}
 
@@ -93,7 +89,6 @@ public class IfTest
 	public void testInvalidStatement()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		If statement =
@@ -102,9 +97,9 @@ public class IfTest
 		If ifStatement =
 			new If(new Nothing(), statement);
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		Result result = ifStatement.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 	}
 
 	@Test
@@ -133,16 +128,14 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = ifStatement.compile(variables, caller);
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(4, instructions.size());
+		assertEquals(4, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -170,16 +163,14 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = ifStatement.compile(variables, caller);
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(5, instructions.size());
+		assertEquals(5, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -215,16 +206,14 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
+		Result result = ifStatement.compile(variables, caller);
 
-		Array<Error> errors = ifStatement.compile(methodVisitor, variables, caller);
+		assertEquals(0, result.getErrors().length());
 
-		assertEquals(0, errors.length());
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(5, instructions.size());
+		assertEquals(5, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 

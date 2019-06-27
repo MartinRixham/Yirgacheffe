@@ -2,10 +2,9 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -20,20 +19,17 @@ public class BoolTest
 	@Test
 	public void testCompilingFalse()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Bool literal = new Bool("false");
 
 		Type type = literal.getType(variables);
-
-		literal.compile(methodVisitor, variables);
-
-		InsnList instructions = methodVisitor.instructions;
+		Result result = literal.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertFalse(literal.isCondition(variables));
 		assertEquals(false, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -44,21 +40,17 @@ public class BoolTest
 	@Test
 	public void testCompilingTrue()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		Bool literal = new Bool("true");
 
 		Type type = literal.getType(variables);
+		Result result = literal.compileCondition(variables, null, null);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		Array<Error> errors =
-			literal.compileCondition(methodVisitor, variables, null, null);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 		assertEquals(true, literal.getValue());
-		assertEquals(1, instructions.size());
+		assertEquals(1, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 

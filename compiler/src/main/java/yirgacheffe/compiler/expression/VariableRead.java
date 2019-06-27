@@ -1,9 +1,10 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
@@ -34,11 +35,13 @@ public class VariableRead implements Expression
 		}
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
+		Result result = new Result();
+
 		if (variables.hasConstant(this.name))
 		{
-			methodVisitor.visitLdcInsn(variables.getConstant(this.name));
+			return new Result().add(new LdcInsnNode(variables.getConstant(this.name)));
 		}
 		else
 		{
@@ -46,37 +49,31 @@ public class VariableRead implements Expression
 
 			if (variables.canOptimise(this))
 			{
-				variables.getOptimisedExpression(this).compile(methodVisitor, variables);
+				return variables.getOptimisedExpression(this).compile(variables);
 			}
 			else
 			{
+				variables.read(this);
+
 				int loadInstruction = variable.getType().getLoadInstruction();
 				int index = variable.getIndex();
 
-				methodVisitor.visitVarInsn(loadInstruction, index);
-				variables.read(this);
+				return new Result().add(new VarInsnNode(loadInstruction, index));
 			}
 		}
-
-		return new Array<>();
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
 		if (variables.canOptimise(this))
 		{
 			Expression expression = variables.getOptimisedExpression(this);
 
-			return expression.compileCondition(
-				methodVisitor, variables, trueLabel, falseLabel);
+			return expression.compileCondition(variables, trueLabel, falseLabel);
 		}
 		else
 		{
-			return this.compile(methodVisitor, variables);
+			return this.compile(variables);
 		}
 	}
 

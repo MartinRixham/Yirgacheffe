@@ -1,14 +1,13 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.junit.Test;
 import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -40,18 +39,17 @@ public class VariableWriteTest
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
-		MethodNode methodVisitor = new MethodNode();
 
 		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", new ReferenceType(String.class));
 
-		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
+		Result result = variableWrite.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions =  methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions =  result.getInstructions();
 
-		assertEquals(2, instructions.size());
+		assertEquals(2, instructions.length());
 
 		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
 
@@ -72,18 +70,17 @@ public class VariableWriteTest
 		Coordinate coordinate = new Coordinate(4, 2);
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
-		MethodNode methodVisitor = new MethodNode();
 
 		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 
-		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
+		Result result = variableWrite.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions =  methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions =  result.getInstructions();
 
-		assertEquals(3, instructions.size());
+		assertEquals(3, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -108,14 +105,13 @@ public class VariableWriteTest
 		Expression value = new InvalidExpression(string);
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
-		MethodNode methodVisitor = new MethodNode();
 
 		Variables variables = new Variables(new HashMap<>());
 		variables.declare("myVariable", string);
 
-		Array<Error> errors = variableWrite.compile(methodVisitor, variables, caller);
+		Result result = variableWrite.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 	}
 
 	@Test

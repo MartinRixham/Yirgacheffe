@@ -2,11 +2,10 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -26,7 +25,6 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementOfWrongType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
@@ -34,22 +32,18 @@ public class UnaryOperationTest
 		UnaryOperation postincrement =
 			new UnaryOperation(coordinate, operand, false, true);
 
-		Type type = postincrement.getType(variables);
-
-		Array<Error> errors =
-			postincrement.compileCondition(methodVisitor, variables, null, null);
+		Result result = postincrement.compileCondition(variables, null, null);
 
 		assertFalse(postincrement.isCondition(variables));
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot increment java.lang.String.");
 	}
 
 	@Test
 	public void testPostincrementStatementOfWrongType()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
@@ -59,11 +53,11 @@ public class UnaryOperationTest
 
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 
-		Array<Error> errors = postincrement.compile(methodVisitor, variables, caller);
+		Result result = postincrement.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 
-		assertEquals(errors.get(0).toString(),
+		assertEquals(result.getErrors().get(0).toString(),
 			"line 3:6 Cannot increment java.lang.String.");
 	}
 
@@ -85,7 +79,6 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementInteger()
 	{
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		variables.declare("variable", PrimitiveType.INT);
@@ -100,12 +93,12 @@ public class UnaryOperationTest
 
 		Type type = postincrement.getType(variables);
 
-		Array<Error> errors = postincrement.compile(methodVisitor, variables, caller);
+		Result result = postincrement.compile(variables, caller);
 
 		assertEquals(PrimitiveType.INT, type);
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		IincInsnNode firstInstruction = (IincInsnNode) instructions.get(0);
 

@@ -3,13 +3,12 @@ package yirgacheffe.compiler.statement;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
@@ -39,16 +38,15 @@ public class ElseTest
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
+		Result result = elseStatement.compile(variables, caller);
 
-		assertEquals(0, errors.length());
+		assertEquals(0, result.getErrors().length());
 
-		InsnList instructions = methodVisitor.instructions;
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(7, instructions.size());
+		assertEquals(7, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -92,16 +90,15 @@ public class ElseTest
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		Statement ifStatement = new Block(coordinate, new Array<>());
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
+		Result result = elseStatement.compile(variables, caller);
 
 		assertFalse(elseStatement.returns());
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 		assertEquals(
 			"line 3:5 Else not preceded by if statement.",
-			errors.get(0).toString());
+			result.getErrors().get(0).toString());
 	}
 
 	@Test
@@ -109,7 +106,6 @@ public class ElseTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		If ifStatement =
@@ -117,9 +113,9 @@ public class ElseTest
 
 		Else elseStatement = new Else(coordinate, ifStatement, new DoNothing());
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
+		Result result = elseStatement.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 	}
 
 	@Test
@@ -127,7 +123,6 @@ public class ElseTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 
 		If precondition =
@@ -138,9 +133,9 @@ public class ElseTest
 
 		Else elseStatement = new Else(coordinate, precondition, ifStatement);
 
-		Array<Error> errors = elseStatement.compile(methodVisitor, variables, caller);
+		Result result = elseStatement.compile(variables, caller);
 
-		assertEquals(1, errors.length());
+		assertEquals(1, result.getErrors().length());
 	}
 
 	@Test

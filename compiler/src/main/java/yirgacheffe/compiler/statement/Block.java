@@ -1,6 +1,6 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -46,15 +46,12 @@ public class Block implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Array<Statement> statements = this.statements;
 		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();
 		boolean unreachableCode = false;
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		this.optimiseVariables(variables);
 		this.optimiseTailCall(caller, variables);
@@ -67,7 +64,7 @@ public class Block implements Statement
 					caller :
 					new Signature(new NullType(), "", new Array<>());
 
-			errors.push(statements.get(i).compile(methodVisitor, variables, call));
+			result = result.concat(statements.get(i).compile(variables, call));
 
 			if (statements.get(i).returns() && i < statements.length() - 1)
 			{
@@ -79,12 +76,12 @@ public class Block implements Statement
 		{
 			String message = "Unreachable code.";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		variables.setDeclaredVariables(declaredVariables);
 
-		return errors;
+		return result;
 	}
 
 	private void optimiseVariables(Variables variables)

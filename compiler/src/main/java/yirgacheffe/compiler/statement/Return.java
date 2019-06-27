@@ -1,7 +1,8 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -39,40 +40,32 @@ public class Return implements Statement
 		return true;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Type type = this.expression.getType(variables);
-		Array<Error> errors = new Array<>();
 
 		if (type.isAssignableTo(this.type))
 		{
-			errors = errors.concat(this.expression.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(this.type.getReturnInstruction());
+			return this.expression.compile(variables)
+				.add(new InsnNode(this.type.getReturnInstruction()));
 		}
 		else if (type.isAssignableTo(new ReferenceType(Throwable.class)))
 		{
-			errors = errors.concat(this.expression.compile(methodVisitor, variables));
-
-			methodVisitor.visitInsn(Opcodes.ATHROW);
+			return this.expression.compile(variables)
+				.add(new InsnNode(Opcodes.ATHROW));
 		}
 		else
 		{
-			methodVisitor.visitInsn(this.type.getZero());
-			methodVisitor.visitInsn(this.type.getReturnInstruction());
-
 			String message =
 				"Mismatched return type: Cannot return expression of type " +
 				type + " from method of return type " +
 				this.type + ".";
 
-			errors.push(new Error(this.coordinate, message));
+			return new Result()
+				.add(new InsnNode(this.type.getZero()))
+				.add(new InsnNode(this.type.getReturnInstruction()))
+				.add(new Error(this.coordinate, message));
 		}
-
-		return errors;
 	}
 
 	public Array<VariableRead> getVariableReads()

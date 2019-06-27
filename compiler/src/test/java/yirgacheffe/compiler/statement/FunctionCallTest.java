@@ -2,18 +2,16 @@ package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Num;
@@ -37,7 +35,6 @@ public class FunctionCallTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(1, 0);
-		MethodNode methodVisitor = new MethodNode();
 		Array<Expression> arguments =
 			new Array<>(new Num("3.0"));
 
@@ -48,13 +45,12 @@ public class FunctionCallTest
 				arguments);
 
 		FunctionCall functionCall = new FunctionCall(invoke);
+
 		Variables variables = new Variables(new HashMap<>());
+		Result result = functionCall.compile(variables, caller);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		functionCall.compile(methodVisitor, variables, caller);
-
-		InsnList instructions = methodVisitor.instructions;
-
-		assertEquals(7, instructions.size());
+		assertEquals(7, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
@@ -96,19 +92,17 @@ public class FunctionCallTest
 					return new NullType();
 				}
 
-				public Array<Error> compile(
-						MethodVisitor methodVisitor,
-						Variables variables)
+				public Result compile(Variables variables)
 				{
-					return new Array<>();
+					return new Result();
 				}
 
-				public Array<Error> compileCondition(
-					MethodVisitor methodVisitor,
+				public Result compileCondition(
 					Variables variables,
-					Label trueLabel, Label falseLabel)
+					Label trueLabel,
+					Label falseLabel)
 				{
-					return new Array<>();
+					return new Result();
 				}
 
 				public boolean isCondition(Variables variables)

@@ -1,8 +1,12 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.comparison.BooleanComparison;
 import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.Comparison;
@@ -12,7 +16,6 @@ import yirgacheffe.compiler.comparison.NumberComparison;
 import yirgacheffe.compiler.comparison.ObjectComparison;
 import yirgacheffe.compiler.comparison.StringComparison;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -46,47 +49,34 @@ public class Equation implements Expression
 		return PrimitiveType.BOOLEAN;
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
-		Array<Error> errors = new Array<>();
 		Type string = new ReferenceType(String.class);
 
 		if (this.firstOperand.getType(variables).isAssignableTo(string) &&
 			this.secondOperand.getType(variables).isAssignableTo(string) &&
 			(this.comparator instanceof Equals))
 		{
-			errors = errors.concat(this.compareStrings(
-				methodVisitor,
+			return this.compareStrings(
 				variables,
 				this.firstOperand,
-				this.secondOperand));
-
-			return errors;
+				this.secondOperand);
 		}
 
 		Label label	= new Label();
-
-		errors = this.compileCondition(methodVisitor, variables, null, label);
-
-		methodVisitor.visitInsn(Opcodes.ICONST_1);
-
 		Label falseLabel = new Label();
 
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, falseLabel);
-		methodVisitor.visitLabel(label);
-		methodVisitor.visitInsn(Opcodes.ICONST_0);
-		methodVisitor.visitLabel(falseLabel);
-
-		return errors;
+		return this.compileCondition(variables, null, label)
+			.add(new InsnNode(Opcodes.ICONST_1))
+			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(falseLabel)))
+			.add(new LabelNode(label))
+			.add(new InsnNode(Opcodes.ICONST_0))
+			.add(new LabelNode(falseLabel));
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 		Type string = new ReferenceType(String.class);
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
@@ -131,30 +121,22 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		errors = errors.concat(comparison.compile(methodVisitor, variables, falseLabel));
-
-		return errors;
+		return result.concat(comparison.compile(variables, falseLabel));
 	}
 
-	private Array<Error> compareStrings(
-		MethodVisitor methodVisitor,
+	private Result compareStrings(
 		Variables variables,
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-		Array<Error> errors = new Array<>();
-
-		errors = errors.concat(firstOperand.compile(methodVisitor, variables));
-		errors = errors.concat(secondOperand.compile(methodVisitor, variables));
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
-			"java/lang/String",
-			"equals",
-			"(Ljava/lang/Object;)Z",
-			false);
-
-		return errors;
+		return firstOperand.compile(variables)
+			.concat(secondOperand.compile(variables))
+			.add(new MethodInsnNode(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/String",
+				"equals",
+				"(Ljava/lang/Object;)Z",
+				false));
 	}
 
 	public boolean isCondition(Variables variables)

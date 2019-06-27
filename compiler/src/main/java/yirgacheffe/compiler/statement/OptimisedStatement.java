@@ -1,7 +1,6 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
@@ -22,12 +21,9 @@ public class OptimisedStatement implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		return new Array<>();
+		return new Result();
 	}
 
 	public Array<VariableRead> getVariableReads()

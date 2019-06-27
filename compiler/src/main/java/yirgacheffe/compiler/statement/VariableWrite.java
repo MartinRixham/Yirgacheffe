@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -50,32 +52,30 @@ public class VariableWrite implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
-		Array<Error> errors = new Array<>();
+		Result result = new Result();
 
 		if (this.declaration != null)
 		{
-			this.declaration.compile(methodVisitor, variables, caller);
+			result = result.concat(this.declaration.compile(variables, caller));
 		}
 
 		Type type = this.expression.getType(variables);
 		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
 
-		errors.push(this.expression.compile(methodVisitor, variables));
+		result = result.concat(this.expression.compile(variables));
 
 		if (variableType == PrimitiveType.DOUBLE && !variableType.equals(type))
 		{
-			methodVisitor.visitInsn(Opcodes.I2D);
+			result = result.add(new InsnNode(Opcodes.I2D));
 		}
 
-		methodVisitor.visitVarInsn(
-			variableType.getStoreInstruction(),
-			variable.getIndex());
+		result = result.add(
+			new VarInsnNode(
+				variableType.getStoreInstruction(),
+				variable.getIndex()));
 
 		if (!type.isAssignableTo(variableType))
 		{
@@ -84,12 +84,12 @@ public class VariableWrite implements Statement
 				type + " to variable of type " +
 				variableType + ".";
 
-			errors.push(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		variables.write(this);
 
-		return errors;
+		return result;
 	}
 
 	public Expression getExpression()

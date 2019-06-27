@@ -1,8 +1,7 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -21,9 +20,9 @@ public class Try implements Expression
 		return this.expression.getType(variables);
 	}
 
-	public Array<Error> compile(MethodVisitor methodVisitor, Variables variables)
+	public Result compile(Variables variables)
 	{
-		Array<Error> errors = this.expression.compile(methodVisitor, variables);
+		Result result = this.expression.compile(variables);
 		Type type = this.expression.getType(variables);
 
 		/*if (type.isPrimitive())
@@ -36,16 +35,12 @@ public class Try implements Expression
 				false);
 		}*/
 
-		return errors;
+		return result;
 	}
 
-	public Array<Error> compileCondition(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		throw new UnsupportedOperationException();
+		return this.compile(variables);
 	}
 
 	public boolean isCondition(Variables variables)

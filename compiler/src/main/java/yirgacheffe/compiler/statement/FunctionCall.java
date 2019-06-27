@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.InsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
@@ -24,28 +24,24 @@ public class FunctionCall implements Statement
 		return false;
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Type type = this.expression.getType(variables);
 
-		Array<Error> errors =
-			this.expression.compile(methodVisitor, variables);
+		Result result = this.expression.compile(variables);
 
 		int width = type.width();
 
 		if (width == 1)
 		{
-			methodVisitor.visitInsn(Opcodes.POP);
+			result = result.add(new InsnNode(Opcodes.POP));
 		}
 		else if (width == 2)
 		{
-			methodVisitor.visitInsn(Opcodes.POP2);
+			result = result.add(new InsnNode(Opcodes.POP2));
 		}
 
-		return errors;
+		return result;
 	}
 
 	public Array<VariableRead> getVariableReads()

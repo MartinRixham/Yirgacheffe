@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -245,8 +247,12 @@ public class MethodListener extends FieldDeclarationListener
 		Variables variables = new Variables(this.constants);
 		boolean returns = block.returns();
 
-		Array<Error> errors =
-			block.compile(this.methodNode, variables, this.signature);
+		Result result = block.compile(variables, this.signature);
+
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			this.methodNode.instructions.add(instruction);
+		}
 
 		if (!this.returnType.equals(PrimitiveType.VOID) && block.isEmpty())
 		{
@@ -265,7 +271,7 @@ public class MethodListener extends FieldDeclarationListener
 		}
 
 		this.errors.push(variables.getErrors());
-		this.errors.push(errors);
+		this.errors.push(result.getErrors());
 
 		this.inConstructor = false;
 	}

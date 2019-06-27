@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import yirgacheffe.compiler.error.Error;
+import org.objectweb.asm.tree.LabelNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -24,22 +24,14 @@ public class Branch implements Statement
 		return this.conditional.returns() && (this.conditional instanceof Else);
 	}
 
-	public Array<Error> compile(
-		MethodVisitor methodVisitor,
-		Variables variables,
-		Signature caller)
+	public Result compile(Variables variables, Signature caller)
 	{
 		Label label = this.conditional.getLabel();
 
-		Array<Error> errors =
-			this.conditional.compile(
-				methodVisitor,
-				variables,
-				caller);
+		return this.conditional
+			.compile(variables, caller)
+			.add(new LabelNode(label));
 
-		methodVisitor.visitLabel(label);
-
-		return errors;
 	}
 
 	public Array<VariableRead> getVariableReads()
