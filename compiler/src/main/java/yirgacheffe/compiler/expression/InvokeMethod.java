@@ -9,14 +9,15 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.function.Callable;
+import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.function.AmbiguousMatchResult;
+import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
-import yirgacheffe.compiler.function.Functions;
 import yirgacheffe.compiler.function.MatchResult;
-import yirgacheffe.compiler.function.Methods;
 import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.GenericType;
+import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -28,6 +29,9 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InvokeMethod implements Expression
 {
@@ -92,14 +96,14 @@ public class InvokeMethod implements Expression
 	{
 		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
-		Methods methods = new Methods(owner, this.caller);
-		Array<Callable> namedMethods = methods.getMethodsNamed(this.name);
-		String method = owner + "." + this.name;
-		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
-		MatchResult matchResult = functions.getMatchingExecutable(arguments);
-		Callable function = matchResult.getFunction();
-		boolean variableArugments = function.hasVariableArguments();
-		Array<Type> parameters = function.getParameterTypes();
+		Array<Function> namedMethods = this.getMethodsNamed(owner, this.name);
+		MatchResult matchResult = new FailedMatchResult();
+
+		for (Function function: namedMethods)
+		{
+			matchResult = matchResult.betterOf(arguments.matches(function));
+		}
+
 		Result result = this.owner.compile(variables);
 
 		if (owner.isPrimitive())
@@ -113,7 +117,7 @@ public class InvokeMethod implements Expression
 		}
 
 		result = result
-			.concat(arguments.compile(parameters, variables, variableArugments))
+			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile());
 
 		String ownerDescriptor = owner.toFullyQualifiedType();
@@ -121,7 +125,7 @@ public class InvokeMethod implements Expression
 		String descriptor =
 			'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
 			ownerDescriptor + ';' : ownerDescriptor) +
-			function.getDescriptor().substring(1);
+			matchResult.getDescriptor().substring(1);
 
 		MethodType methodType =
 			MethodType.methodType(
@@ -142,11 +146,11 @@ public class InvokeMethod implements Expression
 
 		result = result.add(
 			new InvokeDynamicInsnNode(
-				function.getName(),
+				matchResult.getName(),
 				descriptor,
 				bootstrapMethod));
 
-		Type returnType = function.getReturnType();
+		Type returnType = matchResult.getReturnType();
 
 		if (returnType instanceof GenericType)
 		{
@@ -180,23 +184,85 @@ public class InvokeMethod implements Expression
 			result = result.add(new InsnNode(Opcodes.F2D));
 		}
 
-		return result.concat(matchResult.getResult());
+		return result.concat(this.getError(matchResult, owner, arguments));
 	}
 
 	public Result compileArguments(Variables variables)
 	{
 		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
-		Methods methods = new Methods(owner, this.caller);
-		Array<Callable> namedMethods = methods.getMethodsNamed(this.name);
-		String method = owner + "." + this.name;
-		Functions functions = new Functions(this.coordinate, method, namedMethods, false);
-		MatchResult matchResult = functions.getMatchingExecutable(arguments);
-		Callable function = matchResult.getFunction();
-		boolean variableArugments = function.hasVariableArguments();
-		Array<Type> parameters = function.getParameterTypes();
+		Array<Function> namedMethods = this.getMethodsNamed(owner, this.name);
+		MatchResult matchResult = new FailedMatchResult();
 
-		return arguments.compile(parameters, variables, variableArugments);
+		for (Function function: namedMethods)
+		{
+			matchResult = matchResult.betterOf(arguments.matches(function));
+		}
+
+		return matchResult.compileArguments(variables)
+			.concat(this.getError(matchResult, owner, arguments));
+	}
+
+	private Result getError(
+		MatchResult matchResult, Type owner, Arguments arguments)
+	{
+		Result result = new Result();
+
+		if (matchResult instanceof FailedMatchResult)
+		{
+			String message =
+				"Method " + owner + "." + this.name + arguments + " not found.";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+		else if (matchResult instanceof AmbiguousMatchResult)
+		{
+			String message =
+				"Ambiguous call to method " +
+				owner + "." + this.name + arguments +
+				" not found.";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		for (MismatchedTypes mismatchedTypes: matchResult.getMismatchedParameters())
+		{
+			String message =
+				"Argument of type " +
+				mismatchedTypes.from() +
+				" cannot be assigned to generic parameter of type " +
+				mismatchedTypes.to() + ".";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		return result;
+	}
+
+	public Array<Function> getMethodsNamed(Type owner, String name)
+	{
+		Set<Method> methodSet = new HashSet<>();
+
+		methodSet.addAll(
+			Arrays.asList(owner.reflectionClass().getMethods()));
+
+		if (owner.toFullyQualifiedType().equals(this.caller))
+		{
+			methodSet.addAll(
+				Arrays.asList(owner.reflectionClass().getDeclaredMethods()));
+		}
+
+		Array<Function> namedMethods = new Array<>();
+
+		for (Method method: methodSet)
+		{
+			if (method.getName().equals(name))
+			{
+				namedMethods.push(new Function(owner, method));
+			}
+		}
+
+		return namedMethods;
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

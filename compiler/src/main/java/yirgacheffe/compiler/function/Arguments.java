@@ -38,10 +38,79 @@ public class Arguments
 		}
 	}
 
-	public Array<MismatchedTypes> checkTypeParameters(
-		Array<java.lang.reflect.Type> parameters,
-		ParameterisedType owner)
+	public MatchResult matches(Function function)
 	{
+		int exactMatches = 0;
+
+		Array<Type> parameters = function.getParameterTypes();
+		Array<Type> argumentTypes = this.argumentTypes.slice();
+
+		if (this.hasVariableArguments(function.hasVariableArguments()))
+		{
+			ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
+			Type elementType = arrayType.getElementType();
+			Type intersectionType = elementType;
+			int argumentCount = argumentTypes.length();
+
+			for (int i = parameters.length() - 1; i < argumentCount; i++)
+			{
+				Type type = argumentTypes.pop();
+				intersectionType = new IntersectionType(intersectionType, type);
+			}
+
+			if (!intersectionType.isAssignableTo(elementType))
+			{
+				return new FailedMatchResult();
+			}
+		}
+		else if (parameters.length() != argumentTypes.length())
+		{
+			return new FailedMatchResult();
+		}
+		else if (parameters.length() == 0)
+		{
+			return new SuccessfulMatchResult(
+				function,
+				this,
+				1,
+				this.checkTypeParameters(function));
+		}
+
+		for (int i = 0; i < argumentTypes.length(); i++)
+		{
+			Type argumentType = argumentTypes.get(i);
+			Type parameterType = parameters.get(i);
+
+			if (!argumentType.isAssignableTo(parameterType))
+			{
+				return new FailedMatchResult();
+			}
+			else if (argumentType.toJVMType().equals(parameterType.toJVMType()))
+			{
+				exactMatches += THOUSAND;
+			}
+			else if (parameterType.isPrimitive())
+			{
+				exactMatches++;
+			}
+		}
+
+		return new SuccessfulMatchResult(
+			function,
+			this,
+			exactMatches,
+			this.checkTypeParameters(function));
+	}
+
+	private Array<MismatchedTypes> checkTypeParameters(Function function)
+	{
+		if (!(function.getOwner() instanceof ParameterisedType))
+		{
+			return new Array<>();
+		}
+
+		ParameterisedType owner = (ParameterisedType) function.getOwner();
+		Array<java.lang.reflect.Type> parameters = function.getGenericParameterTypes();
 		Array<MismatchedTypes> mismatchedParameters = new Array<>();
 
 		for (int i = 0; i < this.argumentTypes.length(); i++)
@@ -71,8 +140,19 @@ public class Arguments
 			}
 			else if (parameter instanceof GenericArrayType)
 			{
+				Type argumentType;
+
+				if (this.hasVariableArguments(function.hasVariableArguments()))
+				{
+					argumentType = this.argumentTypes.get(i);
+				}
+				else
+				{
+					argumentType =
+						((ArrayType) this.argumentTypes.get(i)).getElementType();
+				}
+
 				GenericArrayType arrayType = (GenericArrayType) parameter;
-				Type argumentType = this.argumentTypes.get(i);
 
 				String name = arrayType.getGenericComponentType().getTypeName();
 
@@ -93,61 +173,6 @@ public class Arguments
 		return mismatchedParameters;
 	}
 
-	public int matches(Array<Type> parameters, boolean variableArguments)
-	{
-		int exactMatches = 0;
-
-		Array<Type> argumentTypes = this.argumentTypes.slice();
-
-		if (this.hasVariableArguments(variableArguments))
-		{
-			ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
-			Type elementType = arrayType.getElementType();
-			Type intersectionType = elementType;
-			int argumentCount = argumentTypes.length();
-
-			for (int i = parameters.length() - 1; i < argumentCount; i++)
-			{
-				Type type = argumentTypes.pop();
-				intersectionType = new IntersectionType(intersectionType, type);
-			}
-
-			if (!intersectionType.isAssignableTo(elementType))
-			{
-				return -1;
-			}
-		}
-		else if (parameters.length() != argumentTypes.length())
-		{
-			return -1;
-		}
-		else if (parameters.length() == 0)
-		{
-			return 1;
-		}
-
-		for (int i = 0; i < argumentTypes.length(); i++)
-		{
-			Type argumentType = argumentTypes.get(i);
-			Type parameterType = parameters.get(i);
-
-			if (!argumentType.isAssignableTo(parameterType))
-			{
-				return -1;
-			}
-			else if (argumentType.toJVMType().equals(parameterType.toJVMType()))
-			{
-				exactMatches += THOUSAND;
-			}
-			else if (parameterType.isPrimitive())
-			{
-				exactMatches++;
-			}
-		}
-
-		return exactMatches;
-	}
-
 	@Override
 	public String toString()
 	{
@@ -163,8 +188,7 @@ public class Arguments
 
 	public Result compile(
 		Array<Type> parameters,
-		Variables variables,
-		boolean variableArguments)
+		boolean variableArguments, Variables variables)
 	{
 		Result result = new Result();
 
@@ -188,7 +212,7 @@ public class Arguments
 				Type parameterType = parameters.get(i);
 
 				result = result.concat(
-						this.compileArgument(
+					this.compileArgument(
 						argument,
 						parameterType,
 						variables));

@@ -2,7 +2,6 @@ package yirgacheffe.compiler.function;
 
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
-import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -15,7 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 
-public class Function implements Callable
+public class Function
 {
 	private Type owner;
 
@@ -125,22 +124,6 @@ public class Function implements Callable
 		}
 	}
 
-	public Array<MismatchedTypes> checkTypeParameters(Arguments arguments)
-	{
-		if (this.owner instanceof ParameterisedType)
-		{
-			ParameterisedType type = (ParameterisedType) this.owner;
-			Array<java.lang.reflect.Type> parameters =
-				new Array<>(this.executable.getGenericParameterTypes());
-
-			return arguments.checkTypeParameters(parameters, type);
-		}
-		else
-		{
-			return new Array<>();
-		}
-	}
-
 	public boolean hasVariableArguments()
 	{
 		return Modifier.isTransient(this.executable.getModifiers());
@@ -179,5 +162,15 @@ public class Function implements Callable
 				parameters);
 
 		return signature;
+	}
+
+	public Type getOwner()
+	{
+		return this.owner;
+	}
+
+	public Array<java.lang.reflect.Type> getGenericParameterTypes()
+	{
+		return new Array<>(this.executable.getGenericParameterTypes());
 	}
 }
