@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -51,5 +52,17 @@ public class ArrayTypeTest
 		Type second = PrimitiveType.BOOLEAN;
 
 		assertFalse(first.isAssignableTo(second));
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
 	}
 }

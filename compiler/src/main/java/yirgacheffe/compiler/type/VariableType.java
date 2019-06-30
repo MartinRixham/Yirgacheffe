@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 
 public class VariableType implements Type
 {
@@ -74,6 +75,11 @@ public class VariableType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Result newArray()
+	{
+		return new Result();
 	}
 
 	@Override

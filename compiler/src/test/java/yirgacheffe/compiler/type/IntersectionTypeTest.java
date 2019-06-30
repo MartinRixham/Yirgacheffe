@@ -2,6 +2,10 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
+
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -97,4 +101,20 @@ public class IntersectionTypeTest
 		assertNotEquals(type, new ReferenceType(Object.class));
 	}
 
+	@Test
+	public void testNewArray()
+	{
+		Type random = new ReferenceType(Random.class);
+		Type type = new IntersectionType(random, random);
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		TypeInsnNode instruction = (TypeInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
+		assertEquals(random.toFullyQualifiedType(), instruction.desc);
+	}
 }

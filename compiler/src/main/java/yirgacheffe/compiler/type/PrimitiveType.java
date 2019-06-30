@@ -1,5 +1,8 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.IntInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
 import yirgacheffe.compiler.instructions.Instructions;
 import yirgacheffe.compiler.instructions.IntegerInstructions;
@@ -155,13 +158,14 @@ public enum PrimitiveType implements Type
 		return true;
 	}
 
+	public Result newArray()
+	{
+		return new Result().add(
+			new IntInsnNode(Opcodes.NEWARRAY, this.instructions.getType()));
+	}
+
 	public float order()
 	{
 		return this.order;
-	}
-
-	public int getTypeInstruction()
-	{
-		return this.instructions.getType();
 	}
 }

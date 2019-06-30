@@ -2,6 +2,8 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.IntInsnNode;
+import yirgacheffe.compiler.Result;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +26,6 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.NOP, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.NOP, type.getLoadInstruction());
 		assertEquals(Opcodes.NOP, type.getZero());
-		assertEquals(Opcodes.NOP, type.getTypeInstruction());
 		assertFalse(type.hasParameter());
 		assertTrue(type.isPrimitive());
 	}
@@ -75,7 +76,6 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.DASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.DLOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.DCONST_0, type.getZero());
-		assertEquals(Opcodes.T_DOUBLE, type.getTypeInstruction());
 	}
 
 	@Test
@@ -93,5 +93,21 @@ public class PrimitiveTypeTest
 		Type otherType = PrimitiveType.BOOLEAN;
 
 		assertFalse(type.isAssignableTo(otherType));
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		PrimitiveType type = PrimitiveType.DOUBLE;
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		IntInsnNode instruction = (IntInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.NEWARRAY, instruction.getOpcode());
+		assertEquals(Opcodes.T_DOUBLE, instruction.operand);
 	}
 }

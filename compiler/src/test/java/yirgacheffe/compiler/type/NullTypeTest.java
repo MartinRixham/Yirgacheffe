@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,5 +46,16 @@ public class NullTypeTest
 	public void testNullIsAssignableToBoolean()
 	{
 		assertTrue(new NullType().isAssignableTo(PrimitiveType.BOOLEAN));
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		Type type = new NullType();
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
 	}
 }

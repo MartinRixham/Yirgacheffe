@@ -2,10 +2,13 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.lang.Array;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -73,5 +76,22 @@ public class ParameterisedTypeTest
 		Type stringReference = new ParameterisedType(reference, new Array<>(string));
 
 		assertFalse(stringReference.isAssignableTo(string));
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		ReferenceType referenceType = new ReferenceType(Random.class);
+		Type type = new ParameterisedType(referenceType, new Array<>());
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		TypeInsnNode instruction = (TypeInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
+		assertEquals(referenceType.toFullyQualifiedType(), instruction.desc);
 	}
 }

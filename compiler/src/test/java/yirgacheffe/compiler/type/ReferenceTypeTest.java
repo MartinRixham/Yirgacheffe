@@ -2,6 +2,10 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
+
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -63,5 +67,21 @@ public class ReferenceTypeTest
 
 		assertEquals(first, second);
 		assertEquals(first.hashCode(), first.reflectionClass().hashCode());
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		Type type = new ReferenceType(Random.class);
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		TypeInsnNode instruction = (TypeInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
+		assertEquals(type.toFullyQualifiedType(), instruction.desc);
 	}
 }

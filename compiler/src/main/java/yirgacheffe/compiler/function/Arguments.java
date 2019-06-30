@@ -2,10 +2,8 @@ package yirgacheffe.compiler.function;
 
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.ArrayType;
@@ -232,20 +230,9 @@ public class Arguments
 
 		int arrayLength = this.arguments.length() - parameters.length() + 1;
 
-		Result result = new Result().add(new LdcInsnNode(arrayLength));
-
-		if (elementType.isPrimitive())
-		{
-			PrimitiveType primitiveType = (PrimitiveType) elementType;
-			int typeInstruction = primitiveType.getTypeInstruction();
-
-			result = result.add(new IntInsnNode(Opcodes.NEWARRAY, typeInstruction));
-		}
-		else
-		{
-			result = result.add(
-				new TypeInsnNode(Opcodes.ANEWARRAY, elementType.toFullyQualifiedType()));
-		}
+		Result result = new Result()
+			.add(new LdcInsnNode(arrayLength))
+			.concat(elementType.newArray());
 
 		for (int i = 0; i < arrayLength; i++)
 		{

@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
 import org.junit.Test;
+import yirgacheffe.compiler.Result;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,5 +31,16 @@ public class VariableTypeTest
 		assertFalse(type.isAssignableTo(new ReferenceType(Object.class)));
 		assertTrue(type.hasParameter());
 		assertFalse(type.isPrimitive());
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		Type type = new VariableType("T");
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
 	}
 }

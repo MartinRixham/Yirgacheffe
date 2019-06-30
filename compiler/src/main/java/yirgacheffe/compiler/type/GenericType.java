@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.compiler.Result;
+
 public class GenericType implements Type
 {
 	private Type type;
@@ -77,6 +79,11 @@ public class GenericType implements Type
 	public boolean isPrimitive()
 	{
 		return this.type.isPrimitive();
+	}
+
+	public Result newArray()
+	{
+		return this.type.newArray();
 	}
 
 	public Type unwrap()

@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.TypeVariable;
@@ -135,6 +136,11 @@ public class ParameterisedType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Result newArray()
+	{
+		return this.primaryType.newArray();
 	}
 
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)

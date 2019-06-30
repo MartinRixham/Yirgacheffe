@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.compiler.Result;
+
 public class IntersectionType implements Type
 {
 	private Type firstType;
@@ -95,6 +97,11 @@ public class IntersectionType implements Type
 	{
 		return this.firstType.isPrimitive() &&
 			this.firstType.isAssignableTo(this.secondType);
+	}
+
+	public Result newArray()
+	{
+		return this.firstType.newArray();
 	}
 
 	@Override

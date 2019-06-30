@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 
 public class ArrayType implements Type
 {
@@ -105,6 +106,11 @@ public class ArrayType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Result newArray()
+	{
+		return new Result();
 	}
 
 	public Type getElementType()

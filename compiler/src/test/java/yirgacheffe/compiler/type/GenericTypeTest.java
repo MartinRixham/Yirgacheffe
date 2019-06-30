@@ -2,6 +2,10 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
+
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,5 +38,22 @@ public class GenericTypeTest
 		assertFalse(type.isPrimitive());
 		assertEquals(type, referenceType);
 		assertEquals(type.hashCode(), referenceType.hashCode());
+	}
+
+	@Test
+	public void testNewArray()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+
+		Result result = type.newArray();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		TypeInsnNode instruction = (TypeInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
+		assertEquals(concreteType.toFullyQualifiedType(), instruction.desc);
 	}
 }

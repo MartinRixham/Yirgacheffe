@@ -1,6 +1,8 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.TypeInsnNode;
+import yirgacheffe.compiler.Result;
 
 public class ReferenceType implements Type
 {
@@ -79,6 +81,12 @@ public class ReferenceType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Result newArray()
+	{
+		return new Result().add(
+			new TypeInsnNode(Opcodes.ANEWARRAY, this.toFullyQualifiedType()));
 	}
 
 	@Override

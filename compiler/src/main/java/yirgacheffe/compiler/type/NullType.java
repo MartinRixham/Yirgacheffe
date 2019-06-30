@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.Result;
 
 public class NullType implements Type
 {
@@ -79,6 +80,11 @@ public class NullType implements Type
 	public boolean isPrimitive()
 	{
 		return false;
+	}
+
+	public Result newArray()
+	{
+		return new Result();
 	}
 
 	@Override

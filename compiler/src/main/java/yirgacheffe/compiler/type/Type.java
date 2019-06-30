@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.compiler.Result;
+
 public interface Type
 {
 	Class<?> reflectionClass();
@@ -27,4 +29,6 @@ public interface Type
 	String getSignature();
 
 	boolean isPrimitive();
+
+	Result newArray();
 }
