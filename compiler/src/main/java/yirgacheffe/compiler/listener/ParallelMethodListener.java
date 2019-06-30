@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -24,7 +23,7 @@ public class ParallelMethodListener extends MethodListener
 	public void exitParallelMethodDeclaration(
 		YirgacheffeParser.ParallelMethodDeclarationContext context)
 	{
-		MethodVisitor methodVisitor = this.methodNode;
+		MethodNode methodVisitor = this.methodNode;
 
 		String methodName =
 			context.classMethodDeclaration().signature().Identifier().getText();

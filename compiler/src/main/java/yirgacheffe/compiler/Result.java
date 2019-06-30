@@ -16,7 +16,7 @@ public class Result
 		this.instructions = new Array<>();
 	}
 
-	public Result(Array<Error> errors, Array<AbstractInsnNode> instructions)
+	private Result(Array<Error> errors, Array<AbstractInsnNode> instructions)
 	{
 		this.errors = errors;
 		this.instructions = instructions;

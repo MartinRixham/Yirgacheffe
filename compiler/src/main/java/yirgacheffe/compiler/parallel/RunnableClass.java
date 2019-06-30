@@ -2,15 +2,17 @@ package yirgacheffe.compiler.parallel;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RunnableClass
 {
@@ -68,36 +70,36 @@ public class RunnableClass
 				Opcodes.ACC_PRIVATE, name, parameters.get(i).toJVMType(), null, null);
 		}
 
+		classNode.methods.add(this.compileRunMethod());
+		classNode.methods.addAll(this.compileInterfaceMethods());
+		classNode.methods.add(this.compileConstructor());
+
 		ClassWriter writer =
 			new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
 		classNode.accept(writer);
 
-		this.compileRunMethod(writer);
-		this.compileInterfaceMethods(writer);
-		this.compileConstructor(writer);
-
 		return new GeneratedClass(this.className, writer.toByteArray());
 	}
 
-	private void compileRunMethod(ClassWriter writer)
+	private MethodNode compileRunMethod()
 	{
-		MethodVisitor methodVisitor =
-			writer.visitMethod(
+		MethodNode methodNode =
+			new MethodNode(
 				Opcodes.ACC_PUBLIC, "run", "()V", null, null);
 
 		Label start = new Label();
 		Label end = new Label();
 		Label handler = new Label();
 
-		methodVisitor.visitTryCatchBlock(start, end, handler, "java/lang/Throwable");
+		methodNode.visitTryCatchBlock(start, end, handler, "java/lang/Throwable");
 
-		methodVisitor.visitLabel(start);
+		methodNode.visitLabel(start);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitInsn(Opcodes.DUP);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitInsn(Opcodes.DUP);
 
-		methodVisitor.visitFieldInsn(
+		methodNode.visitFieldInsn(
 			Opcodes.GETFIELD,
 			this.className,
 			"0",
@@ -108,9 +110,9 @@ public class RunnableClass
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
 				i + 1 + "",
@@ -119,84 +121,88 @@ public class RunnableClass
 			descriptor.append(parameters.get(i).toJVMType());
 		}
 
-		methodVisitor.visitMethodInsn(
+		methodNode.visitMethodInsn(
 			Opcodes.INVOKESTATIC,
 			this.className,
 			this.methodName,
 			descriptor.toString() + ")" + this.type.toJVMType(),
 			false);
 
-		methodVisitor.visitFieldInsn(
+		methodNode.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
 			"0return",
 			this.type.toJVMType());
 
-		methodVisitor.visitLabel(end);
+		methodNode.visitLabel(end);
 
 		Label label = new Label();
 
-		methodVisitor.visitJumpInsn(Opcodes.GOTO, label);
+		methodNode.visitJumpInsn(Opcodes.GOTO, label);
 
-		methodVisitor.visitLabel(handler);
+		methodNode.visitLabel(handler);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitInsn(Opcodes.SWAP);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitInsn(Opcodes.SWAP);
 
-		methodVisitor.visitFieldInsn(
+		methodNode.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
 			"0exception",
 			"Ljava/lang/Throwable;");
 
-		methodVisitor.visitLabel(label);
+		methodNode.visitLabel(label);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitInsn(Opcodes.ICONST_1);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitInsn(Opcodes.ICONST_1);
 
-		methodVisitor.visitFieldInsn(
+		methodNode.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
 			"0ran",
 			"Z");
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitInsn(Opcodes.MONITORENTER);
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitInsn(Opcodes.MONITORENTER);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-		methodVisitor.visitMethodInsn(
+		methodNode.visitMethodInsn(
 			Opcodes.INVOKEVIRTUAL,
 			"java/lang/Object",
 			"notifyAll",
 			"()V",
 			false);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitInsn(Opcodes.MONITOREXIT);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitInsn(Opcodes.MONITOREXIT);
 
-		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
+		methodNode.visitInsn(Opcodes.RETURN);
+
+		return methodNode;
 	}
 
-	private void compileInterfaceMethods(ClassWriter writer)
+	private List<MethodNode> compileInterfaceMethods()
 	{
+		List<MethodNode> methods = new ArrayList<>();
 		Method[] interfaceMethods = this.type.reflectionClass().getMethods();
 
 		for (Method method: interfaceMethods)
 		{
 			Function function = new Function(this.type, method);
 
-			MethodVisitor methodVisitor =
-				writer.visitMethod(
+			MethodNode methodNode =
+				new MethodNode(
 					Opcodes.ACC_PUBLIC,
 					method.getName(),
 					function.getDescriptor(),
 					null,
 					null);
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methods.add(methodNode);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+
+			methodNode.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
 				"0ran",
@@ -204,26 +210,26 @@ public class RunnableClass
 
 			Label label = new Label();
 
-			methodVisitor.visitJumpInsn(Opcodes.IFNE, label);
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-			methodVisitor.visitInsn(Opcodes.MONITORENTER);
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitJumpInsn(Opcodes.IFNE, label);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitInsn(Opcodes.MONITORENTER);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			methodVisitor.visitMethodInsn(
+			methodNode.visitMethodInsn(
 				Opcodes.INVOKEVIRTUAL,
 				"java/lang/Object",
 				"wait",
 				"()V",
 				false);
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-			methodVisitor.visitInsn(Opcodes.MONITOREXIT);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitInsn(Opcodes.MONITOREXIT);
 
-			methodVisitor.visitLabel(label);
+			methodNode.visitLabel(label);
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
 				"0exception",
@@ -231,23 +237,23 @@ public class RunnableClass
 
 			Label secondExceptionLabel = new Label();
 
-			methodVisitor.visitJumpInsn(Opcodes.IFNULL, secondExceptionLabel);
+			methodNode.visitJumpInsn(Opcodes.IFNULL, secondExceptionLabel);
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
 				"0exception",
 				"Ljava/lang/Throwable;");
 
-			methodVisitor.visitInsn(Opcodes.ATHROW);
+			methodNode.visitInsn(Opcodes.ATHROW);
 
-			methodVisitor.visitLabel(secondExceptionLabel);
+			methodNode.visitLabel(secondExceptionLabel);
 
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitFieldInsn(
 				Opcodes.GETFIELD,
 				this.className,
 				"0return",
@@ -257,23 +263,24 @@ public class RunnableClass
 
 			for (int i = 0; i < parameters.length(); i++)
 			{
-				methodVisitor.visitVarInsn(
+				methodNode.visitVarInsn(
 					parameters.get(i).getLoadInstruction(), i + 1);
 			}
 
-			methodVisitor.visitMethodInsn(
+			methodNode.visitMethodInsn(
 				Opcodes.INVOKEINTERFACE,
 				this.type.toFullyQualifiedType(),
 				method.getName(),
 				function.getDescriptor(),
 				true);
 
-			methodVisitor.visitInsn(function.getReturnType().getReturnInstruction());
-			methodVisitor.visitMaxs(0, 0);
+			methodNode.visitInsn(function.getReturnType().getReturnInstruction());
 		}
+
+		return methods;
 	}
 
-	private void compileConstructor(ClassWriter writer)
+	private MethodNode compileConstructor()
 	{
 		Array<Type> parameters = this.signature.getParameters();
 		StringBuilder descriptor = new StringBuilder("(L" + this.parentClassName + ";");
@@ -283,27 +290,27 @@ public class RunnableClass
 			descriptor.append(parameters.get(i).toJVMType());
 		}
 
-		MethodVisitor methodVisitor =
-			writer.visitMethod(
+		MethodNode methodNode =
+			new MethodNode(
 				Opcodes.ACC_PUBLIC,
 				"<init>",
 				descriptor.toString() + ")V",
 				null,
 				null);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
 
-		methodVisitor.visitMethodInsn(
+		methodNode.visitMethodInsn(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/Object",
 			"<init>",
 			"()V",
 			false);
 
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 1);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		methodNode.visitVarInsn(Opcodes.ALOAD, 1);
 
-		methodVisitor.visitFieldInsn(
+		methodNode.visitFieldInsn(
 			Opcodes.PUTFIELD,
 			this.className,
 			"0",
@@ -311,17 +318,18 @@ public class RunnableClass
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-			methodVisitor.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 2);
+			methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+			methodNode.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 2);
 
-			methodVisitor.visitFieldInsn(
+			methodNode.visitFieldInsn(
 				Opcodes.PUTFIELD,
 				this.className,
 				i + 1 + "",
 				parameters.get(i).toJVMType());
 		}
 
-		methodVisitor.visitInsn(Opcodes.RETURN);
-		methodVisitor.visitMaxs(0, 0);
+		methodNode.visitInsn(Opcodes.RETURN);
+
+		return methodNode;
 	}
 }
