@@ -19,6 +19,7 @@ public class LongIntegerInstructionsTest
 		assertEquals(Opcodes.LLOAD, instructions.getLoad());
 		assertEquals(Opcodes.L2I, instructions.convertTo(PrimitiveType.INT));
 		assertEquals(Opcodes.L2D, instructions.convertTo(PrimitiveType.DOUBLE));
+		assertEquals(Opcodes.NOP, instructions.convertTo(PrimitiveType.LONG));
 		assertEquals(Opcodes.LCONST_0, instructions.getZero());
 		assertEquals(Opcodes.T_LONG, instructions.getType());
 	}

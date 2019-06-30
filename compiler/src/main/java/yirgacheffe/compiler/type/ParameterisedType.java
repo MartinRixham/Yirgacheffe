@@ -143,6 +143,21 @@ public class ParameterisedType implements Type
 		return this.primaryType.newArray();
 	}
 
+	public Result convertTo(Type type)
+	{
+		return this.primaryType.convertTo(type);
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new ReferenceType(Object.class);
+	}
+
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)
 	{
 		Type type = this.typeParameters.get(typeName);

@@ -78,8 +78,7 @@ public class ParallelMethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -208,12 +207,10 @@ public class ParallelMethodListenerTest
 		assertEquals("Ljava/lang/String;", secondField.desc);
 		assertEquals("1", secondField.name);
 
-		List methods = classNode.methods;
-
-		this.testThreadMethod((MethodNode) methods.get(0));
-		this.testRunMethod((MethodNode) methods.get(1));
-		this.testInterfaceMethod((MethodNode) methods.get(2));
-		this.testConstructor((MethodNode) methods.get(3));
+		this.testThreadMethod(classNode.methods.get(0));
+		this.testRunMethod(classNode.methods.get(1));
+		this.testInterfaceMethod(classNode.methods.get(2));
+		this.testConstructor(classNode.methods.get(3));
 	}
 
 	private void testThreadMethod(MethodNode method)

@@ -89,6 +89,21 @@ public class ReferenceType implements Type
 			new TypeInsnNode(Opcodes.ANEWARRAY, this.toFullyQualifiedType()));
 	}
 
+	public Result convertTo(Type type)
+	{
+		return new Result();
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new IntersectionType(this, type);
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{

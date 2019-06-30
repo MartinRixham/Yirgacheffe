@@ -16,8 +16,6 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -49,9 +47,7 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(7, instructions.size());
@@ -118,8 +114,7 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("method", firstMethod.name);
 		assertEquals(2, firstMethod.maxStack);
@@ -153,7 +148,7 @@ public class ExpressionListenerTest
 		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
 		assertEquals(1, fifthInstruction.var);
 
-		MethodNode secondMethod = (MethodNode) methods.get(1);
+		MethodNode secondMethod = classNode.methods.get(1);
 
 		assertEquals("getOne", secondMethod.name);
 
@@ -195,8 +190,7 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(2, firstMethod.maxLocals);
@@ -225,8 +219,7 @@ public class ExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(5, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);

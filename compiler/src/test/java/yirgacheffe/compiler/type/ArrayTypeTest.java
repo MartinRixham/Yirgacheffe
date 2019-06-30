@@ -65,4 +65,39 @@ public class ArrayTypeTest
 		assertEquals(0, result.getErrors().length());
 		assertEquals(0, result.getInstructions().length());
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertEquals(new ReferenceType(Object.class), intersection);
+	}
 }

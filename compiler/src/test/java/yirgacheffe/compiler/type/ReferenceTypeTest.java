@@ -84,4 +84,15 @@ public class ReferenceTypeTest
 		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
 		assertEquals(type.toFullyQualifiedType(), instruction.desc);
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		Type type = new ReferenceType(Random.class);
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
 }

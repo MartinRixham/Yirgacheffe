@@ -14,8 +14,6 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,11 +40,9 @@ public class MainMethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(3, classNode.methods.size());
 
-		assertEquals(3, methods.size());
-
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 
 		assertEquals("(Lyirgacheffe/lang/Array;)V", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
@@ -54,7 +50,7 @@ public class MainMethodListenerTest
 		assertEquals(2, method.maxLocals);
 		assertEquals(0, method.maxStack);
 
-		MethodNode mainMethod = (MethodNode) methods.get(2);
+		MethodNode mainMethod = classNode.methods.get(2);
 
 		assertEquals("([Ljava/lang/String;)V", mainMethod.desc);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, mainMethod.access);
@@ -275,11 +271,9 @@ public class MainMethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(4, classNode.methods.size());
 
-		assertEquals(4, methods.size());
-
-		MethodNode method = (MethodNode) methods.get(3);
+		MethodNode method = classNode.methods.get(3);
 
 		assertEquals("()V", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);

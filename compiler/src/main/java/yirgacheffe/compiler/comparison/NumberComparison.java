@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.comparison;
 
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -23,7 +22,6 @@ public class NumberComparison implements Comparison
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-
 		this.coordinate = coordinate;
 		this.comparator = comparator;
 		this.firstOperand = firstOperand;
@@ -44,28 +42,13 @@ public class NumberComparison implements Comparison
 			return result.add(new Error(this.coordinate, message));
 		}
 
-		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
-		PrimitiveType secondPrimitive = (PrimitiveType) secondType;
+		Type type = firstType.intersect(secondType);
 
-		if (firstPrimitive.order() < secondPrimitive.order())
-		{
-			return result
-				.add(new InsnNode(firstPrimitive.convertTo(secondPrimitive)))
-				.concat(this.secondOperand.compile(variables))
-				.concat(this.comparator.compile(label, secondType));
-		}
-		else if (firstPrimitive.order() > secondPrimitive.order())
-		{
-			return result
-				.concat(this.secondOperand.compile(variables))
-				.add(new InsnNode(secondPrimitive.convertTo(firstPrimitive)))
-				.concat(this.comparator.compile(label, firstType));
-		}
-		else
-		{
-			return result
-				.concat(this.secondOperand.compile(variables))
-				.concat(this.comparator.compile(label, firstType));
-		}
+		return result
+			.concat(firstType.convertTo(type))
+			.concat(this.secondOperand.compile(variables))
+			.concat(secondType.convertTo(type))
+			.concat(this.comparator.compile(label, type));
+
 	}
 }

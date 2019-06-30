@@ -9,8 +9,6 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -36,11 +34,9 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(1, classNode.methods.size());
 
-		assertEquals(1, methods.size());
-
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT, firstMethod.access);
 		assertEquals("()D", firstMethod.desc);
@@ -103,8 +99,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", firstMethod.desc);
 		assertEquals("myParameterisedMethod", firstMethod.name);
@@ -151,11 +146,9 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(2, classNode.methods.size());
 
-		assertEquals(2, methods.size());
-
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", method.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
@@ -185,11 +178,9 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(2, classNode.methods.size());
 
-		assertEquals(2, methods.size());
-
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", method.desc);
 		assertEquals(Opcodes.ACC_PROTECTED, method.access);
@@ -247,16 +238,14 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(3, classNode.methods.size());
 
-		assertEquals(3, methods.size());
-
-		MethodNode secondMethod = (MethodNode) methods.get(0);
+		MethodNode secondMethod = classNode.methods.get(0);
 
 		assertEquals("(Ljava/lang/String;D)D", secondMethod.desc);
 		assertEquals("myMethod", secondMethod.name);
 
-		MethodNode thirdMethod = (MethodNode) methods.get(1);
+		MethodNode thirdMethod = classNode.methods.get(1);
 
 		assertEquals(
 			"(Ljava/lang/StringBuilder;)Ljava/lang/String;",
@@ -291,8 +280,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 
 		assertEquals("(Ljava/util/List;)Ljava/util/Set;", method.desc);
 	}
@@ -316,8 +304,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("()V", firstMethod.desc);
 	}
@@ -341,8 +328,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("()Z", firstMethod.desc);
 	}
@@ -366,8 +352,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("()C", firstMethod.desc);
 	}

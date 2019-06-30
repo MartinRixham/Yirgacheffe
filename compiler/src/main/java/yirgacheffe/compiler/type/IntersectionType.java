@@ -31,20 +31,7 @@ public class IntersectionType implements Type
 
 	public int width()
 	{
-		if (!this.firstType.isPrimitive() || !this.secondType.isPrimitive())
-		{
-			return 1;
-		}
-		else if ((this.firstType.width() == 2 ||
-				this.secondType.width() == 2) &&
-			this.firstType.isAssignableTo(this.secondType))
-		{
-			return 2;
-		}
-		else
-		{
-			return 1;
-		}
+		return 1;
 	}
 
 	public int getReturnInstruction()
@@ -95,8 +82,7 @@ public class IntersectionType implements Type
 
 	public boolean isPrimitive()
 	{
-		return this.firstType.isPrimitive() &&
-			this.firstType.isAssignableTo(this.secondType);
+		return false;
 	}
 
 	public Result newArray()
@@ -104,10 +90,25 @@ public class IntersectionType implements Type
 		return this.firstType.newArray();
 	}
 
+	public Result convertTo(Type type)
+	{
+		return this.firstType.convertTo(type);
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new IntersectionType(this, type);
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
-		return this.secondType.equals(other);
+		return this.firstType.equals(other) && this.secondType.equals(other);
 	}
 
 	@Override

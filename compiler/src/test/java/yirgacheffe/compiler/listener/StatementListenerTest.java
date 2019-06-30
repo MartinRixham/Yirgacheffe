@@ -21,8 +21,6 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 
-import java.util.List;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -96,8 +94,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -164,9 +161,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(3, instructions.size());
@@ -224,9 +219,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(14, instructions.size());
@@ -317,9 +310,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(8, instructions.size());
@@ -430,9 +421,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
@@ -494,8 +483,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
@@ -537,9 +525,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(6, instructions.size());
@@ -601,14 +587,13 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals("method", firstMethod.name);
 
 		InsnList instructions = firstMethod.instructions;
 
-		//assertEquals(6, instructions.size());
+		assertEquals(11, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -623,17 +608,15 @@ public class StatementListenerTest
 
 		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
 
-		/*MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
 
-		assertEquals(Opcodes.INVOKESTATIC, fifthInstruction.getOpcode());
-		assertEquals("java/lang/Double", fifthInstruction.owner);
-		assertEquals("valueOf", fifthInstruction.name);
-		assertEquals("(D)java/lang", fifthInstruction.desc);
+		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
 
 		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
 
-		assertEquals(Opcodes.ASTORE, sixthInstruction.getOpcode());
-		assertEquals(0, sixthInstruction.var);*/
+		assertEquals(Opcodes.ALOAD, sixthInstruction.getOpcode());
+		assertEquals(0, sixthInstruction.var);
 	}
 
 	@Test
@@ -723,8 +706,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -777,8 +759,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -831,8 +812,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -885,8 +865,7 @@ public class StatementListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());

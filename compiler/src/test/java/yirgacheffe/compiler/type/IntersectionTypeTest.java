@@ -1,32 +1,32 @@
 package yirgacheffe.compiler.type;
 
-import org.junit.Test;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.TypeInsnNode;
+import org.junit.Test;
 import yirgacheffe.compiler.Result;
 
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 public class IntersectionTypeTest
 {
 	@Test
-	public void testIntersectionOfStringAndDouble()
+	public void testIntersectionType()
 	{
-		Type firstType = new ReferenceType(String.class);
-		Type secondType = PrimitiveType.DOUBLE;
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+		Type list = new ReferenceType(java.util.List.class);
 
-		Type type = new IntersectionType(firstType, secondType);
+		Type type = new IntersectionType(arrayList, linkedList);
 
-		assertEquals("java.lang.String", type.toString());
-		assertEquals(String.class, type.reflectionClass());
-		assertEquals("java/lang/String", type.toFullyQualifiedType());
-		assertEquals("Ljava/lang/String;", type.toJVMType());
-		assertEquals("Ljava/lang/String;", type.getSignature());
+		assertEquals("java.util.ArrayList", type.toString());
+		assertEquals(arrayList.reflectionClass(), type.reflectionClass());
+		assertEquals("java/util/ArrayList", type.toFullyQualifiedType());
+		assertEquals("Ljava/util/ArrayList;", type.toJVMType());
+		assertEquals("Ljava/util/ArrayList;", type.getSignature());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());
@@ -35,66 +35,6 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
-		assertNotEquals(type, new ReferenceType(String.class));
-		assertEquals(type.hashCode(), secondType.hashCode());
-	}
-
-	@Test
-	public void testIntersectionOfDoubleAndString()
-	{
-		Type firstType = PrimitiveType.DOUBLE;
-		Type secondType = new ReferenceType(String.class);
-
-		Type type = new IntersectionType(firstType, secondType);
-
-		assertEquals("Num", type.toString());
-		assertFalse(type.hasParameter());
-		assertEquals(1, type.width());
-		assertFalse(type.isPrimitive());
-		assertEquals(type, new ReferenceType(String.class));
-		assertEquals(type.hashCode(), secondType.hashCode());
-	}
-
-	@Test
-	public void testIntersectionOfDoubleAndBoolean()
-	{
-		Type firstType = PrimitiveType.DOUBLE;
-		Type secondType = PrimitiveType.BOOLEAN;
-
-		Type type = new IntersectionType(firstType, secondType);
-
-		assertEquals("Num", type.toString());
-		assertFalse(type.hasParameter());
-		assertEquals(1, type.width());
-		assertFalse(type.isPrimitive());
-		assertEquals(type.hashCode(), secondType.hashCode());
-	}
-
-	@Test
-	public void testIntersectionOfDoubleAndInteger()
-	{
-		Type firstType = PrimitiveType.DOUBLE;
-		Type secondType = PrimitiveType.INT;
-
-		Type type = new IntersectionType(firstType, secondType);
-
-		assertEquals("Num", type.toString());
-		assertFalse(type.hasParameter());
-		assertEquals(2, type.width());
-		assertTrue(type.isPrimitive());
-		assertEquals(type, PrimitiveType.INT);
-		assertEquals(type.hashCode(), secondType.hashCode());
-	}
-
-	@Test
-	public void testIntersectionIsAssignableToCommonSupertype()
-	{
-		Type arrayList = new ReferenceType(java.util.ArrayList.class);
-		Type linkedList = new ReferenceType(java.util.LinkedList.class);
-		Type list = new ReferenceType(java.util.List.class);
-
-		Type type = new IntersectionType(arrayList, linkedList);
-
 		assertFalse(type.isAssignableTo(arrayList));
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
@@ -104,17 +44,78 @@ public class IntersectionTypeTest
 	@Test
 	public void testNewArray()
 	{
-		Type random = new ReferenceType(Random.class);
-		Type type = new IntersectionType(random, random);
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
 
 		Result result = type.newArray();
 
 		assertEquals(0, result.getErrors().length());
 		assertEquals(1, result.getInstructions().length());
+	}
 
-		TypeInsnNode instruction = (TypeInsnNode) result.getInstructions().get(0);
+	@Test
+	public void testTypeConversion()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
 
-		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
-		assertEquals(random.toFullyQualifiedType(), instruction.desc);
+		Type type = new IntersectionType(arrayList, linkedList);
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertTrue(intersection instanceof IntersectionType);
+	}
+
+	@Test
+	public void testEquals()
+	{
+		Type random = new ReferenceType(Random.class);
+
+		Type type = new IntersectionType(random, random);
+
+		assertEquals(type, random);
+		assertEquals(type.hashCode(), random.hashCode());
+	}
+
+	@Test
+	public void testNotEqual()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
+
+		assertNotEquals(type, arrayList);
+		assertNotEquals(type, linkedList);
 	}
 }

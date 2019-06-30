@@ -12,8 +12,6 @@ import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,11 +32,9 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(3, classNode.methods.size());
 
-		assertEquals(3, methods.size());
-
-		MethodNode constructor = (MethodNode) methods.get(2);
+		MethodNode constructor = classNode.methods.get(2);
 
 		assertEquals("()V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
@@ -84,11 +80,9 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(1, classNode.methods.size());
 
-		assertEquals(1, methods.size());
-
-		MethodNode constructor = (MethodNode) methods.get(0);
+		MethodNode constructor = classNode.methods.get(0);
 
 		assertEquals("(D)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, constructor.access);
@@ -165,11 +159,9 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(1, classNode.methods.size());
 
-		assertEquals(1, methods.size());
-
-		MethodNode constructor = (MethodNode) methods.get(0);
+		MethodNode constructor = classNode.methods.get(0);
 
 		assertEquals("(Ljava/lang/String;)V", constructor.desc);
 		assertEquals(Opcodes.ACC_PRIVATE, constructor.access);
@@ -202,11 +194,9 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		assertEquals(2, classNode.methods.size());
 
-		assertEquals(2, methods.size());
-
-		MethodNode constructor = (MethodNode) methods.get(1);
+		MethodNode constructor = classNode.methods.get(1);
 		InsnList instructions = constructor.instructions;
 
 		assertEquals(5, instructions.size());

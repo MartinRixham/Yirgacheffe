@@ -43,4 +43,36 @@ public class VariableTypeTest
 		assertEquals(0, result.getErrors().length());
 		assertEquals(0, result.getInstructions().length());
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		Type type = new VariableType("T");
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		Type type = new VariableType("T");
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type type = new VariableType("T");
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertEquals(new ReferenceType(Object.class), intersection);
+	}
 }

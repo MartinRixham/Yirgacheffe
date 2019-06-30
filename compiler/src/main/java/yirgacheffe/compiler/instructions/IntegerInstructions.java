@@ -2,6 +2,7 @@ package yirgacheffe.compiler.instructions;
 
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
 
 public class IntegerInstructions implements Instructions
 {
@@ -25,15 +26,19 @@ public class IntegerInstructions implements Instructions
 		return Opcodes.ILOAD;
 	}
 
-	public int convertTo(PrimitiveType type)
+	public int convertTo(Type type)
 	{
 		if (type.equals(PrimitiveType.LONG))
 		{
 			return Opcodes.I2L;
 		}
-		else
+		else if (type.equals(PrimitiveType.DOUBLE))
 		{
 			return Opcodes.I2D;
+		}
+		else
+		{
+			return Opcodes.NOP;
 		}
 	}
 

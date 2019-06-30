@@ -88,22 +88,20 @@ public class BinaryOperation implements Expression
 				.concat(this.firstOperand.compile(variables));
 		}
 
-		PrimitiveType type = (PrimitiveType) this.getType(variables);
-		PrimitiveType firstPrimitive = (PrimitiveType) firstType;
-		PrimitiveType secondPrimitive = (PrimitiveType) secondType;
+		Type type = this.getType(variables);
 
 		result = result.concat(this.firstOperand.compile(variables));
 
-		if (firstPrimitive != type)
+		if (!firstType.equals(type))
 		{
-			result = result.add(new InsnNode(firstPrimitive.convertTo(type)));
+			result = result.concat(firstType.convertTo(type));
 		}
 
 		result = result.concat(this.secondOperand.compile(variables));
 
-		if (secondPrimitive != type)
+		if (!secondType.equals(type))
 		{
-			result = result.add(new InsnNode(secondPrimitive.convertTo(type)));
+			result = result.concat(secondType.convertTo(type));
 		}
 
 		if (type.equals(PrimitiveType.INT))

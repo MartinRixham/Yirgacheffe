@@ -15,8 +15,6 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -45,8 +43,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -79,8 +76,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -113,8 +109,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -147,8 +142,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -181,8 +175,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -215,8 +208,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -249,8 +241,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(7, instructions.size());
@@ -305,8 +296,7 @@ public class BooleanExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(7, instructions.size());

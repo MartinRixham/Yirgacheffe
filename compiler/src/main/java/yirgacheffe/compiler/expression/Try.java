@@ -45,7 +45,7 @@ public class Try implements Expression
 
 	public boolean isCondition(Variables variables)
 	{
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 	public Array<VariableRead> getVariableReads()

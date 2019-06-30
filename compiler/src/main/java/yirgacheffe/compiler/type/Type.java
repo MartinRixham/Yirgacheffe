@@ -31,4 +31,10 @@ public interface Type
 	boolean isPrimitive();
 
 	Result newArray();
+
+	Result convertTo(Type type);
+
+	Result swapWith(Type type);
+
+	Type intersect(Type type);
 }

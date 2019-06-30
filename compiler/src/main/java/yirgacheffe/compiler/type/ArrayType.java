@@ -113,6 +113,21 @@ public class ArrayType implements Type
 		return new Result();
 	}
 
+	public Result convertTo(Type type)
+	{
+		return new Result();
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new ReferenceType(Object.class);
+	}
+
 	public Type getElementType()
 	{
 		return this.type;

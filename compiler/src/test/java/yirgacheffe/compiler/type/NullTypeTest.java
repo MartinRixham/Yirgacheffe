@@ -58,4 +58,36 @@ public class NullTypeTest
 		assertEquals(0, result.getErrors().length());
 		assertEquals(0, result.getInstructions().length());
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		Type type = new NullType();
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		Type type = new NullType();
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type type = new NullType();
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertEquals(new ReferenceType(Object.class), intersection);
+	}
 }

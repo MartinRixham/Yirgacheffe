@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
 import yirgacheffe.compiler.instructions.Instructions;
@@ -110,11 +112,6 @@ public enum PrimitiveType implements Type
 		return this.instructions.getLoad();
 	}
 
-	public int convertTo(PrimitiveType type)
-	{
-		return this.instructions.convertTo(type);
-	}
-
 	public int getZero()
 	{
 		return this.instructions.getZero();
@@ -164,8 +161,94 @@ public enum PrimitiveType implements Type
 			new IntInsnNode(Opcodes.NEWARRAY, this.instructions.getType()));
 	}
 
-	public float order()
+	public Result convertTo(Type type)
 	{
-		return this.order;
+		if (type.equals(this))
+		{
+			return new Result();
+		}
+		else if (type.isPrimitive())
+		{
+			return new Result().add(
+				new InsnNode(this.instructions.convertTo(type)));
+		}
+		else
+		{
+			String descriptor =
+				"(" + this.toJVMType() + ")L" +
+					this.toFullyQualifiedType() + ";";
+
+			return new Result().add(
+				new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					this.toFullyQualifiedType(),
+					"valueOf",
+					descriptor,
+					false));
+		}
+	}
+
+	public Result swapWith(Type type)
+	{
+		if (this.width == 2)
+		{
+			if (type.width() == 1)
+			{
+				return new Result()
+					.add(new InsnNode(Opcodes.DUP_X2))
+					.add(new InsnNode(Opcodes.POP));
+			}
+			else if (type.width() == 2)
+			{
+				return new Result()
+					.add(new InsnNode(Opcodes.DUP2_X2))
+					.add(new InsnNode(Opcodes.POP2));
+			}
+		}
+		else if (this.width == 1)
+		{
+			if (type.width() == 1)
+			{
+				return new Result()
+					.add(new InsnNode(Opcodes.SWAP));
+			}
+			else if (type.width() == 2)
+			{
+				return new Result()
+					.add(new InsnNode(Opcodes.DUP2_X1))
+					.add(new InsnNode(Opcodes.POP2));
+			}
+		}
+
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		if (type.equals(this))
+		{
+			return this;
+		}
+		else if (type instanceof PrimitiveType)
+		{
+			PrimitiveType primitiveType = (PrimitiveType) type;
+
+			if (this.order >= primitiveType.order)
+			{
+				return this;
+			}
+			else if (primitiveType.order > this.order)
+			{
+				return primitiveType;
+			}
+			else
+			{
+				return new ReferenceType(Object.class);
+			}
+		}
+		else
+		{
+			return type.intersect(this);
+		}
 	}
 }

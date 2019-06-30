@@ -20,6 +20,7 @@ import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -104,19 +105,8 @@ public class InvokeMethod implements Expression
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
-		Result result = this.owner.compile(variables);
-
-		if (owner.isPrimitive())
-		{
-			result = result.add(new MethodInsnNode(
-				Opcodes.INVOKESTATIC,
-				owner.toFullyQualifiedType(),
-				"valueOf",
-				"(" + owner.toJVMType() + ")L" + owner.toFullyQualifiedType() + ";",
-				false));
-		}
-
-		result = result
+		Result result = this.owner.compile(variables)
+			.concat(owner.convertTo(new ReferenceType(Object.class)))
 			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile());
 

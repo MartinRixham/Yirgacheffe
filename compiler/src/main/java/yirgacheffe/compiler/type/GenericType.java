@@ -86,6 +86,21 @@ public class GenericType implements Type
 		return this.type.newArray();
 	}
 
+	public Result convertTo(Type type)
+	{
+		return this.type.convertTo(type);
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new ReferenceType(Object.class);
+	}
+
 	public Type unwrap()
 	{
 		return this.type;

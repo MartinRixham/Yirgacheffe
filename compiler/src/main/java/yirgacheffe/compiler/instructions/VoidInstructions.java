@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.instructions;
 
 import org.objectweb.asm.Opcodes;
-import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
 
 public class VoidInstructions implements Instructions
 {
@@ -25,7 +25,7 @@ public class VoidInstructions implements Instructions
 		return Opcodes.NOP;
 	}
 
-	public int convertTo(PrimitiveType type)
+	public int convertTo(Type type)
 	{
 		return Opcodes.NOP;
 	}

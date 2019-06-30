@@ -18,8 +18,6 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -49,8 +47,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(8, instructions.size());
@@ -111,8 +108,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -164,8 +160,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(5, instructions.size());
@@ -242,8 +237,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -333,8 +327,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -414,8 +407,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -499,8 +491,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(12, instructions.size());
@@ -587,8 +578,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(14, instructions.size());
@@ -680,8 +670,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(9, instructions.size());
@@ -755,8 +744,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(11, instructions.size());
@@ -832,8 +820,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -884,8 +871,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -936,8 +922,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -988,8 +973,7 @@ public class NumericExpressionListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());

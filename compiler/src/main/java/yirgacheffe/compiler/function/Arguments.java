@@ -3,14 +3,11 @@ package yirgacheffe.compiler.function;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.ArrayType;
-import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.ParameterisedType;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -53,7 +50,7 @@ public class Arguments
 			for (int i = parameters.length() - 1; i < argumentCount; i++)
 			{
 				Type type = argumentTypes.pop();
-				intersectionType = new IntersectionType(intersectionType, type);
+				intersectionType = intersectionType.intersect(type);
 			}
 
 			if (!intersectionType.isAssignableTo(elementType))
@@ -257,34 +254,7 @@ public class Arguments
 		Result result = argument.compile(variables);
 		Type argumentType = argument.getType(variables);
 
-		if (argumentType.isPrimitive() &&
-			parameter.isPrimitive() &&
-			argumentType != parameter)
-		{
-			PrimitiveType argumentPrimitive = (PrimitiveType) argumentType;
-			PrimitiveType parameterPrimitive = (PrimitiveType) parameter;
-
-			return result.add(
-				new InsnNode(argumentPrimitive.convertTo(parameterPrimitive)));
-		}
-		else if (argumentType.isPrimitive() && !parameter.isPrimitive())
-		{
-			String descriptor =
-				"(" + argumentType.toJVMType() + ")L" +
-					argumentType.toFullyQualifiedType() + ";";
-
-			return result.add(
-				new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					argumentType.toFullyQualifiedType(),
-					"valueOf",
-					descriptor,
-					false));
-		}
-		else
-		{
-			return result;
-		}
+		return result.concat(argumentType.convertTo(parameter));
 	}
 
 	private boolean hasVariableArguments(boolean variableArguments)

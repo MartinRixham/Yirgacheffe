@@ -2,7 +2,11 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -142,10 +146,6 @@ public class MethodListener extends FieldDeclarationListener
 
 					return true;
 				}
-				else
-				{
-					return false;
-				}
 			}
 		}
 
@@ -164,13 +164,14 @@ public class MethodListener extends FieldDeclarationListener
 
 		this.classNode.methods.add(methodNode);
 
-		methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		Result result = new Result().add(new VarInsnNode(Opcodes.ALOAD, 0));
 
 		Array<Type> parameters = from.getParameters();
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
-			methodNode.visitVarInsn(parameters.get(i).getLoadInstruction(), i + 1);
+			result = result.add(
+				new VarInsnNode(parameters.get(i).getLoadInstruction(), i + 1));
 
 			if (parameters.get(i) instanceof GenericType &&
 				!to.getParameters().get(i).equals(new ReferenceType(Object.class)))
@@ -179,7 +180,7 @@ public class MethodListener extends FieldDeclarationListener
 					to.getParameters().get(i)
 						.toFullyQualifiedType();
 
-				methodNode.visitTypeInsn(Opcodes.CHECKCAST, toType);
+				result = result.add(new TypeInsnNode(Opcodes.CHECKCAST, toType));
 			}
 		}
 
@@ -194,23 +195,27 @@ public class MethodListener extends FieldDeclarationListener
 			owner = this.packageName.replace(".", "/") + "/" + this.className;
 		}
 
-		methodNode.visitMethodInsn(
+		result = result.add(new MethodInsnNode(
 			Opcodes.INVOKEVIRTUAL,
 			owner,
 			to.getName(),
 			to.getDescriptor(),
-			false);
+			false));
 
-		if (!to.getReturnType().equals(from.getReturnType()) &&
-			from.getReturnType().isPrimitive())
+		Type toType = to.getReturnType();
+		Type fromType = from.getReturnType();
+
+		if (!toType.equals(fromType) && fromType.isPrimitive())
 		{
-			PrimitiveType fromType = (PrimitiveType) from.getReturnType();
-			PrimitiveType toType = (PrimitiveType) to.getReturnType();
-
-			methodNode.visitInsn(toType.convertTo(fromType));
+			result = result.concat(toType.convertTo(fromType));
 		}
 
-		methodNode.visitInsn(from.getReturnType().getReturnInstruction());
+		result = result.add(new InsnNode(fromType.getReturnInstruction()));
+
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			methodNode.instructions.add(instruction);
+		}
 	}
 
 	@Override

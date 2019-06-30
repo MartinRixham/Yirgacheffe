@@ -8,7 +8,6 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
-import yirgacheffe.compiler.type.IntersectionType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -38,7 +37,7 @@ public class BooleanOperation implements Expression
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 
-		return new IntersectionType(firstType, secondType);
+		return firstType.intersect(secondType);
 	}
 
 	public Result compile(Variables variables)
@@ -60,43 +59,11 @@ public class BooleanOperation implements Expression
 			result = result.add(new InsnNode(Opcodes.DUP));
 		}
 
-		if (firstType.isPrimitive())
+		result = result.concat(firstType.convertTo(type));
+
+		if (!type.equals(firstType))
 		{
-			if (!type.isPrimitive())
-			{
-				result = result.concat(this.compileBoxingCall(firstType));
-
-				if (firstType.width() == 2)
-				{
-					result = result
-						.add(new InsnNode(Opcodes.DUP_X2))
-						.add(new InsnNode(Opcodes.POP));
-				}
-				else
-				{
-					result = result.add(new InsnNode(Opcodes.SWAP));
-				}
-			}
-			else if (((PrimitiveType) firstType).order() <
-				((PrimitiveType) secondType).order())
-			{
-				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
-				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
-
-				result = result.add(
-					new InsnNode(firstPrimitive.convertTo(secondPrimitive)));
-
-				if (secondPrimitive.width() == 2)
-				{
-					result = result
-						.add(new InsnNode(Opcodes.DUP2_X1))
-						.add(new InsnNode(Opcodes.POP2));
-				}
-				else
-				{
-					result = result.add(new InsnNode(Opcodes.SWAP));
-				}
-			}
+			result = result.concat(firstType.swapWith(type));
 		}
 
 		result = result.concat(this.compileComparison(this.operator, label, firstType));
@@ -110,44 +77,12 @@ public class BooleanOperation implements Expression
 			result = result.add(new InsnNode(Opcodes.POP));
 		}
 
-		result = result.concat(this.secondOperand.compile(variables));
-
-		if (secondType.isPrimitive())
-		{
-			if (!type.isPrimitive())
-			{
-				result = result.concat(this.compileBoxingCall(secondType));
-			}
-			else if (((PrimitiveType) secondType).order() <
-				((PrimitiveType) firstType).order())
-			{
-				PrimitiveType firstPrimitive = (PrimitiveType) firstType;
-				PrimitiveType secondPrimitive = (PrimitiveType) secondType;
-
-				result = result.add(
-					new InsnNode(secondPrimitive.convertTo(firstPrimitive)));
-			}
-		}
-
-		result = result.add(new LabelNode(label));
+		result = result
+			.concat(this.secondOperand.compile(variables))
+			.concat(secondType.convertTo(type))
+			.add(new LabelNode(label));
 
 		return result;
-	}
-
-	private Result compileBoxingCall(Type type)
-	{
-		Result result = new Result();
-
-		String descriptor =
-			"(" + type.toJVMType() + ")L" +
-				type.toFullyQualifiedType() + ";";
-
-		return result.add(new MethodInsnNode(
-			Opcodes.INVOKESTATIC,
-			type.toFullyQualifiedType(),
-			"valueOf",
-			descriptor,
-			false));
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
@@ -221,7 +156,6 @@ public class BooleanOperation implements Expression
 				.add(new JumpInsnNode(
 					operator.integerOpcode(),
 					new LabelNode(label)));
-
 		}
 		else
 		{

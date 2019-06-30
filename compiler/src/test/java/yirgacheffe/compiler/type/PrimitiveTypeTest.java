@@ -2,8 +2,12 @@ package yirgacheffe.compiler.type;
 
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -109,5 +113,127 @@ public class PrimitiveTypeTest
 
 		assertEquals(Opcodes.NEWARRAY, instruction.getOpcode());
 		assertEquals(Opcodes.T_DOUBLE, instruction.operand);
+	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		PrimitiveType type = PrimitiveType.DOUBLE;
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		MethodInsnNode instruction = (MethodInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.INVOKESTATIC, instruction.getOpcode());
+		assertEquals("java/lang/Double", instruction.owner);
+		assertEquals("valueOf", instruction.name);
+		assertEquals("(D)Ljava/lang/Double;", instruction.desc);
+	}
+
+	@Test
+	public void testSwapDoubleWithDouble()
+	{
+		PrimitiveType type = PrimitiveType.DOUBLE;
+
+		Result result = type.swapWith(type);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(2, result.getInstructions().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DUP2_X2, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.POP2, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testSwapIntWithDouble()
+	{
+		PrimitiveType type = PrimitiveType.INT;
+
+		Result result = type.swapWith(PrimitiveType.DOUBLE);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(2, result.getInstructions().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DUP2_X1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.POP2, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testSwapDoubleWithInt()
+	{
+		PrimitiveType type = PrimitiveType.DOUBLE;
+
+		Result result = type.swapWith(PrimitiveType.INT);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(2, result.getInstructions().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DUP_X2, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.POP, secondInstruction.getOpcode());
+	}
+
+	@Test
+	public void testSwapIntWithInt()
+	{
+		PrimitiveType type = PrimitiveType.INT;
+
+		Result result = type.swapWith(type);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.SWAP, firstInstruction.getOpcode());
+	}
+
+	@Test
+	public void testSwapIntWithVoid()
+	{
+		PrimitiveType type = PrimitiveType.INT;
+
+		Result result = type.swapWith(PrimitiveType.VOID);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type bool = PrimitiveType.BOOLEAN;
+		Type integer = PrimitiveType.INT;
+		Type lon = PrimitiveType.LONG;
+		Type dub = PrimitiveType.DOUBLE;
+		Type obj = new ReferenceType(Object.class);
+
+		assertEquals(bool, bool.intersect(bool));
+		assertEquals(dub, integer.intersect(dub));
+		assertEquals(dub, dub.intersect(integer));
+		assertEquals(lon, lon.intersect(integer));
+		assertEquals(lon, integer.intersect(lon));
+		assertEquals(obj, dub.intersect(bool));
 	}
 }

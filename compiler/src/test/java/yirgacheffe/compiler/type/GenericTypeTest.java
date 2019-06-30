@@ -56,4 +56,39 @@ public class GenericTypeTest
 		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
 		assertEquals(concreteType.toFullyQualifiedType(), instruction.desc);
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertEquals(new ReferenceType(Object.class), intersection);
+	}
 }

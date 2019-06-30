@@ -87,6 +87,21 @@ public class NullType implements Type
 		return new Result();
 	}
 
+	public Result convertTo(Type type)
+	{
+		return new Result();
+	}
+
+	public Result swapWith(Type type)
+	{
+		return new Result();
+	}
+
+	public Type intersect(Type type)
+	{
+		return new ReferenceType(Object.class);
+	}
+
 	@Override
 	public String toString()
 	{

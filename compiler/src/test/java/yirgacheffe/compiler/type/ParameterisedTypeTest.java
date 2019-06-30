@@ -94,4 +94,39 @@ public class ParameterisedTypeTest
 		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
 		assertEquals(referenceType.toFullyQualifiedType(), instruction.desc);
 	}
+
+	@Test
+	public void testTypeConversion()
+	{
+		ReferenceType referenceType = new ReferenceType(Random.class);
+		Type type = new ParameterisedType(referenceType, new Array<>());
+
+		Result result = type.convertTo(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testSwap()
+	{
+		ReferenceType referenceType = new ReferenceType(Random.class);
+		Type type = new ParameterisedType(referenceType, new Array<>());
+
+		Result result = type.swapWith(new ReferenceType(Object.class));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersection()
+	{
+		ReferenceType referenceType = new ReferenceType(Random.class);
+		Type type = new ParameterisedType(referenceType, new Array<>());
+
+		Type intersection = type.intersect(new ReferenceType(Object.class));
+
+		assertEquals(new ReferenceType(Object.class), intersection);
+	}
 }

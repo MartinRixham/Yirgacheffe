@@ -22,8 +22,6 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -55,9 +53,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(7, instructions.size());
@@ -120,9 +116,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(8, instructions.size());
@@ -190,9 +184,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(8, instructions.size());
@@ -307,8 +299,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(1, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
@@ -372,8 +363,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(7, instructions.size());
@@ -414,8 +404,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
@@ -536,8 +525,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
@@ -601,8 +589,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(1, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
@@ -665,8 +652,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		InsnList instructions = firstMethod.instructions;
 
@@ -733,8 +719,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
+		MethodNode firstMethod = classNode.methods.get(0);
 
 		assertEquals(2, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
@@ -778,9 +763,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		InvokeDynamicInsnNode fifthInstruction =
@@ -907,8 +890,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(1);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals(1, method.maxStack);
 		assertEquals(1, method.maxLocals);
@@ -983,9 +965,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode method = (MethodNode) methods.get(0);
-
+		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
 		assertEquals(14, instructions.size());
@@ -1078,12 +1058,10 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
-		// assertEquals(8, instructions.size());
+		assertEquals(10, instructions.size());
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 
@@ -1154,9 +1132,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
@@ -1239,9 +1215,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
@@ -1330,9 +1304,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
@@ -1379,9 +1351,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
-		MethodNode firstMethod = (MethodNode) methods.get(0);
-
+		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
 		InvokeDynamicInsnNode sixthInstruction =

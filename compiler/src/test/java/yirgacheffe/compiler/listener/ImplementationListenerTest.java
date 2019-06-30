@@ -241,7 +241,7 @@ public class ImplementationListenerTest
 
 		assertEquals(Opcodes.IRETURN, sixthInstruction.getOpcode());
 
-		MethodNode method = (MethodNode) classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("compareTo", method.name);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
@@ -277,7 +277,7 @@ public class ImplementationListenerTest
 			"Ljava/lang/Object;Ljava/lang/Comparable<Ljava/lang/String;>;",
 			classNode.signature);
 
-		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
+		MethodNode bridgeMethod = classNode.methods.get(0);
 
 		assertEquals("compareTo", bridgeMethod.name);
 		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
@@ -314,7 +314,7 @@ public class ImplementationListenerTest
 
 		assertEquals(Opcodes.IRETURN, fifthInstruction.getOpcode());
 
-		MethodNode method = (MethodNode) classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("compareTo", method.name);
 		assertEquals(Opcodes.ACC_PROTECTED, method.access);
@@ -352,7 +352,7 @@ public class ImplementationListenerTest
 
 		assertEquals(3, classNode.methods.size());
 
-		MethodNode method = (MethodNode) classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("compareTo", method.name);
 		assertEquals(Opcodes.ACC_PROTECTED, method.access);
@@ -417,7 +417,7 @@ public class ImplementationListenerTest
 			"Ljava/lang/Object;LObjectifier;",
 			classNode.signature);
 
-		MethodNode bridgeMethod = (MethodNode) classNode.methods.get(0);
+		MethodNode bridgeMethod = classNode.methods.get(0);
 
 		assertEquals("objectify", bridgeMethod.name);
 		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
@@ -448,7 +448,7 @@ public class ImplementationListenerTest
 
 		assertEquals(Opcodes.ARETURN, fourthInstruction.getOpcode());
 
-		MethodNode method = (MethodNode) classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("objectify", method.name);
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
