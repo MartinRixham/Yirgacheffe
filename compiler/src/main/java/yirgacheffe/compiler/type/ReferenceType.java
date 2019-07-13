@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -113,23 +114,29 @@ public class ReferenceType implements Type
 	{
 		if (this.isAssignableTo(new ReferenceType(String.class)))
 		{
+			Label trueLabel = new Label();
+			Label falseLabel = new Label();
+
 			return new Result()
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new JumpInsnNode(Opcodes.IFNULL, new LabelNode(falseLabel)))
 				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Falsyfier",
-					"isTruthy",
-					"(Ljava/lang/String;)Z",
+					Opcodes.INVOKEVIRTUAL,
+					"java/lang/String",
+					"length",
+					"()I",
 					false))
-				.add(new JumpInsnNode(
-					operator.integerOpcode(),
-					new LabelNode(label)));
+				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(trueLabel)))
+				.add(new LabelNode(falseLabel))
+				.add(new InsnNode(Opcodes.POP))
+				.add(new InsnNode(Opcodes.ICONST_0))
+				.add(new LabelNode(trueLabel))
+				.add(new JumpInsnNode(operator.integerOpcode(), new LabelNode(label)));
 		}
 		else
 		{
 			return new Result()
-				.add(new JumpInsnNode(
-					operator.referenceOpcode(),
-					new LabelNode(label)));
+				.add(new JumpInsnNode(operator.referenceOpcode(), new LabelNode(label)));
 		}
 	}
 
