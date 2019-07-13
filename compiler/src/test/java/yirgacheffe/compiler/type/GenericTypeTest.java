@@ -1,9 +1,12 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 import java.util.Random;
 
@@ -90,5 +93,23 @@ public class GenericTypeTest
 		Type intersection = type.intersect(new ReferenceType(Object.class));
 
 		assertEquals(new ReferenceType(Object.class), intersection);
+	}
+
+	@Test
+	public void testComparison()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+		Label label = new Label();
+
+		Result result = type.compare(BooleanOperator.AND, label);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		JumpInsnNode firstInstruction = (JumpInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.IFNULL, firstInstruction.getOpcode());
+		assertEquals(label, firstInstruction.label.getLabel());
 	}
 }

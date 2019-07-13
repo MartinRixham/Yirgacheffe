@@ -1,12 +1,15 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
@@ -235,5 +238,86 @@ public class PrimitiveTypeTest
 		assertEquals(lon, lon.intersect(integer));
 		assertEquals(lon, integer.intersect(lon));
 		assertEquals(obj, dub.intersect(bool));
+	}
+
+	@Test
+	public void compareInteger()
+	{
+		Type type = PrimitiveType.INT;
+		Label label = new Label();
+
+		Result result = type.compare(BooleanOperator.AND, label);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		JumpInsnNode firstInstruction = (JumpInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.IFEQ, firstInstruction.getOpcode());
+		assertEquals(label, firstInstruction.label.getLabel());
+	}
+
+	@Test
+	public void compareLong()
+	{
+		Type type = PrimitiveType.LONG;
+		Label label = new Label();
+
+		Result result = type.compare(BooleanOperator.AND, label);
+
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(3, instructions.length());
+
+		InsnNode firstInstruction = (InsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.LCONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LCMP, secondInstruction.getOpcode());
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) result.getInstructions().get(2);
+
+		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
+		assertEquals(label, thirdInstruction.label.getLabel());
+	}
+
+	@Test
+	public void compareDouble()
+	{
+		Type type = PrimitiveType.DOUBLE;
+		Label label = new Label();
+
+		Result result = type.compare(BooleanOperator.AND, label);
+
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(5, instructions.length());
+
+		InsnNode firstInstruction = (InsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DCMPL, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ICONST_1, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.IADD, fourthInstruction.getOpcode());
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) result.getInstructions().get(4);
+
+		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
+		assertEquals(label, fifthInstruction.label.getLabel());
 	}
 }

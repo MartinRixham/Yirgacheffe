@@ -1,6 +1,8 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class GenericType implements Type
 {
@@ -93,12 +95,17 @@ public class GenericType implements Type
 
 	public Result swapWith(Type type)
 	{
-		return new Result();
+		return this.type.swapWith(type);
 	}
 
 	public Type intersect(Type type)
 	{
 		return new ReferenceType(Object.class);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		return this.type.compare(operator, label);
 	}
 
 	public Type unwrap()

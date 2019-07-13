@@ -1,8 +1,11 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
@@ -10,6 +13,7 @@ import yirgacheffe.compiler.instructions.Instructions;
 import yirgacheffe.compiler.instructions.IntegerInstructions;
 import yirgacheffe.compiler.instructions.LongIntegerInstructions;
 import yirgacheffe.compiler.instructions.VoidInstructions;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public enum PrimitiveType implements Type
 {
@@ -249,6 +253,33 @@ public enum PrimitiveType implements Type
 		else
 		{
 			return type.intersect(this);
+		}
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		if (this.equals(PrimitiveType.DOUBLE))
+		{
+			return new Result()
+				.add(new InsnNode(Opcodes.DCONST_1))
+				.add(new InsnNode(Opcodes.DCMPL))
+				.add(new InsnNode(Opcodes.ICONST_1))
+				.add(new InsnNode(Opcodes.IADD))
+				.add(new JumpInsnNode(operator.integerOpcode(), new LabelNode(label)));
+		}
+		if (this.equals(PrimitiveType.LONG))
+		{
+			return new Result()
+				.add(new InsnNode(Opcodes.LCONST_0))
+				.add(new InsnNode(Opcodes.LCMP))
+				.add(new JumpInsnNode(operator.integerOpcode(), new LabelNode(label)));
+		}
+		else
+		{
+			return new Result()
+				.add(new JumpInsnNode(
+					operator.integerOpcode(),
+					new LabelNode(label)));
 		}
 	}
 }

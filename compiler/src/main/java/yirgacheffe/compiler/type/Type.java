@@ -1,6 +1,8 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public interface Type
 {
@@ -37,4 +39,6 @@ public interface Type
 	Result swapWith(Type type);
 
 	Type intersect(Type type);
+
+	Result compare(BooleanOperator operator, Label label);
 }

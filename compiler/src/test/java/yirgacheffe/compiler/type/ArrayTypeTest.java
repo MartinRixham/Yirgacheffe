@@ -1,8 +1,10 @@
 package yirgacheffe.compiler.type;
 
 import org.junit.Test;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -99,5 +101,17 @@ public class ArrayTypeTest
 		Type intersection = type.intersect(new ReferenceType(Object.class));
 
 		assertEquals(new ReferenceType(Object.class), intersection);
+	}
+
+	@Test
+	public void testComparison()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.compare(BooleanOperator.AND, new Label());
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
 	}
 }

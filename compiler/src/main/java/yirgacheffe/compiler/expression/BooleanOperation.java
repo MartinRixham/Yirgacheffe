@@ -3,13 +3,9 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -66,7 +62,7 @@ public class BooleanOperation implements Expression
 			result = result.concat(firstType.swapWith(type));
 		}
 
-		result = result.concat(this.compileComparison(this.operator, label, firstType));
+		result = result.concat(firstType.compare(this.operator, label));
 
 		if (type.width() == 2)
 		{
@@ -94,10 +90,9 @@ public class BooleanOperation implements Expression
 
 		result = result
 			.concat(this.firstOperand.compile(variables))
-			.concat(this.compileComparison(
+			.concat(firstType.compare(
 				this.operator,
-				label,
-				firstType));
+				label));
 
 		if (this.secondOperand.isCondition(variables))
 		{
@@ -111,58 +106,9 @@ public class BooleanOperation implements Expression
 		{
 			result = result
 				.concat(this.secondOperand.compile(variables))
-				.concat(this.compileComparison(
+				.concat(secondType.compare(
 					BooleanOperator.AND,
-					falseLabel,
-					secondType));
-		}
-
-		return result;
-	}
-
-	private Result compileComparison(BooleanOperator operator, Label label, Type type)
-	{
-		Result result = new Result();
-
-		if (type.equals(PrimitiveType.DOUBLE))
-		{
-			result = result
-				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Falsyfier",
-					"isTruthy",
-					"(D)Z",
-					false))
-				.add(new JumpInsnNode(
-					operator.integerOpcode(),
-					new LabelNode(label)));
-		}
-		else if (type.isPrimitive())
-		{
-			result = result
-				.add(new JumpInsnNode(
-					operator.integerOpcode(),
-					new LabelNode(label)));
-		}
-		else if (type.isAssignableTo(new ReferenceType(String.class)))
-		{
-			result = result
-				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Falsyfier",
-					"isTruthy",
-					"(Ljava/lang/String;)Z",
-					false))
-				.add(new JumpInsnNode(
-					operator.integerOpcode(),
-					new LabelNode(label)));
-		}
-		else
-		{
-			result = result.add(
-				new JumpInsnNode(
-					operator.referenceOpcode(),
-					new LabelNode(label)));
+					falseLabel));
 		}
 
 		return result;

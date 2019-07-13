@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class ArrayType implements Type
 {
@@ -126,6 +128,11 @@ public class ArrayType implements Type
 	public Type intersect(Type type)
 	{
 		return new ReferenceType(Object.class);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		return new Result();
 	}
 
 	public Type getElementType()

@@ -1,6 +1,8 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class IntersectionType implements Type
 {
@@ -103,6 +105,11 @@ public class IntersectionType implements Type
 	public Type intersect(Type type)
 	{
 		return new IntersectionType(this, type);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		return this.firstType.compare(operator, label);
 	}
 
 	@Override

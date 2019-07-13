@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.TypeVariable;
@@ -150,12 +152,17 @@ public class ParameterisedType implements Type
 
 	public Result swapWith(Type type)
 	{
-		return new Result();
+		return this.primaryType.swapWith(type);
 	}
 
 	public Type intersect(Type type)
 	{
 		return new ReferenceType(Object.class);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		return this.primaryType.compare(operator, label);
 	}
 
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)

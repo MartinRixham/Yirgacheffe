@@ -1,7 +1,9 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class NullType implements Type
 {
@@ -100,6 +102,11 @@ public class NullType implements Type
 	public Type intersect(Type type)
 	{
 		return new ReferenceType(Object.class);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		return new Result();
 	}
 
 	@Override

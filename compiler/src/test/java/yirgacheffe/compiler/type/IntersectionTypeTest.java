@@ -1,8 +1,11 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.junit.Test;
+import org.objectweb.asm.tree.JumpInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 import java.util.Random;
 
@@ -117,5 +120,25 @@ public class IntersectionTypeTest
 
 		assertNotEquals(type, arrayList);
 		assertNotEquals(type, linkedList);
+	}
+
+	@Test
+	public void testComparison()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
+		Label label = new Label();
+
+		Result result = type.compare(BooleanOperator.AND, label);
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		JumpInsnNode firstInstruction = (JumpInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.IFNULL, firstInstruction.getOpcode());
+		assertEquals(label, firstInstruction.label.getLabel());
 	}
 }

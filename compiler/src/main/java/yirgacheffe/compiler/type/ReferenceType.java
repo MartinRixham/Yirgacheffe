@@ -1,8 +1,13 @@
 package yirgacheffe.compiler.type;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class ReferenceType implements Type
 {
@@ -102,6 +107,30 @@ public class ReferenceType implements Type
 	public Type intersect(Type type)
 	{
 		return new IntersectionType(this, type);
+	}
+
+	public Result compare(BooleanOperator operator, Label label)
+	{
+		if (this.isAssignableTo(new ReferenceType(String.class)))
+		{
+			return new Result()
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Falsyfier",
+					"isTruthy",
+					"(Ljava/lang/String;)Z",
+					false))
+				.add(new JumpInsnNode(
+					operator.integerOpcode(),
+					new LabelNode(label)));
+		}
+		else
+		{
+			return new Result()
+				.add(new JumpInsnNode(
+					operator.referenceOpcode(),
+					new LabelNode(label)));
+		}
 	}
 
 	@Override
