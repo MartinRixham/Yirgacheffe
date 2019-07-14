@@ -31,21 +31,27 @@ public class FieldListener extends ConstructorListener
 	public void enterFieldInitialisation(
 		YirgacheffeParser.FieldInitialisationContext context)
 	{
-		String field = context.fieldDeclaration().Identifier().getSymbol().getText();
+		YirgacheffeParser.FieldDeclarationContext declarationContext =
+			context.fieldDeclaration();
 
-		this.methodNode =
-			new MethodNode(
-				Opcodes.ACC_PRIVATE,
-				"0" + field + "_init_field",
-				"()V",
-				null,
-				null);
+		if (declarationContext.Const() == null)
+		{
+			String field = declarationContext.Identifier().getSymbol().getText();
 
-		this.classNode.methods.add(this.methodNode);
+			this.methodNode =
+				new MethodNode(
+					Opcodes.ACC_PRIVATE,
+					"0" + field + "_init_field",
+					"()V",
+					null,
+					null);
 
-		this.enterThisRead(null);
+			this.classNode.methods.add(this.methodNode);
 
-		this.initialisers.push(field);
+			this.enterThisRead(null);
+
+			this.initialisers.push(field);
+		}
 	}
 
 	@Override
@@ -67,24 +73,9 @@ public class FieldListener extends ConstructorListener
 			context.fieldDeclaration();
 		Variables variables = new Variables(this.constants);
 		Expression expression = this.expressions.pop();
-		Expression self = this.expressions.pop();
 		Type expressionType = expression.getType(variables);
 		Type fieldType = this.types.getType(declaration.type());
 		String fieldName = declaration.Identifier().getText();
-
-		Result result = self.compile(variables)
-			.concat(expression.compile(variables)
-			.add(new FieldInsnNode(
-				Opcodes.PUTFIELD,
-				this.className,
-				fieldName,
-				fieldType.toJVMType()))
-			.add(new InsnNode(Opcodes.RETURN)));
-
-		for (AbstractInsnNode instruction: result.getInstructions())
-		{
-			this.methodNode.instructions.add(instruction);
-		}
 
 		if (!expressionType.isAssignableTo(fieldType))
 		{
@@ -95,7 +86,25 @@ public class FieldListener extends ConstructorListener
 			this.errors.push(new Error(context, message));
 		}
 
-		if (declaration.Const() != null)
+		if (declaration.Const() == null)
+		{
+			Expression self = this.expressions.pop();
+
+			Result result = self.compile(variables)
+				.concat(expression.compile(variables)
+					.add(new FieldInsnNode(
+						Opcodes.PUTFIELD,
+						this.className,
+						fieldName,
+						fieldType.toJVMType()))
+					.add(new InsnNode(Opcodes.RETURN)));
+
+			for (AbstractInsnNode instruction: result.getInstructions())
+			{
+				this.methodNode.instructions.add(instruction);
+			}
+		}
+		else
 		{
 			if (expression instanceof Literal)
 			{

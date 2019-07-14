@@ -1024,8 +1024,13 @@ public class FieldListenerTest
 		List fields = classNode.fields;
 
 		assertEquals(0, fields.size());
+		assertEquals(2, classNode.methods.size());
 
-		MethodNode method = classNode.methods.get(2);
+		MethodNode constructor = classNode.methods.get(0);
+
+		assertEquals(3, constructor.instructions.size());
+
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("method", method.name);
 
@@ -1077,7 +1082,7 @@ public class FieldListenerTest
 
 		assertEquals(0, fields.size());
 
-		MethodNode method = classNode.methods.get(2);
+		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("method", method.name);
 
