@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
+import yirgacheffe.compiler.instructions.FloatInstructions;
 import yirgacheffe.compiler.instructions.Instructions;
 import yirgacheffe.compiler.instructions.IntegerInstructions;
 import yirgacheffe.compiler.instructions.LongIntegerInstructions;
@@ -41,7 +42,7 @@ public enum PrimitiveType implements Type
 		java.lang.Long.class, 4),
 
 	FLOAT(
-		"Num", "F", 2, new DoubleInstructions(),
+		"Num", "F", 2, new FloatInstructions(),
 		java.lang.Float.class, 5),
 
 	DOUBLE(

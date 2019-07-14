@@ -3,10 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -105,11 +102,6 @@ public class InvokeMethod implements Expression
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
-		Result result = this.owner.compile(variables)
-			.concat(owner.convertTo(new ReferenceType(Object.class)))
-			.concat(matchResult.compileArguments(variables))
-			.concat(this.coordinate.compile());
-
 		String ownerDescriptor = owner.toFullyQualifiedType();
 
 		String descriptor =
@@ -134,47 +126,18 @@ public class InvokeMethod implements Expression
 				methodType.toMethodDescriptorString(),
 				false);
 
-		result = result.add(
-			new InvokeDynamicInsnNode(
-				matchResult.getName(),
-				descriptor,
-				bootstrapMethod));
-
 		Type returnType = matchResult.getReturnType();
 
-		if (returnType instanceof GenericType)
-		{
-			result = result.add(
-				new TypeInsnNode(
-					Opcodes.CHECKCAST,
-					returnType.toFullyQualifiedType()));
-
-			if (returnType.isPrimitive())
-			{
-				result = result.add(
-					new MethodInsnNode(
-						Opcodes.INVOKESTATIC,
-						"yirgacheffe/lang/Boxer",
-						"ofValue",
-						"(L" + returnType.toFullyQualifiedType() + ";)" +
-							returnType.getSignature(),
-						false));
-			}
-		}
-		else if (returnType.equals(PrimitiveType.INT))
-		{
-			result = result.add(new InsnNode(Opcodes.I2D));
-		}
-		else if (returnType.equals(PrimitiveType.LONG))
-		{
-			result = result.add(new InsnNode(Opcodes.L2D));
-		}
-		else if (returnType.equals(PrimitiveType.FLOAT))
-		{
-			result = result.add(new InsnNode(Opcodes.F2D));
-		}
-
-		return result.concat(this.getError(matchResult, owner, arguments));
+		return this.owner.compile(variables)
+			.concat(owner.convertTo(new ReferenceType(Object.class)))
+			.concat(matchResult.compileArguments(variables))
+			.concat(this.coordinate.compile())
+			.add(new InvokeDynamicInsnNode(
+				matchResult.getName(),
+				descriptor,
+				bootstrapMethod))
+			.concat(returnType.convertTo(this.getType(variables)))
+			.concat(this.getError(matchResult, owner, arguments));
 	}
 
 	public Result compileArguments(Variables variables)

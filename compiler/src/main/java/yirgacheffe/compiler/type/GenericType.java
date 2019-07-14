@@ -1,6 +1,9 @@
 package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -90,7 +93,24 @@ public class GenericType implements Type
 
 	public Result convertTo(Type type)
 	{
-		return this.type.convertTo(type);
+		Result result = new Result().add(
+			new TypeInsnNode(
+				Opcodes.CHECKCAST,
+				this.toFullyQualifiedType()));
+
+		if (this.isPrimitive())
+		{
+			result = result.add(
+				new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Boxer",
+					"ofValue",
+					"(L" + this.toFullyQualifiedType() + ";)" +
+						this.getSignature(),
+					false));
+		}
+
+		return result;
 	}
 
 	public Result swapWith(Type type)

@@ -3,10 +3,13 @@ package yirgacheffe.compiler.type;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.lang.Array;
 
 import java.util.Random;
 
@@ -66,10 +69,45 @@ public class GenericTypeTest
 		Type concreteType = new ReferenceType(Random.class);
 		Type type = new GenericType(concreteType);
 
-		Result result = type.convertTo(new ReferenceType(Object.class));
+		Result result = type.convertTo(new ReferenceType(Random.class));
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(0, result.getInstructions().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(1, instructions.length());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.CHECKCAST, firstInstruction.getOpcode());
+		assertEquals("java/util/Random", firstInstruction.desc);
+	}
+
+	@Test
+	public void testTypeConversionToPrimitive()
+	{
+		Type concreteType = PrimitiveType.DOUBLE;
+		Type type = new GenericType(concreteType);
+
+		Result result = type.convertTo(PrimitiveType.DOUBLE);
+
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(2, instructions.length());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.CHECKCAST, firstInstruction.getOpcode());
+		assertEquals("java/lang/Double", firstInstruction.desc);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Boxer", secondInstruction.owner);
+		assertEquals("ofValue", secondInstruction.name);
+		assertEquals("(Ljava/lang/Double;)D", secondInstruction.desc);
 	}
 
 	@Test
