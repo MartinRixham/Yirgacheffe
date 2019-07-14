@@ -1,17 +1,13 @@
 package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -44,55 +40,17 @@ public class If implements ConditionalStatement
 
 		if (this.condition.isCondition(variables))
 		{
-			result = result.concat(
-				this.condition.compileCondition(
+			result = result
+				.concat(this.condition.compileCondition(
 					variables,
 					trueLabel,
 					this.falseLabel));
-		}
-		else if (type.equals(PrimitiveType.DOUBLE))
-		{
-			result = result
-				.concat(this.condition.compile(variables))
-				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Falsyfier",
-					"isTruthy",
-					"(D)Z",
-					false))
-				.add(new JumpInsnNode(
-					Opcodes.IFEQ,
-					new LabelNode(this.falseLabel)));
-		}
-		else if (type.isPrimitive())
-		{
-			result = result
-				.concat(this.condition.compile(variables))
-				.add(new JumpInsnNode(
-					Opcodes.IFEQ,
-					new LabelNode(this.falseLabel)));
-		}
-		else if (type.isAssignableTo(new ReferenceType(String.class)))
-		{
-			result = result
-				.concat(this.condition.compile(variables))
-				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Falsyfier",
-					"isTruthy",
-					"(Ljava/lang/String;)Z",
-					false))
-				.add(new JumpInsnNode(
-					Opcodes.IFEQ,
-					new LabelNode(this.falseLabel)));
 		}
 		else
 		{
 			result = result
 				.concat(this.condition.compile(variables))
-				.add(new JumpInsnNode(
-					Opcodes.IFNULL,
-					new LabelNode(this.falseLabel)));
+				.concat(type.compare(BooleanOperator.AND, this.falseLabel));
 		}
 
 		return result
