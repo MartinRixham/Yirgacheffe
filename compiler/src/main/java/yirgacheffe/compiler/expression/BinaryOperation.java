@@ -46,19 +46,9 @@ public class BinaryOperation implements Expression
 		{
 			return string;
 		}
-		else if (firstType.equals(PrimitiveType.DOUBLE) ||
-			secondType.equals(PrimitiveType.DOUBLE))
-		{
-			return PrimitiveType.DOUBLE;
-		}
-		else if (firstType.equals(PrimitiveType.LONG) ||
-			secondType.equals(PrimitiveType.LONG))
-		{
-			return PrimitiveType.LONG;
-		}
 		else
 		{
-			return PrimitiveType.INT;
+			return firstType.intersect(secondType);
 		}
 	}
 
@@ -90,19 +80,11 @@ public class BinaryOperation implements Expression
 
 		Type type = this.getType(variables);
 
-		result = result.concat(this.firstOperand.compile(variables));
-
-		if (!firstType.equals(type))
-		{
-			result = result.concat(firstType.convertTo(type));
-		}
-
-		result = result.concat(this.secondOperand.compile(variables));
-
-		if (!secondType.equals(type))
-		{
-			result = result.concat(secondType.convertTo(type));
-		}
+		result = result
+			.concat(this.firstOperand.compile(variables))
+			.concat(firstType.convertTo(type))
+			.concat(this.secondOperand.compile(variables))
+			.concat(secondType.convertTo(type));
 
 		if (type.equals(PrimitiveType.INT))
 		{
@@ -132,20 +114,16 @@ public class BinaryOperation implements Expression
 
 	private Result compileStrings(Variables variables)
 	{
-		Result result = this.firstOperand.compile(variables);
-
 		Type firstOperandType = this.firstOperand.getType(variables);
 
-		result = result.add(new MethodInsnNode(
-			Opcodes.INVOKEVIRTUAL,
-			"java/lang/StringBuilder",
-			"append",
-			"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
-			false));
-
-		result = result.concat(this.secondOperand.compile(variables));
-
-		return result;
+		return this.firstOperand.compile(variables)
+			.add(new MethodInsnNode(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/StringBuilder",
+				"append",
+				"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
+				false))
+			.concat(this.secondOperand.compile(variables));
 	}
 
 	public Array<VariableRead> getVariableReads()

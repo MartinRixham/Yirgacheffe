@@ -245,7 +245,6 @@ public class BinaryOperationTest
 		Type type = operation.getType(variables);
 		Result result = operation.compileCondition(variables, null, null);
 
-		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, result.getErrors().length());
 
 		assertEquals(result.getErrors().get(0).toString(),
