@@ -30,13 +30,11 @@ public class DoNothing implements Statement
 		return new Array<>();
 	}
 
-	@Override
 	public Expression getExpression()
 	{
 		return new Nothing();
 	}
 
-	@Override
 	public boolean isEmpty()
 	{
 		return true;

@@ -1,7 +1,5 @@
 package yirgacheffe.compiler.statement;
 
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -10,7 +8,6 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Try;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
@@ -18,7 +15,7 @@ import yirgacheffe.lang.Array;
 
 public class VariableWrite implements Statement
 {
-	private VariableDeclaration declaration;
+	private Statement declaration;
 
 	private String name;
 
@@ -31,9 +28,10 @@ public class VariableWrite implements Statement
 		String name,
 		Expression expression)
 	{
+		this.coordinate = coordinate;
+		this.declaration = new DoNothing();
 		this.name = name;
 		this.expression = expression;
-		this.coordinate = coordinate;
 	}
 
 	public VariableWrite(
@@ -41,10 +39,10 @@ public class VariableWrite implements Statement
 		VariableDeclaration declaration,
 		Expression expression)
 	{
+		this.coordinate = coordinate;
 		this.declaration = declaration;
 		this.name = declaration.getName();
 		this.expression = expression;
-		this.coordinate = coordinate;
 	}
 
 	public boolean returns()
@@ -54,26 +52,18 @@ public class VariableWrite implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		Result result = new Result();
-
-		if (this.declaration != null)
-		{
-			result = result.concat(this.declaration.compile(variables, caller));
-		}
-
 		Type type = this.expression.getType(variables);
+
+		Result result = new Result()
+			.concat(this.declaration.compile(variables, caller));
+
 		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
 
-		result = result.concat(this.expression.compile(variables));
-
-		if (variableType == PrimitiveType.DOUBLE && !variableType.equals(type))
-		{
-			result = result.add(new InsnNode(Opcodes.I2D));
-		}
-
-		result = result.add(
-			new VarInsnNode(
+		result = result
+			.concat(this.expression.compile(variables))
+			.concat(type.convertTo(variableType))
+			.add(new VarInsnNode(
 				variableType.getStoreInstruction(),
 				variable.getIndex()));
 
