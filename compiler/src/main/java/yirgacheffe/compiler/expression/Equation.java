@@ -76,7 +76,6 @@ public class Equation implements Expression
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		Result result = new Result();
 		Type string = new ReferenceType(String.class);
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
@@ -121,7 +120,7 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		return result.concat(comparison.compile(variables, falseLabel));
+		return comparison.compile(variables, falseLabel);
 	}
 
 	private Result compareStrings(

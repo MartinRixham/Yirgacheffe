@@ -183,7 +183,8 @@ public class Arguments
 
 	public Result compile(
 		Array<Type> parameters,
-		boolean variableArguments, Variables variables)
+		boolean variableArguments,
+		Variables variables)
 	{
 		Result result = new Result();
 

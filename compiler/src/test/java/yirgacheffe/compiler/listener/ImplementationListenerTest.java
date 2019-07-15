@@ -244,7 +244,7 @@ public class ImplementationListenerTest
 		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("compareTo", method.name);
-		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
 		assertEquals("(Ljava/lang/String;)D", method.desc);
 	}
 
@@ -377,6 +377,85 @@ public class ImplementationListenerTest
 	}
 
 	@Test
+	public void testImplementsWithSupertypeParameter()
+	{
+		String interfaceSource =
+			"interface Objectifier\n" +
+			"{" +
+				"Object objectify(String string);\n" +
+			"}";
+
+		String source =
+			"class MyClass implements Objectifier\n" +
+			"{\n" +
+				"public Object objectify(Object obj) { return obj; }\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		new Compiler("", interfaceSource).compileInterface(classes);
+
+		classes.clearCache();
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		List interfaces = classNode.interfaces;
+
+		assertEquals(1, classNode.interfaces.size());
+		assertEquals("Objectifier", interfaces.get(0));
+		assertEquals(
+			"Ljava/lang/Object;LObjectifier;",
+			classNode.signature);
+
+		MethodNode bridgeMethod = classNode.methods.get(0);
+
+		assertEquals("objectify", bridgeMethod.name);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
+		assertEquals("(Ljava/lang/String;)Ljava/lang/Object;", bridgeMethod.desc);
+
+		InsnList instructions = bridgeMethod.instructions;
+
+		assertEquals(4, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("objectify", thirdInstruction.name);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", thirdInstruction.desc);
+		assertEquals(false, thirdInstruction.itf);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ARETURN, fourthInstruction.getOpcode());
+
+		MethodNode method = classNode.methods.get(1);
+
+		assertEquals("objectify", method.name);
+		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", method.desc);
+	}
+
+	@Test
 	public void testImplementsWithTypeVariance()
 	{
 		String interfaceSource =
@@ -451,7 +530,7 @@ public class ImplementationListenerTest
 		MethodNode method = classNode.methods.get(1);
 
 		assertEquals("objectify", method.name);
-		assertEquals(Opcodes.ACC_PUBLIC, method.access);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
 		assertEquals("(Ljava/lang/Object;)Ljava/lang/String;", method.desc);
 	}
 

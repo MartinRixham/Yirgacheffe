@@ -133,18 +133,18 @@ public class MethodListener extends FieldDeclarationListener
 			{
 				this.interfaceMethods.splice(i, 1);
 
-				if (!signature.equals(this.signature))
-				{
-					this.createBridge(signature, this.signature);
-
-					return false;
-				}
-				else if (!this.signature.getReturnType()
+				if (!this.signature.getReturnType()
 					.equals(signature.getReturnType()))
 				{
 					this.createBridge(signature, this.signature);
 
 					return true;
+				}
+				else if (!signature.equals(this.signature))
+				{
+					this.createBridge(signature, this.signature);
+
+					return false;
 				}
 			}
 		}

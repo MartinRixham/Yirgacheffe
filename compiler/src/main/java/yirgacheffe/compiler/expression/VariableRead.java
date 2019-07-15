@@ -25,28 +25,17 @@ public class VariableRead implements Expression
 
 	public Type getType(Variables variables)
 	{
-		if (variables.canOptimise(this))
-		{
-			return variables.getOptimisedExpression(this).getType(variables);
-		}
-		else
-		{
-			return variables.getVariable(this.name).getType();
-		}
+		return variables.getVariable(this.name).getType();
 	}
 
 	public Result compile(Variables variables)
 	{
-		Result result = new Result();
-
 		if (variables.hasConstant(this.name))
 		{
 			return new Result().add(new LdcInsnNode(variables.getConstant(this.name)));
 		}
 		else
 		{
-			Variable variable = variables.getVariable(this.name);
-
 			if (variables.canOptimise(this))
 			{
 				return variables.getOptimisedExpression(this).compile(variables);
@@ -55,6 +44,7 @@ public class VariableRead implements Expression
 			{
 				variables.read(this);
 
+				Variable variable = variables.getVariable(this.name);
 				int loadInstruction = variable.getType().getLoadInstruction();
 				int index = variable.getIndex();
 

@@ -201,6 +201,8 @@ public class BlockTest
 
 		VariableDeclaration variableDeclaration =
 				new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
+		VariableDeclaration notherVariableDeclaration =
+			new VariableDeclaration("notherVariable", PrimitiveType.DOUBLE);
 
 		Expression one = new Num("1.0");
 		Expression two = new Num("2.0");
@@ -224,7 +226,11 @@ public class BlockTest
 
 		Array<Statement> statements =
 			new Array<>(
-				variableDeclaration, variableWrite, notherVariableWrite, functionCall);
+				variableDeclaration,
+				notherVariableDeclaration,
+				variableWrite,
+				notherVariableWrite,
+				functionCall);
 
 		Block block = new Block(coordinate, statements);
 		Variables variables = new Variables(new HashMap<>());

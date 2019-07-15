@@ -9,7 +9,6 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.comparison.Comparator;
@@ -725,7 +724,6 @@ public class EquationTest
 	public void testCompilingNotEqualStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		MethodNode methodVisitor = new MethodNode();
 		Variables variables = new Variables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(String.class));
 		Expression secondOperand = new This(new ReferenceType(String.class));

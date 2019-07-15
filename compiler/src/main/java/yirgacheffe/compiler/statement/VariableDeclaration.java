@@ -15,10 +15,17 @@ public class VariableDeclaration implements Statement
 
 	private Type type;
 
+	private VariableDeclaration declaration;
+
 	public VariableDeclaration(String name, Type type)
 	{
 		this.name = name;
 		this.type = type;
+	}
+
+	public VariableDeclaration(VariableDeclaration declaration)
+	{
+		this.declaration = declaration;
 	}
 
 	public boolean returns()
@@ -28,7 +35,14 @@ public class VariableDeclaration implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		variables.declare(this.name, this.type);
+		if (this.declaration == null)
+		{
+			variables.declare(this.name, this.type);
+		}
+		else
+		{
+			variables.declareOptimised(this.declaration.name, this.declaration.type);
+		}
 
 		return new Result();
 	}

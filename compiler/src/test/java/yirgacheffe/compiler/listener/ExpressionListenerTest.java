@@ -224,4 +224,70 @@ public class ExpressionListenerTest
 		assertEquals(5, firstMethod.maxStack);
 		assertEquals(1, firstMethod.maxLocals);
 	}
+
+	@Test
+	public void testVariableOfWrongType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Void method(Array<String> args)\n" +
+				"{\n" +
+					"Object string = \"thingy\";\n" +
+					"this.print(string);\n" +
+				"}\n" +
+				"public Void print(String string)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 7:4 Method MyClass.print(java.lang.Object) not found.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testAssignVariableOfWrongType()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Void method(Array<String> args)\n" +
+				"{\n" +
+					"System string = \"thingy\";\n" +
+					"this.print(string);\n" +
+				"}\n" +
+				"public Void print(String string)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 6:0 Cannot assign expression of type " +
+			"java.lang.String to variable of " +
+			"type yirgacheffe.lang.System.\n" +
+			"line 7:4 Method MyClass.print(yirgacheffe.lang.System) not found.\n",
+			result.getErrors());
+	}
 }

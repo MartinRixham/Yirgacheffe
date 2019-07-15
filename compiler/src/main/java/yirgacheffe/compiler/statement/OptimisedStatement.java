@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
@@ -23,7 +24,15 @@ public class OptimisedStatement implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		return new Result();
+		Result result = new Result();
+		Array<Error> errors = this.statement.compile(variables, caller).getErrors();
+
+		for (Error error: errors)
+		{
+			result = result.add(error);
+		}
+
+		return result;
 	}
 
 	public Array<VariableRead> getVariableReads()

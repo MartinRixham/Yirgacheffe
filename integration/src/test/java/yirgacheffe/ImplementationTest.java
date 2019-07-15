@@ -51,14 +51,21 @@ public class ImplementationTest
 
 		Classes classes = new Classes();
 
-		new Compiler("", interfaceSource).compileInterface(classes);
-		new Compiler("", implementationSource).compileInterface(classes);
-
-		classes.clearCache();
-
 		Compiler interfaceCompiler = new Compiler("", interfaceSource);
 		Compiler implementationCompiler = new Compiler("", implementationSource);
 		Compiler compiler = new Compiler("", source);
+
+		interfaceCompiler.compileClassDeclaration(classes);
+		implementationCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		interfaceCompiler.compileInterface(classes);
+		implementationCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
 
 		CompilationResult interfaceResult = interfaceCompiler.compile(classes);
 		CompilationResult implementationResult = implementationCompiler.compile(classes);
@@ -111,12 +118,18 @@ public class ImplementationTest
 
 		Classes classes = new Classes();
 
-		new Compiler("", implementationSource).compileInterface(classes);
+		Compiler implementationCompiler = new Compiler("", implementationSource);
+		Compiler compiler = new Compiler("", source);
+
+		implementationCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
 
 		classes.clearCache();
 
-		Compiler implementationCompiler = new Compiler("", implementationSource);
-		Compiler compiler = new Compiler("", source);
+		implementationCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
 
 		CompilationResult implementationResult = implementationCompiler.compile(classes);
 		CompilationResult result = compiler.compile(classes);

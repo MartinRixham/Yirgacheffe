@@ -51,6 +51,13 @@ public class Variables
 		this.nextVariableIndex += type.width();
 	}
 
+	public void declareOptimised(String name, Type type)
+	{
+		Variable variable = new Variable(-1, type);
+
+		this.declaredVariables.put(name, variable);
+	}
+
 	public void declareInteger(String name)
 	{
 		this.declaredIntegers.add(name);

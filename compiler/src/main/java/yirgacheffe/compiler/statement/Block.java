@@ -114,7 +114,10 @@ public class Block implements Statement
 			if (statement instanceof VariableDeclaration &&
 				!variableWrites.contains(statement))
 			{
-					this.statements.splice(i, 1);
+				VariableDeclaration optimisedDeclaration =
+					new VariableDeclaration((VariableDeclaration) statement);
+
+				this.statements.splice(i, 1, optimisedDeclaration);
 			}
 
 			variableReads.removeAll(Collections.singleton(statement));
