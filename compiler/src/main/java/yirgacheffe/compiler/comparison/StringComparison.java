@@ -6,24 +6,20 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Variables;
 
 public class StringComparison implements Comparison
 {
-	private Coordinate coordinate;
 	private Comparator comparator;
 	private Expression firstOperand;
 	private Expression secondOperand;
 
 	public StringComparison(
-		Coordinate coordinate,
 		Comparator comparator,
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-		this.coordinate = coordinate;
 		this.comparator = comparator;
 		this.firstOperand = firstOperand;
 		this.secondOperand = secondOperand;

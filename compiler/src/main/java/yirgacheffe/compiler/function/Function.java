@@ -155,13 +155,10 @@ public class Function
 			parameters.push(this.getType(parameter));
 		}
 
-		Signature signature =
-			new Signature(
-				this.getReturnType(),
-				this.getName(),
-				parameters);
-
-		return signature;
+		return new Signature(
+			this.getReturnType(),
+			this.getName(),
+			parameters);
 	}
 
 	public Type getOwner()

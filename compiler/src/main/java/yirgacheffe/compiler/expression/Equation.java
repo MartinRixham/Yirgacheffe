@@ -87,7 +87,6 @@ public class Equation implements Expression
 		{
 			comparison =
 				new StringComparison(
-					this.coordinate,
 					this.comparator,
 					this.firstOperand,
 					this.secondOperand);

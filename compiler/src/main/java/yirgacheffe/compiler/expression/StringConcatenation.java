@@ -20,13 +20,11 @@ public class StringConcatenation implements Expression
 		this.binaryOperation = expression;
 	}
 
-	@Override
 	public Type getType(Variables variables)
 	{
 		return this.binaryOperation.getType(variables);
 	}
 
-	@Override
 	public Result compile(Variables variables)
 	{
 		Type string = new ReferenceType(String.class);

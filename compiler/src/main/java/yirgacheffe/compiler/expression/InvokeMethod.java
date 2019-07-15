@@ -194,10 +194,8 @@ public class InvokeMethod implements Expression
 
 	public Array<Function> getMethodsNamed(Type owner, String name)
 	{
-		Set<Method> methodSet = new HashSet<>();
-
-		methodSet.addAll(
-			Arrays.asList(owner.reflectionClass().getMethods()));
+		Set<Method> methodSet =
+			new HashSet<>(Arrays.asList(owner.reflectionClass().getMethods()));
 
 		if (owner.toFullyQualifiedType().equals(this.caller))
 		{
