@@ -8,8 +8,6 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.lang.Array;
@@ -49,13 +47,12 @@ public class Block implements Statement
 	public Result compile(Variables variables, Signature caller)
 	{
 		Array<Statement> statements = this.statements;
-		Map<String, Variable> declaredVariables = variables.getDeclaredVariables();
+		Map<String, Variable> declaredVariables = variables.getVariables();
 		boolean unreachableCode = false;
 		Result result = new Result();
 
 		this.optimiseVariables(variables);
 		this.optimiseTailCall(caller, variables);
-		this.optimiseIntegers(variables);
 
 		for (int i = 0; i < statements.length(); i++)
 		{
@@ -79,7 +76,7 @@ public class Block implements Statement
 			result = result.add(new Error(this.coordinate, message));
 		}
 
-		variables.setDeclaredVariables(declaredVariables);
+		variables.setVariables(declaredVariables);
 
 		return result;
 	}
@@ -173,42 +170,6 @@ public class Block implements Statement
 			new TailCall(lastStatement, caller, variables);
 
 		this.statements.push(tailCall);
-	}
-
-	private void optimiseIntegers(Variables variables)
-	{
-		Set<VariableWrite> variableWrites = new HashSet<>();
-
-		for (Statement statement: this.statements)
-		{
-			for (VariableWrite variableWrite: statement.getVariableWrites())
-			{
-				Type type = variableWrite.getExpression().getType(variables);
-
-				if (type.equals(PrimitiveType.INT))
-				{
-					variableWrites.add(variableWrite);
-				}
-			}
-		}
-
-		for (Statement statement: this.statements)
-		{
-			for (VariableWrite variableWrite: statement.getVariableWrites())
-			{
-				Type type = variableWrite.getExpression().getType(variables);
-
-				if (type.equals(PrimitiveType.DOUBLE))
-				{
-					variableWrites.remove(variableWrite);
-				}
-			}
-		}
-
-		for (VariableWrite variableWrite: variableWrites)
-		{
-			variables.declareInteger(variableWrite.getName());
-		}
 	}
 
 	public Array<VariableRead> getVariableReads()

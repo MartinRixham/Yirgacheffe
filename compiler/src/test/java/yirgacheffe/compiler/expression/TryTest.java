@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Variables;
 
 import java.util.HashMap;
@@ -22,5 +23,7 @@ public class TryTest
 		assertFalse(tryExpression.isCondition(variables));
 		assertEquals(0, result.getErrors().length());
 		assertEquals(1, result.getInstructions().length());
+		assertEquals(PrimitiveType.INT, tryExpression.getType(null));
+		assertEquals(0, tryExpression.getVariableReads().length());
 	}
 }

@@ -22,20 +22,7 @@ public class Try implements Expression
 
 	public Result compile(Variables variables)
 	{
-		Result result = this.expression.compile(variables);
-		Type type = this.expression.getType(variables);
-
-		/*if (type.isPrimitive())
-		{
-			methodNode.visitMethodInsn(
-				Opcodes.INVOKESTATIC,
-				type.toFullyQualifiedType(),
-				"valueOf",
-				"(" + type.toJVMType() + ")L" + type.toFullyQualifiedType() + ";",
-				false);
-		}*/
-
-		return result;
+		return this.expression.compile(variables);
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

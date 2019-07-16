@@ -7,18 +7,14 @@ import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Variables
 {
 	private int nextVariableIndex = 1;
 
-	private Map<String, Variable> declaredVariables = new HashMap<>();
-
-	private Set<String> declaredIntegers = new HashSet<>();
+	private Map<String, Variable> variables = new HashMap<>();
 
 	private Array<VariableRead> variableReads = new Array<>();
 
@@ -33,21 +29,21 @@ public class Variables
 		this.constants = constants;
 	}
 
-	public Map<String, Variable> getDeclaredVariables()
+	public Map<String, Variable> getVariables()
 	{
-		return new HashMap<>(this.declaredVariables);
+		return new HashMap<>(this.variables);
 	}
 
-	public void setDeclaredVariables(Map<String, Variable> declaredVariables)
+	public void setVariables(Map<String, Variable> variables)
 	{
-		this.declaredVariables = declaredVariables;
+		this.variables = variables;
 	}
 
 	public void declare(String name, Type type)
 	{
 		Variable variable = new Variable(this.nextVariableIndex, type);
 
-		this.declaredVariables.put(name, variable);
+		this.variables.put(name, variable);
 		this.nextVariableIndex += type.width();
 	}
 
@@ -55,19 +51,14 @@ public class Variables
 	{
 		Variable variable = new Variable(-1, type);
 
-		this.declaredVariables.put(name, variable);
-	}
-
-	public void declareInteger(String name)
-	{
-		this.declaredIntegers.add(name);
+		this.variables.put(name, variable);
 	}
 
 	public void read(VariableRead variableRead)
 	{
 		String name = variableRead.getName();
 
-		if (!this.declaredVariables.containsKey(name) &&
+		if (!this.variables.containsKey(name) &&
 			!this.constants.containsKey(name))
 		{
 			this.variableReads.push(variableRead);
@@ -76,7 +67,20 @@ public class Variables
 
 	public void write(VariableWrite variableWrite)
 	{
-		if (!this.declaredVariables.containsKey(variableWrite.getName()))
+		String name = variableWrite.getName();
+
+		if (this.variables.containsKey(name))
+		{
+			Variable variable = this.variables.get(name);
+
+			if (variable.getType().isPrimitive())
+			{
+				Type type = variableWrite.getExpression().getType(this);
+
+				this.variables.put(name, new Variable(variable.getIndex(), type));
+			}
+		}
+		else
 		{
 			this.variableWrites.push(variableWrite);
 		}
@@ -84,18 +88,9 @@ public class Variables
 
 	public Variable getVariable(String name)
 	{
-		if (this.declaredVariables.containsKey(name))
+		if (this.variables.containsKey(name))
 		{
-			if (this.declaredIntegers.contains(name))
-			{
-				int index = this.declaredVariables.get(name).getIndex();
-
-				return new Variable(index, PrimitiveType.INT);
-			}
-			else
-			{
-				return this.declaredVariables.get(name);
-			}
+			return this.variables.get(name);
 		}
 		else
 		{

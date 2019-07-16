@@ -2,7 +2,6 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.junit.Test;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -11,12 +10,10 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
-import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variables;
@@ -60,40 +57,6 @@ public class VariableWriteTest
 
 		assertEquals(Opcodes.ASTORE, secondInstruction.getOpcode());
 		assertEquals(1, secondInstruction.var);
-	}
-
-	@Test
-	public void testWriteIntegerToDouble()
-	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression value = new Num("1");
-		Coordinate coordinate = new Coordinate(4, 2);
-		VariableWrite variableWrite =
-			new VariableWrite(coordinate, "myVariable", value);
-
-		Variables variables = new Variables(new HashMap<>());
-		variables.declare("myVariable", PrimitiveType.DOUBLE);
-
-		Result result = variableWrite.compile(variables, caller);
-
-		assertEquals(0, result.getErrors().length());
-
-		Array<AbstractInsnNode> instructions =  result.getInstructions();
-
-		assertEquals(3, instructions.length());
-
-		InsnNode firstInstruction = (InsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
-
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
-
-		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
-		assertEquals(1, thirdInstruction.var);
 	}
 
 	@Test
