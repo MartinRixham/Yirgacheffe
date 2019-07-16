@@ -46,9 +46,13 @@ public class Num implements Expression, Literal
 
 	public Result compile(Variables variables)
 	{
+		Type type = this.getType(variables);
+
+		variables.stackPush(type);
+
 		Result result = new Result();
 
-		if (this.getType(variables).equals(PrimitiveType.INT))
+		if (type.equals(PrimitiveType.INT))
 		{
 			Integer integer = Integer.valueOf(this.text);
 
@@ -61,7 +65,7 @@ public class Num implements Expression, Literal
 				result = result.add(new InsnNode(Opcodes.ICONST_1));
 			}
 		}
-		else if (this.getType(variables).equals(PrimitiveType.LONG))
+		else if (type.equals(PrimitiveType.LONG))
 		{
 			Long longInteger = Long.valueOf(this.text);
 

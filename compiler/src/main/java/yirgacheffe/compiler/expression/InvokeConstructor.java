@@ -62,6 +62,8 @@ public class InvokeConstructor implements Expression
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
+		variables.stackPush(this.owner);
+
 		return new Result()
 			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
 			.add(new InsnNode(Opcodes.DUP))

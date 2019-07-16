@@ -24,6 +24,8 @@ public class This implements Expression
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.getType(variables));
+
 		return new Result().add(new VarInsnNode(Opcodes.ALOAD, 0));
 	}
 

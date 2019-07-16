@@ -30,6 +30,8 @@ public class VariableRead implements Expression
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.getType(variables));
+
 		if (variables.hasConstant(this.name))
 		{
 			return new Result().add(new LdcInsnNode(variables.getConstant(this.name)));

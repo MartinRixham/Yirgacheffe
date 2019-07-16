@@ -5,7 +5,6 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Try;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
@@ -77,6 +76,7 @@ public class VariableWrite implements Statement
 		}
 
 		variables.write(this);
+		variables.stackPop();
 
 		return result;
 	}
@@ -110,11 +110,6 @@ public class VariableWrite implements Statement
 	@Override
 	public boolean equals(Object other)
 	{
-		if (this.expression instanceof Try)
-		{
-			return false;
-		}
-
 		if (other instanceof String)
 		{
 			return this.name.equals(other);

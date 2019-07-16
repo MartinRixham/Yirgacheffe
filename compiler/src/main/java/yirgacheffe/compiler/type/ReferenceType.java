@@ -107,7 +107,14 @@ public class ReferenceType implements Type
 
 	public Type intersect(Type type)
 	{
-		return new IntersectionType(this, type);
+		if (type.isPrimitive())
+		{
+			return new ReferenceType(Object.class);
+		}
+		else
+		{
+			return new IntersectionType(this, type);
+		}
 	}
 
 	public Result compare(BooleanOperator operator, Label label)

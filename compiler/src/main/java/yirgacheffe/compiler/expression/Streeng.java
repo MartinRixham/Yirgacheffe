@@ -24,6 +24,8 @@ public class Streeng implements Expression, Literal
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.getType(variables));
+
 		return new Result().add(new LdcInsnNode(this.getValue()));
 	}
 

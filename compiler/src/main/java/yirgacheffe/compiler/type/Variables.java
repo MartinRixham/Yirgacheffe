@@ -24,6 +24,8 @@ public class Variables
 
 	private Map<String, Object> constants;
 
+	private Array<Type> stack = new Array<>();
+
 	public Variables(Map<String, Object> constants)
 	{
 		this.constants = constants;
@@ -143,5 +145,32 @@ public class Variables
 	public Object getConstant(String name)
 	{
 		return this.constants.get(name);
+	}
+
+	public int variableCount()
+	{
+		int count = 0;
+
+		for (Variable variable: this.variables.values())
+		{
+			count += variable.getType().width();
+		}
+
+		return count;
+	}
+
+	public Array<Type> getStack()
+	{
+		return this.stack;
+	}
+
+	public void stackPush(Type type)
+	{
+		this.stack.push(type);
+	}
+
+	public void stackPop()
+	{
+		this.stack.pop();
 	}
 }
