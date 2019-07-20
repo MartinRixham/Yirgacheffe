@@ -51,6 +51,7 @@ public class FunctionCallTest
 		Result result = functionCall.compile(variables, caller);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(7, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);

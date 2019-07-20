@@ -28,6 +28,7 @@ public class BoolTest
 		Result result = literal.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(literal.isCondition(variables));
 		assertEquals(false, literal.getValue());
 		assertEquals(1, instructions.length());

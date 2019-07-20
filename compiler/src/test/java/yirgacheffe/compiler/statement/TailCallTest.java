@@ -45,6 +45,7 @@ public class TailCallTest
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 
+		assertEquals(0, variables.getStack().length());
 		assertFalse(tailCall.returns());
 		assertTrue(tailCall.getExpression() instanceof Nothing);
 		assertEquals(new Array<>(), tailCall.getVariableReads());

@@ -48,6 +48,8 @@ public class InvokeConstructor implements Expression
 	{
 		if (this.owner instanceof NullType)
 		{
+			variables.stackPush(this.owner);
+
 			return new Result();
 		}
 
@@ -62,9 +64,7 @@ public class InvokeConstructor implements Expression
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
-		variables.stackPush(this.owner);
-
-		return new Result()
+		Result result = new Result()
 			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
 			.add(new InsnNode(Opcodes.DUP))
 			.concat(matchResult.compileArguments(variables))
@@ -76,6 +76,10 @@ public class InvokeConstructor implements Expression
 				matchResult.getDescriptor(),
 				false))
 			.concat(this.getError(matchResult, arguments));
+
+		variables.stackPush(this.owner);
+
+		return result;
 	}
 
 	private Result getError(MatchResult matchResult, Arguments arguments)

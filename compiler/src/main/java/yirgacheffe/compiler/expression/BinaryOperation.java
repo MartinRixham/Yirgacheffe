@@ -120,7 +120,8 @@ public class BinaryOperation implements Expression
 	{
 		Type firstOperandType = this.firstOperand.getType(variables);
 
-		return this.firstOperand.compile(variables)
+		Result result = new Result()
+			.concat(this.firstOperand.compile(variables))
 			.add(new MethodInsnNode(
 				Opcodes.INVOKEVIRTUAL,
 				"java/lang/StringBuilder",
@@ -128,6 +129,12 @@ public class BinaryOperation implements Expression
 				"(" + firstOperandType.toJVMType() + ")Ljava/lang/StringBuilder;",
 				false))
 			.concat(this.secondOperand.compile(variables));
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(this.getType(variables));
+
+		return result;
 	}
 
 	public Array<VariableRead> getVariableReads()

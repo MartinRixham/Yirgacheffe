@@ -29,6 +29,7 @@ public class ThisTest
 		Result result = thisRead.compileCondition(variables, null, null);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 		assertEquals(1, instructions.length());
 

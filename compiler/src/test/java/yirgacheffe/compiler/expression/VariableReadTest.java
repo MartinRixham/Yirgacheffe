@@ -37,6 +37,7 @@ public class VariableReadTest
 		Result result = expression.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(expression.isCondition(variables));
 		assertEquals(1, instructions.length());
 

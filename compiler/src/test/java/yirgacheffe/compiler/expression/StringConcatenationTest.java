@@ -43,6 +43,7 @@ public class StringConcatenationTest
 
 		Result result = concatenation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
@@ -77,6 +78,7 @@ public class StringConcatenationTest
 		Type type = concatenation.getType(variables);
 		Result result = concatenation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals(0, result.getErrors().length());
 

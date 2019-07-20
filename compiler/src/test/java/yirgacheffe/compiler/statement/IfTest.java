@@ -51,6 +51,7 @@ public class IfTest
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(4, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);

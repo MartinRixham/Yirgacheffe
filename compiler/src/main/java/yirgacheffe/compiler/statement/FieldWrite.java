@@ -76,7 +76,7 @@ public class FieldWrite implements Statement
 			result = result.add(new Error(this.coordinate, message));
 		}
 
-		return result
+		result = result
 			.concat(this.owner.compile(variables))
 			.concat(this.value.compile(variables))
 			.add(new FieldInsnNode(
@@ -84,6 +84,11 @@ public class FieldWrite implements Statement
 				ownerType.toFullyQualifiedType(),
 				this.name,
 				type.toJVMType()));
+
+		variables.stackPop();
+		variables.stackPop();
+
+		return result;
 	}
 
 	private Type getType(Class<?> clazz)

@@ -187,8 +187,9 @@ public class Arguments
 		Variables variables)
 	{
 		Result result = new Result();
+		int argumentCount = Math.min(this.arguments.length(), parameters.length());
 
-		for (int i = 0; i < Math.min(this.arguments.length(), parameters.length()); i++)
+		for (int i = 0; i < argumentCount; i++)
 		{
 			if (this.hasVariableArguments(variableArguments) &&
 				i == parameters.length() - 1)
@@ -213,6 +214,11 @@ public class Arguments
 						parameterType,
 						variables));
 			}
+		}
+
+		for (int i = 0; i < argumentCount; i++)
+		{
+			variables.stackPop();
 		}
 
 		return result;

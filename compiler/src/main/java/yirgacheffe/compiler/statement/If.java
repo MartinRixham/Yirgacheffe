@@ -53,6 +53,8 @@ public class If implements ConditionalStatement
 				.concat(type.compare(BooleanOperator.AND, this.falseLabel));
 		}
 
+		variables.stackPop();
+
 		return result
 			.add(new LabelNode(trueLabel))
 			.concat(this.statement.compile(variables, caller));

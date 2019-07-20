@@ -39,7 +39,7 @@ public class NumberComparison implements Comparison
 			String message =
 				"Cannot compare " + firstType + " and " + secondType + ".";
 
-			return result.add(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		Type type = firstType.intersect(secondType);
@@ -49,6 +49,5 @@ public class NumberComparison implements Comparison
 			.concat(this.secondOperand.compile(variables))
 			.concat(secondType.convertTo(type))
 			.concat(this.comparator.compile(label, type));
-
 	}
 }

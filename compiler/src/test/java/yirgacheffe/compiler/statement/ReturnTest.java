@@ -34,6 +34,7 @@ public class ReturnTest
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
+		assertEquals(0, variables.getStack().length());
 		assertTrue(returnStatement.returns());
 		assertEquals(0, result.getErrors().length());
 

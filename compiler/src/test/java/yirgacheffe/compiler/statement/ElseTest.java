@@ -46,6 +46,7 @@ public class ElseTest
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(7, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);

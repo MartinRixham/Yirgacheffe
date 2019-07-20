@@ -49,6 +49,7 @@ public class FieldWriteTest
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(3, instructions.length());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);

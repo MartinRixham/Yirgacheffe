@@ -42,7 +42,7 @@ public class BooleanComparison implements Comparison
 			String message =
 				"Cannot compare " + firstType + " and " + secondType + ".";
 
-			return result.add(new Error(this.coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		return result

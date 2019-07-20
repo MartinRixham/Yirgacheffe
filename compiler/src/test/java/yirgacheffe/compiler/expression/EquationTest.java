@@ -44,6 +44,7 @@ public class EquationTest
 		Type type = equation.getType(variables);
 		Result result = equation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertTrue(equation.isCondition(variables));
 		assertEquals(PrimitiveType.BOOLEAN, type);
 		assertEquals(0, result.getErrors().length());
@@ -533,6 +534,7 @@ public class EquationTest
 		Type type = operation.getType(variables);
 		Result result = operation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(PrimitiveType.BOOLEAN, type);
 		assertEquals(1, result.getErrors().length());
 
@@ -696,6 +698,7 @@ public class EquationTest
 		Type type = equation.getType(variables);
 		Result result = equation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(PrimitiveType.BOOLEAN, type);
 		assertEquals(0, result.getErrors().length());
 

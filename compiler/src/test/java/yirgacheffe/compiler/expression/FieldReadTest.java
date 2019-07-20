@@ -44,6 +44,7 @@ public class FieldReadTest
 		Result result = fieldRead.compileCondition(variables, null, null);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 		assertFalse(fieldRead.isCondition(variables));
 		assertEquals(4, instructions.length());

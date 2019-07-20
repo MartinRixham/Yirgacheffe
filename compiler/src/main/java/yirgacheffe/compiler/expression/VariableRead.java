@@ -30,28 +30,37 @@ public class VariableRead implements Expression
 
 	public Result compile(Variables variables)
 	{
+		Result result = new Result();
+
 		if (variables.hasConstant(this.name))
 		{
-			return new Result().add(new LdcInsnNode(variables.getConstant(this.name)));
+			result = result.add(new LdcInsnNode(variables.getConstant(this.name)));
+
+			variables.stackPush(this.getType(variables));
 		}
 		else
 		{
 			if (variables.canOptimise(this))
 			{
-				return variables.getOptimisedExpression(this).compile(variables);
+				Expression optimisedExpression = variables.getOptimisedExpression(this);
+
+				result = result.concat(optimisedExpression.compile(variables));
 			}
 			else
 			{
 				variables.read(this);
-				variables.stackPush(this.getType(variables));
 
 				Variable variable = variables.getVariable(this.name);
 				int loadInstruction = variable.getType().getLoadInstruction();
 				int index = variable.getIndex();
 
-				return new Result().add(new VarInsnNode(loadInstruction, index));
+				result = result.add(new VarInsnNode(loadInstruction, index));
+
+				variables.stackPush(this.getType(variables));
 			}
 		}
+
+		return result;
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

@@ -119,7 +119,14 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		return comparison.compile(variables, falseLabel);
+		Result result = new Result()
+			.concat(comparison.compile(variables, falseLabel));
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(this.getType(variables));
+
+		return result;
 	}
 
 	private Result compareStrings(
@@ -127,7 +134,8 @@ public class Equation implements Expression
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-		return firstOperand.compile(variables)
+		Result result = new Result()
+			.concat(firstOperand.compile(variables))
 			.concat(secondOperand.compile(variables))
 			.add(new MethodInsnNode(
 				Opcodes.INVOKEVIRTUAL,
@@ -135,6 +143,12 @@ public class Equation implements Expression
 				"equals",
 				"(Ljava/lang/Object;)Z",
 				false));
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(this.getType(variables));
+
+		return result;
 	}
 
 	public boolean isCondition(Variables variables)

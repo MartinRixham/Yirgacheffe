@@ -16,6 +16,8 @@ public class Nothing implements Expression
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.getType(variables));
+
 		return new Result();
 	}
 

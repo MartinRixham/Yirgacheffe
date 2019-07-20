@@ -64,6 +64,8 @@ public class For implements Statement
 				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(exitLabel)));
 		}
 
+		variables.stackPop();
+
 		return result
 			.concat(this.statement.compile(variables, caller))
 			.concat(this.incrementer.compile(variables, caller))

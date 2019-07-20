@@ -70,6 +70,7 @@ public class InvokeMethodTest
 		Result result = invokeMethod.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(invokeMethod.isCondition(variables));
 		assertEquals(4, instructions.length());
 

@@ -42,16 +42,21 @@ public class Return implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
+		Result result = new Result();
 		Type type = this.expression.getType(variables);
 
 		if (type.isAssignableTo(this.type))
 		{
-			return this.expression.compile(variables)
+			result = result
+				.concat(this.expression.compile(variables))
 				.add(new InsnNode(this.type.getReturnInstruction()));
+
+			variables.stackPop();
 		}
 		else if (type.isAssignableTo(new ReferenceType(Throwable.class)))
 		{
-			return this.expression.compile(variables)
+			result = result
+				.concat(this.expression.compile(variables))
 				.add(new InsnNode(Opcodes.ATHROW));
 		}
 		else
@@ -61,11 +66,13 @@ public class Return implements Statement
 				type + " from method of return type " +
 				this.type + ".";
 
-			return new Result()
+			result = result
 				.add(new InsnNode(this.type.getZero()))
 				.add(new InsnNode(this.type.getReturnInstruction()))
 				.add(new Error(this.coordinate, message));
 		}
+
+		return  result;
 	}
 
 	public Array<VariableRead> getVariableReads()

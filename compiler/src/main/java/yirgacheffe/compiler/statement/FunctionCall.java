@@ -41,6 +41,8 @@ public class FunctionCall implements Statement
 			result = result.add(new InsnNode(Opcodes.POP2));
 		}
 
+		variables.stackPop();
+
 		return result;
 	}
 

@@ -128,7 +128,8 @@ public class InvokeMethod implements Expression
 
 		Type returnType = matchResult.getReturnType();
 
-		return this.owner.compile(variables)
+		Result result = new Result()
+			.concat(this.owner.compile(variables))
 			.concat(owner.convertTo(new ReferenceType(Object.class)))
 			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile())
@@ -138,6 +139,11 @@ public class InvokeMethod implements Expression
 				bootstrapMethod))
 			.concat(returnType.convertTo(this.getType(variables)))
 			.concat(this.getError(matchResult, owner, arguments));
+
+		variables.stackPop();
+		variables.stackPush(returnType);
+
+		return result;
 	}
 
 	public Result compileArguments(Variables variables)

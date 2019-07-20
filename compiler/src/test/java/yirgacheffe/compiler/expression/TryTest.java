@@ -21,6 +21,7 @@ public class TryTest
 
 		Result result = tryExpression.compileCondition(variables, null, null);
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(tryExpression.isCondition(variables));
 		assertEquals(0, result.getErrors().length());
 		assertEquals(5, result.getInstructions().length());

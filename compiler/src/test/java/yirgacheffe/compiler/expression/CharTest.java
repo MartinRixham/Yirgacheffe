@@ -28,6 +28,7 @@ public class CharTest
 		Result result = literal.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(literal.isCondition(variables));
 		assertEquals('r', literal.getValue());
 		assertEquals(0, literal.getVariableReads().length());

@@ -116,6 +116,7 @@ public class BlockTest
 
 		Result result = block.compile(variables, caller);
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();

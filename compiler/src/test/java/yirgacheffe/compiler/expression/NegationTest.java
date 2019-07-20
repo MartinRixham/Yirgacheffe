@@ -29,6 +29,7 @@ public class NegationTest
 		Type type = negation.getType(variables);
 		Result result = negation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(negation.isCondition(variables));
 		assertEquals(PrimitiveType.DOUBLE, type);
 		assertEquals(1, result.getErrors().length());

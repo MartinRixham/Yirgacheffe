@@ -27,6 +27,7 @@ public class StreengTest
 		Result result = literal.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(literal.isCondition(variables));
 		assertEquals("thingy", literal.getValue());
 		assertEquals(1, instructions.length());

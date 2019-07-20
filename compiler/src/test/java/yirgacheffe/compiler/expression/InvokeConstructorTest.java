@@ -46,6 +46,7 @@ public class InvokeConstructorTest
 		Result result = invokeConstructor.compileCondition(variables, null, null);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(invokeConstructor.isCondition(variables));
 		assertEquals(0, result.getErrors().length());
 		assertEquals(6, instructions.length());

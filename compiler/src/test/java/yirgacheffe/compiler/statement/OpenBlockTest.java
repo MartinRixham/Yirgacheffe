@@ -27,6 +27,7 @@ public class OpenBlockTest
 
 		Result result = openBlock.compile(variables, caller);
 
+		assertEquals(0, variables.getStack().length());
 		assertNotNull(result.getErrors());
 		assertFalse(openBlock.returns());
 		assertTrue(openBlock.isEmpty());

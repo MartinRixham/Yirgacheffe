@@ -49,6 +49,7 @@ public class ForTest
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = forStatement.compile(variables, null);
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();

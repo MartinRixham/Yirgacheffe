@@ -28,6 +28,8 @@ public class Char implements Expression, Literal
 
 		result = result.add(new LdcInsnNode(this.getValue()));
 
+		variables.stackPush(this.getType(variables));
+
 		return result;
 	}
 
