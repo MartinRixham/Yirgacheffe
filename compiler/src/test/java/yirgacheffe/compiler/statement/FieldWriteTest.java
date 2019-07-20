@@ -19,7 +19,7 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Streeng("\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -79,7 +79,7 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Streeng("\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertFalse(fieldWrite.returns());
@@ -98,7 +98,7 @@ public class FieldWriteTest
 		Expression owner = new This(new ReferenceType(this.getClass()));
 		Expression value = new Num("1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -119,7 +119,7 @@ public class FieldWriteTest
 		Expression owner = new InvalidExpression(testClass);
 		Expression value = new InvalidExpression(string);
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(2, result.getErrors().length());

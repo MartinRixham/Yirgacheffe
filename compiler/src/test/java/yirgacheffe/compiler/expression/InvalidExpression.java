@@ -5,7 +5,7 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class InvalidExpression implements Expression
@@ -24,6 +24,8 @@ public class InvalidExpression implements Expression
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.type);
+
 		Coordinate coordinate = new Coordinate(0, 0);
 		Error error = new Error(coordinate, "This expression is not valid.");
 

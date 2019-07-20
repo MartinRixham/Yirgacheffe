@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Classes;
@@ -574,15 +575,11 @@ public class StatementListenerTest
 		Compiler compiler = new Compiler("", source);
 		Classes classes = new Classes();
 
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
-
 		compiler.compileInterface(classes);
 
 		classes.clearCache();
 
-		CompilationResult result = compiler. compile(classes);
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 
@@ -597,9 +594,13 @@ public class StatementListenerTest
 
 		assertEquals(1, firstMethod.tryCatchBlocks.size());
 
+		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
+		Label startLabel = tryCatch.start.getLabel();
+		Label endLabel = tryCatch.end.getLabel();
+
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(10, instructions.size());
+		assertEquals(16, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -608,31 +609,55 @@ public class StatementListenerTest
 
 		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
-		assertEquals(0, secondInstruction.var);
+		assertEquals(Opcodes.ASTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
 
-		assertTrue(instructions.get(2) instanceof LabelNode);
-		assertTrue(instructions.get(3) instanceof LineNumberNode);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
 
-		InvokeDynamicInsnNode fifthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(4);
+		assertEquals(startLabel, thirdInstruction.getLabel());
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
-		assertEquals("getNumber", fifthInstruction.name);
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
-		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
+		assertEquals(0, fourthInstruction.var);
 
-		assertEquals(Opcodes.INVOKESTATIC, sixthInstruction.getOpcode());
-		assertEquals("valueOf", sixthInstruction.name);
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
 
-		assertTrue(instructions.get(6) instanceof LabelNode);
-		assertTrue(instructions.get(7) instanceof LineNumberNode);
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
 
-		InvokeDynamicInsnNode ninthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(8);
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("getNumber", seventhInstruction.name);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, ninthInstruction.getOpcode());
-		assertEquals("handle", ninthInstruction.name);
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKESTATIC, eighthInstruction.getOpcode());
+		assertEquals("valueOf", eighthInstruction.name);
+
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
+
+		assertEquals(endLabel, ninthInstruction.getLabel());
+
+		assertTrue(instructions.get(9) instanceof FrameNode);
+
+		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.ALOAD, eleventhInstruction.getOpcode());
+		assertEquals(1, eleventhInstruction.var);
+
+		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.SWAP, twelfthInstruction.getOpcode());
+
+		assertTrue(instructions.get(12) instanceof LabelNode);
+		assertTrue(instructions.get(13) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fifteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(14);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifteenthInstruction.getOpcode());
+		assertEquals("handle", fifteenthInstruction.name);
 	}
 
 	@Test

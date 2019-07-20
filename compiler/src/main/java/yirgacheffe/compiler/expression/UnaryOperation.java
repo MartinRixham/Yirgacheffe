@@ -14,7 +14,7 @@ import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class UnaryOperation implements Expression, Statement

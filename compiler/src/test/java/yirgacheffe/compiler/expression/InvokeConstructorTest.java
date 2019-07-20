@@ -13,9 +13,10 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.ParameterisedType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num("1.0");
@@ -83,7 +84,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testGettingFirstOperand()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num("1.0");
@@ -103,7 +104,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testGettingNoFirstOperand()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(String.class);
 		Array<Expression> arguments = new Array<Expression>();
@@ -122,7 +123,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testConstructArray()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
@@ -216,7 +217,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testConstructArrayWithInvalidArgument()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));

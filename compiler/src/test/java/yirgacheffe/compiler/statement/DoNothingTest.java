@@ -6,7 +6,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class DoNothingTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		DoNothing doNothing = new DoNothing();
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = doNothing.compile(variables, caller);
 

@@ -6,7 +6,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 
 public class ObjectComparison implements Comparison
 {

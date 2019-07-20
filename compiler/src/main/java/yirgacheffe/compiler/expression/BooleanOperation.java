@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class BooleanOperation implements Expression
@@ -77,6 +77,10 @@ public class BooleanOperation implements Expression
 			.concat(this.secondOperand.compile(variables))
 			.concat(secondType.convertTo(type))
 			.add(new LabelNode(label));
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(type);
 
 		return result;
 	}

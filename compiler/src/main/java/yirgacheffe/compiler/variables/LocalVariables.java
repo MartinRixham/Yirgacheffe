@@ -1,16 +1,19 @@
-package yirgacheffe.compiler.type;
+package yirgacheffe.compiler.variables;
 
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
+import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class Variables
+public class LocalVariables implements Variables
 {
 	private int nextVariableIndex = 1;
 
@@ -26,14 +29,25 @@ public class Variables
 
 	private Array<Type> stack = new Array<>();
 
-	public Variables(Map<String, Object> constants)
+	public LocalVariables(Map<String, Object> constants)
 	{
 		this.constants = constants;
 	}
 
+	public LocalVariables(LocalVariables variables)
+	{
+		this.nextVariableIndex = variables.nextVariableIndex;
+		this.variables = new HashMap<>(variables.variables);
+		this.variableReads = new Array<>(variables.variableReads);
+		this.variableWrites = new Array<>(variables.variableWrites);
+		this.optimisedVariables = new IdentityHashMap<>(variables.optimisedVariables);
+		this.constants = new HashMap<>(variables.constants);
+		this.stack = new Array<>(variables.stack);
+	}
+
 	public Map<String, Variable> getVariables()
 	{
-		return new HashMap<>(this.variables);
+		return this.variables;
 	}
 
 	public void setVariables(Map<String, Variable> variables)
@@ -47,13 +61,6 @@ public class Variables
 
 		this.variables.put(name, variable);
 		this.nextVariableIndex += type.width();
-	}
-
-	public void declareOptimised(String name, Type type)
-	{
-		Variable variable = new Variable(-1, type);
-
-		this.variables.put(name, variable);
 	}
 
 	public void read(VariableRead variableRead)
@@ -122,9 +129,9 @@ public class Variables
 		return errors;
 	}
 
-	public void optimise(Expression variableRead, VariableWrite variableWrite)
+	public void optimise(Expression variableRead, Expression writtenExpression)
 	{
-		this.optimisedVariables.put(variableRead, variableWrite.getExpression());
+		this.optimisedVariables.put(variableRead, writtenExpression);
 	}
 
 	public boolean canOptimise(Expression variableRead)
@@ -147,16 +154,9 @@ public class Variables
 		return this.constants.get(name);
 	}
 
-	public int variableCount()
+	public int nextVariableIndex()
 	{
-		int count = 0;
-
-		for (Variable variable: this.variables.values())
-		{
-			count += variable.getType().width();
-		}
-
-		return count;
+		return this.nextVariableIndex;
 	}
 
 	public Array<Type> getStack()

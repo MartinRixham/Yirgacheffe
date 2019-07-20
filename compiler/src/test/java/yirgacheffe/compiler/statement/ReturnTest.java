@@ -15,7 +15,7 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertTrue(returnStatement.returns());
@@ -53,7 +53,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertTrue(returnStatement.returns());
@@ -71,7 +71,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -97,7 +97,7 @@ public class ReturnTest
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -129,7 +129,7 @@ public class ReturnTest
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Num("1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -154,7 +154,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Bool("1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());

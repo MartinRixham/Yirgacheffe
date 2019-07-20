@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class Bool implements Expression, Literal
@@ -25,6 +25,8 @@ public class Bool implements Expression, Literal
 
 	public Result compile(Variables variables)
 	{
+		variables.stackPush(this.getType(variables));
+
 		Result result = new Result();
 
 		if (this.text.equals("true"))

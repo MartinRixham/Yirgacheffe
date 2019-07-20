@@ -11,7 +11,8 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementOfWrongType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 
@@ -44,7 +45,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementStatementOfWrongType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 
@@ -79,7 +80,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementInteger()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		variables.declare("variable", PrimitiveType.INT);
 

@@ -24,7 +24,7 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -74,7 +74,7 @@ public class IfTest
 	public void testInvalidCondition()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -89,7 +89,7 @@ public class IfTest
 	public void testInvalidStatement()
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		If statement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -128,7 +128,7 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -163,7 +163,7 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -236,7 +236,7 @@ public class IfTest
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());

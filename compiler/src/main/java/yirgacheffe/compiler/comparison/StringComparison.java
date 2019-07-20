@@ -7,7 +7,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 
 public class StringComparison implements Comparison
 {

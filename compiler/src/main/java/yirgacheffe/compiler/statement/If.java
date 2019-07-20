@@ -9,7 +9,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class If implements ConditionalStatement

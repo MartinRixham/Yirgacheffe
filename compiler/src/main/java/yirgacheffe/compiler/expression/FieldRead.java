@@ -5,8 +5,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class FieldRead implements Expression

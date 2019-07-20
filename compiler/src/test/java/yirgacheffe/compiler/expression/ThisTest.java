@@ -5,9 +5,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class ThisTest
 	@Test
 	public void testCompilingThis()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		This thisRead = new This(new ReferenceType(this.getClass()));
 

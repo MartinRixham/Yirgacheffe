@@ -6,7 +6,8 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class BoolTest
 	@Test
 	public void testCompilingFalse()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Bool literal = new Bool("false");
 
@@ -40,7 +41,7 @@ public class BoolTest
 	@Test
 	public void testCompilingTrue()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Bool literal = new Bool("true");
 

@@ -6,7 +6,8 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class CharTest
 	@Test
 	public void testCompilingCharacter()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Char literal = new Char("'r'");
 
@@ -44,7 +45,7 @@ public class CharTest
 	@Test
 	public void testCompilingWhitespace()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Char literal = new Char("'\n'");
 

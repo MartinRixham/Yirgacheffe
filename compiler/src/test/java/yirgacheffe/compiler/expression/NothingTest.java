@@ -2,7 +2,8 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class NothingTest
 	@Test
 	public void testGettingVariableReads()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Expression nothing = new Nothing();
 

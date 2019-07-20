@@ -7,7 +7,8 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class NumTest
 	@Test
 	public void testCompilingZero()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("0.0");
 
@@ -41,7 +42,7 @@ public class NumTest
 	@Test
 	public void testCompilingOne()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("1.0");
 
@@ -60,7 +61,7 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerZero()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("0");
 
@@ -80,7 +81,7 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerOne()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("1");
 
@@ -100,7 +101,7 @@ public class NumTest
 	@Test
 	public void testCompilingInteger()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("2.0");
 
@@ -122,7 +123,7 @@ public class NumTest
 	@Test
 	public void testCompilingDecimal()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("0.5");
 
@@ -144,7 +145,7 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerTwo()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Num literal = new Num("2");
 

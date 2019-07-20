@@ -11,7 +11,8 @@ import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingIntegerAddition()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("0");
 		Num secondOperand = new Num("1");
@@ -40,6 +41,7 @@ public class BinaryOperationTest
 
 		Result result = operation.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertFalse(operation.isCondition(variables));
 		assertEquals(PrimitiveType.INT, type);
 		assertEquals(0, result.getErrors().length());
@@ -64,7 +66,7 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingLongIntegerAddition()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2");
@@ -103,7 +105,7 @@ public class BinaryOperationTest
 	@Test
 	public void testAddIntegerAndLongInteger()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("2");
@@ -145,7 +147,7 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingFloatAddition()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
@@ -188,7 +190,7 @@ public class BinaryOperationTest
 	@Test
 	public void testCompilingFloatAdditionWithCastOfSecondOperand()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
@@ -231,7 +233,7 @@ public class BinaryOperationTest
 	@Test
 	public void testAdditionOfWrongType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
 		This secondOperand = new This(new ReferenceType(Object.class));
@@ -257,7 +259,7 @@ public class BinaryOperationTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression firstOperand = new InvalidExpression(PrimitiveType.DOUBLE);
 		Expression secondOperand = new InvalidExpression(PrimitiveType.DOUBLE);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Expression expression =
 			new BinaryOperation(

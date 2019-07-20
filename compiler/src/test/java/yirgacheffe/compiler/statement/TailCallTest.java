@@ -20,7 +20,8 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class TailCallTest
 	{
 		Statement invocation = new DoNothing();
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 
@@ -71,7 +72,7 @@ public class TailCallTest
 		Type stringType = new ReferenceType(String.class);
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE, stringType);
 		Signature caller = new Signature(new NullType(), "method", parameters);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 		Result result = tailCall.compile(variables, caller);
 

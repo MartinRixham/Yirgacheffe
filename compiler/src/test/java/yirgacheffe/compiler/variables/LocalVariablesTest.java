@@ -1,4 +1,4 @@
-package yirgacheffe.compiler.type;
+package yirgacheffe.compiler.variables;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
@@ -7,17 +7,18 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
+import yirgacheffe.compiler.type.PrimitiveType;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
-public class VariablesTest
+public class LocalVariablesTest
 {
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -30,7 +31,7 @@ public class VariablesTest
 	@Test
 	public void testReadUndeclaredVariable()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -46,7 +47,7 @@ public class VariablesTest
 	@Test
 	public void testWriteDeclaredVariable()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
@@ -60,7 +61,7 @@ public class VariablesTest
 	@Test
 	public void testWriteUndeclaredVariable()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);

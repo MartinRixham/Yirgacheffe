@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class Num implements Expression, Literal

@@ -12,7 +12,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class StringConcatenationTest
 	@Test
 	public void testNumberAddition()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Num("3.0");
@@ -54,7 +55,7 @@ public class StringConcatenationTest
 	@Test
 	public void testCompilingStringConcatenation()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Streeng firstOperand = new Streeng("\"this\"");
 		Streeng secondOperand = new Streeng("\"that\"");
@@ -150,7 +151,7 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateStringWithNumber()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Streeng("\"thingy\"");
@@ -225,7 +226,7 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateNumberWithString()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Num("2.0");

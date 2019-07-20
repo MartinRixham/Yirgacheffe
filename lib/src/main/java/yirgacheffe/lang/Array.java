@@ -34,7 +34,7 @@ public class Array<T> implements Iterable<T>
 
 	public Array(Array<T> array)
 	{
-		this.array = Arrays.copyOf(array.array, array.length);
+		this.array = Arrays.copyOf(array.array, array.array.length);
 		this.length = array.length;
 	}
 

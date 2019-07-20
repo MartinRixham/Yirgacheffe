@@ -12,7 +12,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -46,7 +46,7 @@ public class ForTest
 
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);
 
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = forStatement.compile(variables, null);
 
 		assertEquals(0, result.getErrors().length());

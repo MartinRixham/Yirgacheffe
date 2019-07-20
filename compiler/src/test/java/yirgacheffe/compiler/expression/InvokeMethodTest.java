@@ -19,11 +19,12 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingToStringInvocation()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 
@@ -101,7 +102,7 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingPrivateMethodInvocation()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
 		Expression expression = new This(testClass);
@@ -152,7 +153,7 @@ public class InvokeMethodTest
 	@Test
 	public void testInvocationCallWithArgument()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
@@ -204,7 +205,7 @@ public class InvokeMethodTest
 	@Test
 	public void testCompileArguments()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Expression expression = new Streeng("\"thingy\"");
 		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
@@ -236,7 +237,7 @@ public class InvokeMethodTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Array<Type> typeParameters =
 			new Array<>(PrimitiveType.DOUBLE, PrimitiveType.DOUBLE);
@@ -329,7 +330,7 @@ public class InvokeMethodTest
 	@Test
 	public void testPassingIntegerToNumberMethod()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		This testClass = new This(new ReferenceType(this.getClass()));
 		Array<Expression> arguments = new Array<>(new Num("1"));
@@ -381,7 +382,7 @@ public class InvokeMethodTest
 	@Test
 	public void testInterfaceMethodInvocation()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type owner = new ReferenceType(Runnable.class);
 
 		variables.declare("myVariable", owner);
@@ -443,7 +444,7 @@ public class InvokeMethodTest
 				testClass,
 				arguments);
 
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		Result result = invokeMethod.compile(variables);
 
@@ -462,7 +463,7 @@ public class InvokeMethodTest
 		String name = "myMethod";
 		Num number = new Num("1.0");
 		Array<Expression> arguments = new Array<>(number);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -485,7 +486,7 @@ public class InvokeMethodTest
 	@Test
 	public void testVariableArguments()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
 		Expression expression = new This(testClass);
@@ -573,7 +574,7 @@ public class InvokeMethodTest
 	@Test
 	public void testInvalidVariableArguments()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
 		Expression expression = new This(testClass);

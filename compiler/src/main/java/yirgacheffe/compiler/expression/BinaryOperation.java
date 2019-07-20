@@ -11,7 +11,7 @@ import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class BinaryOperation implements Expression
@@ -98,6 +98,10 @@ public class BinaryOperation implements Expression
 		{
 			result = result.add(new InsnNode(this.operator.getDoubleOpcode()));
 		}
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(type);
 
 		return result;
 	}

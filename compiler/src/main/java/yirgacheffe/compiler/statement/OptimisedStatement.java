@@ -5,7 +5,8 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.OptimisedVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class OptimisedStatement implements Statement
@@ -25,6 +26,7 @@ public class OptimisedStatement implements Statement
 	public Result compile(Variables variables, Signature caller)
 	{
 		Result result = new Result();
+		variables = new OptimisedVariables(variables);
 		Array<Error> errors = this.statement.compile(variables, caller).getErrors();
 
 		for (Error error: errors)

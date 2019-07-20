@@ -16,7 +16,8 @@ import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndDoubles()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 
@@ -43,6 +44,7 @@ public class BooleanOperationTest
 		Type type = and.getType(variables);
 		Result result = and.compile(variables);
 
+		assertEquals(1, variables.getStack().length());
 		assertTrue(and.isCondition(variables));
 		assertTrue(type.isAssignableTo(PrimitiveType.DOUBLE));
 		assertEquals(0, result.getErrors().length());
@@ -98,7 +100,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndIntegers()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("0");
 		Num secondOperand = new Num("0");
 
@@ -147,7 +149,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndBooleans()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 
@@ -196,7 +198,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndObjects()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
 
@@ -247,7 +249,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingAndStrings()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Streeng firstOperand = new Streeng("\"mystring\"");
 		Streeng secondOperand = new Streeng("\"notherstring\"");
 
@@ -335,7 +337,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingDoubleAndString()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("0.0");
 		Streeng secondOperand = new Streeng("\"thingy\"");
 
@@ -406,7 +408,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompileIntegerAndString()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("0");
 		Streeng secondOperand = new Streeng("\"thingy\"");
 
@@ -467,7 +469,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingIntegerAndDouble()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0.0");
 
@@ -528,7 +530,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingIntegerAndBoolean()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Bool secondOperand = new Bool("false");
 
@@ -595,7 +597,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingDoubleAndInteger()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("1.0");
 		Num secondOperand = new Num("0");
 
@@ -664,7 +666,7 @@ public class BooleanOperationTest
 	@Test
 	public void testCompilingBooleanAndDouble()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Num secondOperand = new Num("0.0");
 
@@ -731,7 +733,7 @@ public class BooleanOperationTest
 	@Test
 	public void testOrDifferentTypesAreAssignableToCommonSupertype()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type arrayList = new ReferenceType(java.util.ArrayList.class);
 		Type linkedList = new ReferenceType(java.util.LinkedList.class);
 		Type list = new ReferenceType(java.util.List.class);

@@ -9,11 +9,12 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Variable;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class Block implements Statement
 	public Result compile(Variables variables, Signature caller)
 	{
 		Array<Statement> statements = this.statements;
-		Map<String, Variable> declaredVariables = variables.getVariables();
+		Map<String, Variable> declaredVariables = new HashMap<>(variables.getVariables());
 		boolean unreachableCode = false;
 		Result result = new Result();
 
@@ -98,7 +99,7 @@ public class Block implements Statement
 				{
 					Statement optimisedStatement = new OptimisedStatement(statement);
 					this.statements.splice(i, 1, optimisedStatement);
-					variables.optimise(variableRead, (VariableWrite) statement);
+					variables.optimise(variableRead, statement.getExpression());
 					optimised = true;
 				}
 			}
@@ -111,10 +112,7 @@ public class Block implements Statement
 			if (statement instanceof VariableDeclaration &&
 				!variableWrites.contains(statement))
 			{
-				VariableDeclaration optimisedDeclaration =
-					new VariableDeclaration((VariableDeclaration) statement);
-
-				this.statements.splice(i, 1, optimisedDeclaration);
+				this.statements.splice(i, 1, new OptimisedStatement(statement));
 			}
 
 			variableReads.removeAll(Collections.singleton(statement));

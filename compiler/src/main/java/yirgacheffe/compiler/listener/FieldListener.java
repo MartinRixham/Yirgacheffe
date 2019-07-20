@@ -14,10 +14,11 @@ import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ConstructorListener
@@ -71,7 +72,7 @@ public class FieldListener extends ConstructorListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
-		Variables variables = new Variables(this.constants);
+		Variables variables = new LocalVariables(this.constants);
 		Expression expression = this.expressions.pop();
 		Type expressionType = expression.getType(variables);
 		Type fieldType = this.types.getType(declaration.type());

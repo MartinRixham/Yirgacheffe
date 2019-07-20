@@ -12,7 +12,8 @@ import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.lang.MutableReference;
 
@@ -38,7 +39,7 @@ public class ArgumentsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression string = new Streeng("\"\"");
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(args, variables);
@@ -67,7 +68,7 @@ public class ArgumentsTest
 	@Test
 	public void testGettingBooleanPrintlnMethod()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression bool = new Bool("true");
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(args, variables);
@@ -96,7 +97,7 @@ public class ArgumentsTest
 	@Test
 	public void testFailedToMatchFunction()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Arguments arguments = new Arguments(new Array<>(), variables);
@@ -123,7 +124,7 @@ public class ArgumentsTest
 	@Test
 	public void testAmbiguousMatching()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		ReferenceType hashMap = new ReferenceType(HashMap.class);
 		Type string = new ReferenceType(String.class);
 		Array<Type> strings = new Array<>(string, string);
@@ -155,7 +156,7 @@ public class ArgumentsTest
 	@Test
 	public void testMismatchedParameters()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Expression> args = new Array<>(new Bool("true"));
@@ -183,7 +184,7 @@ public class ArgumentsTest
 	@Test
 	public void testConstructorCallWithWrongArgument()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
 		Array<Expression> args = new Array<>(new Num("1"));
@@ -208,7 +209,7 @@ public class ArgumentsTest
 	@Test
 	public void testMethodCallWithMismatchedTypeParameter()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		ReferenceType mutableReference = new ReferenceType(MutableReference.class);
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);
@@ -239,7 +240,7 @@ public class ArgumentsTest
 	@Test
 	public void testArrayConstructor()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Array<Type> typeParams = new Array<>(string);
 		Type array = new ParameterisedType(new ReferenceType(Array.class), typeParams);

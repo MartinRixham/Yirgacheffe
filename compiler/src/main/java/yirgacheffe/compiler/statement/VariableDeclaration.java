@@ -6,7 +6,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class VariableDeclaration implements Statement
@@ -15,17 +15,10 @@ public class VariableDeclaration implements Statement
 
 	private Type type;
 
-	private VariableDeclaration declaration;
-
 	public VariableDeclaration(String name, Type type)
 	{
 		this.name = name;
 		this.type = type;
-	}
-
-	public VariableDeclaration(VariableDeclaration declaration)
-	{
-		this.declaration = declaration;
 	}
 
 	public boolean returns()
@@ -35,14 +28,7 @@ public class VariableDeclaration implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		if (this.declaration == null)
-		{
-			variables.declare(this.name, this.type);
-		}
-		else
-		{
-			variables.declareOptimised(this.declaration.name, this.declaration.type);
-		}
+		variables.declare(this.name, this.type);
 
 		return new Result();
 	}

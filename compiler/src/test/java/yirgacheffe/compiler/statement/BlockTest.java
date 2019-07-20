@@ -25,7 +25,7 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 		Block block = new Block(coordinate, new Array<>(variableDeclaration));
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		block.compile(variables, caller);
 
@@ -71,7 +71,7 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = block.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -86,7 +86,7 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement);
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = block.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -112,7 +112,7 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -156,7 +156,7 @@ public class BlockTest
 		Array<Statement> statements =
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -233,7 +233,7 @@ public class BlockTest
 				functionCall);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -316,7 +316,7 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -404,7 +404,7 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -478,7 +478,7 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -536,7 +536,7 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -564,7 +564,7 @@ public class BlockTest
 
 		VariableDeclaration firstDeclaration =
 			new VariableDeclaration("var1", PrimitiveType.DOUBLE);
-		Expression number = new Num("1.0");
+		Expression number = new Num("0.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var1", number);
 
 		VariableDeclaration secondDeclaration =
@@ -588,7 +588,7 @@ public class BlockTest
 				secondWrite);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -600,7 +600,7 @@ public class BlockTest
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.DCONST_1, firstInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_0, firstInstruction.getOpcode());
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
@@ -672,7 +672,7 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 

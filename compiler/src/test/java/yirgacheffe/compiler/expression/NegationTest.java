@@ -6,7 +6,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class NegationTest
 	@Test
 	public void testNegationOfWrongType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(new ReferenceType(String.class));
 		Negation negation = new Negation(coordinate, operand);
@@ -39,7 +40,7 @@ public class NegationTest
 	@Test
 	public void testNegation()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression operand = new Num("1");
 		Negation negation = new Negation(coordinate, operand);

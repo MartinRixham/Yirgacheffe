@@ -6,9 +6,9 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.statement.VariableWrite;
-import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class VariableRead implements Expression
@@ -30,8 +30,6 @@ public class VariableRead implements Expression
 
 	public Result compile(Variables variables)
 	{
-		variables.stackPush(this.getType(variables));
-
 		if (variables.hasConstant(this.name))
 		{
 			return new Result().add(new LdcInsnNode(variables.getConstant(this.name)));
@@ -45,6 +43,7 @@ public class VariableRead implements Expression
 			else
 			{
 				variables.read(this);
+				variables.stackPush(this.getType(variables));
 
 				Variable variable = variables.getVariable(this.name);
 				int loadInstruction = variable.getType().getLoadInstruction();

@@ -9,7 +9,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class VariableWrite implements Statement
@@ -91,7 +91,6 @@ public class VariableWrite implements Statement
 		return this.expression.getVariableReads();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>(this);

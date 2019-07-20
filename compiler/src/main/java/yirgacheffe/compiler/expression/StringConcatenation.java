@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class StringConcatenation implements Expression

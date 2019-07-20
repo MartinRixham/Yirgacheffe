@@ -7,10 +7,11 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.statement.VariableWrite;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingStringRead()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type owner = new ReferenceType(String.class);
 
 		variables.declare("myVariable", owner);
@@ -50,7 +51,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingNumberRead()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type owner = PrimitiveType.DOUBLE;
 
 		variables.declare("myVariable", owner);
@@ -75,7 +76,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingIntegerRead()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Type owner = PrimitiveType.INT;
 
 		variables.declare("myVariable", owner);

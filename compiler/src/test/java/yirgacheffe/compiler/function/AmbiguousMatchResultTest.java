@@ -3,7 +3,8 @@ package yirgacheffe.compiler.function;
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 
 import java.util.HashMap;
 
@@ -15,7 +16,7 @@ public class AmbiguousMatchResultTest
 	@Test
 	public void testAmbiguousMatchResult()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		MatchResult matchResult = new AmbiguousMatchResult(1);
 
 		assertEquals("", matchResult.getName());

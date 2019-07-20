@@ -16,7 +16,7 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -37,11 +37,12 @@ public class VariableWriteTest
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
 
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		variables.declare("myVariable", new ReferenceType(String.class));
 
 		Result result = variableWrite.compile(variables, caller);
 
+		assertEquals(0, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 
 		Array<AbstractInsnNode> instructions =  result.getInstructions();
@@ -69,7 +70,7 @@ public class VariableWriteTest
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
 
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		variables.declare("myVariable", string);
 
 		Result result = variableWrite.compile(variables, caller);

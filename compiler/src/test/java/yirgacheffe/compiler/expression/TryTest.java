@@ -3,7 +3,8 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 
 import java.util.HashMap;
 
@@ -15,7 +16,7 @@ public class TryTest
 	@Test
 	public void testCompilingTry()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Try tryExpression = new Try(new Num("1"));
 
 		Result result = tryExpression.compileCondition(variables, null, null);

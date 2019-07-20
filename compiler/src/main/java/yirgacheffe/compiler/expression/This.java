@@ -4,8 +4,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.type.Variables;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class This implements Expression

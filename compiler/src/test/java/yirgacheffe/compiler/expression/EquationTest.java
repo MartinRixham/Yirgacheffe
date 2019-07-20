@@ -19,7 +19,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class EquationTest
 	public void testCompilingEqualDoubles()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 		Comparator equals = new Equals();
@@ -96,7 +97,7 @@ public class EquationTest
 	public void testCompilingNotEqualDoubles()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2.0");
 		Comparator notEquals = new NotEquals();
@@ -159,7 +160,7 @@ public class EquationTest
 	public void testCompilingEqualBooleans()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 		Comparator equals = new Equals();
@@ -215,7 +216,7 @@ public class EquationTest
 	public void testCompilingEqualIntegers()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("1");
 		Num secondOperand = new Num("0");
 		Comparator equals = new Equals();
@@ -271,7 +272,7 @@ public class EquationTest
 	public void testCompilingNotEqualBooleans()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
 		Comparator notEquals = new NotEquals();
@@ -345,7 +346,7 @@ public class EquationTest
 	public void testCompilingIntegerEqualsDouble()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("3");
 		Num secondOperand = new Num("2.0");
 		Comparator equals = new Equals();
@@ -411,7 +412,7 @@ public class EquationTest
 	public void testCompilingDoubleEqualsInteger()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Num firstOperand = new Num("3.0");
 		Num secondOperand = new Num("2");
 		Comparator equals = new Equals();
@@ -476,7 +477,7 @@ public class EquationTest
 	@Test
 	public void testEquationOfWrongType()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Num firstOperand = new Num("3.0");
 		This secondOperand = new This(new ReferenceType(Object.class));
@@ -498,7 +499,7 @@ public class EquationTest
 	@Test
 	public void testEquationGreaterThanBooleans()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Bool firstOperand = new Bool("true");
 		Bool secondOperand = new Bool("false");
@@ -520,7 +521,7 @@ public class EquationTest
 	@Test
 	public void testEquationGreaterThanStrings()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Streeng firstOperand = new Streeng("\"thingy\"");
 		Streeng secondOperand = new Streeng("\"sumpt\"");
@@ -543,7 +544,7 @@ public class EquationTest
 	public void testCompilingEqualObjects()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
 		Comparator notEquals = new Equals();
@@ -602,7 +603,7 @@ public class EquationTest
 	public void testCompilingNotEqualObjects()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
 		Comparator notEquals = new NotEquals();
@@ -660,7 +661,7 @@ public class EquationTest
 	@Test
 	public void testEquationGreaterThanObjects()
 	{
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Expression firstOperand = new This(new ReferenceType(Object.class));
 		Expression secondOperand = new This(new ReferenceType(Object.class));
@@ -684,7 +685,7 @@ public class EquationTest
 	public void testCompilingEqualStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(String.class));
 		Expression secondOperand = new This(new ReferenceType(String.class));
 		Comparator equals = new Equals();
@@ -724,7 +725,7 @@ public class EquationTest
 	public void testCompilingNotEqualStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new Variables(new HashMap<>());
+		Variables variables = new LocalVariables(new HashMap<>());
 		Expression firstOperand = new This(new ReferenceType(String.class));
 		Expression secondOperand = new This(new ReferenceType(String.class));
 		Comparator notEquals = new NotEquals();

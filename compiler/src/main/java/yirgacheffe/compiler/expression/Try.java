@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class Try implements Expression
@@ -32,19 +32,20 @@ public class Try implements Expression
 		Label start = new Label();
 		Label end = new Label();
 		Label handler = new Label();
-		int variableCount = variables.variableCount();
+		int variableCount = variables.nextVariableIndex();
 		Array<Type> stack = new Array<>(variables.getStack());
 		Result result = new Result();
 
 		for (int i = stack.length() - 1; i >= 0; i--)
 		{
 			Type variableType = stack.get(i);
-			variableCount += variableType.width();
 
 			result = result.add(
 				new VarInsnNode(
 					variableType.getStoreInstruction(),
 					variableCount));
+
+			variableCount += variableType.width();
 		}
 
 		result = result
@@ -52,7 +53,7 @@ public class Try implements Expression
 				new LabelNode(start),
 				new LabelNode(end),
 				new LabelNode(handler),
-				"java/lang/Throwable"))
+				null))
 			.add(new LabelNode(start))
 			.concat(this.expression.compile(variables))
 			.concat(type.convertTo(new ReferenceType(Object.class)))
@@ -61,13 +62,13 @@ public class Try implements Expression
 
 		for (Type variableType: stack)
 		{
+			variableCount -= variableType.width();
+
 			result = result
 				.add(new VarInsnNode(
 					variableType.getLoadInstruction(),
 					variableCount))
 				.add(new InsnNode(Opcodes.SWAP));
-
-			variableCount -= variableType.width();
 		}
 
 		return result;

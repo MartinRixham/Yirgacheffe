@@ -23,7 +23,7 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -250,7 +250,7 @@ public class MethodListener extends FieldDeclarationListener
 
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
-		Variables variables = new Variables(this.constants);
+		LocalVariables variables = new LocalVariables(this.constants);
 		boolean returns = block.returns();
 
 		Result result = block.compile(variables, this.signature);

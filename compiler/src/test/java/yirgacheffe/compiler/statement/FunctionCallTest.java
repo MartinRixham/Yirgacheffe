@@ -20,7 +20,8 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
-import yirgacheffe.compiler.type.Variables;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class FunctionCallTest
 
 		FunctionCall functionCall = new FunctionCall(invoke);
 
-		Variables variables = new Variables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = functionCall.compile(variables, caller);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
