@@ -22,7 +22,7 @@ public class ParseErrorStrategy extends DefaultErrorStrategy
 	public void reportNoViableAlternative(Parser recognizer, NoViableAltException e)
 	{
 		String keyword = e.getOffendingToken().getText();
-		String message = "Invalid use of keyword '" + keyword + "'";
+		String message = "Invalid use of symbol '" + keyword + "'";
 
 		recognizer.notifyErrorListeners(e.getOffendingToken(), message, e);
 	}

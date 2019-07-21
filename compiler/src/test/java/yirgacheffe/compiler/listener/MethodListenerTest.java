@@ -76,7 +76,7 @@ public class MethodListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 3:4 Invalid use of keyword 'return'.\n",
+			"line 3:4 Invalid use of symbol 'return'.\n",
 			result.getErrors());
 	}
 
