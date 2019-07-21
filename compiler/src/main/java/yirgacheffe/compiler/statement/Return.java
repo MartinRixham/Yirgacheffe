@@ -49,6 +49,7 @@ public class Return implements Statement
 		{
 			result = result
 				.concat(this.expression.compile(variables))
+				.concat(type.convertTo(this.type))
 				.add(new InsnNode(this.type.getReturnInstruction()));
 
 			variables.stackPop();
