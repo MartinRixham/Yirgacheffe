@@ -5,6 +5,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
+import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -44,6 +45,18 @@ public class OptimisedVariables implements Variables
 
 	public void write(VariableWrite variableWrite)
 	{
+		String name = variableWrite.getName();
+
+		if (this.variables.containsKey(name))
+		{
+			Variable variable = this.variables.get(name);
+			Type type = variableWrite.getExpression().getType(this);
+
+			if (type.isPrimitive() || type instanceof AttemptedType)
+			{
+				this.variables.put(name, new Variable(variable.getIndex(), type));
+			}
+		}
 	}
 
 	public Variable getVariable(String name)

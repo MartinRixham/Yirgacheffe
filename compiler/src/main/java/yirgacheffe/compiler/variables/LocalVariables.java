@@ -4,6 +4,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
+import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -32,17 +33,6 @@ public class LocalVariables implements Variables
 	public LocalVariables(Map<String, Object> constants)
 	{
 		this.constants = constants;
-	}
-
-	public LocalVariables(LocalVariables variables)
-	{
-		this.nextVariableIndex = variables.nextVariableIndex;
-		this.variables = new HashMap<>(variables.variables);
-		this.variableReads = new Array<>(variables.variableReads);
-		this.variableWrites = new Array<>(variables.variableWrites);
-		this.optimisedVariables = new IdentityHashMap<>(variables.optimisedVariables);
-		this.constants = new HashMap<>(variables.constants);
-		this.stack = new Array<>(variables.stack);
 	}
 
 	public Map<String, Variable> getVariables()
@@ -81,11 +71,10 @@ public class LocalVariables implements Variables
 		if (this.variables.containsKey(name))
 		{
 			Variable variable = this.variables.get(name);
+			Type type = variableWrite.getExpression().getType(this);
 
-			if (variable.getType().isPrimitive())
+			if (type.isPrimitive() || type instanceof AttemptedType)
 			{
-				Type type = variableWrite.getExpression().getType(this);
-
 				this.variables.put(name, new Variable(variable.getIndex(), type));
 			}
 		}

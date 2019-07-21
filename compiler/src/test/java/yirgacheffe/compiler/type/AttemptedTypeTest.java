@@ -8,16 +8,16 @@ import yirgacheffe.compiler.operator.BooleanOperator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-public class NullTypeTest
+public class AttemptedTypeTest
 {
 	@Test
 	public void testNullType()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
+		assertEquals(Object.class, type.reflectionClass());
 		assertEquals(null, type.getSignature());
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals(1, type.width());
@@ -26,34 +26,14 @@ public class NullTypeTest
 		assertEquals(Opcodes.AASTORE, type.getArrayStoreInstruction());
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
-		assertEquals("java.lang.Object", type.toString());
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
 	}
 
 	@Test
-	public void testNullIsAssignableToString() throws Exception
-	{
-		Class<?> stringClass =
-			Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass("java.lang.String");
-
-		Type string = new ReferenceType(stringClass);
-
-		assertTrue(new NullType().isAssignableTo(string));
-	}
-
-	@Test
-	public void testNullIsAssignableToBoolean()
-	{
-		assertTrue(new NullType().isAssignableTo(PrimitiveType.BOOLEAN));
-	}
-
-	@Test
 	public void testNewArray()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		Result result = type.newArray();
 
@@ -64,7 +44,7 @@ public class NullTypeTest
 	@Test
 	public void testTypeConversion()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		Result result = type.convertTo(new ReferenceType(Object.class));
 
@@ -75,7 +55,7 @@ public class NullTypeTest
 	@Test
 	public void testSwap()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		Result result = type.swapWith(new ReferenceType(Object.class));
 
@@ -86,7 +66,7 @@ public class NullTypeTest
 	@Test
 	public void testIntersection()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		Type intersection = type.intersect(new ReferenceType(Object.class));
 
@@ -96,7 +76,7 @@ public class NullTypeTest
 	@Test
 	public void testComparison()
 	{
-		Type type = new NullType();
+		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		Result result = type.compare(BooleanOperator.AND, new Label());
 

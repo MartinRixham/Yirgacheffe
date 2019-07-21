@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -23,12 +24,12 @@ public class Try implements Expression
 
 	public Type getType(Variables variables)
 	{
-		return this.expression.getType(variables);
+		return new AttemptedType(this.expression.getType(variables));
 	}
 
 	public Result compile(Variables variables)
 	{
-		Type type = this.getType(variables);
+		Type type = this.expression.getType(variables);
 		Label start = new Label();
 		Label end = new Label();
 		Label handler = new Label();

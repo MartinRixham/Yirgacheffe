@@ -567,7 +567,7 @@ public class StatementListenerTest
 				"{\n" +
 					"return new Exception();\n" +
 				"}\n" +
-				"public Void handle(Num number) {}\n" +
+				"public Void handle(Object number) {}\n" +
 				"public Void handle(Exception e) {}\n" +
 				"public MyClass() {}\n" +
 			"}";

@@ -5,18 +5,13 @@ import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
-public class NullType implements Type
+public class AttemptedType implements Type
 {
-	private String name;
+	private Type type;
 
-	public NullType(String name)
+	public AttemptedType(Type type)
 	{
-		this.name = name;
-	}
-
-	public NullType()
-	{
-		this.name = "java.lang.Object";
+		this.type = type;
 	}
 
 	public Class<?> reflectionClass()
@@ -31,7 +26,7 @@ public class NullType implements Type
 
 	public String toFullyQualifiedType()
 	{
-		return this.name.replace(".", "/");
+		return "java/lang/Object";
 	}
 
 	public int width()
@@ -66,7 +61,7 @@ public class NullType implements Type
 
 	public boolean isAssignableTo(Type other)
 	{
-		return true;
+		return this.type.isAssignableTo(other);
 	}
 
 	public boolean hasParameter()
@@ -107,11 +102,5 @@ public class NullType implements Type
 	public Result compare(BooleanOperator operator, Label label)
 	{
 		return new Result();
-	}
-
-	@Override
-	public String toString()
-	{
-		return this.name;
 	}
 }
