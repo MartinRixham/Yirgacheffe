@@ -103,11 +103,16 @@ public class InvokeMethod implements Expression
 		}
 
 		String ownerDescriptor = owner.toFullyQualifiedType();
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
-		String descriptor =
-			'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
-			ownerDescriptor + ';' : ownerDescriptor) +
-			matchResult.getDescriptor().substring(1);
+		StringBuilder descriptor =
+			new StringBuilder(
+				'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
+				ownerDescriptor + ';' : ownerDescriptor));
+
+		descriptor.append(arguments.getDescriptor(parameterTypes));
+		descriptor.append(')');
+		descriptor.append(matchResult.getReturnType().toJVMType());
 
 		MethodType methodType =
 			MethodType.methodType(
@@ -135,7 +140,7 @@ public class InvokeMethod implements Expression
 			.concat(this.coordinate.compile())
 			.add(new InvokeDynamicInsnNode(
 				matchResult.getName(),
-				descriptor,
+				descriptor.toString(),
 				bootstrapMethod))
 			.concat(returnType.convertTo(this.getType(variables)))
 			.concat(this.getError(matchResult, owner, arguments));

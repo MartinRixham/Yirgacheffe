@@ -36,14 +36,14 @@ public class SuccessfulMatchResult implements MatchResult
 			variables);
 	}
 
-	public String getDescriptor()
-	{
-		return this.function.getDescriptor();
-	}
-
 	public String getName()
 	{
 		return this.function.getName();
+	}
+
+	public Array<Type> getParameterTypes()
+	{
+		return this.function.getParameterTypes();
 	}
 
 	public Type getReturnType()

@@ -20,7 +20,7 @@ public class AmbiguousMatchResultTest
 		MatchResult matchResult = new AmbiguousMatchResult(1);
 
 		assertEquals("", matchResult.getName());
-		assertEquals("()V", matchResult.getDescriptor());
+		assertEquals(0, matchResult.getParameterTypes().length());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
 		assertEquals(matchResult, matchResult.betterOf(matchResult));

@@ -139,4 +139,18 @@ public class ArrayType implements Type
 	{
 		return this.type;
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		Type type = (Type) other;
+
+		return this.reflectionClass.equals(type.reflectionClass());
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.reflectionClass.hashCode();
+	}
 }

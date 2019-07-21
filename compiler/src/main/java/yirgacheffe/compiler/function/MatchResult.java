@@ -14,9 +14,9 @@ public interface MatchResult
 
 	Result compileArguments(Variables variables);
 
-	String getDescriptor();
-
 	String getName();
+
+	Array<Type> getParameterTypes();
 
 	Type getReturnType();
 

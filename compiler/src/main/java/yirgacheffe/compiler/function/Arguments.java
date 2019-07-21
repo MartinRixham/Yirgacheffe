@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.ArrayType;
+import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.Type;
@@ -277,5 +278,27 @@ public class Arguments
 		{
 			return variableArguments;
 		}
+	}
+
+	public String getDescriptor(Array<Type> parameterTypes)
+	{
+		StringBuilder descriptor = new StringBuilder();
+
+		for (int i = 0; i < parameterTypes.length(); i++)
+		{
+			Type argumentType = this.argumentTypes.get(i);
+
+			if (argumentType instanceof AttemptedType)
+			{
+				descriptor.append("Ljava/lang/Object;");
+			}
+			else
+			{
+				Type parameter = parameterTypes.get(i);
+				descriptor.append(parameter.toJVMType());
+			}
+		}
+
+		return descriptor.toString();
 	}
 }

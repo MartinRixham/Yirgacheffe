@@ -64,6 +64,12 @@ public class InvokeConstructor implements Expression
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+		StringBuilder descriptor = new StringBuilder("(");
+
+		descriptor.append(arguments.getDescriptor(parameterTypes));
+		descriptor.append(")V");
+
 		Result result = new Result()
 			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
 			.add(new InsnNode(Opcodes.DUP))
@@ -73,7 +79,7 @@ public class InvokeConstructor implements Expression
 				Opcodes.INVOKESPECIAL,
 				this.owner.toFullyQualifiedType(),
 				"<init>",
-				matchResult.getDescriptor(),
+				descriptor.toString(),
 				false))
 			.concat(this.getError(matchResult, arguments));
 

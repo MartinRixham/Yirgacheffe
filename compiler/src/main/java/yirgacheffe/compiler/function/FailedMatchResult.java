@@ -24,14 +24,14 @@ public class FailedMatchResult implements MatchResult
 		return new Result();
 	}
 
-	public String getDescriptor()
-	{
-		return "()V";
-	}
-
 	public String getName()
 	{
 		return "";
+	}
+
+	public Array<Type> getParameterTypes()
+	{
+		return new Array<>();
 	}
 
 	public Type getReturnType()

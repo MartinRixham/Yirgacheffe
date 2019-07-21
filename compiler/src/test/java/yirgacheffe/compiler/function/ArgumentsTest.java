@@ -59,10 +59,14 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
-		assertEquals("(Ljava/lang/String;)V", matchResult.getDescriptor());
 		assertEquals("println", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(1, parameterTypes.length());
+		assertEquals(new ReferenceType(String.class), parameterTypes.get(0));
 	}
 
 	@Test
@@ -88,10 +92,14 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
-		assertEquals("(Z)V", matchResult.getDescriptor());
 		assertEquals("println", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(1, parameterTypes.length());
+		assertEquals(PrimitiveType.BOOLEAN, parameterTypes.get(0));
 	}
 
 	@Test
@@ -114,11 +122,13 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof FailedMatchResult);
-		assertEquals(-1, matchResult.score());
-		assertEquals("()V", matchResult.getDescriptor());
 		assertEquals("", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(0, parameterTypes.length());
 	}
 
 	@Test
@@ -147,10 +157,13 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof AmbiguousMatchResult);
 		assertEquals(0, matchResult.score());
-		assertEquals("()V", matchResult.getDescriptor());
 		assertEquals("", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(0, parameterTypes.length());
 	}
 
 	@Test
@@ -175,10 +188,13 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof FailedMatchResult);
 		assertEquals(-1, matchResult.score());
-		assertEquals("()V", matchResult.getDescriptor());
 		assertEquals("", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(0, parameterTypes.length());
 	}
 
 	@Test
@@ -200,10 +216,13 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof FailedMatchResult);
 		assertEquals(-1, matchResult.score());
-		assertEquals("()V", matchResult.getDescriptor());
 		assertEquals("", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(0, parameterTypes.length());
 	}
 
 	@Test
@@ -231,10 +250,14 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
-		assertEquals("(Ljava/lang/Object;)V", matchResult.getDescriptor());
 		assertEquals("set", matchResult.getName());
 		assertEquals(1, matchResult.getMismatchedParameters().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(1, parameterTypes.length());
+		assertEquals(new ReferenceType(Object.class), parameterTypes.get(0));
 	}
 
 	@Test
@@ -259,9 +282,15 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(0, matchResult.score());
-		assertEquals("([Ljava/lang/Object;)V", matchResult.getDescriptor());
 		assertEquals("yirgacheffe.lang.Array", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
+
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		assertEquals(1, parameterTypes.length());
+		assertEquals(
+			new ArrayType("[Ljava.lang.Object;", new ReferenceType(Object.class)),
+			parameterTypes.get(0));
 	}
 }
