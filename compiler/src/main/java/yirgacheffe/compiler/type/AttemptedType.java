@@ -2,6 +2,8 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -86,7 +88,24 @@ public class AttemptedType implements Type
 
 	public Result convertTo(Type type)
 	{
-		return new Result();
+		Result result = new Result();
+
+		if (type.isPrimitive())
+		{
+			result = result
+				.add(new TypeInsnNode(
+					Opcodes.CHECKCAST,
+					this.type.toFullyQualifiedType()))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Boxer",
+					"ofValue",
+					"(L" + this.type.toFullyQualifiedType() + ";)" +
+						this.type.getSignature(),
+					false));
+		}
+
+		return result;
 	}
 
 	public Result swapWith(Type type)
@@ -96,7 +115,7 @@ public class AttemptedType implements Type
 
 	public Type intersect(Type type)
 	{
-		return new ReferenceType(Object.class);
+		return this.type.intersect(type);
 	}
 
 	public Result compare(BooleanOperator operator, Label label)

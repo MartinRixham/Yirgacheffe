@@ -26,13 +26,14 @@ public class NumericExpressionListener extends FunctionCallListener
 		Array<Coordinate> coordinates = new Array<>();
 		Array<Expression> expressions = new Array<>();
 
-		for (YirgacheffeParser.UnaryOperationContext c: context.unaryOperation())
+		for (YirgacheffeParser.AttemptedExpressionContext c:
+			context.attemptedExpression())
 		{
 			coordinates.push(new Coordinate(c));
 			expressions.push(this.expressions.pop());
 		}
 
-		for (int i = 0; i < context.unaryOperation().size() - 1; i++)
+		for (int i = 0; i < context.attemptedExpression().size() - 1; i++)
 		{
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();

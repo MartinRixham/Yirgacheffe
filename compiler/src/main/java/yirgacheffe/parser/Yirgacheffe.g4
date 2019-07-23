@@ -132,9 +132,7 @@ instantiation: New type arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 
-expression: attemptedExpression;
-
-attemptedExpression: or | Try or;
+expression: or;
 
 or: and ('||' and)*;
 
@@ -152,9 +150,11 @@ add: multiply (additive multiply)*;
 
 additive: Subtract | Add;
 
-multiply: unaryOperation (multiplicative unaryOperation)*;
+multiply: attemptedExpression (multiplicative attemptedExpression)*;
 
 multiplicative: Remainder | Divide | Multiply;
+
+attemptedExpression: unaryOperation | (Try unaryOperation);
 
 unaryOperation:
     postincrement |

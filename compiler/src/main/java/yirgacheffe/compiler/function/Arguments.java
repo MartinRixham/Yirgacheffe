@@ -262,7 +262,12 @@ public class Arguments
 		Result result = argument.compile(variables);
 		Type argumentType = argument.getType(variables);
 
-		return result.concat(argumentType.convertTo(parameter));
+		if (!(argumentType instanceof AttemptedType))
+		{
+			result = result.concat(argumentType.convertTo(parameter));
+		}
+
+		return result;
 	}
 
 	private boolean hasVariableArguments(boolean variableArguments)
