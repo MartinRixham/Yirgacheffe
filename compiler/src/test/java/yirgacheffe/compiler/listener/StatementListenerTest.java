@@ -837,6 +837,116 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testTryExpressionAsArgument()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{" +
+					"this.handle(try this.getNumber());" +
+				"}\n" +
+				"public Num getNumber()" +
+				"{\n" +
+					"return new Exception();\n" +
+				"}\n" +
+				"public Void handle(Object number) {}\n" +
+				"public Void handle(Exception e) {}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		assertEquals(1, firstMethod.tryCatchBlocks.size());
+
+		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
+		Label startLabel = tryCatch.start.getLabel();
+		Label endLabel = tryCatch.end.getLabel();
+		Label handlerLabel = tryCatch.handler.getLabel();
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(16, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ASTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+
+		assertEquals(startLabel, thirdInstruction.getLabel());
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
+		assertEquals(0, fourthInstruction.var);
+
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("getNumber", seventhInstruction.name);
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKESTATIC, eighthInstruction.getOpcode());
+		assertEquals("valueOf", eighthInstruction.name);
+
+		LabelNode ninthInstruction = (LabelNode) instructions.get(8);
+
+		assertEquals(endLabel, ninthInstruction.getLabel());
+		assertEquals(handlerLabel, ninthInstruction.getLabel());
+
+		assertTrue(instructions.get(9) instanceof FrameNode);
+
+		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.ALOAD, eleventhInstruction.getOpcode());
+		assertEquals(1, eleventhInstruction.var);
+
+		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.SWAP, twelfthInstruction.getOpcode());
+
+		assertTrue(instructions.get(12) instanceof LabelNode);
+		assertTrue(instructions.get(13) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fifteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(14);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifteenthInstruction.getOpcode());
+		assertEquals("handle", fifteenthInstruction.name);
+		assertEquals("(LMyClass;Ljava/lang/Object;)V", fifteenthInstruction.desc);
+	}
+
+	@Test
 	public void testMismatchedReturnType()
 	{
 		String source =
