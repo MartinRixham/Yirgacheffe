@@ -115,7 +115,7 @@ public final class Bootstrap
 		String methodName,
 		boolean isPrivate,
 		Object receiver,
-		Object[] arguments) throws IllegalAccessException
+		Object[] arguments) throws Throwable
 	{
 		if (receiver == null)
 		{
@@ -171,6 +171,22 @@ public final class Bootstrap
 				{
 					bestMatching = matching;
 					matchedMethod = method;
+				}
+			}
+		}
+
+		if (matchedMethod == null)
+		{
+			if (receiver instanceof Throwable)
+			{
+				throw ((Throwable) receiver);
+			}
+
+			for (Object argument: arguments)
+			{
+				if (argument instanceof Throwable)
+				{
+					throw ((Throwable) argument);
 				}
 			}
 		}
