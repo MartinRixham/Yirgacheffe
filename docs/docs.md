@@ -90,7 +90,55 @@ Null values can be handled using conditional statements like this.
 
 ### Try/Catch Blocks
 
+Exceptional cases are handled a bit differently than in Java.
+Instead of throwing an exception when execution cannot continue you can return a exceptional value from any method.
+
+    public Num getNumber()
+    {
+        return new Exception();
+    }
+
+This exception will propogate through the program and if it isn't handled will end up being printed to standard error.
+Any expression can potentially evaluate to an exceptional value.
+Exceptional values can be detected using the `try` keyword and handled by calling a method with an overload that handles that exception.
+
+    class MyClass
+    {
+        main method(Array<String> args)
+        {
+            this.handle(try this.getNumber());
+        }
+
+        public Num getNumber()
+        {
+            return new Exception();
+        }
+
+        public Void handle(Num number)
+        {
+            // Handle successful case.
+        }
+
+        public Void handle(Exception e)
+        {
+            // Handle exceptional case.
+        }
+    }
+
 ### While, Break and Continue
+
+Loops are a common source of bugs and unnecessary complexity.
+I've always tried to keep it simple and avoid using while, break and continue.
+Here are the alternatives.
+
+If you don't know beforehand when a loop will terminate then a while loop is one possibility but it is usually less clear than a recursive function.
+Recursive functions have to explicitly state their exit conditions instead of updating and checking a boolean.
+If a recursive function is tail call optimisable then Yirgacheffe will apply the optimisation at compile time so you don't need to worry about stack overflow exceptions.
+
+Break is easy to avoid. Just put your loop inside a method then `return` can be used to exit the loop early.
+
+Avoiding continue is usually just a case of changing some conditions around.
+It's a bit case specific but I've never seen a case where continue is unavoidable.
 
 ### Switch Statements
 
