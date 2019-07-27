@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.util.UUID;
@@ -32,14 +33,15 @@ public class ConstructorListener extends MainMethodListener
 		this.inConstructor = true;
 
 		YirgacheffeParser.SignatureContext signature = context.signature();
+		String className = new Array<>(this.className.split("/")).pop();
 
 		boolean isValid = true;
 
-		if (!signature.Identifier().getText().equals(this.className))
+		if (!signature.Identifier().getText().equals(className))
 		{
 			String message =
 				"Constructor of incorrect type " + signature.Identifier().getText() +
-					": expected " + this.className + ".";
+					": expected " + className + ".";
 
 			Token token = signature.Identifier().getSymbol();
 

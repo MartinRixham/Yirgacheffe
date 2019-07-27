@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
+import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -42,6 +43,31 @@ public class FunctionCallListener extends ExpressionListener
 				this.arguments);
 
 		this.expressions.push(invoke);
+	}
+
+	@Override
+	public void exitSelfInstantiation(YirgacheffeParser.SelfInstantiationContext context)
+	{
+		try
+		{
+			String fullyQualifiedType = this.className.replace("/", ".");
+
+			Type thisType = this.classes.loadClass(fullyQualifiedType);
+
+			Coordinate coordinate = new Coordinate(context);
+
+			Expression invoke =
+				new InvokeThis(
+					coordinate,
+					thisType,
+					this.arguments);
+
+			this.expressions.push(invoke);
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

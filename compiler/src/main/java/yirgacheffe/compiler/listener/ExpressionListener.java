@@ -9,7 +9,7 @@ import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.Try;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -31,22 +31,15 @@ public class ExpressionListener extends LoopListener
 	@Override
 	public void enterThisRead(YirgacheffeParser.ThisReadContext context)
 	{
-		Type thisType;
-
 		try
 		{
-			String fullyQualifiedType =
-				this.packageName == null ?
-					this.className :
-					this.packageName + "." + this.className;
-
-			thisType = this.classes.loadClass(fullyQualifiedType);
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
 
 			this.expressions.push(new This(thisType));
 		}
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
-			this.expressions.push(new This(new ReferenceType(Object.class)));
+			this.expressions.push(new This(new NullType()));
 		}
 	}
 

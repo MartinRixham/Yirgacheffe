@@ -28,15 +28,13 @@ public class ParallelMethodListener extends MethodListener
 		String methodName =
 			context.classMethodDeclaration().signature().Identifier().getText();
 
-		String packageName = this.packageName == null ? "" : this.packageName + "/";
-		String className = packageName + this.className;
-		String runnableClass = className + "$" + methodName;
+		String runnableClass = this.className + "$" + methodName;
 
 		methodVisitor.visitTypeInsn(Opcodes.NEW, runnableClass);
 		methodVisitor.visitInsn(Opcodes.DUP);
 
 		Array<Type> parameters = this.signature.getParameters();
-		StringBuilder descriptor = new StringBuilder("(L" + className + ";");
+		StringBuilder descriptor = new StringBuilder("(L" + this.className + ";");
 
 		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
@@ -125,14 +123,11 @@ public class ParallelMethodListener extends MethodListener
 				context.parallelMethodDeclaration().classMethodDeclaration()
 					.signature().Identifier().getText();
 
-			String packageName = this.packageName == null ? "" : this.packageName + "/";
-			String className = packageName + this.className;
-
 			RunnableClass runnableClass =
 				new RunnableClass(
 					this.sourceFile,
-					className,
-					className + "$" + methodName,
+					this.className,
+					this.className + "$" + methodName,
 					methodName,
 					type,
 					this.signature);

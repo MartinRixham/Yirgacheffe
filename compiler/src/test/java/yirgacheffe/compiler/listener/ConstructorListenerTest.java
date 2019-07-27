@@ -5,6 +5,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -207,5 +210,85 @@ public class ConstructorListenerTest
 		assertEquals("MyClass", fourthInstruction.owner);
 		assertEquals("0thingy_init_field", fourthInstruction.name);
 		assertEquals("()V", fourthInstruction.desc);
+	}
+
+	@Test
+	public void testCallConstructorFromAnother()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()" +
+				"{" +
+					"this(\"\");" +
+				"}\n" +
+				"public MyClass(String param) {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(2, classNode.methods.size());
+
+		MethodNode firstConstructor = classNode.methods.get(0);
+
+		assertEquals("()V", firstConstructor.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, firstConstructor.access);
+		assertEquals("<init>", firstConstructor.name);
+
+		InsnList instructions = firstConstructor.instructions;
+
+		assertEquals(8, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("java/lang/Object", secondInstruction.owner);
+		assertEquals("<init>", secondInstruction.name);
+		assertEquals("()V", secondInstruction.desc);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals("", fourthInstruction.cst);
+
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESPECIAL, seventhInstruction.getOpcode());
+		assertEquals("MyClass", seventhInstruction.owner);
+		assertEquals("<init>", seventhInstruction.name);
+		assertEquals("(Ljava/lang/String;)V", seventhInstruction.desc);
+
+		MethodNode secondConstructor = classNode.methods.get(1);
+
+		assertEquals("(Ljava/lang/String;)V", secondConstructor.desc);
+		assertEquals(Opcodes.ACC_PUBLIC, secondConstructor.access);
+		assertEquals("<init>", secondConstructor.name);
 	}
 }

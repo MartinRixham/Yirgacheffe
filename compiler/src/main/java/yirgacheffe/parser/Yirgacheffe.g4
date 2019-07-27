@@ -124,11 +124,13 @@ fullyQualifiedType: packageName '.' Identifier;
 
 typeParameters: '<' type? (',' type)* '>';
 
-functionCall: instantiation | (expression methodCall);
+functionCall: instantiation | selfInstantiation | (expression methodCall);
 
 methodCall: '.' Identifier arguments;
 
 instantiation: New type arguments;
+
+selfInstantiation: This arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 

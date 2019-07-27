@@ -51,7 +51,7 @@ public class ClassListener extends PackageListener
 		}
 		else
 		{
-			this.className = context.Identifier().get(0).getText();
+			this.className = this.directory + context.Identifier().get(0).getText();
 		}
 
 		String[] interfaces = new String[this.interfaces.length()];
@@ -68,7 +68,7 @@ public class ClassListener extends PackageListener
 		this.classNode.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
-			this.directory + this.className,
+			this.className,
 			signature.toString(),
 			"java/lang/Object",
 			interfaces);
@@ -86,7 +86,7 @@ public class ClassListener extends PackageListener
 		}
 		else
 		{
-			this.className = context.Identifier().getText();
+			this.className = this.directory + context.Identifier().getText();
 		}
 
 		ClassSignature signature =
@@ -95,7 +95,7 @@ public class ClassListener extends PackageListener
 		this.classNode.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			this.directory + this.className,
+			this.className,
 			signature.toString(),
 			"java/lang/Object",
 			null);

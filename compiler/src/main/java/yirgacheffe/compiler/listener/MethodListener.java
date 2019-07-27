@@ -185,20 +185,9 @@ public class MethodListener extends FieldDeclarationListener
 			}
 		}
 
-		String owner;
-
-		if (this.packageName == null)
-		{
-			owner = this.className;
-		}
-		else
-		{
-			owner = this.packageName.replace(".", "/") + "/" + this.className;
-		}
-
 		result = result.add(new MethodInsnNode(
 			Opcodes.INVOKEVIRTUAL,
-			owner,
+			this.className,
 			to.getName(),
 			to.getDescriptor(),
 			false));

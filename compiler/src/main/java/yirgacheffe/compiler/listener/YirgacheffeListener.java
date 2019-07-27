@@ -61,12 +61,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 
 		byte[] bytes = writer.toByteArray();
 
-		String fullyQualifiedType =
-			this.packageName == null ?
-				this.className :
-				this.packageName + "." + this.className;
-
-		this.classes.addClass(fullyQualifiedType, bytes);
+		this.classes.addClass(this.className.replace("/", "."), bytes);
 	}
 
 	public CompilationResult getCompilationResult()
@@ -83,7 +78,7 @@ public class YirgacheffeListener extends YirgacheffeBaseListener
 			this.classNode.visitSource(this.sourceFile, null);
 			this.classNode.accept(writer);
 
-			String classFileName = this.directory + this.className + ".class";
+			String classFileName = this.className + ".class";
 			byte[] bytes = writer.toByteArray();
 
 			return new CompilationResult(classFileName, bytes, this.generatedClasses);
