@@ -5,9 +5,13 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.lang.reflect.Field;
 
 public class FieldRead implements Expression
 {
@@ -17,31 +21,54 @@ public class FieldRead implements Expression
 
 	private String name;
 
-	private Type type;
-
-	public FieldRead(Coordinate coordinate, Expression owner, String name, Type type)
+	public FieldRead(Coordinate coordinate, Expression owner, String name)
 	{
 		this.coordinate = coordinate;
 		this.owner = owner;
 		this.name = name;
-		this.type = type;
 	}
 
 	public Type getType(Variables variables)
 	{
-		return this.type;
+		Type ownerType = this.owner.getType(variables);
+		Field[] fields = ownerType.reflectionClass().getDeclaredFields();
+		Type type = new NullType();
+
+		for (Field field: fields)
+		{
+			if (field.getName().equals(this.name))
+			{
+				type = Type.getType(field.getGenericType(), ownerType);
+				break;
+			}
+		}
+
+		return type;
 	}
 
 	public Result compile(Variables variables)
 	{
-		return this.owner.compile(variables)
+		Result result = new Result();
+		Type ownerType = this.owner.getType(variables);
+		Type type = this.getType(variables);
+
+		if (type instanceof NullType)
+		{
+			String message = "Unknown field '" + this.name + "'.";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		result = result
+			.concat(this.owner.compile(variables))
 			.concat(this.coordinate.compile())
 			.add(new FieldInsnNode(
 				Opcodes.GETFIELD,
-				this.owner.getType(variables).toFullyQualifiedType(),
+				ownerType.toFullyQualifiedType(),
 				this.name,
-				this.type.toJVMType()));
+				type.toJVMType()));
 
+		return result;
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

@@ -27,6 +27,7 @@ public class MutableReferenceTest
 	public void testMutableReference() throws Exception
 	{
 		String source =
+			"import java.util.List;\n" +
 			"class MyClass\n" +
 			"{\n" +
 				"MutableReference<String> myString =" +
@@ -45,7 +46,7 @@ public class MutableReferenceTest
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
 
-		compiler.compileClassDeclaration(classes);
+		compiler.compileInterface(classes);
 
 		classes.clearCache();
 

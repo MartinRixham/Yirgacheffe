@@ -722,7 +722,7 @@ public class FieldListenerTest
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
 
-		compiler.compileClassDeclaration(classes);
+		compiler.compileInterface(classes);
 
 		classes.clearCache();
 
@@ -795,7 +795,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 5:19 Unknown field 'myStringField'.\n",
+			"line 5:18 Unknown field 'myStringField'.\n",
 			result.getErrors());
 	}
 
@@ -1182,7 +1182,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 6:12 Unknown field 'myField'.\n",
+			"line 6:11 Unknown field 'myField'.\n",
 			result.getErrors());
 	}
 
@@ -1298,8 +1298,38 @@ public class FieldListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
-		assertEquals("line 10:5 Unknown field 'out'.\n" +
+		assertEquals("line 10:4 Unknown field 'out'.\n" +
 			"line 10:8 Method java.lang.Object.println() not found.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testReadFieldBeforeDeclaration()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"String thingy = this.thingy;\n" +
+				"}\n" +
+				"String thingy;\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
 	}
 }

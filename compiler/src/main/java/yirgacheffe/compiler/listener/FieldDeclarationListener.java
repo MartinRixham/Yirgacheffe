@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.FieldNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -13,8 +14,6 @@ import java.util.Set;
 
 public class FieldDeclarationListener extends TypeListener
 {
-	protected Map<String, Type> fieldTypes = new HashMap<>();
-
 	protected Map<String, Object> constants = new HashMap<>();
 
 	private Set<String> fields = new HashSet<>();
@@ -54,14 +53,13 @@ public class FieldDeclarationListener extends TypeListener
 
 			int access = Opcodes.ACC_PROTECTED;
 
-			this.classNode.visitField(
-				access,
-				fieldName,
-				type.toJVMType(),
-				null,
-				null);
-
-			this.fieldTypes.put(fieldName, type);
+			this.classNode.fields.add(
+				new FieldNode(
+					access,
+					fieldName,
+					type.toJVMType(),
+					type.getSignature(),
+					null));
 		}
 	}
 }

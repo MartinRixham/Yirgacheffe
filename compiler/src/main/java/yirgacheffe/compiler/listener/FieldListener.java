@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.antlr.v4.runtime.Token;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -16,7 +15,6 @@ import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -135,20 +133,9 @@ public class FieldListener extends ConstructorListener
 	{
 		Coordinate coordinate = new Coordinate(context);
 		String fieldName = context.Identifier().getText();
-		Type fieldType = this.fieldTypes.get(fieldName);
-
-		if (fieldType == null)
-		{
-			fieldType = new NullType();
-
-			String message = "Unknown field '" + fieldName + "'.";
-			Token token = context.Identifier().getSymbol();
-
-			this.errors.push(new Error(token, message));
-		}
-
 		Expression owner = this.expressions.pop();
-		Expression fieldRead = new FieldRead(coordinate, owner, fieldName, fieldType);
+
+		Expression fieldRead = new FieldRead(coordinate, owner, fieldName);
 
 		this.expressions.push(fieldRead);
 	}

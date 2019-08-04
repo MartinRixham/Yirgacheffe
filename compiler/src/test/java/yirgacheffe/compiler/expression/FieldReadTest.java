@@ -11,7 +11,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.variables.LocalVariables;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -31,14 +30,13 @@ public class FieldReadTest
 		Coordinate coordinate = new Coordinate(3, 4);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Type owner = new ReferenceType(String.class);
+		Type owner = new ReferenceType(System.class);
 
 		FieldRead fieldRead =
 			new FieldRead(
 				coordinate,
 				new This(owner),
-				"length",
-				PrimitiveType.DOUBLE);
+				"out");
 
 		Type type = fieldRead.getType(variables);
 		Result result = fieldRead.compileCondition(variables, null, null);
@@ -65,11 +63,11 @@ public class FieldReadTest
 		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.GETFIELD, fourthInstruction.getOpcode());
-		assertEquals("java/lang/String", fourthInstruction.owner);
-		assertEquals("length", fourthInstruction.name);
-		assertEquals("D", fourthInstruction.desc);
+		assertEquals("java/lang/System", fourthInstruction.owner);
+		assertEquals("out", fourthInstruction.name);
+		assertEquals("Ljava/io/PrintStream;", fourthInstruction.desc);
 
-		assertEquals("java/lang/Double", type.toFullyQualifiedType());
+		assertEquals("java/io/PrintStream", type.toFullyQualifiedType());
 	}
 
 	@Test
@@ -79,7 +77,7 @@ public class FieldReadTest
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
 		Expression fieldRead =
-			new FieldRead(coordinate, read, "myField", PrimitiveType.DOUBLE);
+			new FieldRead(coordinate, read, "myField");
 
 		Array<VariableRead> reads = fieldRead.getVariableReads();
 

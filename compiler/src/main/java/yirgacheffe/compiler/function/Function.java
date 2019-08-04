@@ -1,10 +1,6 @@
 package yirgacheffe.compiler.function;
 
-import yirgacheffe.compiler.type.ArrayType;
-import yirgacheffe.compiler.type.GenericType;
-import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
@@ -12,7 +8,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 
 public class Function
 {
@@ -57,40 +52,7 @@ public class Function
 		Method method = (Method) this.executable;
 		java.lang.reflect.Type returned = method.getGenericReturnType();
 
-		return this.getType(returned);
-	}
-
-	private Type getType(java.lang.reflect.Type type)
-	{
-		if (type instanceof ParameterizedType)
-		{
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			ReferenceType primaryType =
-					new ReferenceType((Class) parameterizedType.getRawType());
-
-			Array<Type> typeParameters = new Array<>();
-
-			for (java.lang.reflect.Type typeArgument:
-				parameterizedType.getActualTypeArguments())
-			{
-				typeParameters.push(this.getType(typeArgument));
-			}
-
-			return new ParameterisedType(primaryType, typeParameters);
-		}
-		if (type instanceof Class)
-		{
-			return this.getType((Class) type);
-		}
-		else
-		{
-			ParameterisedType parameterisedOwner = (ParameterisedType) this.owner;
-
-			Type returnType =
-				parameterisedOwner.getTypeParameterClass(type.getTypeName());
-
-			return new GenericType(returnType);
-		}
+		return Type.getType(returned, this.owner);
 	}
 
 	public Array<Type> getParameterTypes()
@@ -100,28 +62,10 @@ public class Function
 
 		for (Class<?> clazz: classes)
 		{
-			types.push(this.getType(clazz));
+			types.push(Type.getType(clazz));
 		}
 
 		return types;
-	}
-
-	private Type getType(Class<?> clazz)
-	{
-		if (clazz.isArray())
-		{
-			Type arrayType = this.getType(clazz.getComponentType());
-
-			return new ArrayType(clazz.getName(), arrayType);
-		}
-		else if (clazz.isPrimitive())
-		{
-			return PrimitiveType.valueOf(clazz.getName().toUpperCase());
-		}
-		else
-		{
-			return new ReferenceType(clazz);
-		}
 	}
 
 	public boolean hasVariableArguments()
@@ -139,7 +83,7 @@ public class Function
 		for (java.lang.reflect.Type parameter:
 			this.executable.getGenericParameterTypes())
 		{
-			parameters.push(this.getType(parameter).toString());
+			parameters.push(Type.getType(parameter, this.owner).toString());
 		}
 
 		return function + "(" + parameters.join(",") + ")";
@@ -152,7 +96,7 @@ public class Function
 		for (java.lang.reflect.Type parameter:
 			this.executable.getGenericParameterTypes())
 		{
-			parameters.push(this.getType(parameter));
+			parameters.push(Type.getType(parameter, this.owner));
 		}
 
 		return new Signature(
