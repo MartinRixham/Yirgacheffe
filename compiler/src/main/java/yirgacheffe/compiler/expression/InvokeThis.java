@@ -1,8 +1,9 @@
 package yirgacheffe.compiler.expression;
 
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -14,7 +15,11 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Bootstrap;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 
 public class InvokeThis implements Expression
@@ -56,19 +61,33 @@ public class InvokeThis implements Expression
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 		StringBuilder descriptor = new StringBuilder("(");
 
+		descriptor.append(this.owner.toJVMType());
 		descriptor.append(arguments.getDescriptor(parameterTypes));
 		descriptor.append(")V");
+
+		MethodType methodType =
+			MethodType.methodType(
+				CallSite.class,
+				MethodHandles.Lookup.class,
+				String.class,
+				MethodType.class);
+
+		Handle bootstrapMethod =
+			new Handle(
+				Opcodes.H_INVOKESTATIC,
+				Bootstrap.class.getName().replace(".", "/"),
+				"bootstrapPrivate",
+				methodType.toMethodDescriptorString(),
+				false);
 
 		Result result = new Result()
 			.add(new VarInsnNode(Opcodes.ALOAD, 0))
 			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile())
-			.add(new MethodInsnNode(
-				Opcodes.INVOKESPECIAL,
-				this.owner.toFullyQualifiedType(),
-				"<init>",
+			.add(new InvokeDynamicInsnNode(
+				"0this",
 				descriptor.toString(),
-				false));
+				bootstrapMethod));
 
 		variables.stackPush(this.owner);
 

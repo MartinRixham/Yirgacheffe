@@ -82,7 +82,7 @@ public class ImplementationListenerTest
 
 		List methods = classNode.methods;
 
-		assertEquals(2, methods.size());
+		assertEquals(3, methods.size());
 	}
 
 	@Test
@@ -350,7 +350,7 @@ public class ImplementationListenerTest
 			"<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/Comparable<TT;>;",
 			classNode.signature);
 
-		assertEquals(3, classNode.methods.size());
+		assertEquals(4, classNode.methods.size());
 
 		MethodNode method = classNode.methods.get(1);
 

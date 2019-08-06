@@ -40,7 +40,7 @@ public class MainMethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(3, classNode.methods.size());
+		assertEquals(4, classNode.methods.size());
 
 		MethodNode method = classNode.methods.get(0);
 
@@ -50,7 +50,7 @@ public class MainMethodListenerTest
 		assertEquals(2, method.maxLocals);
 		assertEquals(0, method.maxStack);
 
-		MethodNode mainMethod = classNode.methods.get(2);
+		MethodNode mainMethod = classNode.methods.get(3);
 
 		assertEquals("([Ljava/lang/String;)V", mainMethod.desc);
 		assertEquals(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, mainMethod.access);

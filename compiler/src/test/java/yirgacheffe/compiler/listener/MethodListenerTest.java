@@ -146,7 +146,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode method = classNode.methods.get(0);
 
@@ -178,7 +178,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode method = classNode.methods.get(0);
 
@@ -238,7 +238,7 @@ public class MethodListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(3, classNode.methods.size());
+		assertEquals(4, classNode.methods.size());
 
 		MethodNode secondMethod = classNode.methods.get(0);
 

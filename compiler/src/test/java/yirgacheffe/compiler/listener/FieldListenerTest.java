@@ -306,7 +306,7 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode initialiser = classNode.methods.get(0);
 
@@ -550,7 +550,7 @@ public class FieldListenerTest
 
 		List methods = classNode.methods;
 
-		assertEquals(2, methods.size());
+		assertEquals(3, methods.size());
 
 		MethodNode initialiser = classNode.methods.get(0);
 
@@ -614,7 +614,7 @@ public class FieldListenerTest
 
 		List methods = classNode.methods;
 
-		assertEquals(3, methods.size());
+		assertEquals(4, methods.size());
 
 		MethodNode first = classNode.methods.get(0);
 
@@ -739,7 +739,7 @@ public class FieldListenerTest
 
 		assertEquals(1, fields.size());
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
@@ -1024,13 +1024,13 @@ public class FieldListenerTest
 		List fields = classNode.fields;
 
 		assertEquals(0, fields.size());
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode constructor = classNode.methods.get(0);
 
-		assertEquals(3, constructor.instructions.size());
+		assertEquals(5, constructor.instructions.size());
 
-		MethodNode method = classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(2);
 
 		assertEquals("method", method.name);
 
@@ -1055,11 +1055,11 @@ public class FieldListenerTest
 			"class MyClass\n" +
 			"{\n" +
 				"const Num myField = 1;\n" +
-				"public MyClass() {}\n" +
 				"public Num method()\n" +
 				"{\n" +
 					"return myField;\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Classes classes = new Classes();
@@ -1082,7 +1082,7 @@ public class FieldListenerTest
 
 		assertEquals(0, fields.size());
 
-		MethodNode method = classNode.methods.get(1);
+		MethodNode method = classNode.methods.get(0);
 
 		assertEquals("method", method.name);
 

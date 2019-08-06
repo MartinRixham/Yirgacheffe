@@ -1,14 +1,25 @@
 package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.Token;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Bootstrap;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.UUID;
 
 public class ConstructorListener extends MainMethodListener
@@ -80,26 +91,71 @@ public class ConstructorListener extends MainMethodListener
 			return;
 		}
 
-		this.methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+		InsnList instructions = new InsnList();
 
-		this.methodNode.visitMethodInsn(
+		instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+
+		instructions.add(new MethodInsnNode(
 			Opcodes.INVOKESPECIAL,
 			"java/lang/Object",
 			"<init>",
 			"()V",
-			false);
+			false));
 
 		for (String initialiser: this.initialisers)
 		{
-			this.methodNode.visitVarInsn(Opcodes.ALOAD, 0);
+			instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
-			this.methodNode.visitMethodInsn(
+			instructions.add(new MethodInsnNode(
 				Opcodes.INVOKEVIRTUAL,
 				this.className,
 				"0" + initialiser + "_init_field",
 				"()V",
-				false);
+				false));
 		}
+
+		instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+
+		for (int i = 0; i < this.signature.getParameters().length(); i++)
+		{
+			Type parameter = this.signature.getParameters().get(i);
+
+			instructions.add(new VarInsnNode(parameter.getLoadInstruction(), i + 1));
+		}
+
+		MethodType methodType =
+			MethodType.methodType(
+				CallSite.class,
+				MethodHandles.Lookup.class,
+				String.class,
+				MethodType.class);
+
+		Handle bootstrapMethod =
+			new Handle(
+				Opcodes.H_INVOKESTATIC,
+				Bootstrap.class.getName().replace(".", "/"),
+				"bootstrapPrivate",
+				methodType.toMethodDescriptorString(),
+				false);
+
+		String descriptor =
+			"(L" + this.className + ";" +
+			this.signature.getDescriptor().substring(1);
+
+		instructions.add(new InvokeDynamicInsnNode("0this", descriptor, bootstrapMethod));
+		instructions.add(new InsnNode(Opcodes.RETURN));
+
+		methodNode.instructions.add(instructions);
+
+		this.methodNode =
+			new MethodNode(
+				Opcodes.ACC_PRIVATE,
+				"0this",
+				this.signature.getDescriptor(),
+				this.signature.getSignature(),
+				null);
+
+		this.classNode.methods.add(this.methodNode);
 
 		if (signature.parameter().size() == 0)
 		{

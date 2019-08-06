@@ -5,6 +5,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
@@ -83,7 +84,7 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(1, classNode.methods.size());
+		assertEquals(2, classNode.methods.size());
 
 		MethodNode constructor = classNode.methods.get(0);
 
@@ -162,7 +163,7 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(1, classNode.methods.size());
+		assertEquals(2, classNode.methods.size());
 
 		MethodNode constructor = classNode.methods.get(0);
 
@@ -197,12 +198,12 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(3, classNode.methods.size());
 
 		MethodNode constructor = classNode.methods.get(1);
 		InsnList instructions = constructor.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(7, instructions.size());
 
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
@@ -241,7 +242,7 @@ public class ConstructorListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(2, classNode.methods.size());
+		assertEquals(4, classNode.methods.size());
 
 		MethodNode firstConstructor = classNode.methods.get(0);
 
@@ -251,7 +252,7 @@ public class ConstructorListenerTest
 
 		InsnList instructions = firstConstructor.instructions;
 
-		assertEquals(8, instructions.size());
+		assertEquals(5, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -270,25 +271,50 @@ public class ConstructorListenerTest
 		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
 		assertEquals(0, thirdInstruction.var);
 
-		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+		InvokeDynamicInsnNode fourthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
-		assertEquals("", fourthInstruction.cst);
+		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
+		assertEquals("0this", fourthInstruction.name);
+		assertEquals("(LMyClass;)V", fourthInstruction.desc);
 
-		assertTrue(instructions.get(4) instanceof LabelNode);
-		assertTrue(instructions.get(5) instanceof LineNumberNode);
+		this.testConstructionMethod(classNode.methods.get(1));
 
-		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
-
-		assertEquals(Opcodes.INVOKESPECIAL, seventhInstruction.getOpcode());
-		assertEquals("MyClass", seventhInstruction.owner);
-		assertEquals("<init>", seventhInstruction.name);
-		assertEquals("(Ljava/lang/String;)V", seventhInstruction.desc);
-
-		MethodNode secondConstructor = classNode.methods.get(1);
+		MethodNode secondConstructor = classNode.methods.get(2);
 
 		assertEquals("(Ljava/lang/String;)V", secondConstructor.desc);
 		assertEquals(Opcodes.ACC_PUBLIC, secondConstructor.access);
 		assertEquals("<init>", secondConstructor.name);
+	}
+
+	private void testConstructionMethod(MethodNode method)
+	{
+		assertEquals("()V", method.desc);
+		assertEquals(Opcodes.ACC_PRIVATE, method.access);
+		assertEquals("0this", method.name);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("", secondInstruction.cst);
+
+		assertTrue(instructions.get(2) instanceof LabelNode);
+		assertTrue(instructions.get(3) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode sixthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
+		assertEquals("0this", sixthInstruction.name);
+		assertEquals("(LMyClass;Ljava/lang/String;)V", sixthInstruction.desc);
 	}
 }
