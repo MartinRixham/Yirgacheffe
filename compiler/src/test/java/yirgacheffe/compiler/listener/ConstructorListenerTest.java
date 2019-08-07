@@ -317,4 +317,33 @@ public class ConstructorListenerTest
 		assertEquals("0this", sixthInstruction.name);
 		assertEquals("(LMyClass;Ljava/lang/String;)V", sixthInstruction.desc);
 	}
+
+	@Test
+	public void testCallThisFromMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"this();\n" +
+				"}\n" +
+				"public MyClass(){}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 5:0 Cannot call this() outside of constructor.\n",
+			result.getErrors());
+	}
 }

@@ -48,6 +48,13 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitSelfInstantiation(YirgacheffeParser.SelfInstantiationContext context)
 	{
+		if (!this.inConstructor)
+		{
+			String message = "Cannot call this() outside of constructor.";
+
+			this.errors.push(new Error(context, message));
+		}
+
 		try
 		{
 			String fullyQualifiedType = this.className.replace("/", ".");
