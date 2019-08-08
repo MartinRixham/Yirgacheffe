@@ -93,6 +93,11 @@ public class GenericType implements Type
 
 	public Result convertTo(Type type)
 	{
+		if (new ReferenceType(Object.class).isAssignableTo(type))
+		{
+			return new Result();
+		}
+
 		Result result = new Result().add(
 			new TypeInsnNode(
 				Opcodes.CHECKCAST,

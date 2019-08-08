@@ -10,7 +10,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-public class ParallelMethodListener extends MethodListener
+public class ParallelMethodListener extends FieldDeclarationListener
 {
 	private ClassNode generatedClassWriter;
 

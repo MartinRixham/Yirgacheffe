@@ -297,6 +297,10 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -311,7 +315,7 @@ public class FieldListenerTest
 		MethodNode initialiser = classNode.methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
-		assertEquals("0myStringField_init_field", initialiser.name);
+		assertEquals("0init_field_myStringField", initialiser.name);
 		assertEquals("()V", initialiser.desc);
 		assertEquals(1, initialiser.maxLocals);
 		assertEquals(2, initialiser.maxStack);
@@ -349,13 +353,13 @@ public class FieldListenerTest
 		assertEquals(Opcodes.ALOAD, thirdInsn.getOpcode());
 		assertEquals(0, thirdInsn.var);
 
-		MethodInsnNode fourthInsn = (MethodInsnNode) instructions.get(3);
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInsn.getOpcode());
-		assertEquals("0myStringField_init_field", fourthInsn.name);
-		assertEquals("()V", fourthInsn.desc);
-		assertEquals("MyClass", fourthInsn.owner);
-		assertFalse(fourthInsn.itf);
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("0init_field_myStringField", fourthInstruction.name);
+		assertEquals("()V", fourthInstruction.desc);
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertFalse(fourthInstruction.itf);
 	}
 
 	@Test
@@ -539,6 +543,10 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -555,7 +563,7 @@ public class FieldListenerTest
 		MethodNode initialiser = classNode.methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, initialiser.access);
-		assertEquals("0myObject_init_field", initialiser.name);
+		assertEquals("0init_field_myObject", initialiser.name);
 		assertEquals("()V", initialiser.desc);
 		assertEquals(1, initialiser.maxLocals);
 		assertEquals(3, initialiser.maxStack);
@@ -580,7 +588,7 @@ public class FieldListenerTest
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("0myObject_init_field", fourthInstruction.name);
+		assertEquals("0init_field_myObject", fourthInstruction.name);
 		assertEquals("MyClass", fourthInstruction.owner);
 		assertEquals("()V", fourthInstruction.desc);
 	}
@@ -603,6 +611,10 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -619,12 +631,12 @@ public class FieldListenerTest
 		MethodNode first = classNode.methods.get(0);
 
 		assertEquals(Opcodes.ACC_PRIVATE, first.access);
-		assertEquals("0myObject_init_field", first.name);
+		assertEquals("0init_field_myObject", first.name);
 
 		MethodNode second = classNode.methods.get(1);
 
 		assertEquals(Opcodes.ACC_PRIVATE, second.access);
-		assertEquals("0myString_init_field", second.name);
+		assertEquals("0init_field_myString", second.name);
 
 		MethodNode constructor = classNode.methods.get(2);
 
@@ -638,7 +650,7 @@ public class FieldListenerTest
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("0myObject_init_field", fourthInstruction.name);
+		assertEquals("0init_field_myObject", fourthInstruction.name);
 		assertEquals("MyClass", fourthInstruction.owner);
 		assertEquals("()V", fourthInstruction.desc);
 
@@ -650,7 +662,7 @@ public class FieldListenerTest
 		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, sixthInstruction.getOpcode());
-		assertEquals("0myString_init_field", sixthInstruction.name);
+		assertEquals("0init_field_myString", sixthInstruction.name);
 		assertEquals("MyClass", sixthInstruction.owner);
 		assertEquals("()V", sixthInstruction.desc);
 	}
@@ -1007,6 +1019,10 @@ public class FieldListenerTest
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
 
 		compiler.compileInterface(classes);
 

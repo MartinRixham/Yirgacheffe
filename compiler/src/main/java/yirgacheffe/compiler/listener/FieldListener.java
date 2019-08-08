@@ -4,7 +4,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -24,33 +23,6 @@ public class FieldListener extends ConstructorListener
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
-	}
-
-	@Override
-	public void enterFieldInitialisation(
-		YirgacheffeParser.FieldInitialisationContext context)
-	{
-		YirgacheffeParser.FieldDeclarationContext declarationContext =
-			context.fieldDeclaration();
-
-		if (declarationContext.Const() == null)
-		{
-			String field = declarationContext.Identifier().getSymbol().getText();
-
-			this.methodNode =
-				new MethodNode(
-					Opcodes.ACC_PRIVATE,
-					"0" + field + "_init_field",
-					"()V",
-					null,
-					null);
-
-			this.classNode.methods.add(this.methodNode);
-
-			this.enterThisRead(null);
-
-			this.initialisers.push(field);
-		}
 	}
 
 	@Override

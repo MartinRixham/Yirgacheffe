@@ -189,6 +189,10 @@ public class ConstructorListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -209,7 +213,7 @@ public class ConstructorListenerTest
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
 		assertEquals("MyClass", fourthInstruction.owner);
-		assertEquals("0thingy_init_field", fourthInstruction.name);
+		assertEquals("0init_field_thingy", fourthInstruction.name);
 		assertEquals("()V", fourthInstruction.desc);
 	}
 
@@ -345,5 +349,50 @@ public class ConstructorListenerTest
 		assertEquals(
 			"line 5:0 Cannot call this() outside of constructor.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testConstructorCallsLaterInitialiser()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"String thingy = \"sumpt\";\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(3, classNode.methods.size());
+
+		MethodNode constructor = classNode.methods.get(0);
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(7, instructions.size());
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("MyClass", fourthInstruction.owner);
+		assertEquals("0init_field_thingy", fourthInstruction.name);
+		assertEquals("()V", fourthInstruction.desc);
 	}
 }

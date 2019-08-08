@@ -12,6 +12,8 @@ import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.reflect.Method;
+
 public class ClassListener extends PackageListener
 {
 	protected boolean hasConstructor = false;
@@ -19,8 +21,6 @@ public class ClassListener extends PackageListener
 	protected boolean hasDefaultConstructor = false;
 
 	protected String mainMethodName;
-
-	protected Array<String> initialisers = new Array<>();
 
 	protected Array<Function> interfaceMethods = new Array<>();
 
@@ -230,16 +230,29 @@ public class ClassListener extends PackageListener
 			"()V",
 			false);
 
-		for (String initialiser: this.initialisers)
+		try
 		{
-			methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
 
-			methodVisitor.visitMethodInsn(
-				Opcodes.INVOKEVIRTUAL,
-				this.className,
-				"0" + initialiser + "_init_field",
-				"()V",
-				false);
+			Method[] methods = thisType.reflectionClass().getDeclaredMethods();
+
+			for (Method method: methods)
+			{
+				if (method.getName().startsWith("0init_field"))
+				{
+					methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+					methodVisitor.visitMethodInsn(
+						Opcodes.INVOKEVIRTUAL,
+						this.className,
+						method.getName(),
+						"()V",
+						false);
+				}
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
 		}
 
 		methodVisitor.visitInsn(Opcodes.RETURN);

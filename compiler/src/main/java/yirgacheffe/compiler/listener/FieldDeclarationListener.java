@@ -2,25 +2,58 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-public class FieldDeclarationListener extends TypeListener
+public class FieldDeclarationListener extends MethodListener
 {
-	protected Map<String, Object> constants = new HashMap<>();
-
 	private Set<String> fields = new HashSet<>();
 
 	public FieldDeclarationListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
+	}
+
+	@Override
+	public void enterFieldInitialisation(
+		YirgacheffeParser.FieldInitialisationContext context)
+	{
+		YirgacheffeParser.FieldDeclarationContext declarationContext =
+			context.fieldDeclaration();
+
+		if (declarationContext.Const() == null)
+		{
+			String field = declarationContext.Identifier().getSymbol().getText();
+
+			this.methodNode =
+				new MethodNode(
+					Opcodes.ACC_PRIVATE,
+					"0init_field_" + field,
+					"()V",
+					null,
+					null);
+
+			this.classNode.methods.add(this.methodNode);
+
+			this.enterThisRead(null);
+		}
+	}
+
+	@Override
+	public void exitFieldInitialisation(
+		YirgacheffeParser.FieldInitialisationContext context)
+	{
+		if (this.methodNode != null)
+		{
+			this.methodNode.instructions.add(new InsnNode(Opcodes.RETURN));
+		}
 	}
 
 	@Override

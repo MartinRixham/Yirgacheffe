@@ -20,6 +20,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class ConstructorListener extends MainMethodListener
@@ -102,16 +103,29 @@ public class ConstructorListener extends MainMethodListener
 			"()V",
 			false));
 
-		for (String initialiser: this.initialisers)
+		try
 		{
-			instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
 
-			instructions.add(new MethodInsnNode(
-				Opcodes.INVOKEVIRTUAL,
-				this.className,
-				"0" + initialiser + "_init_field",
-				"()V",
-				false));
+			Method[] methods = thisType.reflectionClass().getDeclaredMethods();
+
+			for (Method method: methods)
+			{
+				if (method.getName().startsWith("0init_field"))
+				{
+					instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+
+					instructions.add(new MethodInsnNode(
+						Opcodes.INVOKEVIRTUAL,
+						this.className,
+						method.getName(),
+						"()V",
+						false));
+				}
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
 		}
 
 		instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));

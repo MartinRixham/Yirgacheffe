@@ -6,7 +6,6 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -18,25 +17,27 @@ import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class MethodListener extends FieldDeclarationListener
+public class MethodListener extends TypeListener
 {
 	protected boolean inConstructor = false;
 
 	protected Type returnType = new NullType();
+
+	protected Map<String, Object> constants = new HashMap<>();
 
 	protected Array<Expression> expressions = new Array<>();
 
@@ -165,42 +166,33 @@ public class MethodListener extends FieldDeclarationListener
 
 		this.classNode.methods.add(methodNode);
 
-		Result result = new Result().add(new VarInsnNode(Opcodes.ALOAD, 0));
+		Result result = new Result()
+			.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
 		Array<Type> parameters = from.getParameters();
 
 		for (int i = 0; i < parameters.length(); i++)
 		{
-			result = result.add(
-				new VarInsnNode(parameters.get(i).getLoadInstruction(), i + 1));
+			Type fromType = from.getParameters().get(i);
+			Type toType = to.getParameters().get(i);
 
-			if (parameters.get(i) instanceof GenericType &&
-				!to.getParameters().get(i).equals(new ReferenceType(Object.class)))
-			{
-				String toType =
-					to.getParameters().get(i)
-						.toFullyQualifiedType();
-
-				result = result.add(new TypeInsnNode(Opcodes.CHECKCAST, toType));
-			}
+			result = result
+				.add(new VarInsnNode(fromType.getLoadInstruction(), i + 1))
+				.concat(fromType.convertTo(toType));
 		}
-
-		result = result.add(new MethodInsnNode(
-			Opcodes.INVOKEVIRTUAL,
-			this.className,
-			to.getName(),
-			to.getDescriptor(),
-			false));
 
 		Type toType = to.getReturnType();
 		Type fromType = from.getReturnType();
 
-		if (!toType.equals(fromType) && fromType.isPrimitive())
-		{
-			result = result.concat(toType.convertTo(fromType));
-		}
-
-		result = result.add(new InsnNode(fromType.getReturnInstruction()));
+		result = result
+			.add(new MethodInsnNode(
+				Opcodes.INVOKEVIRTUAL,
+				this.className,
+				to.getName(),
+				to.getDescriptor(),
+				false))
+			.concat(toType.convertTo(fromType))
+			.add(new InsnNode(fromType.getReturnInstruction()));
 
 		for (AbstractInsnNode instruction: result.getInstructions())
 		{
