@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -480,5 +481,88 @@ public class ExceptionTest
 
 		assertEquals(Opcodes.DSTORE, fourteenthInstruction.getOpcode());
 		assertEquals(1, fourteenthInstruction.var);
+	}
+
+	@Test
+	public void testIgnoreException()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{" +
+					"try this.method();" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		assertEquals(1, firstMethod.tryCatchBlocks.size());
+
+		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
+		Label startLabel = tryCatch.start.getLabel();
+		Label endLabel = tryCatch.end.getLabel();
+		Label handlerLabel = tryCatch.handler.getLabel();
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(12, instructions.size());
+
+		LabelNode firstInstruction = (LabelNode) instructions.get(0);
+
+		assertEquals(startLabel, firstInstruction.getLabel());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		assertTrue(instructions.get(2) instanceof LabelNode);
+		assertTrue(instructions.get(3) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+
+		JumpInsnNode sixthInstruction = (JumpInsnNode) instructions.get(5);
+		Label success = sixthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.GOTO, sixthInstruction.getOpcode());
+
+		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+
+		assertEquals(endLabel, seventhInstruction.getLabel());
+		assertEquals(handlerLabel, seventhInstruction.getLabel());
+
+		assertTrue(instructions.get(7) instanceof FrameNode);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.POP, ninthInstruction.getOpcode());
+
+		LabelNode tenthInstruction = (LabelNode) instructions.get(9);
+
+		assertEquals(success, tenthInstruction.getLabel());
+		assertTrue(instructions.get(10) instanceof FrameNode);
 	}
 }

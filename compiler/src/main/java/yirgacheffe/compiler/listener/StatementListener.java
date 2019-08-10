@@ -4,6 +4,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.UnaryOperation;
+import yirgacheffe.compiler.statement.AttemptedStatement;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Branch;
 import yirgacheffe.compiler.statement.ConditionalStatement;
@@ -137,6 +138,7 @@ public class StatementListener extends FieldListener
 		this.statements.push(elseStatement);
 	}
 
+	@Override
 	public void exitConditionalStatement(
 		YirgacheffeParser.ConditionalStatementContext context)
 	{
@@ -146,6 +148,7 @@ public class StatementListener extends FieldListener
 		this.statements.push(branch);
 	}
 
+	@Override
 	public void exitPostincrementStatement(
 		YirgacheffeParser.PostincrementStatementContext context)
 	{
@@ -158,6 +161,7 @@ public class StatementListener extends FieldListener
 		this.statements.push(postincrement);
 	}
 
+	@Override
 	public void exitPreincrementStatement(
 		YirgacheffeParser.PreincrementStatementContext context)
 	{
@@ -170,6 +174,7 @@ public class StatementListener extends FieldListener
 		this.statements.push(preincrement);
 	}
 
+	@Override
 	public void exitPostdecrementStatement(
 		YirgacheffeParser.PostdecrementStatementContext context)
 	{
@@ -182,6 +187,7 @@ public class StatementListener extends FieldListener
 		this.statements.push(postdecrement);
 	}
 
+	@Override
 	public void exitPredecrementStatement(
 		YirgacheffeParser.PredecrementStatementContext context)
 	{
@@ -192,5 +198,11 @@ public class StatementListener extends FieldListener
 			new UnaryOperation(coordinate, expression, true, false);
 
 		this.statements.push(predecrement);
+	}
+
+	public void exitAttemptedStatement(
+		YirgacheffeParser.AttemptedStatementContext context)
+	{
+		this.statements.push(new AttemptedStatement(this.statements.pop()));
 	}
 }

@@ -43,7 +43,7 @@ public class TailCall implements Statement
 			invocation = variables.getOptimisedExpression(invocation);
 		}
 
-		if (invocation.equals(this))
+		if (invocation.equals(this) && !(this.invocation instanceof AttemptedStatement))
 		{
 			InvokeMethod invokeMethod = (InvokeMethod) invocation;
 

@@ -69,12 +69,15 @@ modifier: Public | Private;
 statement: block | conditionalStatement | forStatement | (statementLine semicolon);
 
 statementLine:
+    attemptedStatement |
     unaryStatement |
     fieldWrite |
     variableAssignment |
     variableDeclaration |
     functionCall |
     returnStatement;
+
+attemptedStatement: Try (unaryStatement | functionCall);
 
 unaryStatement:
     preincrementStatement |
