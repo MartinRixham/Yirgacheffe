@@ -238,6 +238,7 @@ public class YirgacheffeTest
 			"Errors in file example/NoPackage.yg:\n" +
 			"line 1:0 Missing package declaration for file path example/.\n" +
 			"line 3:1 Unrecognised type: NoPackageInterface is not a type.\n" +
+			"line 5:20 Constructor NoPackage() does not initialise field 'myField'.\n" +
 			"Errors in file example/NoPackageInterface.yg:\n" +
 			"line 1:0 Missing package declaration for file path example/.\n" +
 			"line 3:1 Unrecognised type: NoPackage is not a type.\n",

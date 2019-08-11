@@ -21,34 +21,6 @@ public class Signature
 		this.parameters = parameters;
 	}
 
-	@Override
-	public boolean equals(Object other)
-	{
-		if (other instanceof Signature)
-		{
-			Signature signature = (Signature) other;
-
-			if (!this.name.equals(signature.name) ||
-				this.parameters.length() != signature.parameters.length())
-			{
-				return false;
-			}
-
-			for (int i = 0; i < this.parameters.length(); i++)
-			{
-				if (!this.parameters.get(i).toJVMType().equals(
-					signature.parameters.get(i).toJVMType()))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		throw new RuntimeException();
-	}
-
 	public boolean isImplementedBy(Signature signature)
 	{
 		if (this.name.equals(signature.name) &&
@@ -67,17 +39,6 @@ public class Signature
 		}
 
 		return false;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return this.name.hashCode() + this.parameters.hashCode();
-	}
-
-	public boolean equals(String name, Array<Type> parameters)
-	{
-		return this.name.equals(name) && this.parameters.equals(parameters);
 	}
 
 	public String getDescriptor()
@@ -129,19 +90,6 @@ public class Signature
 		return this.parameters;
 	}
 
-	@Override
-	public String toString()
-	{
-		String[] strings = new String[this.parameters.length()];
-
-		for (int i = 0; i < strings.length; i++)
-		{
-			strings[i] = this.parameters.get(i).toString();
-		}
-
-		return this.name + "(" + String.join(",", strings) + ")";
-	}
-
 	public String getName()
 	{
 		return this.name;
@@ -155,5 +103,57 @@ public class Signature
 	public Label getLabel()
 	{
 		return this.label;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Signature)
+		{
+			Signature signature = (Signature) other;
+
+			if (!this.name.equals(signature.name) ||
+				this.parameters.length() != signature.parameters.length())
+			{
+				return false;
+			}
+
+			for (int i = 0; i < this.parameters.length(); i++)
+			{
+				if (!this.parameters.get(i).toJVMType().equals(
+					signature.parameters.get(i).toJVMType()))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		throw new RuntimeException();
+	}
+
+	public boolean equals(String name, Array<Type> parameters)
+	{
+		return this.name.equals(name) && this.parameters.equals(parameters);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode() + this.parameters.hashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		String[] strings = new String[this.parameters.length()];
+
+		for (int i = 0; i < strings.length; i++)
+		{
+			strings[i] = this.parameters.get(i).toString();
+		}
+
+		return this.name + "(" + String.join(",", strings) + ")";
 	}
 }

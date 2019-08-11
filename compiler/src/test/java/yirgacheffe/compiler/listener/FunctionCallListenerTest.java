@@ -939,14 +939,12 @@ public class FunctionCallListenerTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out;\n" +
+				"PrintStream out = new System().getOut();\n" +
 				"public Void method()\n" +
 				"{\n" +
 					"this.out.println(1.1.intValue());\n" +
 				"}\n" +
-				"public MyClass()\n" +
-				"{\n" +
-				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -965,7 +963,7 @@ public class FunctionCallListenerTest
 
 		reader.accept(classNode, 0);
 
-		MethodNode method = classNode.methods.get(0);
+		MethodNode method = classNode.methods.get(1);
 		InsnList instructions = method.instructions;
 
 		assertEquals(14, instructions.size());

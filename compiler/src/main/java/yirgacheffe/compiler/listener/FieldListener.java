@@ -129,5 +129,6 @@ public class FieldListener extends ConstructorListener
 		String fieldName = context.Identifier().getText();
 
 		this.statements.push(new FieldWrite(coordinate, fieldName, owner, value));
+		this.fieldNames.remove(fieldName);
 	}
 }

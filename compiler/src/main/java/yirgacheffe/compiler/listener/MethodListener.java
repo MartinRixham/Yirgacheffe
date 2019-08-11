@@ -53,6 +53,8 @@ public class MethodListener extends TypeListener
 
 	private boolean isValid = true;
 
+	protected Set<String> fieldNames = new HashSet<>();
+
 	public MethodListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -123,6 +125,7 @@ public class MethodListener extends TypeListener
 				null);
 
 		this.classNode.methods.add(this.methodNode);
+		this.fieldNames = new HashSet<>();
 	}
 
 	private boolean checkInterfaceImplementation()
@@ -260,6 +263,15 @@ public class MethodListener extends TypeListener
 			String message = "Missing return statement.";
 
 			this.errors.push(new Error(coordinate, message));
+		}
+
+		for (String name: this.fieldNames)
+		{
+			String message =
+				"Constructor " + this.signature +
+					" does not initialise field '" + name + "'.";
+
+			this.errors.push(new Error(context, message));
 		}
 
 		this.errors.push(variables.getErrors());

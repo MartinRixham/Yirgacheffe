@@ -723,7 +723,7 @@ public class FieldListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"String myStringField;\n" +
+				"String myStringField = \"thingy\";\n" +
 				"public Void read()\n" +
 				"{\n" +
 					"String read = this.myStringField;\n" +
@@ -751,9 +751,9 @@ public class FieldListenerTest
 
 		assertEquals(1, fields.size());
 
-		assertEquals(3, classNode.methods.size());
+		assertEquals(4, classNode.methods.size());
 
-		MethodNode method = classNode.methods.get(0);
+		MethodNode method = classNode.methods.get(1);
 		InsnList instructions = method.instructions;
 
 		assertEquals(6, instructions.size());
@@ -1226,7 +1226,8 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Unrecognised type: Wibble is not a type.\n" +
-			"line 3:0 Type Wibble requires 0 parameter(s) but found 1.\n",
+			"line 3:0 Type Wibble requires 0 parameter(s) but found 1.\n" +
+			"line 5:0 Constructor MyClass() does not initialise field 'ref'.\n",
 			result.getErrors());
 	}
 
@@ -1254,7 +1255,8 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Unrecognised type: java.lang.Wibble is not a type.\n" +
-				"line 3:0 Type java.lang.Wibble requires 0 parameter(s) but found 1.\n",
+				"line 3:0 Type java.lang.Wibble requires 0 parameter(s) but found 1.\n" +
+				"line 5:0 Constructor MyClass() does not initialise field 'ref'.\n",
 			result.getErrors());
 	}
 
@@ -1282,7 +1284,8 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Type java.lang.String requires 0 parameter(s) but found 1.\n" +
-			"line 3:7 Unrecognised type: Wibble is not a type.\n",
+			"line 3:7 Unrecognised type: Wibble is not a type.\n" +
+			"line 5:0 Constructor MyClass() does not initialise field 'ref'.\n",
 			result.getErrors());
 	}
 
@@ -1330,7 +1333,7 @@ public class FieldListenerTest
 				"{\n" +
 					"String thingy = this.thingy;\n" +
 				"}\n" +
-				"String thingy;\n" +
+				"String thingy = \"thingy\";\n" +
 			"}";
 
 		Classes classes = new Classes();

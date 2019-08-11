@@ -2,8 +2,6 @@ package example;
 
 class AnotherClass
 {
-	MyInterface myField;
-
 	public AnotherClass() {}
 
 	public Void doThing(MyInterface param) {}

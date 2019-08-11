@@ -20,7 +20,10 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class ConstructorListener extends MainMethodListener
@@ -103,31 +106,7 @@ public class ConstructorListener extends MainMethodListener
 			"()V",
 			false));
 
-		try
-		{
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-
-			Method[] methods = thisType.reflectionClass().getDeclaredMethods();
-
-			for (Method method: methods)
-			{
-				if (method.getName().startsWith("0init_field"))
-				{
-					instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-
-					instructions.add(new MethodInsnNode(
-						Opcodes.INVOKEVIRTUAL,
-						this.className,
-						method.getName(),
-						"()V",
-						false));
-				}
-			}
-		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
-		{
-		}
-
+		instructions.add(this.createInitialiserCalls(context));
 		instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
 		for (int i = 0; i < this.signature.getParameters().length(); i++)
@@ -175,5 +154,59 @@ public class ConstructorListener extends MainMethodListener
 		{
 			this.hasDefaultConstructor = true;
 		}
+	}
+
+	private InsnList createInitialiserCalls(
+		YirgacheffeParser.ConstructorDeclarationContext context)
+	{
+		InsnList instructions = new InsnList();
+
+		try
+		{
+			String initialiserPrefix = "0init_field";
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
+			Class<?> reflectionClass = thisType.reflectionClass();
+
+			Method[] methods = reflectionClass.getDeclaredMethods();
+
+			this.fieldNames =
+				this.getFieldNames(reflectionClass.getDeclaredFields());
+
+			for (Method method: methods)
+			{
+				if (method.getName().startsWith(initialiserPrefix))
+				{
+					instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+
+					instructions.add(new MethodInsnNode(
+						Opcodes.INVOKEVIRTUAL,
+						this.className,
+						method.getName(),
+						"()V",
+						false));
+
+					this.fieldNames.remove(
+						method.getName().substring(initialiserPrefix.length() + 1));
+				}
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+			this.fieldNames = new HashSet<>();
+		}
+
+		return instructions;
+	}
+
+	private Set<String> getFieldNames(Field[] fields)
+	{
+		Set<String> names = new HashSet<>();
+
+		for (Field field: fields)
+		{
+			names.add(field.getName());
+		}
+
+		return names;
 	}
 }

@@ -11,6 +11,8 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.util.HashSet;
+
 public class MainMethodListener extends ParallelMethodListener
 {
 	public MainMethodListener(String sourceFile, Classes classes)
@@ -64,6 +66,7 @@ public class MainMethodListener extends ParallelMethodListener
 				null);
 
 		this.classNode.methods.add(this.methodNode);
+		this.fieldNames = new HashSet<>();
 	}
 
 	private void checkMultipleMainMethods(

@@ -395,4 +395,66 @@ public class ConstructorListenerTest
 		assertEquals("0init_field_thingy", fourthInstruction.name);
 		assertEquals("()V", fourthInstruction.desc);
 	}
+
+	@Test
+	public void testErrorOnUninitialisedField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:17 Constructor MyClass() does not initialise field 'thingy'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInitialiseFieldViaAnotherConstructor()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this(\"thingy\");\n" +
+				"}\n" +
+				"public MyClass(String string)\n" +
+				"{\n" +
+					"this.thingy = string;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }
