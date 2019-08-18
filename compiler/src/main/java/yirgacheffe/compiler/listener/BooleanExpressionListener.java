@@ -11,7 +11,6 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class BooleanExpressionListener extends NumericExpressionListener
@@ -25,17 +24,11 @@ public class BooleanExpressionListener extends NumericExpressionListener
 	public void exitEquals(YirgacheffeParser.EqualsContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
-		Array<Expression> expressions = new Array<>();
-
-		for (YirgacheffeParser.InequalityContext c: context.inequality())
-		{
-			expressions.push(this.expressions.pop());
-		}
 
 		for (int i = 0; i < context.inequality().size() - 1; i++)
 		{
-			Expression firstOperand = expressions.pop();
-			Expression secondOperand = expressions.pop();
+			Expression secondOperand = this.expressions.pop();
+			Expression firstOperand = this.expressions.pop();
 
 			Comparator comparator;
 
@@ -48,28 +41,20 @@ public class BooleanExpressionListener extends NumericExpressionListener
 				comparator = new NotEquals();
 			}
 
-			expressions.push(
+			this.expressions.push(
 				new Equation(coordinate, comparator, firstOperand, secondOperand));
 		}
-
-		this.expressions.push(expressions.pop());
 	}
 
 	@Override
 	public void exitInequality(YirgacheffeParser.InequalityContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
-		Array<Expression> expressions = new Array<>();
-
-		for (YirgacheffeParser.AddContext c: context.add())
-		{
-			expressions.push(this.expressions.pop());
-		}
 
 		for (int i = 0; i < context.add().size() - 1; i++)
 		{
-			Expression firstOperand = expressions.pop();
-			Expression secondOperand = expressions.pop();
+			Expression secondOperand = this.expressions.pop();
+			Expression firstOperand = this.expressions.pop();
 
 			Comparator comparator;
 
@@ -90,10 +75,8 @@ public class BooleanExpressionListener extends NumericExpressionListener
 				comparator = new GreaterThanOrEqual();
 			}
 
-			expressions.push(
+			this.expressions.push(
 				new Equation(coordinate, comparator, firstOperand, secondOperand));
 		}
-
-		this.expressions.push(expressions.pop());
 	}
 }

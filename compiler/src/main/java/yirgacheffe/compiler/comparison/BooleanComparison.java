@@ -12,8 +12,11 @@ import yirgacheffe.compiler.variables.Variables;
 public class BooleanComparison implements Comparison
 {
 	private Coordinate coordinate;
+
 	private Comparator comparator;
+
 	private Expression firstOperand;
+
 	private Expression secondOperand;
 
 	public BooleanComparison(
@@ -22,7 +25,6 @@ public class BooleanComparison implements Comparison
 		Expression firstOperand,
 		Expression secondOperand)
 	{
-
 		this.coordinate = coordinate;
 		this.comparator = comparator;
 		this.firstOperand = firstOperand;
@@ -46,7 +48,6 @@ public class BooleanComparison implements Comparison
 		}
 
 		return result
-			.concat(this.firstOperand.compile(variables))
 			.concat(this.secondOperand.compile(variables))
 			.concat(this.comparator.compile(label, firstType));
 	}

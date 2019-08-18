@@ -12,7 +12,9 @@ import yirgacheffe.compiler.variables.Variables;
 public class StringComparison implements Comparison
 {
 	private Comparator comparator;
+
 	private Expression firstOperand;
+
 	private Expression secondOperand;
 
 	public StringComparison(
@@ -28,14 +30,13 @@ public class StringComparison implements Comparison
 	public Result compile(Variables variables, Label label)
 	{
 		Result result =
-			this.firstOperand.compile(variables)
-				.concat(this.secondOperand.compile(variables))
-				.add(new MethodInsnNode(
-					Opcodes.INVOKEVIRTUAL,
-					"java/lang/String",
-					"equals",
-					"(Ljava/lang/Object;)Z",
-					false));
+			this.secondOperand.compile(variables)
+			.add(new MethodInsnNode(
+				Opcodes.INVOKEVIRTUAL,
+				"java/lang/String",
+				"equals",
+				"(Ljava/lang/Object;)Z",
+				false));
 
 		if (this.comparator instanceof Equals)
 		{

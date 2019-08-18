@@ -12,8 +12,11 @@ import yirgacheffe.compiler.variables.Variables;
 public class NumberComparison implements Comparison
 {
 	private Coordinate coordinate;
+
 	private Comparator comparator;
+
 	private Expression firstOperand;
+
 	private Expression secondOperand;
 
 	public NumberComparison(
@@ -30,7 +33,7 @@ public class NumberComparison implements Comparison
 
 	public Result compile(Variables variables, Label label)
 	{
-		Result result = this.firstOperand.compile(variables);
+		Result result = new Result();
 		Type firstType = this.firstOperand.getType(variables);
 		Type secondType = this.secondOperand.getType(variables);
 

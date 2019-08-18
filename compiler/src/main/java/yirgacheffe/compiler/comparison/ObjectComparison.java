@@ -11,8 +11,11 @@ import yirgacheffe.compiler.variables.Variables;
 public class ObjectComparison implements Comparison
 {
 	private Coordinate coordinate;
+
 	private Comparator comparator;
+
 	private Expression firstOperand;
+
 	private Expression secondOperand;
 
 	public ObjectComparison(
@@ -44,7 +47,6 @@ public class ObjectComparison implements Comparison
 		}
 
 		return result
-			.concat(this.firstOperand.compile(variables))
 			.concat(this.secondOperand.compile(variables))
 			.concat(this.comparator.compile(label, firstType));
 	}
