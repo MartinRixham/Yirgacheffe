@@ -53,11 +53,13 @@ public class MultiEquation implements Expression
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
-		Type type = this.expressions.get(0).getType(variables);
+		Type type = this.getIntersectionType(variables);
 		Label falsLabel = new Label();
+		Expression firstExpression = this.expressions.get(0);
 
 		Result result = new Result()
-			.concat(this.expressions.get(0).compile(variables));
+			.concat(firstExpression.compile(variables))
+			.concat(firstExpression.getType(variables).convertTo(type));
 
 		for (int i = 1; i < this.expressions.length() - 1; i++)
 		{
@@ -66,6 +68,7 @@ public class MultiEquation implements Expression
 
 			result = result
 				.concat(expression.compile(variables))
+				.concat(expression.getType(variables).convertTo(type))
 				.add(this.getDupcode(type))
 				.concat(comparator.compile(falsLabel, type));
 
@@ -77,7 +80,8 @@ public class MultiEquation implements Expression
 
 		result = result
 			.concat(lastOperand.compile(variables))
-			.concat(lastComparator.compile(falseLabel, lastOperand.getType(variables)))
+			.concat(lastOperand.getType(variables).convertTo(type))
+			.concat(lastComparator.compile(falseLabel, type))
 			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(trueLabel)))
 			.add(new LabelNode(falsLabel))
 			.add(this.getPopcode(type))
@@ -88,6 +92,19 @@ public class MultiEquation implements Expression
 		variables.stackPush(this.getType(variables));
 
 		return result;
+	}
+
+	private Type getIntersectionType(Variables variables)
+	{
+		Type intersection = this.expressions.get(0).getType(variables);
+
+		for (int i = 1; i < this.expressions.length(); i++)
+		{
+			intersection =
+				intersection.intersect(this.expressions.get(i).getType(variables));
+		}
+
+		return intersection;
 	}
 
 	private InsnNode getDupcode(Type type)

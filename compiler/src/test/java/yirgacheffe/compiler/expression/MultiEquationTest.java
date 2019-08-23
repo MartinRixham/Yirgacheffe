@@ -101,4 +101,45 @@ public class MultiEquationTest
 
 		assertEquals(Opcodes.POP, twelfthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testCompilingMultiequationOfIntegerAndDouble()
+	{
+		Comparator lessThan = new LessThan();
+		Coordinate coordinate = new Coordinate(3, 5);
+		Array<Comparator> comparators = new Array<>(lessThan);
+
+		Array<Expression> expressions =
+			new Array<>(new Num("1"), new Num("1.0"));
+
+		Variables variables = new LocalVariables(new HashMap<>());
+
+		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
+
+		Result result = equation.compile(variables);
+
+		assertEquals(1, variables.getStack().length());
+		assertTrue(equation.isCondition(variables));
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(15, instructions.length());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DCONST_1, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DCMPG, fourthInstruction.getOpcode());
+	}
 }
