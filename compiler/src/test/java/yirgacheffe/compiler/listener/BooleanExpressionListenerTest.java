@@ -332,14 +332,14 @@ public class BooleanExpressionListenerTest
 	}
 
 	@Test
-	public void testMultipleInequalities()
+	public void testMultipleDoubleInequalities()
 	{
 		String source =
 			"class MyClass\n" +
 			"{\n" +
 				"public Bool method(Num x)" +
 				"{\n" +
-					"return 1.0 < x < 2.0;\n" +
+					"return 1.0 < x > 2.0;\n" +
 				"}\n" +
 				"public MyClass() {}" +
 			"}";
@@ -388,12 +388,12 @@ public class BooleanExpressionListenerTest
 
 		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.DCMPG, seventhInstruction.getOpcode());
+		assertEquals(Opcodes.DCMPL, seventhInstruction.getOpcode());
 
 		JumpInsnNode eighthInstruction = (JumpInsnNode) instructions.get(7);
 		Label secondLabel = eighthInstruction.label.getLabel();
 
-		assertEquals(Opcodes.IFGE, eighthInstruction.getOpcode());
+		assertEquals(Opcodes.IFLE, eighthInstruction.getOpcode());
 
 		JumpInsnNode ninthInstruction = (JumpInsnNode) instructions.get(8);
 		Label thirdLabel = ninthInstruction.label.getLabel();

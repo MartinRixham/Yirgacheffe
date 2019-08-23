@@ -68,7 +68,7 @@ public class Equation implements Expression
 
 		return
 			this.firstOperand.compile(variables)
-			.concat(this.continueCompilation(variables, null, label))
+			.concat(this.continueCompilation(variables, label))
 			.add(new InsnNode(Opcodes.ICONST_1))
 			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(falseLabel)))
 			.add(new LabelNode(label))
@@ -79,13 +79,10 @@ public class Equation implements Expression
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
 	{
 		return this.firstOperand.compile(variables)
-			.concat(this.continueCompilation(variables, trueLabel, falseLabel));
+			.concat(this.continueCompilation(variables, falseLabel));
 	}
 
-	private Result continueCompilation(
-		Variables variables,
-		Label trueLabel,
-		Label falseLabel)
+	private Result continueCompilation(Variables variables, Label falseLabel)
 	{
 		Type string = new ReferenceType(String.class);
 		Type firstType = this.firstOperand.getType(variables);
@@ -130,38 +127,11 @@ public class Equation implements Expression
 					this.secondOperand);
 		}
 
-		Result result = new Result();
+		Result result = new Result()
+			.concat(comparison.compile(variables, falseLabel));
 
-		if (this.secondOperand instanceof Equation)
-		{
-			Equation secondEquation = (Equation) this.secondOperand;
-			Expression secondOperand = secondEquation.getFirstOperand();
-			Label trulabel = new Label();
-			Label falsLabel = new Label();
-
-			result = result
-				.concat(secondOperand.compile(variables))
-				.add(this.getDupcode(firstType, secondOperand.getType(variables)))
-				.concat(this.comparator.compile(falsLabel, firstType))
-				.concat(secondEquation.continueCompilation(
-					variables,
-					trueLabel,
-					falseLabel))
-				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(trulabel)))
-				.add(new LabelNode(falsLabel))
-				.add(new InsnNode(Opcodes.POP2))
-				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(falseLabel)))
-				.add(new LabelNode(trulabel));
-		}
-		else
-		{
-			result = result
-				.concat(comparison.compile(variables, falseLabel));
-
-			variables.stackPop();
-			variables.stackPop();
-		}
-
+		variables.stackPop();
+		variables.stackPop();
 		variables.stackPush(this.getType(variables));
 
 		return result;
@@ -187,41 +157,6 @@ public class Equation implements Expression
 		variables.stackPush(this.getType(variables));
 
 		return result;
-	}
-
-	private Expression getFirstOperand()
-	{
-		return this.firstOperand;
-	}
-
-	private InsnNode getDupcode(Type firstType, Type secondType)
-	{
-		/*int opcode;
-
-		if (firstType.width() == 2)
-		{
-			if (secondType.width() == 2)
-			{
-				opcode = Opcodes.DUP2_X2;
-			}
-			else
-			{
-				opcode = Opcodes.DUP_X2;
-			}
-		}
-		else
-		{
-			if (secondType.width() == 2)
-			{
-				opcode = Opcodes.DUP2_X1;
-			}
-			else
-			{
-				opcode = Opcodes.DUP_X1;
-			}
-		}*/
-
-		return new InsnNode(Opcodes.DUP2_X2);
 	}
 
 	public boolean isCondition(Variables variables)
