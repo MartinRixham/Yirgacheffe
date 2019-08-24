@@ -160,7 +160,7 @@ public class NumericExpressionListener extends FunctionCallListener
 	@Override
 	public void exitAnd(YirgacheffeParser.AndContext context)
 	{
-		for (int i = 0; i < context.equals().size() - 1; i++)
+		for (int i = 0; i < context.equation().size() - 1; i++)
 		{
 			Expression secondOperand = this.expressions.pop();
 			Expression firstOperand = this.expressions.pop();

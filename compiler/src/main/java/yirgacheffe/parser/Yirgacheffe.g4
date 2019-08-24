@@ -141,15 +141,11 @@ expression: or;
 
 or: and ('||' and)*;
 
-and: equals ('&&' equals)*;
+and: equation ('&&' equation)*;
 
-equals: inequality (equative inequality)*;
+equation: add (comparative add)*;
 
-equative: NotEqual | Equal;
-
-inequality: add (comparative add)*;
-
-comparative: LessThan | GreaterThan | LessThanOrEqual | GreaterThanOrEqual;
+comparative: NotEqual | Equal | LessThan | GreaterThan | LessThanOrEqual | GreaterThanOrEqual;
 
 add: multiply (additive multiply)*;
 

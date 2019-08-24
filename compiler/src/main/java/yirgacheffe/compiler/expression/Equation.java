@@ -7,15 +7,11 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.comparison.BooleanComparison;
 import yirgacheffe.compiler.comparison.Comparator;
-import yirgacheffe.compiler.comparison.Comparison;
 import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.NotEquals;
-import yirgacheffe.compiler.comparison.NumberComparison;
-import yirgacheffe.compiler.comparison.ObjectComparison;
-import yirgacheffe.compiler.comparison.StringComparison;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -66,75 +62,12 @@ public class Equation implements Expression
 		Label label	= new Label();
 		Label falseLabel = new Label();
 
-		return
-			this.firstOperand.compile(variables)
-			.concat(this.continueCompilation(variables, label))
+		return this.compileCondition(variables, null, label)
 			.add(new InsnNode(Opcodes.ICONST_1))
 			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(falseLabel)))
 			.add(new LabelNode(label))
 			.add(new InsnNode(Opcodes.ICONST_0))
 			.add(new LabelNode(falseLabel));
-	}
-
-	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
-	{
-		return this.firstOperand.compile(variables)
-			.concat(this.continueCompilation(variables, falseLabel));
-	}
-
-	private Result continueCompilation(Variables variables, Label falseLabel)
-	{
-		Type string = new ReferenceType(String.class);
-		Type firstType = this.firstOperand.getType(variables);
-		Type secondType = this.secondOperand.getType(variables);
-
-		Comparison comparison;
-
-		if (firstType.isAssignableTo(string) && secondType.isAssignableTo(string) &&
-			(this.comparator instanceof Equals || this.comparator instanceof NotEquals))
-		{
-			comparison =
-				new StringComparison(
-					this.comparator,
-					this.firstOperand,
-					this.secondOperand);
-		}
-		else if (firstType.equals(PrimitiveType.BOOLEAN))
-		{
-			comparison =
-				new BooleanComparison(
-					this.coordinate,
-					this.comparator,
-					this.firstOperand,
-					this.secondOperand);
-		}
-		else if (firstType.isAssignableTo(PrimitiveType.DOUBLE))
-		{
-			comparison =
-				new NumberComparison(
-					this.coordinate,
-					this.comparator,
-					this.firstOperand,
-					this.secondOperand);
-		}
-		else
-		{
-			comparison =
-				new ObjectComparison(
-					this.coordinate,
-					this.comparator,
-					this.firstOperand,
-					this.secondOperand);
-		}
-
-		Result result = new Result()
-			.concat(comparison.compile(variables, falseLabel));
-
-		variables.stackPop();
-		variables.stackPop();
-		variables.stackPush(this.getType(variables));
-
-		return result;
 	}
 
 	private Result compareStrings(
@@ -151,6 +84,38 @@ public class Equation implements Expression
 				"equals",
 				"(Ljava/lang/Object;)Z",
 				false));
+
+		variables.stackPop();
+		variables.stackPop();
+		variables.stackPush(this.getType(variables));
+
+		return result;
+	}
+
+	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
+	{
+		Type firstType = this.firstOperand.getType(variables);
+		Type secondType = this.secondOperand.getType(variables);
+		Type type = firstType.intersect(secondType);
+		Result result = new Result();
+
+		if (firstType.isPrimitive() ^ secondType.isPrimitive() ||
+			!type.isAssignableTo(PrimitiveType.DOUBLE) &&
+				!(this.comparator instanceof Equals ||
+					this.comparator instanceof NotEquals))
+		{
+			String message =
+				"Cannot compare " + firstType + " and " + secondType + ".";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		result = result
+			.concat(this.firstOperand.compile(variables))
+			.concat(firstType.convertTo(type))
+			.concat(this.secondOperand.compile(variables))
+			.concat(secondType.convertTo(type))
+			.concat(this.comparator.compile(falseLabel, type));
 
 		variables.stackPop();
 		variables.stackPop();

@@ -5,8 +5,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 
 public class NotEquals implements Comparator
@@ -16,7 +18,18 @@ public class NotEquals implements Comparator
 	{
 		Result result = new Result();
 
-		if (!type.isPrimitive())
+		if (type.isAssignableTo(new ReferenceType(String.class)))
+		{
+			result = result
+				.add(new MethodInsnNode(
+					Opcodes.INVOKEVIRTUAL,
+					"java/lang/String",
+					"equals",
+					"(Ljava/lang/Object;)Z",
+					false))
+				.add(new JumpInsnNode(Opcodes.IFNE, new LabelNode(label)));
+		}
+		else if (!type.isPrimitive())
 		{
 			result = result.add(
 				new JumpInsnNode(Opcodes.IF_ACMPEQ, new LabelNode(label)));

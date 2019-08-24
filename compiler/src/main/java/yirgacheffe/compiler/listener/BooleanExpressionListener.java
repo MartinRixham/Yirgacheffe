@@ -23,41 +23,33 @@ public class BooleanExpressionListener extends NumericExpressionListener
 	}
 
 	@Override
-	public void exitEquals(YirgacheffeParser.EqualsContext context)
+	public void exitEquation(YirgacheffeParser.EquationContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
 
-		for (int i = 0; i < context.inequality().size() - 1; i++)
+		if (context.comparative().size() > 1)
 		{
-			Expression secondOperand = this.expressions.pop();
-			Expression firstOperand = this.expressions.pop();
+			Array<Comparator> comparators = new Array<>();
+			Array<Expression> expressions = new Array<>();
 
-			Comparator comparator;
+			for (int i = 0; i < context.comparative().size(); i++)
+			{
+				Comparator comparator = getComparator(context.comparative(i));
 
-			if (context.equative(i).Equal() != null)
-			{
-				comparator = new Equals();
-			}
-			else
-			{
-				comparator = new NotEquals();
+				comparators.push(comparator);
 			}
 
-			this.expressions.push(
-				new Equation(coordinate, comparator, firstOperand, secondOperand));
-		}
-	}
+			for (int i = 0; i < context.add().size(); i++)
+			{
+				expressions.push(this.expressions.get(i));
+			}
 
-	@Override
-	public void exitInequality(YirgacheffeParser.InequalityContext context)
-	{
-		Coordinate coordinate = new Coordinate(context);
+			MultiEquation equation =
+				new MultiEquation(coordinate, comparators, expressions);
 
-		if (context.comparative().size() == 0)
-		{
-			return;
+			this.expressions.push(equation);
 		}
-		if (context.comparative().size() == 1)
+		else if (context.comparative().size() == 1)
 		{
 			Expression secondOperand = this.expressions.pop();
 			Expression firstOperand = this.expressions.pop();
@@ -65,35 +57,21 @@ public class BooleanExpressionListener extends NumericExpressionListener
 			Comparator comparator = getComparator(context.comparative(0));
 
 			this.expressions.push(
-					new Equation(coordinate, comparator, firstOperand, secondOperand));
-
-			return;
+				new Equation(coordinate, comparator, firstOperand, secondOperand));
 		}
-
-		Array<Comparator> comparators = new Array<>();
-		Array<Expression> expressions = new Array<>();
-
-		for (int i = 0; i < context.comparative().size(); i++)
-		{
-			Comparator comparator = getComparator(context.comparative(i));
-
-			comparators.push(comparator);
-		}
-
-		for (int i = 0; i < context.add().size(); i++)
-		{
-			expressions.push(this.expressions.get(i));
-		}
-
-		MultiEquation equation =
-			new MultiEquation(coordinate, comparators, expressions);
-
-		this.expressions.push(equation);
 	}
 
 	private Comparator getComparator(YirgacheffeParser.ComparativeContext context)
 	{
-		if (context.LessThan() != null)
+		if (context.NotEqual() != null)
+		{
+			return new NotEquals();
+		}
+		else if (context.Equal() != null)
+		{
+			return new Equals();
+		}
+		else if (context.LessThan() != null)
 		{
 			return new LessThan();
 		}

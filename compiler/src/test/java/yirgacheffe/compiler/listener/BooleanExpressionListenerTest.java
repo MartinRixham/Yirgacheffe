@@ -440,4 +440,52 @@ public class BooleanExpressionListenerTest
 
 		assertEquals(Opcodes.ICONST_0, nineteenthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testMultipleStringEquations()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Bool method(String string)" +
+				"{\n" +
+					"return \"\" == string == \"\";\n" +
+				"}\n" +
+				"public MyClass() {}" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(23, instructions.size());
+
+		LdcInsnNode firstInstruction = (LdcInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
+		assertEquals("", firstInstruction.cst);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DUP_X1, thirdInstruction.getOpcode());
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("equals", fourthInstruction.name);
+	}
 }
