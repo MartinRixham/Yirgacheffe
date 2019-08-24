@@ -426,6 +426,35 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testErrorOnUninitialisedFieldWithMainMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"main method(Array<String> args) {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Default constructor does not initialise field 'thingy'.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testInitialiseFieldViaAnotherConstructor()
 	{
 		String source =

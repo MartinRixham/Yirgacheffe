@@ -12,7 +12,10 @@ import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ClassListener extends PackageListener
 {
@@ -145,7 +148,7 @@ public class ClassListener extends PackageListener
 
 		if (!this.hasDefaultConstructor && this.mainMethodName != null)
 		{
-			this.makeDefaultConstructor();
+			this.makeDefaultConstructor(context);
 		}
 
 		this.checkInterfaceMethodImplementations(context);
@@ -211,8 +214,10 @@ public class ClassListener extends PackageListener
 		methodVisitor.visitInsn(Opcodes.RETURN);
 	}
 
-	private void makeDefaultConstructor()
+	private void makeDefaultConstructor(YirgacheffeParser.ClassDefinitionContext context)
 	{
+		this.checkFieldInitialisation(context);
+
 		MethodVisitor methodVisitor =
 			this.classNode.visitMethod(
 				Opcodes.ACC_PUBLIC,
@@ -268,5 +273,53 @@ public class ClassListener extends PackageListener
 
 			this.errors.push(new Error(context, message));
 		}
+	}
+
+	private void checkFieldInitialisation(
+		YirgacheffeParser.ClassDefinitionContext context)
+	{
+		try
+		{
+			String initialiserPrefix = "0init_field";
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
+			Class<?> reflectionClass = thisType.reflectionClass();
+
+			Method[] methods = reflectionClass.getDeclaredMethods();
+
+			Set<String> fieldNames =
+				this.getFieldNames(reflectionClass.getDeclaredFields());
+
+			for (Method method: methods)
+			{
+				if (method.getName().startsWith(initialiserPrefix))
+				{
+					fieldNames.remove(
+						method.getName().substring(initialiserPrefix.length() + 1));
+				}
+			}
+
+			for (String field: fieldNames)
+			{
+				String message =
+					"Default constructor does not initialise field '" + field + "'.";
+
+				this.errors.push(new Error(context, message));
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+		}
+	}
+
+	private Set<String> getFieldNames(Field[] fields)
+	{
+		Set<String> names = new HashSet<>();
+
+		for (Field field: fields)
+		{
+			names.add(field.getName());
+		}
+
+		return names;
 	}
 }
