@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.comparison.Comparator;
+import yirgacheffe.compiler.comparison.Equals;
 import yirgacheffe.compiler.comparison.GreaterThan;
 import yirgacheffe.compiler.comparison.LessThan;
 import yirgacheffe.compiler.error.Coordinate;
@@ -199,6 +200,28 @@ public class MultiEquationTest
 
 		assertEquals(
 			"line 3:5 Cannot compare java.lang.String and java.lang.String.",
+			result.getErrors().get(0).toString());
+	}
+
+	@Test
+	public void testCompilingBooleanAndNumber()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Array<Comparator> comparators = new Array<>(new Equals());
+
+		Array<Expression> expressions =
+			new Array<>(new Num("1"), new Bool("true"));
+
+		Variables variables = new LocalVariables(new HashMap<>());
+
+		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
+
+		Result result = equation.compile(variables);
+
+		assertEquals(1, result.getErrors().length());
+
+		assertEquals(
+			"line 3:5 Cannot compare Num and Bool.",
 			result.getErrors().get(0).toString());
 	}
 }

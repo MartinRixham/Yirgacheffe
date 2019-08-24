@@ -684,6 +684,28 @@ public class EquationTest
 	}
 
 	@Test
+	public void testCompareBoleanAndNumber()
+	{
+		Variables variables = new LocalVariables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Expression firstOperand = new Bool("true");
+		Expression secondOperand = new Num("1");
+
+		Equation operation =
+			new Equation(coordinate, new Equals(), firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Result result = operation.compile(variables);
+
+		assertEquals(PrimitiveType.BOOLEAN, type);
+		assertEquals(1, result.getErrors().length());
+
+		assertEquals(result.getErrors().get(0).toString(),
+			"line 3:6 Cannot compare Bool and Num.");
+	}
+
+	@Test
 	public void testCompilingEqualStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);

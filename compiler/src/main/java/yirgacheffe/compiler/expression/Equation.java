@@ -100,6 +100,8 @@ public class Equation implements Expression
 		Result result = new Result();
 
 		if (firstType.isPrimitive() ^ secondType.isPrimitive() ||
+			!firstType.isAssignableTo(secondType) &&
+				!secondType.isAssignableTo(firstType) ||
 			!type.isAssignableTo(PrimitiveType.DOUBLE) &&
 				!(this.comparator instanceof Equals ||
 					this.comparator instanceof NotEquals))
