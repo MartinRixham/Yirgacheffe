@@ -24,7 +24,7 @@ There's nothing wrong with mutable state, almost all programs have some, but it 
 One of the easiest ways to degrade the readability and testability of a program is to mutate a field just because it's convenient for the current calculation even though the long term state of the program hasn't changed.
 In Yirgacheffe fields are immutable, they can only be assigned in a constructor or field initialiser, so local state like the value of a loop index should be kept in a local variable.
 
-If the state of a programme really changes then that may involve mutating the state in a field.
+There is relatively little cost to mutating local state since those mutations cannot propagate to the rest of the program but if the state of a program really changes then that may involve mutating the state in a field.
 Any mutable data structure can be used to do this as long as it is initialised and assigned when its parent object is constructed.
 In this way an appropriate data structure can be used to store the long term state of a program while keeping other classes immutable.
 
@@ -68,7 +68,7 @@ If you really want to write subtype specific code you can use a method overload 
 
 ### Null Literals
 
-We all know not to pass null values between functions.
+We all know not to pass null values between functions and in Yirgacheffe this is especially important since passing `null` as an argument will result in a null pointer exception.
 But really there's not much reason to refer to `null` at all and since I'm trying to encourage myself to use better ways of handling exceptional cases there isn't a null literal in Yirgacheffe.
 We can't outlaw null values completely though or pretend they don't exist so you might need to check for nulls to avoid a null pointer exception.
 
