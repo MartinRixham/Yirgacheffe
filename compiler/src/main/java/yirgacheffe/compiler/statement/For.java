@@ -34,13 +34,11 @@ public class For implements Statement
 		this.statement = statement;
 	}
 
-	@Override
 	public boolean returns()
 	{
 		return false;
 	}
 
-	@Override
 	public Result compile(Variables variables, Signature caller)
 	{
 		Label exitLabel = new Label();
@@ -72,26 +70,26 @@ public class For implements Statement
 			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(continueLabel)))
 			.add(new LabelNode(exitLabel));
 	}
-
-	@Override
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.initialiser.getVariableReads();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return this.initialiser.getVariableWrites();
 	}
 
-	@Override
+	public Array<String> getFieldAssignments()
+	{
+		return new Array<>();
+	}
+
 	public Expression getExpression()
 	{
 		return this.statement.getExpression();
 	}
 
-	@Override
 	public boolean isEmpty()
 	{
 		return false;

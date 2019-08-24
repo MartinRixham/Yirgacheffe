@@ -96,6 +96,11 @@ public class VariableWrite implements Statement
 		return new Array<>(this);
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return new Array<>();
+	}
+
 	public Coordinate getCoordinate()
 	{
 		return this.coordinate;

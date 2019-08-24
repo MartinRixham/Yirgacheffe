@@ -31,6 +31,7 @@ public class OpenBlockTest
 		assertNotNull(result.getErrors());
 		assertFalse(openBlock.returns());
 		assertTrue(openBlock.isEmpty());
+		assertEquals(0, openBlock.getFieldAssignments().length());
 	}
 
 	@Test

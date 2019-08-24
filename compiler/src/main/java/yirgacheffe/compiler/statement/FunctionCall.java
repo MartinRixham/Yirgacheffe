@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
@@ -54,6 +55,18 @@ public class FunctionCall implements Statement
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();
+	}
+
+	public Array<String> getFieldAssignments()
+	{
+		if (this.expression instanceof InvokeThis)
+		{
+			return new Array<>("this");
+		}
+		else
+		{
+			return new Array<>();
+		}
 	}
 
 	public Expression getExpression()

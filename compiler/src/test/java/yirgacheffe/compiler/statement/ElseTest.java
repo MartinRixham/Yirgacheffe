@@ -12,11 +12,14 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
+import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
@@ -156,5 +159,68 @@ public class ElseTest
 		assertTrue(writes.indexOf(write) >= 0);
 		assertTrue(elseStatement.getExpression() instanceof Nothing);
 		assertFalse(elseStatement.isEmpty());
+		assertEquals(0, elseStatement.getFieldAssignments().length());
+	}
+
+	@Test
+	public void testFieldAssignmentFromPrecondition()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Type string = new ReferenceType(String.class);
+
+		FieldWrite precondition =
+			new FieldWrite(coordinate, "var1", new Nothing(), new Nothing());
+
+		FunctionCall statement =
+			new FunctionCall(new InvokeThis(coordinate, string, new Array<>()));
+
+		Statement elseStatement = new Else(coordinate, precondition, statement);
+
+		assertEquals(1, elseStatement.getFieldAssignments().length());
+		assertEquals("var1", elseStatement.getFieldAssignments().get(0));
+	}
+
+	@Test
+	public void testFieldAssignmentFromStatement()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Type string = new ReferenceType(String.class);
+
+		FunctionCall precondition =
+			new FunctionCall(new InvokeThis(coordinate, string, new Array<>()));
+
+		FieldWrite statement =
+			new FieldWrite(coordinate, "var2", new Nothing(), new Nothing());
+
+		Statement elseStatement = new Else(coordinate, precondition, statement);
+
+		assertEquals(1, elseStatement.getFieldAssignments().length());
+		assertEquals("var2", elseStatement.getFieldAssignments().get(0));
+	}
+
+	@Test
+	public void testFieldAssignmentFromStatementAndPrecondition()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Type string = new ReferenceType(String.class);
+
+		Statement precondition =
+			new Block(
+				coordinate,
+				new Array<>(
+					new FieldWrite(coordinate, "var1", new Nothing(), new Nothing()),
+					new FieldWrite(coordinate, "var2", new Nothing(), new Nothing())));
+
+		Statement statement =
+			new Block(
+				coordinate,
+				new Array<>(
+					new FieldWrite(coordinate, "var2", new Nothing(), new Nothing()),
+					new FieldWrite(coordinate, "var3", new Nothing(), new Nothing())));
+
+		Statement elseStatement = new Else(coordinate, precondition, statement);
+
+		assertEquals(1, elseStatement.getFieldAssignments().length());
+		assertEquals("var2", elseStatement.getFieldAssignments().get(0));
 	}
 }

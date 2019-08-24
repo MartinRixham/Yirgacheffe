@@ -138,5 +138,6 @@ public class VariableWriteTest
 		Array<VariableWrite> writes = variableWrite.getVariableWrites();
 
 		assertTrue(writes.indexOf(variableWrite) >= 0);
+		assertEquals(0, variableWrite.getFieldAssignments().length());
 	}
 }

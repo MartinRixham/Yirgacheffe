@@ -20,10 +20,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class ConstructorListener extends MainMethodListener
@@ -169,9 +166,6 @@ public class ConstructorListener extends MainMethodListener
 
 			Method[] methods = reflectionClass.getDeclaredMethods();
 
-			this.fieldNames =
-				this.getFieldNames(reflectionClass.getDeclaredFields());
-
 			for (Method method: methods)
 			{
 				if (method.getName().startsWith(initialiserPrefix))
@@ -184,29 +178,13 @@ public class ConstructorListener extends MainMethodListener
 						method.getName(),
 						"()V",
 						false));
-
-					this.fieldNames.remove(
-						method.getName().substring(initialiserPrefix.length() + 1));
 				}
 			}
 		}
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
-			this.fieldNames = new HashSet<>();
 		}
 
 		return instructions;
-	}
-
-	private Set<String> getFieldNames(Field[] fields)
-	{
-		Set<String> names = new HashSet<>();
-
-		for (Field field: fields)
-		{
-			names.add(field.getName());
-		}
-
-		return names;
 	}
 }

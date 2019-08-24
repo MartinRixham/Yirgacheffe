@@ -5,6 +5,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.UnaryOperation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class AttemptedStatementTest
@@ -21,5 +22,6 @@ public class AttemptedStatementTest
 
 		assertFalse(attemptedStatement.returns());
 		assertFalse(attemptedStatement.isEmpty());
+		assertEquals(0, attemptedStatement.getFieldAssignments().length());
 	}
 }

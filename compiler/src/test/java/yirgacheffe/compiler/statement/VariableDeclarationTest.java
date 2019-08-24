@@ -25,5 +25,6 @@ VariableDeclarationTest
 		assertTrue(variableDeclaration.isEmpty());
 		assertTrue(variableDeclaration.equals("var"));
 		assertEquals(variableDeclaration, variableDeclaration);
+		assertEquals(0, variableDeclaration.getFieldAssignments().length());
 	}
 }

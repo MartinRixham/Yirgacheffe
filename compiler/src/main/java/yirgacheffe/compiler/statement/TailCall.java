@@ -94,6 +94,11 @@ public class TailCall implements Statement
 		return this.invocation.getVariableWrites();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return this.invocation.getFieldAssignments();
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

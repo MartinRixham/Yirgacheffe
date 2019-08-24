@@ -19,5 +19,6 @@ public class LabelStatementTest
 		assertEquals(new Array<>(), labelStatement.getVariableWrites());
 		assertTrue(labelStatement.getExpression() instanceof Nothing);
 		assertTrue(labelStatement.isEmpty());
+		assertEquals(0, labelStatement.getFieldAssignments().length());
 	}
 }

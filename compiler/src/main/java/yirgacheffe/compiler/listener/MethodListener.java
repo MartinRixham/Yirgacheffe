@@ -24,6 +24,8 @@ import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -52,8 +54,6 @@ public class MethodListener extends TypeListener
 	protected Signature signature;
 
 	private boolean isValid = true;
-
-	protected Set<String> fieldNames = new HashSet<>();
 
 	public MethodListener(String sourceFile, Classes classes)
 	{
@@ -125,7 +125,6 @@ public class MethodListener extends TypeListener
 				null);
 
 		this.classNode.methods.add(this.methodNode);
-		this.fieldNames = new HashSet<>();
 	}
 
 	private boolean checkInterfaceImplementation()
@@ -265,19 +264,77 @@ public class MethodListener extends TypeListener
 			this.errors.push(new Error(coordinate, message));
 		}
 
-		for (String name: this.fieldNames)
+		if (this.inConstructor)
 		{
-			String message =
-				"Constructor " + this.signature +
-					" does not initialise field '" + name + "'.";
-
-			this.errors.push(new Error(context, message));
+			this.checkFieldInitialisation(context, block.getFieldAssignments());
 		}
 
 		this.errors.push(variables.getErrors());
 		this.errors.push(result.getErrors());
 
 		this.inConstructor = false;
+	}
+
+	private void checkFieldInitialisation(
+		YirgacheffeParser.FunctionBlockContext context,
+		Array<String> fieldAssignments)
+	{
+		try
+		{
+			String initialiserPrefix = "0init_field";
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
+			Class<?> reflectionClass = thisType.reflectionClass();
+
+			Method[] methods = reflectionClass.getDeclaredMethods();
+
+			Set<String> fieldNames =
+				this.getFieldNames(reflectionClass.getDeclaredFields());
+
+			for (Method method: methods)
+			{
+				if (method.getName().startsWith(initialiserPrefix))
+				{
+					fieldNames.remove(
+						method.getName().substring(initialiserPrefix.length() + 1));
+				}
+			}
+
+			for (String field: fieldAssignments)
+			{
+				if (field.equals("this"))
+				{
+					fieldNames = new HashSet<>();
+				}
+				else
+				{
+					fieldNames.remove(field);
+				}
+			}
+
+			for (String field: fieldNames)
+			{
+				String message =
+					"Constructor " + this.signature +
+						" does not initialise field '" + field + "'.";
+
+				this.errors.push(new Error(context, message));
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+		}
+	}
+
+	private Set<String> getFieldNames(Field[] fields)
+	{
+		Set<String> names = new HashSet<>();
+
+		for (Field field: fields)
+		{
+			names.add(field.getName());
+		}
+
+		return names;
 	}
 
 	@Override

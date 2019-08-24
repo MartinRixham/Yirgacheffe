@@ -119,6 +119,7 @@ public class IfTest
 
 		assertTrue(writes.indexOf(write) >= 0);
 		assertTrue(ifStatement.getExpression() instanceof Nothing);
+		assertEquals(0, ifStatement.getFieldAssignments().length());
 	}
 
 	@Test

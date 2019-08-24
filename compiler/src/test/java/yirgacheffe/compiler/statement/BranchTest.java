@@ -7,6 +7,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.lang.Array;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +23,7 @@ public class BranchTest
 
 		assertTrue(expression instanceof Nothing);
 		assertFalse(branch.isEmpty());
+		assertEquals(0, branch.getFieldAssignments().length());
 	}
 
 	@Test

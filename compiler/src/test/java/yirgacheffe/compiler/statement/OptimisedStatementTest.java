@@ -19,5 +19,6 @@ public class OptimisedStatementTest
 		assertEquals(new Array<>(), optimisedStatement.getVariableWrites());
 		assertTrue(optimisedStatement.getExpression() instanceof  Nothing);
 		assertTrue(optimisedStatement.isEmpty());
+		assertEquals(0, optimisedStatement.getFieldAssignments().length());
 	}
 }

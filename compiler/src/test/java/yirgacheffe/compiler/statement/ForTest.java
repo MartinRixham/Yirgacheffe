@@ -35,6 +35,7 @@ public class ForTest
 		assertTrue(forStatement.getExpression() instanceof Nothing);
 		assertFalse(forStatement.returns());
 		assertFalse(forStatement.isEmpty());
+		assertEquals(0, forStatement.getFieldAssignments().length());
 	}
 
 	@Test

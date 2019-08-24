@@ -12,8 +12,6 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.util.HashSet;
-
 public class FunctionCallListener extends ExpressionListener
 {
 	private Array<Expression> arguments;
@@ -50,8 +48,6 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitSelfInstantiation(YirgacheffeParser.SelfInstantiationContext context)
 	{
-		this.fieldNames = new HashSet<>();
-
 		if (!this.inConstructor)
 		{
 			String message = "Cannot call this() outside of constructor.";

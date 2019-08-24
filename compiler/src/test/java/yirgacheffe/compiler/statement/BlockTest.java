@@ -638,6 +638,7 @@ public class BlockTest
 
 		assertEquals(read, block.getExpression());
 		assertFalse(block.isEmpty());
+		assertEquals(0, block.getFieldAssignments().length());
 	}
 
 	@Test

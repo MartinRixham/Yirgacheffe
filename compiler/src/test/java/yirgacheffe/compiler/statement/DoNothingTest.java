@@ -30,6 +30,7 @@ public class DoNothingTest
 		assertNotNull(result.getErrors());
 		assertFalse(doNothing.returns());
 		assertTrue(doNothing.isEmpty());
+		assertEquals(0, doNothing.getFieldAssignments().length());
 	}
 
 	@Test

@@ -30,6 +30,11 @@ public class OpenBlock implements Statement
 		return new Array<>();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return new Array<>();
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

@@ -20,5 +20,6 @@ public class ParameterDeclarationTest
 		assertEquals(new Array<>(), parameterDeclaration.getVariableWrites());
 		assertTrue(parameterDeclaration.getExpression() instanceof Nothing);
 		assertTrue(parameterDeclaration.isEmpty());
+		assertEquals(0, parameterDeclaration.getFieldAssignments().length());
 	}
 }

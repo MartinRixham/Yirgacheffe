@@ -76,6 +76,11 @@ public class If implements ConditionalStatement
 		return this.statement.getVariableWrites();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return this.statement.getFieldAssignments();
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

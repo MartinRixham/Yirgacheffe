@@ -44,6 +44,18 @@ public class Branch implements Statement
 		return this.conditional.getVariableWrites();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		if (this.conditional instanceof Else)
+		{
+			return this.conditional.getFieldAssignments();
+		}
+		else
+		{
+			return new Array<>();
+		}
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

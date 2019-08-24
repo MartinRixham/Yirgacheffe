@@ -17,6 +17,8 @@ public interface Statement
 
 	Array<VariableWrite> getVariableWrites();
 
+	Array<String> getFieldAssignments();
+
 	Expression getExpression();
 
 	boolean isEmpty();

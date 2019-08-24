@@ -75,6 +75,35 @@ public class Else implements ConditionalStatement
 			.concat(this.precondition.getVariableWrites());
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		Array<String> preconditionAssignments = this.precondition.getFieldAssignments();
+		Array<String> statementAssignments = this.statement.getFieldAssignments();
+
+		if (preconditionAssignments.contains("this"))
+		{
+			return statementAssignments;
+		}
+		else if (statementAssignments.contains("this"))
+		{
+			return preconditionAssignments;
+		}
+		else
+		{
+			Array<String> assignments = new Array<>();
+
+			for (String assignment: preconditionAssignments)
+			{
+				if (statementAssignments.contains(assignment))
+				{
+					assignments.push(assignment);
+				}
+			}
+
+			return assignments;
+		}
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

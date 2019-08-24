@@ -124,5 +124,6 @@ public class FunctionCallTest
 		assertEquals(expression.hashCode(), functionCall.hashCode());
 		assertEquals(1, functionCall.getVariableReads().length());
 		assertEquals(variable, functionCall.getVariableReads().get(0));
+		assertEquals(0, functionCall.getFieldAssignments().length());
 	}
 }

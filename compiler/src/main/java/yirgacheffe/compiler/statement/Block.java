@@ -197,6 +197,18 @@ public class Block implements Statement
 		return variableWrites;
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		Array<String> fields = new Array<>();
+
+		for (Statement statement: this.statements)
+		{
+			fields = fields.concat(statement.getFieldAssignments());
+		}
+
+		return fields;
+	}
+
 	public Expression getExpression()
 	{
 		if (this.statements.length() == 0)

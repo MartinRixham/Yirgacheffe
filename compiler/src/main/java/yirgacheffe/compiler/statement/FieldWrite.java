@@ -114,6 +114,11 @@ public class FieldWrite implements Statement
 		return new Array<>();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return new Array<>(this.name);
+	}
+
 	public Expression getExpression()
 	{
 		return new Nothing();

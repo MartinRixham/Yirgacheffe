@@ -59,6 +59,11 @@ public class AttemptedStatement implements Statement
 		return this.statement.getVariableWrites();
 	}
 
+	public Array<String> getFieldAssignments()
+	{
+		return this.statement.getFieldAssignments();
+	}
+
 	public Expression getExpression()
 	{
 		return this.statement.getExpression();

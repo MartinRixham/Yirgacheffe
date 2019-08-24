@@ -46,6 +46,7 @@ public class ReturnTest
 
 		assertEquals(Opcodes.RETURN, firstInstruction.getOpcode());
 		assertTrue(returnStatement.getExpression() instanceof Nothing);
+		assertEquals(0, returnStatement.getFieldAssignments().length());
 	}
 
 	@Test

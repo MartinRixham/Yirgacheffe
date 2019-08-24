@@ -156,5 +156,7 @@ public class FieldWriteTest
 		Array<VariableWrite> writes = write.getVariableWrites();
 
 		assertEquals(0, writes.length());
+		assertEquals(1, write.getFieldAssignments().length());
+		assertEquals("var", write.getFieldAssignments().get(0));
 	}
 }

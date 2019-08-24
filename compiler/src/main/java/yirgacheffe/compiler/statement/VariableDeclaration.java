@@ -38,8 +38,12 @@ public class VariableDeclaration implements Statement
 		return new Array<>();
 	}
 
-	@Override
 	public Array<VariableWrite> getVariableWrites()
+	{
+		return new Array<>();
+	}
+
+	public Array<String> getFieldAssignments()
 	{
 		return new Array<>();
 	}

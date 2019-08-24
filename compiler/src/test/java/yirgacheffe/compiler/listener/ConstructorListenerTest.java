@@ -486,4 +486,83 @@ public class ConstructorListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testCallOwnConstructorFromBranch()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)\n" +
+					"{\n" +
+						"this(\"thingy\");\n" +
+					"}\n" +
+				"}\n" +
+				"public MyClass(String string)\n" +
+				"{\n" +
+					"this.thingy = string;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:0 Constructor MyClass() does not initialise field 'thingy'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInitialiseFieldWithAssignmentOrConstructorCall()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)\n" +
+					"{\n" +
+						"this(\"thingy\");\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+						"this.thingy = \"thingy\";\n" +
+					"}\n" +
+				"}\n" +
+				"public MyClass(String string)\n" +
+				"{\n" +
+					"this.thingy = string;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }
