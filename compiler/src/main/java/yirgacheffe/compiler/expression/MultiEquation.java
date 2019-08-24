@@ -7,7 +7,10 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.comparison.Comparator;
+import yirgacheffe.compiler.comparison.Equals;
+import yirgacheffe.compiler.comparison.NotEquals;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -65,23 +68,31 @@ public class MultiEquation implements Expression
 		{
 			Comparator comparator = this.comparators.get(i - 1);
 			Expression expression = this.expressions.get(i);
+			Type firstType = this.expressions.get(i - 1).getType(variables);
+			Type secondType = expression.getType(variables);
 
 			result = result
 				.concat(expression.compile(variables))
-				.concat(expression.getType(variables).convertTo(type))
+				.concat(firstType.convertTo(type))
 				.add(this.getDupcode(type))
-				.concat(comparator.compile(falsLabel, type));
+				.concat(comparator.compile(falsLabel, type))
+				.concat(this.getError(firstType, secondType, comparator));
 
 			variables.stackPop();
 		}
 
-		Expression lastOperand = this.expressions.get(this.expressions.length() - 1);
+		int expressionCount = this.expressions.length();
+		Expression lastOperand = this.expressions.get(expressionCount - 1);
+		Expression penultimateOperand = this.expressions.get(expressionCount - 2);
 		Comparator lastComparator = this.comparators.get(this.comparators.length() - 1);
+		Type firstType = penultimateOperand.getType(variables);
+		Type secondType = lastOperand.getType(variables);
 
 		result = result
 			.concat(lastOperand.compile(variables))
 			.concat(lastOperand.getType(variables).convertTo(type))
 			.concat(lastComparator.compile(falseLabel, type))
+			.concat(this.getError(firstType, secondType, lastComparator))
 			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(trueLabel)))
 			.add(new LabelNode(falsLabel))
 			.add(this.getPopcode(type))
@@ -129,6 +140,23 @@ public class MultiEquation implements Expression
 		{
 			return new InsnNode(Opcodes.POP2);
 		}
+	}
+
+	private Result getError(Type firstType, Type secondType, Comparator comparator)
+	{
+		Type type = firstType.intersect(secondType);
+
+		if (firstType.isPrimitive() ^ secondType.isPrimitive() ||
+			!type.isAssignableTo(PrimitiveType.DOUBLE) &&
+				!(comparator instanceof Equals || comparator instanceof NotEquals))
+		{
+			String message =
+				"Cannot compare " + firstType + " and " + secondType + ".";
+
+			return new Result().add(new Error(this.coordinate, message));
+		}
+
+		return new Result();
 	}
 
 	public boolean isCondition(Variables variables)

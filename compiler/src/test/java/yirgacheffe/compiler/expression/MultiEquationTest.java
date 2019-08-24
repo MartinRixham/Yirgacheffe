@@ -12,6 +12,7 @@ import yirgacheffe.compiler.comparison.Comparator;
 import yirgacheffe.compiler.comparison.GreaterThan;
 import yirgacheffe.compiler.comparison.LessThan;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -141,5 +142,63 @@ public class MultiEquationTest
 		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.DCMPG, fourthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testCompilingMultiequationOfNumberAndString()
+	{
+		Comparator lessThan = new LessThan();
+		Coordinate coordinate = new Coordinate(3, 5);
+		Array<Comparator> comparators = new Array<>(lessThan, lessThan, lessThan);
+
+		Array<Expression> expressions =
+			new Array<>(
+				new Num("1"),
+				new Streeng("\"\""),
+				new Num("1"),
+				new This(new ReferenceType(Object.class)));
+
+		Variables variables = new LocalVariables(new HashMap<>());
+
+		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
+
+		Result result = equation.compile(variables);
+
+		assertEquals(3, result.getErrors().length());
+
+		assertEquals(
+			"line 3:5 Cannot compare Num and java.lang.String.",
+			result.getErrors().get(0).toString());
+
+		assertEquals(
+			"line 3:5 Cannot compare java.lang.String and Num.",
+			result.getErrors().get(1).toString());
+
+		assertEquals(
+			"line 3:5 Cannot compare Num and java.lang.Object.",
+			result.getErrors().get(2).toString());
+	}
+
+	@Test
+	public void testCompilingUnequalStrings()
+	{
+		Comparator lessThan = new LessThan();
+		Coordinate coordinate = new Coordinate(3, 5);
+		Array<Comparator> comparators = new Array<>(lessThan);
+
+		Array<Expression> expressions =
+			new Array<>(new Streeng("\"\""), new Streeng("\"\""));
+
+		Variables variables = new LocalVariables(new HashMap<>());
+
+		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
+
+		Result result = equation.compile(variables);
+
+		assertEquals(1, result.getErrors().length());
+
+		assertEquals(
+			"line 3:5 Cannot compare java.lang.String and java.lang.String.",
+			result.getErrors().get(0).toString());
 	}
 }
