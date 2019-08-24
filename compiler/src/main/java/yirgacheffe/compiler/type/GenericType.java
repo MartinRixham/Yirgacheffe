@@ -98,21 +98,25 @@ public class GenericType implements Type
 			return new Result();
 		}
 
-		Result result = new Result().add(
-			new TypeInsnNode(
-				Opcodes.CHECKCAST,
-				this.toFullyQualifiedType()));
+		Result result = new Result();
 
 		if (this.isPrimitive())
 		{
-			result = result.add(
-				new MethodInsnNode(
+			result = result
+				.add(new MethodInsnNode(
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
-					"ofValue",
-					"(L" + this.toFullyQualifiedType() + ";)" +
+					"to" + this.reflectionClass().getSimpleName(),
+					"(Ljava/lang/Object;)" +
 						this.getSignature(),
 					false));
+		}
+		else
+		{
+			result = result
+				.add(new TypeInsnNode(
+					Opcodes.CHECKCAST,
+					this.toFullyQualifiedType()));
 		}
 
 		return result;

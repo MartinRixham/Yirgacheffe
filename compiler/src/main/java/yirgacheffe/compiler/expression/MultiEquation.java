@@ -73,7 +73,7 @@ public class MultiEquation implements Expression
 
 			result = result
 				.concat(expression.compile(variables))
-				.concat(firstType.convertTo(type))
+				.concat(secondType.convertTo(type))
 				.add(this.getDupcode(type))
 				.concat(comparator.compile(falsLabel, type))
 				.concat(this.getError(firstType, secondType, comparator));

@@ -95,19 +95,14 @@ public class GenericTypeTest
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(2, instructions.length());
+		assertEquals(1, instructions.length());
 
-		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+		MethodInsnNode firstInstruction = (MethodInsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.CHECKCAST, firstInstruction.getOpcode());
-		assertEquals("java/lang/Double", firstInstruction.desc);
-
-		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.INVOKESTATIC, secondInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Boxer", secondInstruction.owner);
-		assertEquals("ofValue", secondInstruction.name);
-		assertEquals("(Ljava/lang/Double;)D", secondInstruction.desc);
+		assertEquals(Opcodes.INVOKESTATIC, firstInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Boxer", firstInstruction.owner);
+		assertEquals("toDouble", firstInstruction.name);
+		assertEquals("(Ljava/lang/Object;)D", firstInstruction.desc);
 	}
 
 	@Test

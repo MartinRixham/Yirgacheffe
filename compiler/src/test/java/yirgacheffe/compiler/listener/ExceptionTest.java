@@ -15,7 +15,6 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -423,7 +422,7 @@ public class ExceptionTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(15, instructions.size());
+		assertEquals(14, instructions.size());
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 
@@ -455,32 +454,27 @@ public class ExceptionTest
 
 		assertTrue(instructions.get(7) instanceof FrameNode);
 
-		TypeInsnNode ninthInstruction = (TypeInsnNode) instructions.get(8);
+		MethodInsnNode ninthInstruction = (MethodInsnNode) instructions.get(8);
 
-		assertEquals(Opcodes.CHECKCAST, ninthInstruction.getOpcode());
-		assertEquals("java/lang/Double", ninthInstruction.desc);
+		assertEquals(Opcodes.INVOKESTATIC, ninthInstruction.getOpcode());
+		assertEquals("toDouble", ninthInstruction.name);
 
-		MethodInsnNode tenthInstruction = (MethodInsnNode) instructions.get(9);
+		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
 
-		assertEquals(Opcodes.INVOKESTATIC, tenthInstruction.getOpcode());
-		assertEquals("ofValue", tenthInstruction.name);
+		assertEquals(Opcodes.ICONST_1, tenthInstruction.getOpcode());
 
 		InsnNode eleventhInstruction = (InsnNode) instructions.get(10);
 
-		assertEquals(Opcodes.ICONST_1, eleventhInstruction.getOpcode());
+		assertEquals(Opcodes.I2D, eleventhInstruction.getOpcode());
 
 		InsnNode twelfthInstruction = (InsnNode) instructions.get(11);
 
-		assertEquals(Opcodes.I2D, twelfthInstruction.getOpcode());
+		assertEquals(Opcodes.DADD, twelfthInstruction.getOpcode());
 
-		InsnNode thirteenInstruction = (InsnNode) instructions.get(12);
+		VarInsnNode thirteenthInstruction = (VarInsnNode) instructions.get(12);
 
-		assertEquals(Opcodes.DADD, thirteenInstruction.getOpcode());
-
-		VarInsnNode fourteenthInstruction = (VarInsnNode) instructions.get(13);
-
-		assertEquals(Opcodes.DSTORE, fourteenthInstruction.getOpcode());
-		assertEquals(1, fourteenthInstruction.var);
+		assertEquals(Opcodes.DSTORE, thirteenthInstruction.getOpcode());
+		assertEquals(1, thirteenthInstruction.var);
 	}
 
 	@Test

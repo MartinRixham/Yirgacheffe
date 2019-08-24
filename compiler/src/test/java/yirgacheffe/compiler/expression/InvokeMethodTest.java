@@ -11,7 +11,6 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -266,7 +265,7 @@ public class InvokeMethodTest
 		Result result = invokeMethod.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(12, instructions.length());
+		assertEquals(11, instructions.length());
 		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 
 		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
@@ -314,18 +313,13 @@ public class InvokeMethodTest
 			"(Ljava/util/HashMap;Ljava/lang/Object;)Ljava/lang/Object;",
 			tenthInstruction.desc);
 
-		TypeInsnNode eleventhInstruction = (TypeInsnNode) instructions.get(10);
+		MethodInsnNode eleventhInstruction = (MethodInsnNode) instructions.get(10);
 
-		assertEquals(Opcodes.CHECKCAST, eleventhInstruction.getOpcode());
-		assertEquals("java/lang/Double", eleventhInstruction.desc);
-
-		MethodInsnNode twelfthInstruction = (MethodInsnNode) instructions.get(11);
-
-		assertEquals(Opcodes.INVOKESTATIC, twelfthInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Boxer", twelfthInstruction.owner);
-		assertEquals("(Ljava/lang/Double;)D", twelfthInstruction.desc);
-		assertEquals("ofValue", twelfthInstruction.name);
-		assertFalse(twelfthInstruction.itf);
+		assertEquals(Opcodes.INVOKESTATIC, eleventhInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Boxer", eleventhInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)D", eleventhInstruction.desc);
+		assertEquals("toDouble", eleventhInstruction.name);
+		assertFalse(eleventhInstruction.itf);
 	}
 
 	@Test

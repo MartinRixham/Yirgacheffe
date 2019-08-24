@@ -3,7 +3,6 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -93,16 +92,14 @@ public class AttemptedType implements Type
 		if (type.isPrimitive())
 		{
 			result = result
-				.add(new TypeInsnNode(
-					Opcodes.CHECKCAST,
-					this.type.toFullyQualifiedType()))
 				.add(new MethodInsnNode(
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
-					"ofValue",
-					"(L" + this.type.toFullyQualifiedType() + ";)" +
+					"to" + this.type.reflectionClass().getSimpleName(),
+					"(Ljava/lang/Object;)" +
 						this.type.getSignature(),
-					false));
+					false))
+				.concat(this.type.convertTo(type));
 		}
 
 		return result;

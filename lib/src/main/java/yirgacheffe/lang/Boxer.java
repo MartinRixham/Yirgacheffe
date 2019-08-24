@@ -6,39 +6,51 @@ public final class Boxer
 	{
 	}
 
-	public static boolean ofValue(Boolean value)
+	public static boolean toBoolean(Object value) throws Throwable
 	{
-		if (value == null)
+		if (value instanceof Throwable)
+		{
+			throw ((Throwable) value);
+		}
+		else if (value == null)
 		{
 			return Boolean.FALSE;
 		}
 		else
 		{
-			return value;
+			return (Boolean) value;
 		}
 	}
 
-	public static char ofValue(Character value)
+	public static char toCharacter(Object value) throws Throwable
 	{
-		if (value == null)
+		if (value instanceof Throwable)
+		{
+			throw ((Throwable) value);
+		}
+		else if (value == null)
 		{
 			return Character.MIN_VALUE;
 		}
 		else
 		{
-			return value;
+			return (Character) value;
 		}
 	}
 
-	public static double ofValue(Double value)
+	public static double toDouble(Object value) throws Throwable
 	{
-		if (value == null)
+		if (value instanceof Throwable)
+		{
+			throw ((Throwable) value);
+		}
+		else if (value == null)
 		{
 			return Double.NaN;
 		}
 		else
 		{
-			return value;
+			return (Double) value;
 		}
 	}
 }
