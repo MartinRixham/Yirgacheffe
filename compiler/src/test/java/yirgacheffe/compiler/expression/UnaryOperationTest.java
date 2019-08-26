@@ -75,6 +75,11 @@ public class UnaryOperationTest
 		assertTrue(reads.indexOf(read) >= 0);
 		assertEquals(read, postincrement.getExpression());
 		assertFalse(postincrement.isEmpty());
+
+		Array<Type> interfaces =
+			postincrement.getDelegatedInterfaces(new HashMap<>(), PrimitiveType.DOUBLE);
+
+		assertEquals(0, interfaces.length());
 	}
 
 	@Test

@@ -18,7 +18,7 @@ public class LocalVariablesTest
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -31,7 +31,7 @@ public class LocalVariablesTest
 	@Test
 	public void testReadUndeclaredVariable()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
 
@@ -47,7 +47,7 @@ public class LocalVariablesTest
 	@Test
 	public void testWriteDeclaredVariable()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
@@ -61,7 +61,7 @@ public class LocalVariablesTest
 	@Test
 	public void testWriteUndeclaredVariable()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);

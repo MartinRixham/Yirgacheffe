@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -10,6 +11,8 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class FunctionCall implements Statement
 {
@@ -67,6 +70,41 @@ public class FunctionCall implements Statement
 		{
 			return new Array<>();
 		}
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		Array<Type> delegatedInterfaces = new Array<>();
+
+		if (delegateTypes.containsKey(this.expression))
+		{
+			Type delegatedType = delegateTypes.get(this.expression);
+
+			java.lang.reflect.Type[] interfaces =
+				delegatedType.reflectionClass().getGenericInterfaces();
+
+			Array<Type> implementedInterfaces = new Array<>();
+
+			for (java.lang.reflect.Type tp:
+				thisType.reflectionClass().getGenericInterfaces())
+			{
+				implementedInterfaces.push(Type.getType(tp, thisType));
+			}
+
+			for (java.lang.reflect.Type interfaceType: interfaces)
+			{
+				Type type = Type.getType(interfaceType, thisType);
+
+				if (implementedInterfaces.contains(type))
+				{
+					delegatedInterfaces.push(type);
+				}
+			}
+		}
+
+		return delegatedInterfaces;
 	}
 
 	public Expression getExpression()

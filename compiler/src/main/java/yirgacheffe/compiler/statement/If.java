@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -11,6 +12,8 @@ import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class If implements ConditionalStatement
 {
@@ -79,6 +82,13 @@ public class If implements ConditionalStatement
 	public Array<String> getFieldAssignments()
 	{
 		return this.statement.getFieldAssignments();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		return this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 	}
 
 	public Expression getExpression()

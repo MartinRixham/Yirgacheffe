@@ -139,5 +139,10 @@ public class VariableWriteTest
 
 		assertTrue(writes.indexOf(variableWrite) >= 0);
 		assertEquals(0, variableWrite.getFieldAssignments().length());
+
+		Array<Type> delegatedInterfaces =
+			variableWrite.getDelegatedInterfaces(new HashMap<>(), new NullType());
+
+		assertEquals(0, delegatedInterfaces.length());
 	}
 }

@@ -3,7 +3,12 @@ package yirgacheffe.compiler.statement;
 import org.junit.Test;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,5 +31,10 @@ VariableDeclarationTest
 		assertTrue(variableDeclaration.equals("var"));
 		assertEquals(variableDeclaration, variableDeclaration);
 		assertEquals(0, variableDeclaration.getFieldAssignments().length());
+
+		Array<Type> delegatedInterfaces =
+			variableDeclaration.getDelegatedInterfaces(new HashMap<>(), new NullType());
+
+		assertEquals(0, delegatedInterfaces.length());
 	}
 }

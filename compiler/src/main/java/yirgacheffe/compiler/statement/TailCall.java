@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
@@ -13,6 +14,8 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class TailCall implements Statement
 {
@@ -97,6 +100,13 @@ public class TailCall implements Statement
 	public Array<String> getFieldAssignments()
 	{
 		return this.invocation.getFieldAssignments();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		return this.invocation.getDelegatedInterfaces(delegateTypes, thisType);
 	}
 
 	public Expression getExpression()

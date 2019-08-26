@@ -14,21 +14,25 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.BinaryOperation;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
-import yirgacheffe.compiler.operator.Operator;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -710,5 +714,53 @@ public class BlockTest
 		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.DRETURN, sixthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testDelegatedInterfacesFromLastDelegation()
+	{
+		Coordinate coordinate = new Coordinate(2, 6);
+		Delegate stringDelegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Statement first = new FunctionCall(stringDelegate);
+
+		Type dub = new ReferenceType(Double.class);
+		Delegate doubleDelegate = new Delegate(new Array<>(new This(dub)));
+		Statement second = new FunctionCall(doubleDelegate);
+
+		Block block = new Block(coordinate, new Array<>(first, second));
+
+		Map<Delegate, Type> delegateTypes = new HashMap<>();
+		delegateTypes.put(stringDelegate, new ReferenceType(String.class));
+		delegateTypes.put(doubleDelegate, new ReferenceType(Double.class));
+
+		Array<Type> delegatedInterfaces =
+			block.getDelegatedInterfaces(delegateTypes, new ReferenceType(String.class));
+
+		assertEquals(1, delegatedInterfaces.length());
+
+		assertEquals(
+			"java.lang.Comparable<java.lang.Double>",
+			delegatedInterfaces.get(0).toString());
+	}
+
+	@Test
+	public void testDelegatedInterfacesFromDelegation()
+	{
+		Coordinate coordinate = new Coordinate(2, 6);
+		Delegate stringDelegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Statement first = new FunctionCall(stringDelegate);
+
+		Statement second = new Block(coordinate, new Array<>());
+
+		Block block = new Block(coordinate, new Array<>(first, second));
+
+		Type string = new ReferenceType(String.class);
+		Map<Delegate, Type> delegateTypes = new HashMap<>();
+		delegateTypes.put(stringDelegate, string);
+
+		Array<Type> delegatedInterfaces =
+				block.getDelegatedInterfaces(delegateTypes, string);
+
+		assertEquals(3, delegatedInterfaces.length());
 	}
 }

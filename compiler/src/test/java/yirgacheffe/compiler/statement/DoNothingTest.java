@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
@@ -31,6 +32,11 @@ public class DoNothingTest
 		assertFalse(doNothing.returns());
 		assertTrue(doNothing.isEmpty());
 		assertEquals(0, doNothing.getFieldAssignments().length());
+
+		Array<Type> delegatedInterfaces =
+			doNothing.getDelegatedInterfaces(new HashMap<>(), new NullType());
+
+		assertEquals(0, delegatedInterfaces.length());
 	}
 
 	@Test

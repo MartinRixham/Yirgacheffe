@@ -13,6 +13,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -24,10 +25,12 @@ import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -280,5 +283,24 @@ public class IfTest
 		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
 
 		assertEquals(Opcodes.RETURN, eighthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testDelegatedInterfaces()
+	{
+		Expression condition = new Nothing();
+		Delegate delegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Statement statement = new FunctionCall(delegate);
+
+		If ifStatement = new If(condition, statement);
+
+		Type string = new ReferenceType(String.class);
+		Map<Delegate, Type> delegatedTypes = new HashMap<>();
+		delegatedTypes.put(delegate, string);
+
+		Array<Type> delegatedInterfaces =
+				ifStatement.getDelegatedInterfaces(delegatedTypes, string);
+
+		assertEquals(3, delegatedInterfaces.length());
 	}
 }

@@ -2,6 +2,7 @@ package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
@@ -75,6 +76,12 @@ public class FunctionCallListener extends ExpressionListener
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void exitDelegation(YirgacheffeParser.DelegationContext context)
+	{
+		this.expressions.push(new Delegate(this.arguments));
 	}
 
 	@Override

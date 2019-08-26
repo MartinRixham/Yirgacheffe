@@ -2,12 +2,16 @@ package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.OptimisedVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class OptimisedStatement implements Statement
 {
@@ -50,6 +54,13 @@ public class OptimisedStatement implements Statement
 	public Array<String> getFieldAssignments()
 	{
 		return this.statement.getFieldAssignments();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		return this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 	}
 
 	public Expression getExpression()

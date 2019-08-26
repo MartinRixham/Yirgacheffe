@@ -3,11 +3,13 @@ package yirgacheffe.compiler.statement;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -207,6 +209,26 @@ public class Block implements Statement
 		}
 
 		return fields;
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		Array<Type> delegatedInterfaces = new Array<>();
+
+		for (Statement statement: this.statements)
+		{
+			Array<Type> interfaces =
+				statement.getDelegatedInterfaces(delegateTypes, thisType);
+
+			if (interfaces.length() > 0)
+			{
+				delegatedInterfaces = interfaces;
+			}
+		}
+
+		return delegatedInterfaces;
 	}
 
 	public Expression getExpression()

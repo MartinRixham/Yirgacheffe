@@ -165,7 +165,13 @@ public class ImplementationListenerTest
 			"class MyClass implements Comparable<String> { public MyClass() {} }";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

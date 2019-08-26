@@ -47,6 +47,11 @@ public class ReturnTest
 		assertEquals(Opcodes.RETURN, firstInstruction.getOpcode());
 		assertTrue(returnStatement.getExpression() instanceof Nothing);
 		assertEquals(0, returnStatement.getFieldAssignments().length());
+
+		Array<Type> delegatedInterfaces =
+			returnStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());
+
+		assertEquals(0, delegatedInterfaces.length());
 	}
 
 	@Test

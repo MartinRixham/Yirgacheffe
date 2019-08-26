@@ -27,6 +27,8 @@ public class ClassListener extends PackageListener
 
 	protected Array<Function> interfaceMethods = new Array<>();
 
+	protected Array<Type> delegatedInterfaces;
+
 	protected Array<Type> interfaces = new Array<>();
 
 	private Array<String> typeParameters = new Array<>();
@@ -266,12 +268,38 @@ public class ClassListener extends PackageListener
 	private void checkInterfaceMethodImplementations(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
-		for (Function method: this.interfaceMethods)
+		if (this.delegatedInterfaces == null)
 		{
-			String message =
-				"Missing implementation of interface method " + method.toString() + ".";
+			this.delegatedInterfaces = new Array<>();
+		}
 
-			this.errors.push(new Error(context, message));
+		try
+		{
+			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
+			Set<Function> delegatedMethods = new HashSet<>();
+
+			for (Type interfaceType : this.delegatedInterfaces)
+			{
+				for (Method method : interfaceType.reflectionClass().getMethods())
+				{
+					delegatedMethods.add(new Function(thisType, method));
+				}
+			}
+
+			for (Function method : this.interfaceMethods)
+			{
+				if (!delegatedMethods.contains(method))
+				{
+					String message =
+						"Missing implementation of interface method " +
+							method.toString() + ".";
+
+					this.errors.push(new Error(context, message));
+				}
+			}
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
 		}
 	}
 

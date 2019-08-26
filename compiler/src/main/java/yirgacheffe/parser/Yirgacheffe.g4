@@ -127,13 +127,15 @@ fullyQualifiedType: packageName '.' Identifier;
 
 typeParameters: '<' type? (',' type)* '>';
 
-functionCall: instantiation | selfInstantiation | (expression methodCall);
+functionCall: instantiation | selfInstantiation | delegation | (expression methodCall);
 
 methodCall: '.' Identifier arguments;
 
 instantiation: New type arguments;
 
 selfInstantiation: This arguments;
+
+delegation: Delegate arguments;
 
 arguments: '(' expression? (',' expression)* ')';
 
@@ -220,6 +222,7 @@ Else: 'else';
 For: 'for';
 Parallel: 'parallel';
 Try: 'try';
+Delegate: 'delegate';
 
 // operators
 Remainder: '%';

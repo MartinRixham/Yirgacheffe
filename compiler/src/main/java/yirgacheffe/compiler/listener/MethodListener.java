@@ -267,6 +267,17 @@ public class MethodListener extends TypeListener
 		if (this.inConstructor)
 		{
 			this.checkFieldInitialisation(context, block.getFieldAssignments());
+
+			try
+			{
+				Type thisType = this.classes.loadClass(this.className.replace("/", "."));
+
+				this.checkDelegatedInterfaces(
+					block.getDelegatedInterfaces(variables.getDelegateTypes(), thisType));
+			}
+			catch (ClassNotFoundException | NoClassDefFoundError e)
+			{
+			}
 		}
 
 		this.errors.push(variables.getErrors());
@@ -322,6 +333,14 @@ public class MethodListener extends TypeListener
 		}
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
+		}
+	}
+
+	private void checkDelegatedInterfaces(Array<Type> delegatedInterfaces)
+	{
+		if (this.delegatedInterfaces == null)
+		{
+			this.delegatedInterfaces = delegatedInterfaces;
 		}
 	}
 

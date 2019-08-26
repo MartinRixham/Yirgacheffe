@@ -188,4 +188,25 @@ public class ParameterisedType implements Type
 	{
 		return this.typeParameters.get(typeName);
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof ParameterisedType)
+		{
+			ParameterisedType otherType = (ParameterisedType) other;
+
+			return this.primaryType.equals(otherType.primaryType);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.primaryType.hashCode();
+	}
 }

@@ -1,6 +1,6 @@
 package yirgacheffe.compiler.variables;
 
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -29,6 +29,10 @@ public class OptimisedVariables implements Variables
 	}
 
 	public void setVariables(Map<String, Variable> variables)
+	{
+	}
+
+	public void delegate(Delegate delegate, Type type)
 	{
 	}
 
@@ -69,11 +73,6 @@ public class OptimisedVariables implements Variables
 		{
 			return new Variable(0, new NullType());
 		}
-	}
-
-	public Array<Error> getErrors()
-	{
-		return new Array<>();
 	}
 
 	public void optimise(Expression variableRead, Expression writtenExpression)

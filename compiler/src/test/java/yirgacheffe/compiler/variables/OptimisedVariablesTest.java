@@ -19,7 +19,6 @@ public class OptimisedVariablesTest
 
 		assertEquals(0, variables.getVariables().keySet().size());
 		assertEquals(0, variables.getVariable("").getIndex());
-		assertEquals(0, variables.getErrors().length());
 		assertFalse(variables.canOptimise(null));
 		assertTrue(variables.getOptimisedExpression(null) instanceof Nothing);
 		assertFalse(variables.hasConstant(""));

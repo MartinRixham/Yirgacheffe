@@ -114,4 +114,25 @@ public class Function
 	{
 		return new Array<>(this.executable.getGenericParameterTypes());
 	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof Function)
+		{
+			Function otherFunction = (Function) other;
+
+			return this.executable.equals(otherFunction.executable);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.executable.hashCode();
+	}
 }

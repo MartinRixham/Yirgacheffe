@@ -17,6 +17,8 @@ import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
+import java.util.Map;
+
 public class UnaryOperation implements Expression, Statement
 {
 	private Coordinate coordinate;
@@ -153,6 +155,13 @@ public class UnaryOperation implements Expression, Statement
 	}
 
 	public Array<String> getFieldAssignments()
+	{
+		return new Array<>();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
 	{
 		return new Array<>();
 	}

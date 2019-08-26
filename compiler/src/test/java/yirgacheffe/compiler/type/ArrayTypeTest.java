@@ -114,4 +114,21 @@ public class ArrayTypeTest
 		assertEquals(0, result.getErrors().length());
 		assertEquals(0, result.getInstructions().length());
 	}
+
+	@Test
+	public void testEqualArrays() throws Exception
+	{
+		String descriptor = "[Ljava.lang.String;";
+
+		Type firstType =
+			new ArrayType(descriptor, new ReferenceType(String.class));
+
+		Type secondType =
+			new ArrayType(descriptor, new ReferenceType(String.class));
+
+		Class<?> clazz = Class.forName(descriptor);
+
+		assertEquals(firstType.hashCode(), clazz.hashCode());
+		assertEquals(firstType, secondType);
+	}
 }

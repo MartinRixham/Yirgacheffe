@@ -1,6 +1,6 @@
 package yirgacheffe.compiler.variables;
 
-import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
@@ -16,6 +16,8 @@ public interface Variables
 
 	void setVariables(Map<String, Variable> variables);
 
+	void delegate(Delegate delegate, Type type);
+
 	void declare(String name, Type type);
 
 	void read(VariableRead variableRead);
@@ -23,8 +25,6 @@ public interface Variables
 	void write(VariableWrite variableWrite);
 
 	Variable getVariable(String name);
-
-	Array<Error> getErrors();
 
 	void optimise(Expression variableRead, Expression writtenExpression);
 

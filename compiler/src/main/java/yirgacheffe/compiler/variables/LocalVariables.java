@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.variables;
 
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
@@ -30,6 +31,8 @@ public class LocalVariables implements Variables
 
 	private Array<Type> stack = new Array<>();
 
+	private Map<Delegate, Type> delegateTypes = new HashMap<>();
+
 	public LocalVariables(Map<String, Object> constants)
 	{
 		this.constants = constants;
@@ -43,6 +46,16 @@ public class LocalVariables implements Variables
 	public void setVariables(Map<String, Variable> variables)
 	{
 		this.variables = variables;
+	}
+
+	public void delegate(Delegate delegate, Type type)
+	{
+		this.delegateTypes.put(delegate, type);
+	}
+
+	public Map<Delegate, Type> getDelegateTypes()
+	{
+		return new HashMap<>(this.delegateTypes);
 	}
 
 	public void declare(String name, Type type)

@@ -7,11 +7,15 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class AttemptedStatement implements Statement
 {
@@ -62,6 +66,13 @@ public class AttemptedStatement implements Statement
 	public Array<String> getFieldAssignments()
 	{
 		return this.statement.getFieldAssignments();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		return this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 	}
 
 	public Expression getExpression()

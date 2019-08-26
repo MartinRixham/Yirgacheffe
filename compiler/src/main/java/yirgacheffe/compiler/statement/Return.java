@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -13,6 +14,8 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+
+import java.util.Map;
 
 public class Return implements Statement
 {
@@ -87,6 +90,13 @@ public class Return implements Statement
 	}
 
 	public Array<String> getFieldAssignments()
+	{
+		return new Array<>();
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
 	{
 		return new Array<>();
 	}

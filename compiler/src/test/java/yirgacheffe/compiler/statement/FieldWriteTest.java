@@ -158,5 +158,10 @@ public class FieldWriteTest
 		assertEquals(0, writes.length());
 		assertEquals(1, write.getFieldAssignments().length());
 		assertEquals("var", write.getFieldAssignments().get(0));
+
+		Array<Type> delegatedInterfaces =
+			write.getDelegatedInterfaces(new HashMap<>(), new NullType());
+
+		assertEquals(0, delegatedInterfaces.length());
 	}
 }

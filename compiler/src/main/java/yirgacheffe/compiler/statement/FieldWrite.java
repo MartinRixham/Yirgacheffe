@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -16,6 +17,7 @@ import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 public class FieldWrite implements Statement
 {
@@ -117,6 +119,13 @@ public class FieldWrite implements Statement
 	public Array<String> getFieldAssignments()
 	{
 		return new Array<>(this.name);
+	}
+
+	public Array<Type> getDelegatedInterfaces(
+		Map<Delegate, Type> delegateTypes,
+		Type thisType)
+	{
+		return new Array<>();
 	}
 
 	public Expression getExpression()
