@@ -112,7 +112,23 @@ public class Else implements ConditionalStatement
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		return new Array<>();
+		Array<Type> delegatedInterface = new Array<>();
+
+		Array<Type> preconditionInterfaces =
+			this.precondition.getDelegatedInterfaces(delegateTypes, thisType);
+
+		Array<Type> statementInterfaces =
+			this.statement.getDelegatedInterfaces(delegateTypes, thisType);
+
+		for (Type type: preconditionInterfaces)
+		{
+			if (statementInterfaces.contains(type))
+			{
+				delegatedInterface.push(type);
+			}
+		}
+
+		return delegatedInterface;
 	}
 
 	public Expression getExpression()

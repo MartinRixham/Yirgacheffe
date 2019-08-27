@@ -10,10 +10,12 @@ import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
+import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
@@ -24,6 +26,7 @@ import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -222,5 +225,26 @@ public class ElseTest
 
 		assertEquals(1, elseStatement.getFieldAssignments().length());
 		assertEquals("var2", elseStatement.getFieldAssignments().get(0));
+	}
+
+	@Test
+	public void testDelegatedInterfaces()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Expression condition = new Nothing();
+		Delegate delegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Statement statement = new FunctionCall(delegate);
+
+		If ifStatement = new If(condition, statement);
+		Else elseStatement = new Else(coordinate, ifStatement, statement);
+
+		Type string = new ReferenceType(String.class);
+		Map<Delegate, Type> delegatedTypes = new HashMap<>();
+		delegatedTypes.put(delegate, string);
+
+		Array<Type> delegatedInterfaces =
+			elseStatement.getDelegatedInterfaces(delegatedTypes, string);
+
+		assertEquals(3, delegatedInterfaces.length());
 	}
 }
