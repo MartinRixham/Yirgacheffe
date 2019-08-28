@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
@@ -32,7 +33,8 @@ public class OptimisedStatementTest
 	@Test
 	public void testDelegatedInterfaces()
 	{
-		Delegate delegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Coordinate coordinate = new Coordinate(2, 6);
+		Delegate delegate = new Delegate(coordinate, new Array<>(new Streeng("\"\"")));
 		Statement statement = new FunctionCall(delegate);
 
 		Statement optimisedStatement = new OptimisedStatement(statement);

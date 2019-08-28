@@ -624,4 +624,33 @@ public class ConstructorListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testDelegateWithNoArguments()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"delegate();\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 5:0 Delegate has one parameter.\n", result.getErrors());
+	}
 }

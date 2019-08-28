@@ -720,11 +720,12 @@ public class BlockTest
 	public void testDelegatedInterfacesFromLastDelegation()
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
-		Delegate stringDelegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
+		Delegate stringDelegate = new Delegate(coordinate, emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
 		Type dub = new ReferenceType(Double.class);
-		Delegate doubleDelegate = new Delegate(new Array<>(new This(dub)));
+		Delegate doubleDelegate = new Delegate(coordinate, new Array<>(new This(dub)));
 		Statement second = new FunctionCall(doubleDelegate);
 
 		Block block = new Block(coordinate, new Array<>(first, second));
@@ -747,7 +748,8 @@ public class BlockTest
 	public void testDelegatedInterfacesFromDelegation()
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
-		Delegate stringDelegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
+		Delegate stringDelegate = new Delegate(coordinate, emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
 		Statement second = new Block(coordinate, new Array<>());

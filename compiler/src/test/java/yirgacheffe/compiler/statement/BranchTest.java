@@ -59,8 +59,9 @@ public class BranchTest
 	@Test
 	public void testIfHasNoDelegatedInterfaces()
 	{
+		Coordinate coordinate = new Coordinate(4, 6);
 		Expression condition = new Nothing();
-		Delegate delegate = new Delegate(new Array<>(new Streeng("\"\"")));
+		Delegate delegate = new Delegate(coordinate, new Array<>(new Streeng("\"\"")));
 		Statement statement = new FunctionCall(delegate);
 
 		If ifStatement = new If(condition, statement);

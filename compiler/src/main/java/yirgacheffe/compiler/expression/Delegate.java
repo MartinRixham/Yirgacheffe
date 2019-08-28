@@ -2,6 +2,8 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -9,10 +11,13 @@ import yirgacheffe.lang.Array;
 
 public class Delegate implements Expression
 {
+	private Coordinate coordinate;
+
 	private Array<Expression> arguments;
 
-	public Delegate(Array<Expression> arguments)
+	public Delegate(Coordinate coordinate, Array<Expression> arguments)
 	{
+		this.coordinate = coordinate;
 		this.arguments = arguments;
 	}
 
@@ -24,9 +29,18 @@ public class Delegate implements Expression
 	public Result compile(Variables variables)
 	{
 		Type type = this.getType(variables);
-		Type argumentType = this.arguments.get(0).getType(variables);
 
 		variables.stackPush(type);
+
+		if (this.arguments.length() != 1)
+		{
+			String message = "Delegate has one parameter.";
+
+			return new Result().add(new Error(this.coordinate, message));
+		}
+
+		Type argumentType = this.arguments.get(0).getType(variables);
+
 		variables.delegate(this, argumentType);
 
 		return new Result();

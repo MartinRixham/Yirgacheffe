@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -17,10 +18,11 @@ public class DelegateTest
 	@Test
 	public void testDelegate()
 	{
+		Coordinate coordinate = new Coordinate(2, 9);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Array<Expression> arguments = new Array<>(new Streeng("\"\""));
 
-		Delegate delegate = new Delegate(arguments);
+		Delegate delegate = new Delegate(coordinate, arguments);
 
 		Result result = delegate.compileCondition(variables, null, null);
 
