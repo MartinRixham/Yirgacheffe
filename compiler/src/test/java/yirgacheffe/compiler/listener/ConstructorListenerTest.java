@@ -488,6 +488,37 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testSelfInstantiationWithWrongParameters()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this(\"thingy\");\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:0 Constructor MyClass(java.lang.String) not found.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testCallOwnConstructorFromBranch()
 	{
 		String source =

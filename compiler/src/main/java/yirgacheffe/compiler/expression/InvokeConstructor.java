@@ -95,13 +95,14 @@ public class InvokeConstructor implements Expression
 		if (matchResult instanceof FailedMatchResult)
 		{
 			String message =
-				"Constructor " + owner + "." + arguments + " not found.";
+				"Constructor " + this.owner + arguments + " not found.";
 
 			result = result.add(new Error(this.coordinate, message));
 		}
 		else if (matchResult instanceof AmbiguousMatchResult)
 		{
-			String message = "ambiguous";
+			String message =
+				"Ambiguous call to constructor " + this.owner + arguments + ".";
 
 			result = result.add(new Error(this.coordinate, message));
 		}

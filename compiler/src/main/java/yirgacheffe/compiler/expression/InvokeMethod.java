@@ -182,9 +182,7 @@ public class InvokeMethod implements Expression
 		else if (matchResult instanceof AmbiguousMatchResult)
 		{
 			String message =
-				"Ambiguous call to method " +
-				owner + "." + this.name + arguments +
-				" not found.";
+				"Ambiguous call to method " + owner + "." + this.name + arguments + ".";
 
 			result = result.add(new Error(this.coordinate, message));
 		}
