@@ -653,4 +653,39 @@ public class ConstructorListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals("line 5:0 Delegate has one parameter.\n", result.getErrors());
 	}
+
+	@Test
+	public void testDelegateInterfaceImplementationForMultipleConstructors()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"delegate(\"\");\n" +
+				"}\n" +
+				"public MyClass(String string)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
 }

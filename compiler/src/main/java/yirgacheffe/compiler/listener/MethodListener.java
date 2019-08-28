@@ -342,6 +342,20 @@ public class MethodListener extends TypeListener
 		{
 			this.delegatedInterfaces = delegatedInterfaces;
 		}
+		else
+		{
+			Array<Type> intersection = new Array<>();
+
+			for (Type interfaceType: this.delegatedInterfaces)
+			{
+				if (delegatedInterfaces.contains(interfaceType))
+				{
+					intersection.push(interfaceType);
+				}
+			}
+
+			this.delegatedInterfaces = intersection;
+		}
 	}
 
 	private Set<String> getFieldNames(Field[] fields)
