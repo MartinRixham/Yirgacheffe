@@ -11,6 +11,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -48,10 +50,10 @@ public class ReturnTest
 		assertTrue(returnStatement.getExpression() instanceof Nothing);
 		assertEquals(0, returnStatement.getFieldAssignments().length());
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			returnStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 
 	@Test

@@ -4,14 +4,15 @@ import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.UnaryOperation;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Type;
-import yirgacheffe.lang.Array;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AttemptedStatementTest
 {
@@ -29,9 +30,9 @@ public class AttemptedStatementTest
 		assertFalse(attemptedStatement.isEmpty());
 		assertEquals(0, attemptedStatement.getFieldAssignments().length());
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			attemptedStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 }

@@ -1,8 +1,8 @@
 package yirgacheffe.compiler.statement;
 
+import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.junit.Test;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -22,6 +22,8 @@ import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -286,7 +288,7 @@ public class IfTest
 	}
 
 	@Test
-	public void testDelegatedInterfaces()
+	public void testDelegatedInterfaces() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression condition = new Nothing();
@@ -299,9 +301,9 @@ public class IfTest
 		Map<Delegate, Type> delegatedTypes = new HashMap<>();
 		delegatedTypes.put(delegate, string);
 
-		Array<Type> delegatedInterfaces =
-				ifStatement.getDelegatedInterfaces(delegatedTypes, string);
+		Implementation delegatedInterfaces =
+			ifStatement.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(3, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof InterfaceImplementation);
 	}
 }

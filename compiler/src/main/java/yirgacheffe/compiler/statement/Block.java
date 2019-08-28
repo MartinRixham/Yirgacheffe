@@ -8,6 +8,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -211,18 +213,18 @@ public class Block implements Statement
 		return fields;
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		Array<Type> delegatedInterfaces = new Array<>();
+		Implementation delegatedInterfaces = new InterfaceImplementation(new Array<>());
 
 		for (Statement statement: this.statements)
 		{
-			Array<Type> interfaces =
+			Implementation interfaces =
 				statement.getDelegatedInterfaces(delegateTypes, thisType);
 
-			if (interfaces.length() > 0)
+			if (interfaces.exists())
 			{
 				delegatedInterfaces = interfaces;
 			}

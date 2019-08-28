@@ -7,6 +7,8 @@ import org.objectweb.asm.tree.IincInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -76,10 +78,10 @@ public class UnaryOperationTest
 		assertEquals(read, postincrement.getExpression());
 		assertFalse(postincrement.isEmpty());
 
-		Array<Type> interfaces =
+		Implementation delegatedInterfaces =
 			postincrement.getDelegatedInterfaces(new HashMap<>(), PrimitiveType.DOUBLE);
 
-		assertEquals(0, interfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 
 	@Test

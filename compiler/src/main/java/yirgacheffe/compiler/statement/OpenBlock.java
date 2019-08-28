@@ -6,6 +6,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -39,11 +41,11 @@ public class OpenBlock implements Statement
 		return new Array<>();
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		return new Array<>();
+		return new NullImplementation();
 	}
 
 	public Expression getExpression()

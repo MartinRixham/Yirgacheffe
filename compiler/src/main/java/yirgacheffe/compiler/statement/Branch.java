@@ -8,6 +8,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -60,7 +62,7 @@ public class Branch implements Statement
 		}
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
@@ -70,7 +72,7 @@ public class Branch implements Statement
 		}
 		else
 		{
-			return new Array<>();
+			return new NullImplementation();
 		}
 	}
 

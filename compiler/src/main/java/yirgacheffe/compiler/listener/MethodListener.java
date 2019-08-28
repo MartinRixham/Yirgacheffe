@@ -11,6 +11,7 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
@@ -336,26 +337,10 @@ public class MethodListener extends TypeListener
 		}
 	}
 
-	private void checkDelegatedInterfaces(Array<Type> delegatedInterfaces)
+	private void checkDelegatedInterfaces(Implementation delegatedInterfaces)
 	{
-		if (this.delegatedInterfaces == null)
-		{
-			this.delegatedInterfaces = delegatedInterfaces;
-		}
-		else
-		{
-			Array<Type> intersection = new Array<>();
-
-			for (Type interfaceType: this.delegatedInterfaces)
-			{
-				if (delegatedInterfaces.contains(interfaceType))
-				{
-					intersection.push(interfaceType);
-				}
-			}
-
-			this.delegatedInterfaces = intersection;
-		}
+		this.delegatedInterfaces =
+			this.delegatedInterfaces.intersect(delegatedInterfaces);
 	}
 
 	private Set<String> getFieldNames(Field[] fields)

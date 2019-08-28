@@ -5,6 +5,8 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
@@ -31,7 +33,7 @@ public class OptimisedStatementTest
 	}
 
 	@Test
-	public void testDelegatedInterfaces()
+	public void testDelegatedInterfaces() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
 		Delegate delegate = new Delegate(coordinate, new Array<>(new Streeng("\"\"")));
@@ -43,9 +45,9 @@ public class OptimisedStatementTest
 		Map<Delegate, Type> delegatedTypes = new HashMap<>();
 		delegatedTypes.put(delegate, string);
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			optimisedStatement.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(3, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof InterfaceImplementation);
 	}
 }

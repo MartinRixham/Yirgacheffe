@@ -7,6 +7,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -33,10 +35,10 @@ public class BranchTest
 		assertFalse(branch.isEmpty());
 		assertEquals(0, branch.getFieldAssignments().length());
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			branch.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 
 	@Test
@@ -71,9 +73,9 @@ public class BranchTest
 		Map<Delegate, Type> delegatedTypes = new HashMap<>();
 		delegatedTypes.put(delegate, string);
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			branch.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 }

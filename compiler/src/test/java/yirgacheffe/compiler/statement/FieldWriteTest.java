@@ -16,6 +16,8 @@ import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -159,9 +161,9 @@ public class FieldWriteTest
 		assertEquals(1, write.getFieldAssignments().length());
 		assertEquals("var", write.getFieldAssignments().get(0));
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			write.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 }

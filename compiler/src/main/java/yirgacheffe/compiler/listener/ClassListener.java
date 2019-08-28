@@ -5,6 +5,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -27,7 +29,7 @@ public class ClassListener extends PackageListener
 
 	protected Array<Function> interfaceMethods = new Array<>();
 
-	protected Array<Type> delegatedInterfaces;
+	protected Implementation delegatedInterfaces = new NullImplementation();
 
 	protected Array<Type> interfaces = new Array<>();
 
@@ -268,27 +270,13 @@ public class ClassListener extends PackageListener
 	private void checkInterfaceMethodImplementations(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
-		if (this.delegatedInterfaces == null)
-		{
-			this.delegatedInterfaces = new Array<>();
-		}
-
 		try
 		{
 			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-			Set<Function> delegatedMethods = new HashSet<>();
-
-			for (Type interfaceType : this.delegatedInterfaces)
-			{
-				for (Method method : interfaceType.reflectionClass().getMethods())
-				{
-					delegatedMethods.add(new Function(thisType, method));
-				}
-			}
 
 			for (Function method : this.interfaceMethods)
 			{
-				if (!delegatedMethods.contains(method))
+				if (!this.delegatedInterfaces.implementsMethod(method, thisType))
 				{
 					String message =
 						"Missing implementation of interface method " +

@@ -12,6 +12,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -108,27 +109,17 @@ public class Else implements ConditionalStatement
 		}
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		Array<Type> delegatedInterface = new Array<>();
-
-		Array<Type> preconditionInterfaces =
+		Implementation preconditionInterfaces =
 			this.precondition.getDelegatedInterfaces(delegateTypes, thisType);
 
-		Array<Type> statementInterfaces =
+		Implementation statementInterfaces =
 			this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 
-		for (Type type: preconditionInterfaces)
-		{
-			if (statementInterfaces.contains(type))
-			{
-				delegatedInterface.push(type);
-			}
-		}
-
-		return delegatedInterface;
+		return preconditionInterfaces.intersect(statementInterfaces);
 	}
 
 	public Expression getExpression()

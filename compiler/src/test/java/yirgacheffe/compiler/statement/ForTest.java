@@ -12,8 +12,9 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 
@@ -39,10 +40,10 @@ public class ForTest
 		assertFalse(forStatement.isEmpty());
 		assertEquals(0, forStatement.getFieldAssignments().length());
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			forStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 
 	@Test

@@ -9,6 +9,8 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -159,11 +161,11 @@ public class UnaryOperation implements Expression, Statement
 		return new Array<>();
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		return new Array<>();
+		return new NullImplementation();
 	}
 
 	public Expression getExpression()

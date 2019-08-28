@@ -6,6 +6,7 @@ import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.OptimisedVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -56,7 +57,7 @@ public class OptimisedStatement implements Statement
 		return this.statement.getFieldAssignments();
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{

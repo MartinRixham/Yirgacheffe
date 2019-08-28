@@ -18,6 +18,8 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -228,7 +230,7 @@ public class ElseTest
 	}
 
 	@Test
-	public void testDelegatedInterfaces()
+	public void testDelegatedInterfaces() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		Expression condition = new Nothing();
@@ -242,9 +244,9 @@ public class ElseTest
 		Map<Delegate, Type> delegatedTypes = new HashMap<>();
 		delegatedTypes.put(delegate, string);
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			elseStatement.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(3, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof InterfaceImplementation);
 	}
 }

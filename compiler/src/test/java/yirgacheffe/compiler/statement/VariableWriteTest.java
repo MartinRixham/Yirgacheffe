@@ -13,6 +13,8 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -140,9 +142,9 @@ public class VariableWriteTest
 		assertTrue(writes.indexOf(variableWrite) >= 0);
 		assertEquals(0, variableWrite.getFieldAssignments().length());
 
-		Array<Type> delegatedInterfaces =
+		Implementation delegatedInterfaces =
 			variableWrite.getDelegatedInterfaces(new HashMap<>(), new NullType());
 
-		assertEquals(0, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof NullImplementation);
 	}
 }

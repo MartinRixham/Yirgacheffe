@@ -688,4 +688,36 @@ public class ConstructorListenerTest
 				"Num compareTo(java.lang.String).\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testDelegateInterfaceImplementedByThisCall()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"delegate(\"\");\n" +
+				"}\n" +
+				"public MyClass(String string)\n" +
+				"{\n" +
+					"this();\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

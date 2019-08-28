@@ -22,8 +22,10 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
-import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
+import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -40,6 +42,11 @@ import static org.junit.Assert.assertTrue;
 
 public class BlockTest
 {
+	public Comparable<String> getComparable()
+	{
+		return null;
+	}
+
 	public void add(BlockTest test)
 	{
 	}
@@ -717,7 +724,7 @@ public class BlockTest
 	}
 
 	@Test
-	public void testDelegatedInterfacesFromLastDelegation()
+	public void testDelegatedInterfacesFromLastDelegation() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
 		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
@@ -730,22 +737,19 @@ public class BlockTest
 
 		Block block = new Block(coordinate, new Array<>(first, second));
 
-		Map<Delegate, Type> delegateTypes = new HashMap<>();
-		delegateTypes.put(stringDelegate, new ReferenceType(String.class));
-		delegateTypes.put(doubleDelegate, new ReferenceType(Double.class));
+		Type string = new ReferenceType(String.class);
+		Map<Delegate, Type> delegatedTypes = new HashMap<>();
+		delegatedTypes.put(stringDelegate, new ReferenceType(String.class));
+		delegatedTypes.put(doubleDelegate, new ReferenceType(Double.class));
 
-		Array<Type> delegatedInterfaces =
-			block.getDelegatedInterfaces(delegateTypes, new ReferenceType(String.class));
+		Implementation delegatedInterfaces =
+			block.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(1, delegatedInterfaces.length());
-
-		assertEquals(
-			"java.lang.Comparable<java.lang.Double>",
-			delegatedInterfaces.get(0).toString());
+		assertTrue(delegatedInterfaces instanceof InterfaceImplementation);
 	}
 
 	@Test
-	public void testDelegatedInterfacesFromDelegation()
+	public void testDelegatedInterfacesFromDelegation() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
 		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
@@ -757,12 +761,12 @@ public class BlockTest
 		Block block = new Block(coordinate, new Array<>(first, second));
 
 		Type string = new ReferenceType(String.class);
-		Map<Delegate, Type> delegateTypes = new HashMap<>();
-		delegateTypes.put(stringDelegate, string);
+		Map<Delegate, Type> delegatedTypes = new HashMap<>();
+		delegatedTypes.put(stringDelegate, string);
 
-		Array<Type> delegatedInterfaces =
-				block.getDelegatedInterfaces(delegateTypes, string);
+		Implementation delegatedInterfaces =
+			block.getDelegatedInterfaces(delegatedTypes, string);
 
-		assertEquals(3, delegatedInterfaces.length());
+		assertTrue(delegatedInterfaces instanceof InterfaceImplementation);
 	}
 }

@@ -8,6 +8,10 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.implementation.TotalImplementation;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -72,14 +76,13 @@ public class FunctionCall implements Statement
 		}
 	}
 
-	public Array<Type> getDelegatedInterfaces(
+	public Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		Array<Type> delegatedInterfaces = new Array<>();
-
 		if (delegateTypes.containsKey(this.expression))
 		{
+			Array<Type> delegatedInterfaces = new Array<>();
 			Type delegatedType = delegateTypes.get(this.expression);
 
 			java.lang.reflect.Type[] interfaces =
@@ -102,9 +105,17 @@ public class FunctionCall implements Statement
 					delegatedInterfaces.push(type);
 				}
 			}
-		}
 
-		return delegatedInterfaces;
+			return new InterfaceImplementation(delegatedInterfaces);
+		}
+		else if (this.expression instanceof InvokeThis)
+		{
+			return new TotalImplementation();
+		}
+		else
+		{
+			return new NullImplementation();
+		}
 	}
 
 	public Expression getExpression()
