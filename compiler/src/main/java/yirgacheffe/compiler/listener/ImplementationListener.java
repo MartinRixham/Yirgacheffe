@@ -43,14 +43,25 @@ public class ImplementationListener extends ClassListener
 			}
 			else
 			{
-				Method[] methods = type.reflectionClass().getMethods();
-
-				for (Method method: methods)
-				{
-					this.interfaceMethods.push(new Function(type, method));
-				}
-
 				this.interfaces.push(type);
+			}
+		}
+
+		this.getInterfaceMethods();
+	}
+
+	private void getInterfaceMethods()
+	{
+		for (java.lang.reflect.Type type:
+			this.thisType.reflectionClass().getGenericInterfaces())
+		{
+			Type interfaceType = Type.getType(type, thisType);
+
+			Method[] methods = interfaceType.reflectionClass().getMethods();
+
+			for (Method method: methods)
+			{
+				this.interfaceMethods.push(new Function(interfaceType, method));
 			}
 		}
 	}

@@ -108,7 +108,7 @@ public class GenericType implements Type
 					"yirgacheffe/lang/Boxer",
 					"to" + this.reflectionClass().getSimpleName(),
 					"(Ljava/lang/Object;)" +
-						this.getSignature(),
+						this.type.toJVMType(),
 					false));
 		}
 		else

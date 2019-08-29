@@ -269,16 +269,10 @@ public class MethodListener extends TypeListener
 		{
 			this.checkFieldInitialisation(context, block.getFieldAssignments());
 
-			try
-			{
-				Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-
-				this.checkDelegatedInterfaces(
-					block.getDelegatedInterfaces(variables.getDelegateTypes(), thisType));
-			}
-			catch (ClassNotFoundException | NoClassDefFoundError e)
-			{
-			}
+			this.checkDelegatedInterfaces(
+				block.getDelegatedInterfaces(
+					variables.getDelegateTypes(),
+					this.thisType));
 		}
 
 		this.errors.push(variables.getErrors());
@@ -291,49 +285,42 @@ public class MethodListener extends TypeListener
 		YirgacheffeParser.FunctionBlockContext context,
 		Array<String> fieldAssignments)
 	{
-		try
+		String initialiserPrefix = "0init_field";
+		Class<?> reflectionClass = this.thisType.reflectionClass();
+
+		Method[] methods = reflectionClass.getDeclaredMethods();
+
+		Set<String> fieldNames =
+			this.getFieldNames(reflectionClass.getDeclaredFields());
+
+		for (Method method: methods)
 		{
-			String initialiserPrefix = "0init_field";
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-			Class<?> reflectionClass = thisType.reflectionClass();
-
-			Method[] methods = reflectionClass.getDeclaredMethods();
-
-			Set<String> fieldNames =
-				this.getFieldNames(reflectionClass.getDeclaredFields());
-
-			for (Method method: methods)
+			if (method.getName().startsWith(initialiserPrefix))
 			{
-				if (method.getName().startsWith(initialiserPrefix))
-				{
-					fieldNames.remove(
-						method.getName().substring(initialiserPrefix.length() + 1));
-				}
-			}
-
-			for (String field: fieldAssignments)
-			{
-				if (field.equals("this"))
-				{
-					fieldNames = new HashSet<>();
-				}
-				else
-				{
-					fieldNames.remove(field);
-				}
-			}
-
-			for (String field: fieldNames)
-			{
-				String message =
-					"Constructor " + this.signature +
-						" does not initialise field '" + field + "'.";
-
-				this.errors.push(new Error(context, message));
+				fieldNames.remove(
+					method.getName().substring(initialiserPrefix.length() + 1));
 			}
 		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
+
+		for (String field: fieldAssignments)
 		{
+			if (field.equals("this"))
+			{
+				fieldNames = new HashSet<>();
+			}
+			else
+			{
+				fieldNames.remove(field);
+			}
+		}
+
+		for (String field: fieldNames)
+		{
+			String message =
+				"Constructor " + this.signature +
+					" does not initialise field '" + field + "'.";
+
+			this.errors.push(new Error(context, message));
 		}
 	}
 

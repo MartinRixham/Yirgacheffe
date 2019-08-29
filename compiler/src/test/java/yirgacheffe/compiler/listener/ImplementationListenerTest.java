@@ -190,8 +190,14 @@ public class ImplementationListenerTest
 				"public MyClass() {}\n" +
 			"}";
 
+		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -268,8 +274,14 @@ public class ImplementationListenerTest
 				"public MyClass() {}\n" +
 			"}";
 
+		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -341,8 +353,14 @@ public class ImplementationListenerTest
 				"public MyClass() {}\n" +
 			"}";
 
+		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
 		assertEquals("MyClass.class", result.getClassFileName());
@@ -403,12 +421,19 @@ public class ImplementationListenerTest
 			"}";
 
 		Classes classes = new Classes();
+		Compiler interfaceCompiler = new Compiler("", interfaceSource);
+		Compiler compiler = new Compiler("", source);
 
-		new Compiler("", interfaceSource).compileInterface(classes);
+		interfaceCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
 
 		classes.clearCache();
 
-		Compiler compiler = new Compiler("", source);
+		interfaceCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -482,12 +507,19 @@ public class ImplementationListenerTest
 			"}";
 
 		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+		Compiler interfaceCompiler = new Compiler("", interfaceSource);
 
-		new Compiler("", interfaceSource).compileInterface(classes);
+		interfaceCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
 
 		classes.clearCache();
 
-		Compiler compiler = new Compiler("", source);
+		interfaceCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
@@ -588,5 +620,34 @@ public class ImplementationListenerTest
 		assertEquals(
 			"Ljava/lang/Object;LMyInterface<Ljava/lang/String;>;",
 			classNode.signature);
+	}
+
+	@Test
+	public void testImplementComparableOfNum()
+	{
+		String source =
+			"class MyClass implements Comparable<Num>\n" +
+			"{\n" +
+				"public MyClass() {}\n" +
+				"public Num compareTo(Num other)\n" +
+				"{\n" +
+					"return 0;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
 	}
 }

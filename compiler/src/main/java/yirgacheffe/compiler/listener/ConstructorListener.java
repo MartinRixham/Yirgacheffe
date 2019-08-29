@@ -158,31 +158,24 @@ public class ConstructorListener extends MainMethodListener
 	{
 		InsnList instructions = new InsnList();
 
-		try
+		String initialiserPrefix = "0init_field";
+		Class<?> reflectionClass = this.thisType.reflectionClass();
+
+		Method[] methods = reflectionClass.getDeclaredMethods();
+
+		for (Method method: methods)
 		{
-			String initialiserPrefix = "0init_field";
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-			Class<?> reflectionClass = thisType.reflectionClass();
-
-			Method[] methods = reflectionClass.getDeclaredMethods();
-
-			for (Method method: methods)
+			if (method.getName().startsWith(initialiserPrefix))
 			{
-				if (method.getName().startsWith(initialiserPrefix))
-				{
-					instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+				instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
 
-					instructions.add(new MethodInsnNode(
-						Opcodes.INVOKEVIRTUAL,
-						this.className,
-						method.getName(),
-						"()V",
-						false));
-				}
+				instructions.add(new MethodInsnNode(
+					Opcodes.INVOKEVIRTUAL,
+					this.className,
+					method.getName(),
+					"()V",
+					false));
 			}
-		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
-		{
 		}
 
 		return instructions;

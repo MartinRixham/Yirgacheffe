@@ -9,6 +9,9 @@ import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ParameterisedType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.lang.Array;
@@ -16,6 +19,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,9 +39,54 @@ public class ClassListener extends PackageListener
 
 	private Array<String> typeParameters = new Array<>();
 
+	protected Type thisType = new NullType();
+
 	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
+	}
+
+	@Override
+	public void enterClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
+	{
+		if (context.Identifier().size() == 0)
+		{
+			String message = "Class identifier expected.";
+
+			this.errors.push(new Error(context, message));
+		}
+		else
+		{
+			this.className = this.directory + context.Identifier().get(0).getText();
+
+			try
+			{
+				ReferenceType thisType =
+					this.classes.loadClass(this.className.replace("/", "."));
+
+				Class<?> clazz = thisType.reflectionClass();
+				TypeVariable[] parameters = clazz.getTypeParameters();
+
+				if (parameters.length == 0)
+				{
+					this.thisType = thisType;
+				}
+				else
+				{
+					Array<Type> parameterTypes = new Array<>();
+
+					for (TypeVariable parameter: parameters)
+					{
+						parameterTypes.push(new VariableType(parameter.getName()));
+					}
+
+					this.thisType = new ParameterisedType(thisType, parameterTypes);
+				}
+			}
+			catch (ClassNotFoundException | NoClassDefFoundError e)
+			{
+			}
+		}
 	}
 
 	@Override
@@ -48,17 +97,6 @@ public class ClassListener extends PackageListener
 			String message = "Expected declaration of class or interface.";
 
 			this.errors.push(new Error(context, message));
-		}
-
-		if (context.Identifier().size() == 0)
-		{
-			String message = "Class identifier expected.";
-
-			this.errors.push(new Error(context, message));
-		}
-		else
-		{
-			this.className = this.directory + context.Identifier().get(0).getText();
 		}
 
 		String[] interfaces = new String[this.interfaces.length()];
@@ -239,29 +277,21 @@ public class ClassListener extends PackageListener
 			"()V",
 			false);
 
-		try
+		Method[] methods = this.thisType.reflectionClass().getDeclaredMethods();
+
+		for (Method method: methods)
 		{
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-
-			Method[] methods = thisType.reflectionClass().getDeclaredMethods();
-
-			for (Method method: methods)
+			if (method.getName().startsWith("0init_field"))
 			{
-				if (method.getName().startsWith("0init_field"))
-				{
-					methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
 
-					methodVisitor.visitMethodInsn(
-						Opcodes.INVOKEVIRTUAL,
-						this.className,
-						method.getName(),
-						"()V",
-						false);
-				}
+				methodVisitor.visitMethodInsn(
+					Opcodes.INVOKEVIRTUAL,
+					this.className,
+					method.getName(),
+					"()V",
+					false);
 			}
-		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
-		{
 		}
 
 		methodVisitor.visitInsn(Opcodes.RETURN);
@@ -270,60 +300,45 @@ public class ClassListener extends PackageListener
 	private void checkInterfaceMethodImplementations(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
-		try
+		for (Function method : this.interfaceMethods)
 		{
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-
-			for (Function method : this.interfaceMethods)
+			if (!this.delegatedInterfaces.implementsMethod(method, this.thisType))
 			{
-				if (!this.delegatedInterfaces.implementsMethod(method, thisType))
-				{
-					String message =
-						"Missing implementation of interface method " +
-							method.toString() + ".";
+				String message =
+					"Missing implementation of interface method " +
+						method.toString() + ".";
 
-					this.errors.push(new Error(context, message));
-				}
+				this.errors.push(new Error(context, message));
 			}
-		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
-		{
 		}
 	}
 
 	private void checkFieldInitialisation(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
-		try
+		String initialiserPrefix = "0init_field";
+		Class<?> reflectionClass = this.thisType.reflectionClass();
+
+		Method[] methods = reflectionClass.getDeclaredMethods();
+
+		Set<String> fieldNames =
+			this.getFieldNames(reflectionClass.getDeclaredFields());
+
+		for (Method method: methods)
 		{
-			String initialiserPrefix = "0init_field";
-			Type thisType = this.classes.loadClass(this.className.replace("/", "."));
-			Class<?> reflectionClass = thisType.reflectionClass();
-
-			Method[] methods = reflectionClass.getDeclaredMethods();
-
-			Set<String> fieldNames =
-				this.getFieldNames(reflectionClass.getDeclaredFields());
-
-			for (Method method: methods)
+			if (method.getName().startsWith(initialiserPrefix))
 			{
-				if (method.getName().startsWith(initialiserPrefix))
-				{
-					fieldNames.remove(
-						method.getName().substring(initialiserPrefix.length() + 1));
-				}
-			}
-
-			for (String field: fieldNames)
-			{
-				String message =
-					"Default constructor does not initialise field '" + field + "'.";
-
-				this.errors.push(new Error(context, message));
+				fieldNames.remove(
+					method.getName().substring(initialiserPrefix.length() + 1));
 			}
 		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
+
+		for (String field: fieldNames)
 		{
+			String message =
+				"Default constructor does not initialise field '" + field + "'.";
+
+			this.errors.push(new Error(context, message));
 		}
 	}
 

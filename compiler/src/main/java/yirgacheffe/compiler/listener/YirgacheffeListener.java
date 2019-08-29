@@ -2,11 +2,11 @@ package yirgacheffe.compiler.listener;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import yirgacheffe.compiler.parallel.GeneratedClass;
+import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Types;
-import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeBaseListener;
 import yirgacheffe.parser.YirgacheffeParser;

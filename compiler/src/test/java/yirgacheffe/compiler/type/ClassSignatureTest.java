@@ -33,4 +33,19 @@ public class ClassSignatureTest
 
 		assertEquals("<T:Ljava/lang/Object;>Ljava/lang/Object;", signature.toString());
 	}
+
+	@Test
+	public void testSignatureImplementsComparableOfNum()
+	{
+		Type num = PrimitiveType.DOUBLE;
+		ReferenceType comparable = new ReferenceType(Comparable.class);
+		Type interfaceType = new ParameterisedType(comparable, new Array<>(num));
+
+		ClassSignature signature =
+			new ClassSignature(new Array<>(interfaceType), new Array<>());
+
+		assertEquals(
+			"Ljava/lang/Object;Ljava/lang/Comparable<Ljava/lang/Double;>;",
+			signature.toString());
+	}
 }
