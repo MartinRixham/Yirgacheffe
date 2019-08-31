@@ -100,15 +100,14 @@ public class GenericType implements Type
 
 		Result result = new Result();
 
-		if (this.isPrimitive())
+		if (type.isPrimitive())
 		{
 			result = result
 				.add(new MethodInsnNode(
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
 					"to" + this.reflectionClass().getSimpleName(),
-					"(Ljava/lang/Object;)" +
-						this.type.toJVMType(),
+					"(Ljava/lang/Object;)" + type.toJVMType(),
 					false));
 		}
 		else

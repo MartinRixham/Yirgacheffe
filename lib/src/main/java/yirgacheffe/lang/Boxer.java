@@ -48,6 +48,14 @@ public final class Boxer
 		{
 			return Double.NaN;
 		}
+		else if (value instanceof Integer)
+		{
+			return ((Integer) value).doubleValue();
+		}
+		else if (value instanceof Long)
+		{
+			return ((Long) value).doubleValue();
+		}
 		else
 		{
 			return (Double) value;
