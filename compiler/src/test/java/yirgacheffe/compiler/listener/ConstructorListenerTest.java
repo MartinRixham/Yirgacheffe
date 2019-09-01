@@ -726,4 +726,32 @@ public class ConstructorListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testDelegateInterfaceWithNumberParameter()
+	{
+		String source =
+			"class MyClass implements Comparable<Num>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"delegate(1);\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

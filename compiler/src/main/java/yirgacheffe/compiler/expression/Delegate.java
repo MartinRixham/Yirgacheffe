@@ -41,6 +41,11 @@ public class Delegate implements Expression
 
 		Type argumentType = this.arguments.get(0).getType(variables);
 
+		if (argumentType.isAssignableTo(PrimitiveType.DOUBLE))
+		{
+			argumentType = PrimitiveType.DOUBLE;
+		}
+
 		variables.delegate(this, argumentType);
 
 		return new Result();
