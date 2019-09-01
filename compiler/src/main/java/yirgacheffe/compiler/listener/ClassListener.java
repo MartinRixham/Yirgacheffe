@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
@@ -15,8 +16,12 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Bootstrap;
 import yirgacheffe.parser.YirgacheffeParser;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -40,6 +45,8 @@ public class ClassListener extends PackageListener
 	private Array<String> typeParameters = new Array<>();
 
 	protected Type thisType = new NullType();
+
+	protected boolean hasDelegate = false;
 
 	public ClassListener(String sourceFile, Classes classes)
 	{
@@ -300,9 +307,76 @@ public class ClassListener extends PackageListener
 	private void checkInterfaceMethodImplementations(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
+		if (this.hasDelegate)
+		{
+			this.classNode.visitField(
+				Opcodes.ACC_PRIVATE,
+				"0delegate",
+				"Ljava/lang/Object;",
+				null,
+				null);
+		}
+
 		for (Function method : this.interfaceMethods)
 		{
-			if (!this.delegatedInterfaces.implementsMethod(method, this.thisType))
+			if (this.delegatedInterfaces.implementsMethod(method, this.thisType))
+			{
+				MethodVisitor methodVisitor =
+					this.classNode.visitMethod(
+						Opcodes.ACC_PUBLIC,
+						method.getName(),
+						method.getSignature().getDescriptor(),
+						method.getSignature().getSignature(),
+						null);
+
+				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
+
+				methodVisitor.visitFieldInsn(
+					Opcodes.GETFIELD,
+					this.className,
+					"0delegate",
+					"Ljava/lang/Object;");
+
+				methodVisitor.visitTypeInsn(
+					Opcodes.CHECKCAST,
+					method.getOwner().toFullyQualifiedType());
+
+				Array<Type> parameters = method.getParameterTypes();
+
+				for (int i = 0; i < parameters.length(); i++)
+				{
+					Type parameter = parameters.get(i);
+
+					methodVisitor.visitVarInsn(parameter.getLoadInstruction(), i + 1);
+				}
+
+				MethodType methodType =
+					MethodType.methodType(
+						CallSite.class,
+						MethodHandles.Lookup.class,
+						String.class,
+						MethodType.class);
+
+				Handle bootstrapMethod =
+					new Handle(
+						Opcodes.H_INVOKESTATIC,
+						Bootstrap.class.getName().replace(".", "/"),
+						"bootstrapPrivate",
+						methodType.toMethodDescriptorString(),
+						false);
+
+				String descriptor =
+					"(" + method.getOwner().toJVMType() +
+						method.getSignature().getDescriptor().substring(1);
+
+				methodVisitor.visitInvokeDynamicInsn(
+					method.getName(),
+					descriptor,
+					bootstrapMethod);
+
+				methodVisitor.visitInsn(method.getReturnType().getReturnInstruction());
+			}
+			else
 			{
 				String message =
 					"Missing implementation of interface method " +

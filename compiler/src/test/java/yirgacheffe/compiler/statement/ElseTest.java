@@ -230,13 +230,15 @@ public class ElseTest
 	}
 
 	@Test
-	public void testDelegatedInterfaces() throws Exception
+	public void testDelegatedInterfaces()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		Expression condition = new Nothing();
-		Delegate delegate = new Delegate(coordinate, new Array<>(new Streeng("\"\"")));
-		Statement statement = new FunctionCall(delegate);
 
+		Delegate delegate =
+			new Delegate(coordinate, "MyClass", new Array<>(new Streeng("\"\"")));
+
+		Statement statement = new FunctionCall(delegate);
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
 

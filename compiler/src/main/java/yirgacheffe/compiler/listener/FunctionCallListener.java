@@ -81,9 +81,11 @@ public class FunctionCallListener extends ExpressionListener
 	@Override
 	public void exitDelegation(YirgacheffeParser.DelegationContext context)
 	{
+		this.hasDelegate = true;
+
 		Coordinate coordinate = new Coordinate(context);
 
-		this.expressions.push(new Delegate(coordinate, this.arguments));
+		this.expressions.push(new Delegate(coordinate, this.className, this.arguments));
 	}
 
 	@Override

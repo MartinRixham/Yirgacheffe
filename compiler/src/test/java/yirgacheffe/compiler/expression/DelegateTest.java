@@ -22,7 +22,7 @@ public class DelegateTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Array<Expression> arguments = new Array<>(new Streeng("\"\""));
 
-		Delegate delegate = new Delegate(coordinate, arguments);
+		Delegate delegate = new Delegate(coordinate, "MyClass", arguments);
 
 		Result result = delegate.compileCondition(variables, null, null);
 

@@ -728,13 +728,15 @@ public class BlockTest
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
 		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
-		Delegate stringDelegate = new Delegate(coordinate, emptyString);
+		Delegate stringDelegate = new Delegate(coordinate, "MyClass", emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
 		Type dub = new ReferenceType(Double.class);
-		Delegate doubleDelegate = new Delegate(coordinate, new Array<>(new This(dub)));
-		Statement second = new FunctionCall(doubleDelegate);
 
+		Delegate doubleDelegate =
+			new Delegate(coordinate, "MyClass", new Array<>(new This(dub)));
+
+		Statement second = new FunctionCall(doubleDelegate);
 		Block block = new Block(coordinate, new Array<>(first, second));
 
 		Type string = new ReferenceType(String.class);
@@ -753,7 +755,7 @@ public class BlockTest
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
 		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
-		Delegate stringDelegate = new Delegate(coordinate, emptyString);
+		Delegate stringDelegate = new Delegate(coordinate, "MyClass", emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
 		Statement second = new Block(coordinate, new Array<>());

@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
@@ -11,6 +13,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
@@ -618,10 +621,6 @@ public class ConstructorListenerTest
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
 
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
-
 		compiler.compileInterface(classes);
 
 		classes.clearCache();
@@ -629,6 +628,87 @@ public class ConstructorListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(1, classNode.fields.size());
+
+		FieldNode field = classNode.fields.get(0);
+
+		assertEquals("0delegate", field.name);
+		assertEquals("Ljava/lang/Object;", field.desc);
+
+		assertEquals(3, classNode.methods.size());
+
+		MethodNode constructor = classNode.methods.get(1);
+
+		this.checkConstructorInstructions(constructor.instructions);
+
+		MethodNode method = classNode.methods.get(2);
+
+		assertEquals("compareTo", method.name);
+		assertEquals("(Ljava/lang/Object;)I", method.desc);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+		assertEquals("0delegate", secondInstruction.name);
+		assertEquals("MyClass", secondInstruction.owner);
+		assertEquals("Ljava/lang/Object;", secondInstruction.desc);
+
+		TypeInsnNode thirdInstruction = (TypeInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.CHECKCAST, thirdInstruction.getOpcode());
+		assertEquals("java/lang/Comparable", thirdInstruction.desc);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("compareTo", fifthInstruction.name);
+
+		assertEquals(
+			"(Ljava/lang/Comparable;Ljava/lang/Object;)I",
+			fifthInstruction.desc);
+	}
+
+	private void checkConstructorInstructions(InsnList instructions)
+	{
+		assertEquals(4, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("thingy", secondInstruction.cst);
+
+		FieldInsnNode thirdInstruction = (FieldInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.PUTFIELD, thirdInstruction.getOpcode());
+		assertEquals("0delegate", thirdInstruction.name);
+		assertEquals("MyClass", thirdInstruction.owner);
+		assertEquals("Ljava/lang/Object;", thirdInstruction.desc);
 	}
 
 	@Test
@@ -645,10 +725,6 @@ public class ConstructorListenerTest
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
 
 		compiler.compileInterface(classes);
 
@@ -677,10 +753,6 @@ public class ConstructorListenerTest
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
 
 		compiler.compileInterface(classes);
 
@@ -714,10 +786,6 @@ public class ConstructorListenerTest
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
 
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
-
 		compiler.compileInterface(classes);
 
 		classes.clearCache();
@@ -741,10 +809,6 @@ public class ConstructorListenerTest
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
-
-		compiler.compileClassDeclaration(classes);
-
-		classes.clearCache();
 
 		compiler.compileInterface(classes);
 

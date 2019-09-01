@@ -33,12 +33,14 @@ public class OptimisedStatementTest
 	}
 
 	@Test
-	public void testDelegatedInterfaces() throws Exception
+	public void testDelegatedInterfaces()
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
-		Delegate delegate = new Delegate(coordinate, new Array<>(new Streeng("\"\"")));
-		Statement statement = new FunctionCall(delegate);
 
+		Delegate delegate =
+			new Delegate(coordinate, "MyClass", new Array<>(new Streeng("\"\"")));
+
+		Statement statement = new FunctionCall(delegate);
 		Statement optimisedStatement = new OptimisedStatement(statement);
 
 		Type string = new ReferenceType(String.class);
