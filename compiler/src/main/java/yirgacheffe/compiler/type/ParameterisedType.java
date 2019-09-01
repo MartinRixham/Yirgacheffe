@@ -201,16 +201,9 @@ public class ParameterisedType implements Type
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof ParameterisedType)
-		{
-			ParameterisedType otherType = (ParameterisedType) other;
+		Type otherType = (Type) other;
 
-			return this.primaryType.equals(otherType.primaryType);
-		}
-		else
-		{
-			return false;
-		}
+		return this.isAssignableTo(otherType) && otherType.isAssignableTo(this);
 	}
 
 	@Override

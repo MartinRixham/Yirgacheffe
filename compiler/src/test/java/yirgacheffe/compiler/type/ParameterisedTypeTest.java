@@ -15,10 +15,21 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ParameterisedTypeTest
 {
+	public Comparable<String> getStringComparable()
+	{
+		return null;
+	}
+
+	public Comparable<Double> getNumberComparable()
+	{
+		return null;
+	}
+
 	@Test
 	public void testTypeWithOneParameter()
 	{
@@ -149,5 +160,25 @@ public class ParameterisedTypeTest
 
 		assertEquals(Opcodes.IFNULL, firstInstruction.getOpcode());
 		assertEquals(label, firstInstruction.label.getLabel());
+	}
+
+	@Test
+	public void typesDifferByTypeParameter() throws Exception
+	{
+		Class<?> testClass = this.getClass();
+
+		java.lang.reflect.Type stringComparableType =
+			testClass.getMethod("getStringComparable").getGenericReturnType();
+
+		java.lang.reflect.Type numberComparableType =
+			testClass.getMethod("getNumberComparable").getGenericReturnType();
+
+		Type stringComparable =
+			Type.getType(stringComparableType, new ReferenceType(testClass));
+
+		Type numberComparable =
+			Type.getType(numberComparableType, new ReferenceType(testClass));
+
+		assertNotEquals(stringComparable, numberComparable);
 	}
 }

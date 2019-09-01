@@ -275,7 +275,7 @@ public class Array<T> implements Iterable<T>
 
 	public boolean contains(Object item)
 	{
-		return Arrays.asList(this.array).contains(item);
+		return Arrays.asList(Arrays.copyOf(this.array, this.length)).contains(item);
 	}
 
 	private void grow(int minimum)
