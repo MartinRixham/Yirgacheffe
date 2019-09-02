@@ -2,6 +2,15 @@
 <h3>Inheritance</h3>
 <p>There is no <code>extends</code> keyword in yirgacheffe so you can't have one class inherit functionality from another.</p>
 <p>Use composition instead... No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
+<p>OK so you want to write a class that is just like another but with one method implemented differently. No problem. You can satisfy an interface by delegating to an implementation of that interface. The delegate then handle calls to any interface methods not implemented by the delegating class.</p>
+<pre><code>class MyClass implements Comparable&lt;String&gt;
+{
+    public MyClass()
+    {
+        delegate(&quot;&quot;);
+    }
+}
+</code></pre>
 <h3>Public Fields</h3>
 <p>Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default. You may think that having to write accessor methods whenever you want to expose some data is too laborious but it shouldn't be necessary very often. There's a simple rule to follow. Put the logic that acts on some data in the class that contains that data. If you follow it you'll find you hardly ever need to write accessor methods.</p>
 <h3>Mutable Fields</h3>

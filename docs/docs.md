@@ -10,6 +10,19 @@ There is no `extends` keyword in yirgacheffe so you can't have one class inherit
 Use composition instead...
 No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.
 
+OK so you want to write a class that is just like another but with one method implemented differently.
+No problem.
+You can satisfy an interface by delegating to an implementation of that interface.
+The delegate then handle calls to any interface methods not implemented by the delegating class.
+
+    class MyClass implements Comparable<String>
+    {
+        public MyClass()
+        {
+            delegate("");
+        }
+    }
+
 ### Public Fields
 
 Hide your data is probably the first rule of object oriented programming so it's nice that this can happen by default.
