@@ -361,6 +361,35 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testCallDelegateFromMethod()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"delegate(1);\n" +
+				"}\n" +
+				"public MyClass(){}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 5:0 Cannot set delegate outside of constructor.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testConstructorCallsLaterInitialiser()
 	{
 		String source =

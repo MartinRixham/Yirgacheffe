@@ -86,6 +86,13 @@ public class FunctionCallListener extends ExpressionListener
 		Coordinate coordinate = new Coordinate(context);
 
 		this.expressions.push(new Delegate(coordinate, this.className, this.arguments));
+
+		if (!this.inConstructor)
+		{
+			String message = "Cannot set delegate outside of constructor.";
+
+			this.errors.push(new Error(context, message));
+		}
 	}
 
 	@Override
