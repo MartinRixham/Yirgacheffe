@@ -164,7 +164,7 @@ public class ElseTest
 		assertTrue(writes.indexOf(write) >= 0);
 		assertTrue(elseStatement.getExpression() instanceof Nothing);
 		assertFalse(elseStatement.isEmpty());
-		assertEquals(0, elseStatement.getFieldAssignments().length());
+		assertFalse(elseStatement.getFieldAssignments().contains("var"));
 	}
 
 	@Test
@@ -181,8 +181,7 @@ public class ElseTest
 
 		Statement elseStatement = new Else(coordinate, precondition, statement);
 
-		assertEquals(1, elseStatement.getFieldAssignments().length());
-		assertEquals("var1", elseStatement.getFieldAssignments().get(0));
+		assertTrue(elseStatement.getFieldAssignments().contains("var1"));
 	}
 
 	@Test
@@ -199,8 +198,7 @@ public class ElseTest
 
 		Statement elseStatement = new Else(coordinate, precondition, statement);
 
-		assertEquals(1, elseStatement.getFieldAssignments().length());
-		assertEquals("var2", elseStatement.getFieldAssignments().get(0));
+		assertTrue(elseStatement.getFieldAssignments().contains("var2"));
 	}
 
 	@Test
@@ -225,8 +223,9 @@ public class ElseTest
 
 		Statement elseStatement = new Else(coordinate, precondition, statement);
 
-		assertEquals(1, elseStatement.getFieldAssignments().length());
-		assertEquals("var2", elseStatement.getFieldAssignments().get(0));
+		assertFalse(elseStatement.getFieldAssignments().contains("var1"));
+		assertTrue(elseStatement.getFieldAssignments().contains("var2"));
+		assertFalse(elseStatement.getFieldAssignments().contains("var3"));
 	}
 
 	@Test

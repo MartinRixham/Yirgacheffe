@@ -8,15 +8,16 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
 import yirgacheffe.compiler.statement.Statement;
-import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -29,7 +30,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -283,7 +283,7 @@ public class MethodListener extends TypeListener
 
 	private void checkFieldInitialisation(
 		YirgacheffeParser.FunctionBlockContext context,
-		Array<String> fieldAssignments)
+		Assignment fieldAssignments)
 	{
 		String initialiserPrefix = "0init_field";
 		Class<?> reflectionClass = this.thisType.reflectionClass();
@@ -302,13 +302,9 @@ public class MethodListener extends TypeListener
 			}
 		}
 
-		for (String field: fieldAssignments)
+		for (String field: fieldNames.toArray(new String[0]))
 		{
-			if (field.equals("this"))
-			{
-				fieldNames = new HashSet<>();
-			}
-			else
+			if (fieldAssignments.contains(field))
 			{
 				fieldNames.remove(field);
 			}

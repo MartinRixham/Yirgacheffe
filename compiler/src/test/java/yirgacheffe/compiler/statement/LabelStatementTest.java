@@ -11,6 +11,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class LabelStatementTest
@@ -24,7 +25,7 @@ public class LabelStatementTest
 		assertEquals(new Array<>(), labelStatement.getVariableWrites());
 		assertTrue(labelStatement.getExpression() instanceof Nothing);
 		assertTrue(labelStatement.isEmpty());
-		assertEquals(0, labelStatement.getFieldAssignments().length());
+		assertFalse(labelStatement.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			labelStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());

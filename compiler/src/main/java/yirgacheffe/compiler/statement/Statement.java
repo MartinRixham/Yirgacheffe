@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -22,7 +23,7 @@ public interface Statement
 
 	Array<VariableWrite> getVariableWrites();
 
-	Array<String> getFieldAssignments();
+	Assignment getFieldAssignments();
 
 	Implementation getDelegatedInterfaces(
 		Map<Delegate, Type> delegateTypes,

@@ -3,6 +3,8 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -27,7 +29,7 @@ public class Branch implements Statement
 
 	public boolean returns()
 	{
-		return this.conditional.returns() && (this.conditional instanceof Else);
+		return this.conditional instanceof Else && this.conditional.returns();
 	}
 
 	public Result compile(Variables variables, Signature caller)
@@ -50,15 +52,15 @@ public class Branch implements Statement
 		return this.conditional.getVariableWrites();
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		if (this.conditional instanceof Else)
+		if (this.conditional instanceof Else || this.conditional.returns())
 		{
 			return this.conditional.getFieldAssignments();
 		}
 		else
 		{
-			return new Array<>();
+			return new FieldAssignment(new Array<>());
 		}
 	}
 

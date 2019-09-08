@@ -2,6 +2,8 @@ package yirgacheffe.compiler.statement;
 
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
@@ -101,9 +103,9 @@ public class VariableWrite implements Statement
 		return new Array<>(this);
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		return new Array<>();
+		return new FieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(

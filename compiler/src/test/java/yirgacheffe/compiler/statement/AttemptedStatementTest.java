@@ -10,7 +10,6 @@ import yirgacheffe.compiler.type.NullType;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -28,7 +27,7 @@ public class AttemptedStatementTest
 
 		assertFalse(attemptedStatement.returns());
 		assertFalse(attemptedStatement.isEmpty());
-		assertEquals(0, attemptedStatement.getFieldAssignments().length());
+		assertFalse(attemptedStatement.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			attemptedStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());

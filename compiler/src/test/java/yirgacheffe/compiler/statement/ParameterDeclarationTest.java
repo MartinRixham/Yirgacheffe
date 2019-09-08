@@ -11,6 +11,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ParameterDeclarationTest
@@ -25,7 +26,8 @@ public class ParameterDeclarationTest
 		assertEquals(new Array<>(), parameterDeclaration.getVariableWrites());
 		assertTrue(parameterDeclaration.getExpression() instanceof Nothing);
 		assertTrue(parameterDeclaration.isEmpty());
-		assertEquals(0, parameterDeclaration.getFieldAssignments().length());
+
+		assertFalse(parameterDeclaration.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			parameterDeclaration.getDelegatedInterfaces(new HashMap<>(), new NullType());

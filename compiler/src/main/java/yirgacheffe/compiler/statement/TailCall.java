@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeMethod;
@@ -98,7 +99,7 @@ public class TailCall implements Statement
 		return this.invocation.getVariableWrites();
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
 		return this.invocation.getFieldAssignments();
 	}

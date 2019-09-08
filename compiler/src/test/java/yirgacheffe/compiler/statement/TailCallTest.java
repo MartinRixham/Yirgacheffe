@@ -50,7 +50,7 @@ public class TailCallTest
 		assertTrue(tailCall.getExpression() instanceof Nothing);
 		assertEquals(new Array<>(), tailCall.getVariableReads());
 		assertEquals(new Array<>(), tailCall.getVariableWrites());
-		assertEquals(0, tailCall.getFieldAssignments().length());
+		assertFalse(tailCall.getFieldAssignments().contains(""));
 	}
 
 	@Test

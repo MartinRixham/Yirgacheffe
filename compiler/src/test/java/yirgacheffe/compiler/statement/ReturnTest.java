@@ -23,6 +23,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ReturnTest
@@ -48,7 +49,7 @@ public class ReturnTest
 
 		assertEquals(Opcodes.RETURN, firstInstruction.getOpcode());
 		assertTrue(returnStatement.getExpression() instanceof Nothing);
-		assertEquals(0, returnStatement.getFieldAssignments().length());
+		assertFalse(returnStatement.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			returnStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());

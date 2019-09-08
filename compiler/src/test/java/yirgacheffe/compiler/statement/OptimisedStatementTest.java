@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class OptimisedStatementTest
@@ -29,7 +30,7 @@ public class OptimisedStatementTest
 		assertEquals(new Array<>(), optimisedStatement.getVariableWrites());
 		assertTrue(optimisedStatement.getExpression() instanceof  Nothing);
 		assertTrue(optimisedStatement.isEmpty());
-		assertEquals(0, optimisedStatement.getFieldAssignments().length());
+		assertFalse(optimisedStatement.getFieldAssignments().contains(""));
 	}
 
 	@Test

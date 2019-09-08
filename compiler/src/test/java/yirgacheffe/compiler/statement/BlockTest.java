@@ -649,7 +649,7 @@ public class BlockTest
 
 		assertEquals(read, block.getExpression());
 		assertFalse(block.isEmpty());
-		assertEquals(0, block.getFieldAssignments().length());
+		assertFalse(block.getFieldAssignments().contains(""));
 	}
 
 	@Test

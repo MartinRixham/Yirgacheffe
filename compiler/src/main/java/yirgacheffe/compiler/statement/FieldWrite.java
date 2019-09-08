@@ -3,6 +3,8 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
@@ -118,9 +120,9 @@ public class FieldWrite implements Statement
 		return new Array<>();
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		return new Array<>(this.name);
+		return new FieldAssignment(new Array<>(this.name));
 	}
 
 	public Implementation getDelegatedInterfaces(

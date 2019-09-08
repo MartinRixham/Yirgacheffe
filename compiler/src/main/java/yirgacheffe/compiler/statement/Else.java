@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
@@ -80,10 +81,10 @@ public class Else implements ConditionalStatement
 			.concat(this.precondition.getVariableWrites());
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		Array<String> preconditionAssignments = this.precondition.getFieldAssignments();
-		Array<String> statementAssignments = this.statement.getFieldAssignments();
+		Assignment preconditionAssignments = this.precondition.getFieldAssignments();
+		Assignment statementAssignments = this.statement.getFieldAssignments();
 
 		if (preconditionAssignments.contains("this"))
 		{
@@ -95,17 +96,7 @@ public class Else implements ConditionalStatement
 		}
 		else
 		{
-			Array<String> assignments = new Array<>();
-
-			for (String assignment: preconditionAssignments)
-			{
-				if (statementAssignments.contains(assignment))
-				{
-					assignments.push(assignment);
-				}
-			}
-
-			return assignments;
+			return preconditionAssignments.intersect(statementAssignments);
 		}
 	}
 

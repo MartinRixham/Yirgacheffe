@@ -140,7 +140,7 @@ public class VariableWriteTest
 		Array<VariableWrite> writes = variableWrite.getVariableWrites();
 
 		assertTrue(writes.indexOf(variableWrite) >= 0);
-		assertEquals(0, variableWrite.getFieldAssignments().length());
+		assertFalse(variableWrite.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			variableWrite.getDelegatedInterfaces(new HashMap<>(), new NullType());

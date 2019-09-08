@@ -27,6 +27,7 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class FunctionCallTest
@@ -124,6 +125,6 @@ public class FunctionCallTest
 		assertEquals(expression.hashCode(), functionCall.hashCode());
 		assertEquals(1, functionCall.getVariableReads().length());
 		assertEquals(variable, functionCall.getVariableReads().get(0));
-		assertEquals(0, functionCall.getFieldAssignments().length());
+		assertFalse(functionCall.getFieldAssignments().contains(""));
 	}
 }

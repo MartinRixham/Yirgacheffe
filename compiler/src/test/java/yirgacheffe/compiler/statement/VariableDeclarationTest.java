@@ -11,6 +11,7 @@ import yirgacheffe.compiler.type.PrimitiveType;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class
@@ -30,7 +31,7 @@ VariableDeclarationTest
 		assertTrue(variableDeclaration.isEmpty());
 		assertTrue(variableDeclaration.equals("var"));
 		assertEquals(variableDeclaration, variableDeclaration);
-		assertEquals(0, variableDeclaration.getFieldAssignments().length());
+		assertFalse(variableDeclaration.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			variableDeclaration.getDelegatedInterfaces(new HashMap<>(), new NullType());

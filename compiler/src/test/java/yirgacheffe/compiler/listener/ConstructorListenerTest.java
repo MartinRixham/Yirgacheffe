@@ -493,6 +493,90 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testBranchDoesNotInitialiseField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"String sumpt;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)\n" +
+					"{\n" +
+						"this.thingy = \"thingy\";" +
+						"return;\n" +
+					"}\n" +
+					"this.sumpt = \"sumpt\";" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Constructor MyClass() does not initialise field 'sumpt'.\n" +
+			"line 6:0 Constructor MyClass() does not initialise field 'thingy'.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testBranchesDoNotInitialiseField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"String sumpt;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)\n" +
+					"{\n" +
+						"this.thingy = \"thingy\";" +
+						"return;\n" +
+					"}\n" +
+					"else if (true)\n" +
+					"{\n" +
+						"this.sumpt = \"sumpt\";" +
+						"return;\n" +
+					"}\n" +
+					"this.thingy = \"thingy\";" +
+					"this.sumpt = \"sumpt\";" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 6:0 Constructor MyClass() does not initialise field 'sumpt'.\n" +
+				"line 6:0 Constructor MyClass() does not initialise field 'thingy'.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testInitialiseFieldViaAnotherConstructor()
 	{
 		String source =

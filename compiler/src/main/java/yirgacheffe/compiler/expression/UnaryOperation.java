@@ -6,6 +6,8 @@ import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Signature;
@@ -156,9 +158,9 @@ public class UnaryOperation implements Expression, Statement
 		return new Array<>();
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		return new Array<>();
+		return new FieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(

@@ -33,7 +33,7 @@ public class OpenBlockTest
 		assertNotNull(result.getErrors());
 		assertFalse(openBlock.returns());
 		assertTrue(openBlock.isEmpty());
-		assertEquals(0, openBlock.getFieldAssignments().length());
+		assertFalse(openBlock.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			openBlock.getDelegatedInterfaces(new HashMap<>(), new NullType());

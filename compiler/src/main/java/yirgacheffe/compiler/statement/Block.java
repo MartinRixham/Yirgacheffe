@@ -1,6 +1,9 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.BranchAssignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
@@ -201,16 +204,23 @@ public class Block implements Statement
 		return variableWrites;
 	}
 
-	public Array<String> getFieldAssignments()
+	public Assignment getFieldAssignments()
 	{
-		Array<String> fields = new Array<>();
+		Assignment assignment = new FieldAssignment(new Array<>());
 
 		for (Statement statement: this.statements)
 		{
-			fields = fields.concat(statement.getFieldAssignments());
+			assignment = assignment.combineWith(statement.getFieldAssignments());
 		}
 
-		return fields;
+		if (this.returns())
+		{
+			return new BranchAssignment(assignment);
+		}
+		else
+		{
+			return assignment;
+		}
 	}
 
 	public Implementation getDelegatedInterfaces(

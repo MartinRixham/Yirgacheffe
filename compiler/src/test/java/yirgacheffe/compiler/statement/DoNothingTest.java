@@ -32,7 +32,7 @@ public class DoNothingTest
 		assertNotNull(result.getErrors());
 		assertFalse(doNothing.returns());
 		assertTrue(doNothing.isEmpty());
-		assertEquals(0, doNothing.getFieldAssignments().length());
+		assertFalse(doNothing.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			doNothing.getDelegatedInterfaces(new HashMap<>(), new NullType());

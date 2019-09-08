@@ -17,7 +17,6 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -33,7 +32,7 @@ public class BranchTest
 
 		assertTrue(expression instanceof Nothing);
 		assertFalse(branch.isEmpty());
-		assertEquals(0, branch.getFieldAssignments().length());
+		assertFalse(branch.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			branch.getDelegatedInterfaces(new HashMap<>(), new NullType());

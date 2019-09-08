@@ -38,7 +38,7 @@ public class ForTest
 		assertTrue(forStatement.getExpression() instanceof Nothing);
 		assertFalse(forStatement.returns());
 		assertFalse(forStatement.isEmpty());
-		assertEquals(0, forStatement.getFieldAssignments().length());
+		assertFalse(forStatement.getFieldAssignments().contains(""));
 
 		Implementation delegatedInterfaces =
 			forStatement.getDelegatedInterfaces(new HashMap<>(), new NullType());
