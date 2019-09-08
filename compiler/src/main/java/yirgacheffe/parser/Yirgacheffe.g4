@@ -66,7 +66,7 @@ fieldDeclaration: Const? modifier? type? Identifier;
 
 modifier: Public | Private;
 
-statement: block | conditionalStatement | forStatement | (statementLine semicolon);
+statement: block | conditionalStatement | forStatement | (statementLine semicolon) | SEMI_COLON;
 
 statementLine:
     attemptedStatement |

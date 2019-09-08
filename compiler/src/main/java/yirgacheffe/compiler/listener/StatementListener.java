@@ -8,6 +8,7 @@ import yirgacheffe.compiler.statement.AttemptedStatement;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.Branch;
 import yirgacheffe.compiler.statement.ConditionalStatement;
+import yirgacheffe.compiler.statement.DoNothing;
 import yirgacheffe.compiler.statement.Else;
 import yirgacheffe.compiler.statement.If;
 import yirgacheffe.compiler.statement.OpenBlock;
@@ -26,6 +27,15 @@ public class StatementListener extends FieldListener
 	public StatementListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
+	}
+
+	@Override
+	public void exitStatement(YirgacheffeParser.StatementContext context)
+	{
+		if (context.SEMI_COLON() != null)
+		{
+			this.statements.push(new DoNothing());
+		}
 	}
 
 	@Override

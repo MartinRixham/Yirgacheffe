@@ -365,6 +365,48 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testEmptyConditionalStatements()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"if (false);\n" +
+					"if (false)\n" +
+					"{\n" +
+					"}\n" +
+					"else if (false);\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testEmptyStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"String thingy = \"thingy\";;;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testBranchWithReturnStatement()
 	{
 		String source =
