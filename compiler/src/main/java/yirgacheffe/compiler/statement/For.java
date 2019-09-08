@@ -5,7 +5,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.assignment.Assignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Equation;
@@ -88,7 +87,7 @@ public class For implements Statement
 		return this.initialiser.getVariableWrites();
 	}
 
-	public Assignment getFieldAssignments()
+	public FieldAssignment getFieldAssignments()
 	{
 		return new FieldAssignment(new Array<>());
 	}

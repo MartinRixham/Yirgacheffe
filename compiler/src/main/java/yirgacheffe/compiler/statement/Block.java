@@ -1,8 +1,6 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.assignment.Assignment;
-import yirgacheffe.compiler.assignment.BranchAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -204,9 +202,9 @@ public class Block implements Statement
 		return variableWrites;
 	}
 
-	public Assignment getFieldAssignments()
+	public FieldAssignment getFieldAssignments()
 	{
-		Assignment assignment = new FieldAssignment(new Array<>());
+		FieldAssignment assignment = new FieldAssignment(new Array<>());
 
 		for (Statement statement: this.statements)
 		{
@@ -215,7 +213,7 @@ public class Block implements Statement
 
 		if (this.returns())
 		{
-			return new BranchAssignment(assignment);
+			return new FieldAssignment(assignment);
 		}
 		else
 		{

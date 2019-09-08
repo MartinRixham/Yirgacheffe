@@ -3,7 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -81,7 +81,7 @@ public class If implements ConditionalStatement
 		return this.statement.getVariableWrites();
 	}
 
-	public Assignment getFieldAssignments()
+	public FieldAssignment getFieldAssignments()
 	{
 		return this.statement.getFieldAssignments();
 	}

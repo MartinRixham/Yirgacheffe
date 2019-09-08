@@ -2,51 +2,97 @@ package yirgacheffe.compiler.assignment;
 
 import yirgacheffe.lang.Array;
 
-public class FieldAssignment implements Assignment
+public class FieldAssignment
 {
 	private Array<String> fields;
+
+	private FieldAssignment branch;
 
 	public FieldAssignment(Array<String> fields)
 	{
 		this.fields = fields;
 	}
 
-	public Assignment combineWith(Assignment other)
+	public FieldAssignment(FieldAssignment branch)
 	{
-		if (other instanceof FieldAssignment)
-		{
-			FieldAssignment otherAssignment = (FieldAssignment) other;
+		this.fields = new Array<>();
+		this.branch = branch;
+	}
 
-			return new FieldAssignment(this.fields.concat(otherAssignment.fields));
+	private FieldAssignment(Array<String> fields, FieldAssignment branch)
+	{
+		this.fields = fields;
+		this.branch = branch;
+	}
+
+	public FieldAssignment combineWith(FieldAssignment other)
+	{
+		Array<String> fields = this.fields.concat(other.fields);
+
+		FieldAssignment otherBranch = null;
+
+		if (other.branch != null)
+		{
+			otherBranch = other.branch.combineWith(this.fields);
+		}
+
+		FieldAssignment branch;
+
+		if (this.branch == null)
+		{
+			branch = otherBranch;
+		}
+		else if (otherBranch == null)
+		{
+			branch = this.branch;
 		}
 		else
 		{
-			return other.combineWith(this);
+			branch = this.branch.intersect(otherBranch);
 		}
+
+		return new FieldAssignment(fields, branch);
 	}
 
-	public Assignment intersect(Assignment other)
+	private FieldAssignment combineWith(Array<String> fields)
 	{
-		return other.intersect(this.fields);
-	}
-
-	public Assignment intersect(Array<String> fields)
-	{
-		Array<String> assignments = new Array<>();
-
-		for (String assignment: fields)
+		if (this.branch == null)
 		{
-			if (this.fields.contains(assignment))
-			{
-				assignments.push(assignment);
-			}
+			return new FieldAssignment(this.fields.concat(fields));
 		}
+		else
+		{
+			return new FieldAssignment(
+				this.fields.concat(fields),
+				this.branch.combineWith(fields));
+		}
+	}
 
-		return new FieldAssignment(assignments);
+	public FieldAssignment intersect(FieldAssignment other)
+	{
+		if (this.branch == null)
+		{
+			return new FieldAssignment(this.fields, other);
+		}
+		else
+		{
+			return new FieldAssignment(this.fields, other.intersect(this.branch));
+		}
 	}
 
 	public boolean contains(String field)
 	{
-		return this.fields.contains("this") || this.fields.contains(field);
+		if (this.fields.contains("this"))
+		{
+			return true;
+		}
+		else if (this.branch == null)
+		{
+			return this.fields.contains(field);
+		}
+		else
+		{
+			return this.fields.contains(field) && this.branch.contains(field);
+		}
 	}
 }

@@ -720,6 +720,78 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testInitialiseFieldOnBranch()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"String sumpt;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)\n" +
+					"{\n" +
+						"this.thingy = \"thingy\";\n" +
+						"this.sumpt = \"sumpt\";\n" +
+						"return;\n" +
+					"}\n" +
+					"this.thingy = \"thingy\";\n" +
+					"this.sumpt = \"sumpt\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testInitialiseBeforeConditionReturn()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy;\n" +
+				"String sumpt;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this.thingy = \"thingy\";\n" +
+					"this.sumpt = \"sumpt\";\n" +
+					"if (false)\n" +
+					"{\n" +
+						"return;\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testDelegateInterfaceImplementation()
 	{
 		String source =

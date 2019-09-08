@@ -8,7 +8,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
@@ -283,7 +283,7 @@ public class MethodListener extends TypeListener
 
 	private void checkFieldInitialisation(
 		YirgacheffeParser.FunctionBlockContext context,
-		Assignment fieldAssignments)
+		FieldAssignment fieldAssignments)
 	{
 		String initialiserPrefix = "0init_field";
 		Class<?> reflectionClass = this.thisType.reflectionClass();

@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.assignment.Assignment;
+import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
@@ -53,7 +53,7 @@ public class OptimisedStatement implements Statement
 		return new Array<>();
 	}
 
-	public Assignment getFieldAssignments()
+	public FieldAssignment getFieldAssignments()
 	{
 		return this.statement.getFieldAssignments();
 	}
