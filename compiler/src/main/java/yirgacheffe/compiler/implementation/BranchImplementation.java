@@ -3,22 +3,15 @@ package yirgacheffe.compiler.implementation;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Type;
 
-public class TotalImplementation implements Implementation
+public class BranchImplementation implements Implementation
 {
 	public Implementation intersect(Implementation implementation)
 	{
-		if (implementation instanceof BranchImplementation)
-		{
-			return this;
-		}
-		else
-		{
-			return implementation;
-		}
+		return this;
 	}
 
 	public boolean implementsMethod(Function method, Type thisType)
 	{
-		return true;
+		return false;
 	}
 }

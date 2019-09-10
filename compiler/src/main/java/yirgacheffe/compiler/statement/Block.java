@@ -9,8 +9,8 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.BranchImplementation;
 import yirgacheffe.compiler.implementation.Implementation;
-import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -238,7 +238,7 @@ public class Block implements Statement
 
 		if (this.returns() && delegatedInterfaces instanceof NullImplementation)
 		{
-			return new InterfaceImplementation(new Array<>());
+			return new BranchImplementation();
 		}
 
 		return delegatedInterfaces;

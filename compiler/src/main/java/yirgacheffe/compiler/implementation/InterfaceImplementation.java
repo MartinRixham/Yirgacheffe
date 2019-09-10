@@ -34,7 +34,7 @@ public class InterfaceImplementation implements Implementation
 		}
 		else
 		{
-			return implementation.intersect(this);
+			return this;
 		}
 	}
 
