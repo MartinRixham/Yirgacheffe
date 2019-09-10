@@ -14,6 +14,8 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.InterfaceImplementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
@@ -322,6 +324,11 @@ public class MethodListener extends TypeListener
 
 	private void checkDelegatedInterfaces(Implementation delegatedInterfaces)
 	{
+		if (delegatedInterfaces instanceof NullImplementation)
+		{
+			delegatedInterfaces = new InterfaceImplementation(new Array<>());
+		}
+
 		this.delegatedInterfaces =
 			this.delegatedInterfaces.intersect(delegatedInterfaces);
 	}

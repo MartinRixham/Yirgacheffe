@@ -38,11 +38,6 @@ public class InterfaceImplementation implements Implementation
 		}
 	}
 
-	public boolean exists()
-	{
-		return true;
-	}
-
 	public boolean implementsMethod(Function method, Type thisType)
 	{
 		for (Type interfaceType : this.interfaces)

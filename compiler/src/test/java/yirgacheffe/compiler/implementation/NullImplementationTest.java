@@ -30,7 +30,5 @@ public class NullImplementationTest
 			assertTrue(intersection.implementsMethod(function, interfaceType));
 			assertFalse(first.implementsMethod(function, interfaceType));
 		}
-
-		assertFalse(first.exists());
 	}
 }

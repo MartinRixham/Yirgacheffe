@@ -10,11 +10,6 @@ public class TotalImplementation implements Implementation
 		return implementation;
 	}
 
-	public boolean exists()
-	{
-		return true;
-	}
-
 	public boolean implementsMethod(Function method, Type thisType)
 	{
 		return true;

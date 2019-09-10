@@ -390,6 +390,106 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testBranchDoesNotDelegate()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)" +
+					"{\n" +
+						"return;\n" +
+					"}\n" +
+					"delegate(\"\");\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceNotDelegatedFromIf()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)" +
+					"{\n" +
+						"delegate(\"\");\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceNotDelegatedFromElse()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)" +
+					"{\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+						"delegate(\"\");\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testConstructorCallsLaterInitialiser()
 	{
 		String source =

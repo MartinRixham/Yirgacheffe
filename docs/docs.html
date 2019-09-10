@@ -2,7 +2,7 @@
 <h3>Inheritance</h3>
 <p>There is no <code>extends</code> keyword in yirgacheffe so you can't have one class inherit functionality from another.</p>
 <p>Use composition instead... No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
-<p>OK so you want to write a class that is just like another but with one method implemented differently. No problem. You can satisfy an interface by delegating to an implementation of that interface. The delegate then handle calls to any interface methods not implemented by the delegating class.</p>
+<p>OK so you want to write a class that is just like another but with one method implemented differently. No problem. You can satisfy an interface by delegating to an implementation of that interface. The delegate then handles calls to any interface methods not implemented by the delegating class.</p>
 <pre><code>class MyClass implements Comparable&lt;String&gt;
 {
     public MyClass()

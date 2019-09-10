@@ -28,7 +28,5 @@ public class InterfaceImplementationTest
 
 			assertTrue(intersection.implementsMethod(function, interfaceType));
 		}
-
-		assertTrue(first.exists());
 	}
 }

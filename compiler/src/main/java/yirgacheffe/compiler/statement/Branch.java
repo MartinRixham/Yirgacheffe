@@ -67,7 +67,7 @@ public class Branch implements Statement
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		if (this.conditional instanceof Else)
+		if (this.conditional instanceof Else || this.conditional.returns())
 		{
 			return this.conditional.getDelegatedInterfaces(delegateTypes, thisType);
 		}

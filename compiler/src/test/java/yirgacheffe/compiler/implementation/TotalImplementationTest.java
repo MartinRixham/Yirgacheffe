@@ -29,7 +29,5 @@ public class TotalImplementationTest
 			assertTrue(intersection.implementsMethod(function, interfaceType));
 			assertTrue(first.implementsMethod(function, interfaceType));
 		}
-
-		assertTrue(first.exists());
 	}
 }

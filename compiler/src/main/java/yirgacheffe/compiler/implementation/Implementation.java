@@ -7,7 +7,5 @@ public interface Implementation
 {
 	Implementation intersect(Implementation implementation);
 
-	boolean exists();
-
 	boolean implementsMethod(Function method, Type thisType);
 }

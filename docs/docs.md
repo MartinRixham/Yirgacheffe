@@ -13,7 +13,7 @@ No seriously, readers of your code will be very grateful if you take the trouble
 OK so you want to write a class that is just like another but with one method implemented differently.
 No problem.
 You can satisfy an interface by delegating to an implementation of that interface.
-The delegate then handle calls to any interface methods not implemented by the delegating class.
+The delegate then handles calls to any interface methods not implemented by the delegating class.
 
     class MyClass implements Comparable<String>
     {

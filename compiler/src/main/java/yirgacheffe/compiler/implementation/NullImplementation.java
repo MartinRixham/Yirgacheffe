@@ -10,11 +10,6 @@ public class NullImplementation implements Implementation
 		return implementation;
 	}
 
-	public boolean exists()
-	{
-		return false;
-	}
-
 	public boolean implementsMethod(Function method, Type thisType)
 	{
 		return false;
