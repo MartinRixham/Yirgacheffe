@@ -46,6 +46,10 @@ public class BinaryOperation implements Expression
 		{
 			return string;
 		}
+		else if (this.operator == Operator.DIVIDE)
+		{
+			return PrimitiveType.DOUBLE;
+		}
 		else
 		{
 			return firstType.intersect(secondType);

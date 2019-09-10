@@ -64,6 +64,54 @@ public class BinaryOperationTest
 	}
 
 	@Test
+	public void testCompilingIntegerDivision()
+	{
+		Variables variables = new LocalVariables(new HashMap<>());
+		Coordinate coordinate = new Coordinate(3,  6);
+		Num firstOperand = new Num("0");
+		Num secondOperand = new Num("1");
+
+		BinaryOperation operation =
+			new BinaryOperation(
+				coordinate,
+				Operator.DIVIDE,
+				firstOperand, secondOperand);
+
+		Type type = operation.getType(variables);
+
+		Result result = operation.compile(variables);
+
+		assertEquals(1, variables.getStack().length());
+		assertFalse(operation.isCondition(variables));
+		assertEquals(PrimitiveType.DOUBLE, type);
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(5, instructions.length());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ICONST_1, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.I2D, fourthInstruction.getOpcode());
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DDIV, fifthInstruction.getOpcode());
+	}
+
+	@Test
 	public void testCompilingLongIntegerAddition()
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
