@@ -9,6 +9,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.BranchImplementation;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.Type;
@@ -67,9 +68,13 @@ public class Branch implements Statement
 		Map<Delegate, Type> delegateTypes,
 		Type thisType)
 	{
-		if (this.conditional instanceof Else || this.conditional.returns())
+		Implementation implementation =
+			this.conditional.getDelegatedInterfaces(delegateTypes, thisType);
+
+		if (this.conditional instanceof Else ||
+			implementation instanceof BranchImplementation)
 		{
-			return this.conditional.getDelegatedInterfaces(delegateTypes, thisType);
+			return implementation;
 		}
 		else
 		{

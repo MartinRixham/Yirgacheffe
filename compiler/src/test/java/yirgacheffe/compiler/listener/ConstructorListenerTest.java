@@ -479,6 +479,37 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testDelegationByThisBeforeNestedBranches()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"this();\n" +
+					"if (false)" +
+					"{\n" +
+						"if (false)" +
+						"{\n" +
+							"return;\n" +
+						"}\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testInterfaceNotDelegatedFromIf()
 	{
 		String source =
