@@ -343,7 +343,7 @@ public class ClassListenerTest
 				"Num number;\n" +
 				"\"ONE\":(1);\n" +
 				"\"TWO\":(2);\n" +
-				"public MyNumeration(Num number)\n" +
+				"MyNumeration(Num number)\n" +
 				"{\n" +
 					"this.number = number;\n" +
 				"}\n" +
@@ -364,5 +364,32 @@ public class ClassListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testEnumerationConstructorCannotBePublic()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"public MyNumeration()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Enumeration constructor cannot be public.\n",
+			result.getErrors());
 	}
 }

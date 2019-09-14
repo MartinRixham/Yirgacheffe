@@ -48,6 +48,8 @@ public class ClassListener extends PackageListener
 
 	protected boolean hasDelegate = false;
 
+	protected boolean inEnumeration = false;
+
 	public ClassListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -157,6 +159,7 @@ public class ClassListener extends PackageListener
 	public void exitEnumerationDeclaration(
 		YirgacheffeParser.EnumerationDeclarationContext context)
 	{
+		this.inEnumeration = true;
 		this.className = this.directory + context.Identifier().getText();
 
 		try

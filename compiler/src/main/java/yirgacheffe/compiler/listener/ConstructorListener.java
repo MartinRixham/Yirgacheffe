@@ -64,7 +64,7 @@ public class ConstructorListener extends MainMethodListener
 
 		boolean isPrivate = false;
 
-		if (context.modifier() == null)
+		if (!this.inEnumeration && context.modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -72,7 +72,18 @@ public class ConstructorListener extends MainMethodListener
 
 			this.errors.push(new Error(context, message));
 		}
-		else
+
+		if (this.inEnumeration &&
+			context.modifier() != null &&
+			context.modifier().Public() != null)
+		{
+			String message =
+				"Enumeration constructor cannot be public.";
+
+			this.errors.push(new Error(context, message));
+		}
+
+		if (context.modifier() != null)
 		{
 			isPrivate = context.modifier().Private() != null;
 		}
