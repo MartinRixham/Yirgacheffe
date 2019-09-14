@@ -103,6 +103,14 @@ public class FieldListener extends ConstructorListener
 	@Override
 	public void enterFieldRead(YirgacheffeParser.FieldReadContext context)
 	{
+		if (!this.inConstructor && !this.inMethod)
+		{
+			String message =
+				"Cannot read unconstructed field '" + context.Identifier() + "'.";
+
+			this.errors.push(new Error(context, message));
+		}
+
 		Coordinate coordinate = new Coordinate(context);
 		String fieldName = context.Identifier().getText();
 		Expression owner = this.expressions.pop();

@@ -1351,4 +1351,31 @@ public class FieldListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testRestUnconstructedField()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String thingy = this.sumpt;\n" +
+				"String sumpt = this.thingy;\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:20 Cannot read unconstructed field 'sumpt'.\n" +
+			"line 4:19 Cannot read unconstructed field 'thingy'.\n",
+			result.getErrors());
+	}
 }

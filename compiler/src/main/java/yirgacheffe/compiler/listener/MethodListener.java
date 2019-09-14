@@ -40,6 +40,8 @@ public class MethodListener extends TypeListener
 {
 	protected boolean inConstructor = false;
 
+	protected boolean inMethod = false;
+
 	protected Type returnType = new NullType();
 
 	protected Map<String, Object> constants = new HashMap<>();
@@ -96,6 +98,8 @@ public class MethodListener extends TypeListener
 	public void exitClassMethodDeclaration(
 		YirgacheffeParser.ClassMethodDeclarationContext context)
 	{
+		this.inMethod = true;
+
 		boolean isPrivate = false;
 		String name = null;
 
@@ -281,6 +285,7 @@ public class MethodListener extends TypeListener
 		this.errors.push(result.getErrors());
 
 		this.inConstructor = false;
+		this.inMethod = false;
 	}
 
 	private void checkFieldInitialisation(
