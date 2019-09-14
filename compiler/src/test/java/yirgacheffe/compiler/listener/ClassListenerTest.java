@@ -333,4 +333,36 @@ public class ClassListenerTest
 			"line 7:20 Method java.lang.Object.method() not found.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testEnumeration()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"Num number;\n" +
+				"\"ONE\":(1);\n" +
+				"\"TWO\":(2);\n" +
+				"public MyNumeration(Num number)\n" +
+				"{\n" +
+					"this.number = number;\n" +
+				"}\n" +
+				"public String myMethod()\n" +
+				"{\n" +
+					"return \"\";\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

@@ -84,11 +84,9 @@ public class FieldDeclarationListener extends MethodListener
 			String fieldName = context.Identifier().getText();
 			Type type = this.types.getType(context.type());
 
-			int access = Opcodes.ACC_PROTECTED;
-
 			this.classNode.fields.add(
 				new FieldNode(
-					access,
+					Opcodes.ACC_PROTECTED,
 					fieldName,
 					type.toJVMType(),
 					type.getSignature(),

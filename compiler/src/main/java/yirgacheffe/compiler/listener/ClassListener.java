@@ -154,6 +154,30 @@ public class ClassListener extends PackageListener
 	}
 
 	@Override
+	public void exitEnumerationDeclaration(
+		YirgacheffeParser.EnumerationDeclarationContext context)
+	{
+		this.className = this.directory + context.Identifier().getText();
+
+		try
+		{
+			this.thisType =
+				this.classes.loadClass(this.className.replace("/", "."));
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+		}
+
+		this.classNode.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
+			this.className,
+			null,
+			"java/lang/Object",
+			null);
+	}
+
+	@Override
 	public void exitGenericTypes(YirgacheffeParser.GenericTypesContext context)
 	{
 		Array<String> parameters = new Array<>();

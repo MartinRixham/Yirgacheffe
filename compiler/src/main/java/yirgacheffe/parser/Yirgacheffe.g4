@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration
 	importStatement*
-	(classDefinition | interfaceDefinition)*
+	(classDefinition | interfaceDefinition | enumerationDefinition)*
 	EOF;
 
 replLine: expression? | importStatement* | statement*;
@@ -20,6 +20,13 @@ classDefinition: classDeclaration
 	'}';
 
 classDeclaration: (Class | Identifier) Identifier? genericTypes? implementation?;
+
+enumerationDefinition: enumerationDeclaration
+	'{'
+		(function | parallelMethod | interfaceMethodDeclaration | field | constantConstructor)*
+	'}';
+
+enumerationDeclaration: Enumeration Identifier Of type;
 
 implementation: Implements type? (',' type)*;
 
@@ -53,6 +60,8 @@ parallelMethodDeclaration: Parallel classMethodDeclaration;
 constructorDeclaration: modifier? signature;
 
 interfaceMethodDeclaration: modifier? returnType signature semicolon;
+
+constantConstructor: literal ':' arguments semicolon;
 
 returnType: type;
 
@@ -207,6 +216,7 @@ Package: 'package';
 Import: 'import';
 Class: 'class';
 Interface: 'interface';
+Enumeration: 'enumeration';
 Public: 'public';
 Private: 'private';
 Const: 'const';
@@ -223,6 +233,7 @@ For: 'for';
 Parallel: 'parallel';
 Try: 'try';
 Delegate: 'delegate';
+Of: 'of';
 
 // operators
 Remainder: '%';

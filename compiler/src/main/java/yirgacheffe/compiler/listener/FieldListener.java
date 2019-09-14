@@ -63,12 +63,12 @@ public class FieldListener extends ConstructorListener
 
 			Result result = self.compile(variables)
 				.concat(expression.compile(variables)
-					.add(new FieldInsnNode(
-						Opcodes.PUTFIELD,
-						this.className,
-						fieldName,
-						fieldType.toJVMType()))
-					.add(new InsnNode(Opcodes.RETURN)));
+				.add(new FieldInsnNode(
+					Opcodes.PUTFIELD,
+					this.className,
+					fieldName,
+					fieldType.toJVMType()))
+				.add(new InsnNode(Opcodes.RETURN)));
 
 			for (AbstractInsnNode instruction: result.getInstructions())
 			{
