@@ -3,6 +3,7 @@ package yirgacheffe.compiler;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.parallel.GeneratedClass;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Fold;
 
 public class CompilationResult
 {
@@ -61,13 +62,6 @@ public class CompilationResult
 	{
 		this.errors.sort();
 
-		StringBuilder errors = new StringBuilder();
-
-		for (Error error: this.errors)
-		{
-			errors.append(error.toString()).append("\n");
-		}
-
-		return errors.toString();
+		return new Fold<>(this.errors).with(new StringBuilder()).toString();
 	}
 }
