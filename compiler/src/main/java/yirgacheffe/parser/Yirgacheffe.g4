@@ -23,7 +23,7 @@ classDeclaration: (Class | Identifier) Identifier? genericTypes? implementation?
 
 enumerationDefinition: enumerationDeclaration
 	'{'
-		(function | parallelMethod | interfaceMethodDeclaration | field | constantConstructor)*
+		(function | parallelMethod | field | constantConstructor)*
 	'}';
 
 enumerationDeclaration: Enumeration Identifier Of type;

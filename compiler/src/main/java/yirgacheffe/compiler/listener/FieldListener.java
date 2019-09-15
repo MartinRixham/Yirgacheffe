@@ -4,6 +4,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -12,6 +15,7 @@ import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -137,5 +141,33 @@ public class FieldListener extends ConstructorListener
 		String fieldName = context.Identifier().getText();
 
 		this.statements.push(new FieldWrite(coordinate, fieldName, owner, value));
+	}
+
+	@Override
+	public void exitConstantConstructor(
+		YirgacheffeParser.ConstantConstructorContext context)
+	{
+		Literal literal = Literal.parse(context.literal().getText());
+
+		Result result = new Result()
+			.add(new VarInsnNode(Opcodes.ALOAD, 0))
+			.add(new FieldInsnNode(
+				Opcodes.GETFIELD,
+				this.className,
+				"0values",
+				"Ljava/util/Map;"))
+			.add(new LdcInsnNode(literal.getValue()))
+			.add(new MethodInsnNode(
+				Opcodes.INVOKEVIRTUAL,
+				"java/util/Map",
+				"get",
+				"(" + new ReferenceType(literal.getValue().getClass()).toJVMType() + ")" +
+					"L" + this.className + ";"))
+			.add(new InsnNode(Opcodes.ARETURN));
+
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			this.methodNode.instructions.add(instruction);
+		}
 	}
 }

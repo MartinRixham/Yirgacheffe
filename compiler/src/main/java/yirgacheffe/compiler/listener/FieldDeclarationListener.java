@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -92,5 +93,30 @@ public class FieldDeclarationListener extends MethodListener
 					type.getSignature(),
 					null));
 		}
+	}
+
+	@Override
+	public void enterConstantConstructor(
+		YirgacheffeParser.ConstantConstructorContext context)
+	{
+		Literal literal = Literal.parse(context.literal().getText());
+
+		this.methodNode =
+			new MethodNode(
+				Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+				"0" + literal.getValue().toString(),
+				"()" + this.thisType.toJVMType(),
+				null,
+				null);
+
+		this.classNode.methods.add(this.methodNode);
+	}
+
+	@Override
+	public void exitConstantConstructor(
+		YirgacheffeParser.ConstantConstructorContext context)
+	{
+		this.methodNode.instructions.add(new InsnNode(Opcodes.ACONST_NULL));
+		this.methodNode.instructions.add(new InsnNode(Opcodes.ARETURN));
 	}
 }

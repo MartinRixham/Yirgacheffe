@@ -1,10 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.Bool;
-import yirgacheffe.compiler.expression.Char;
-import yirgacheffe.compiler.expression.Num;
-import yirgacheffe.compiler.expression.Streeng;
+import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.Try;
 import yirgacheffe.compiler.expression.VariableRead;
@@ -47,21 +44,6 @@ public class ExpressionListener extends LoopListener
 	{
 		String text = context.getText();
 
-		if (context.StringLiteral() != null)
-		{
-			this.expressions.push(new Streeng(text));
-		}
-		else if (context.CharacterLiteral() != null)
-		{
-			this.expressions.push(new Char(text));
-		}
-		else if (context.BooleanLiteral() != null)
-		{
-			this.expressions.push(new Bool(text));
-		}
-		else
-		{
-			this.expressions.push(new Num(text));
-		}
+		this.expressions.push(Literal.parse(text));
 	}
 }

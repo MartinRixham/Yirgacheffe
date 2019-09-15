@@ -5,8 +5,12 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -364,6 +368,46 @@ public class ClassListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(5, classNode.methods.size());
+
+		MethodNode method = classNode.methods.get(0);
+
+		assertEquals("0ONE", method.name);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, method.access);
+		assertEquals("()LMyNumeration;", method.desc);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(5, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+
+		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
+		assertEquals("MyNumeration", secondInstruction.owner);
+		assertEquals("0values", secondInstruction.name);
+		assertEquals("Ljava/util/Map;", secondInstruction.desc);
+
+		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
+		assertEquals("ONE", thirdInstruction.cst);
+
+		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
+		assertEquals("java/util/Map", fourthInstruction.owner);
+		assertEquals("get", fourthInstruction.name);
+		assertEquals("(Ljava/lang/String;)LMyNumeration;", fourthInstruction.desc);
 	}
 
 	@Test
