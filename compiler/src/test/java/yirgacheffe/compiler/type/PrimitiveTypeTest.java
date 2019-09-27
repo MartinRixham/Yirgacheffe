@@ -35,6 +35,7 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.NOP, type.getZero());
 		assertFalse(type.hasParameter());
 		assertTrue(type.isPrimitive());
+		assertTrue(type.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test

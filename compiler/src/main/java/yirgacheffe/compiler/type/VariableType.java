@@ -104,6 +104,11 @@ public class VariableType implements Type
 		return new Result();
 	}
 
+	public Type getTypeParameter(String typeName)
+	{
+		return new NullType();
+	}
+
 	@Override
 	public String toString()
 	{

@@ -7,6 +7,7 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.AttemptedType;
+import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.Type;
@@ -54,7 +55,8 @@ public class Arguments
 				intersectionType = intersectionType.intersect(type);
 			}
 
-			if (!intersectionType.isAssignableTo(elementType))
+			if (!intersectionType.isAssignableTo(elementType) &&
+				!(elementType instanceof GenericType))
 			{
 				return new FailedMatchResult();
 			}
@@ -77,7 +79,8 @@ public class Arguments
 			Type argumentType = argumentTypes.get(i);
 			Type parameterType = parameters.get(i);
 
-			if (!argumentType.isAssignableTo(parameterType))
+			if (!argumentType.isAssignableTo(parameterType) &&
+				!(parameterType instanceof GenericType))
 			{
 				return new FailedMatchResult();
 			}

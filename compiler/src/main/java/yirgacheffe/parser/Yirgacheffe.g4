@@ -37,7 +37,9 @@ interfaceDefinition: interfaceDeclaration
 
 interfaceDeclaration: Interface Identifier? genericTypes?;
 
-genericTypes: '<' Identifier? (',' Identifier)* '>';
+genericTypes: '<' genericType? (',' genericType)* '>';
+
+genericType: Identifier (Implements type)?;
 
 function:
 	(classMethodDeclaration | mainMethodDeclaration | constructorDeclaration)
@@ -188,7 +190,7 @@ predecrement: MinusMinus unaryExpression;
 
 unaryExpression:
 	(instantiation | literal | variableRead | thisRead | parenthesis)
-	(fieldRead | methodCall)*;
+	(methodCall | fieldRead)*;
 
 variableRead: Identifier;
 

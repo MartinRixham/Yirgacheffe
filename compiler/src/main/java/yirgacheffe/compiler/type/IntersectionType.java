@@ -112,6 +112,11 @@ public class IntersectionType implements Type
 		return this.firstType.compare(operator, label);
 	}
 
+	public Type getTypeParameter(String typeName)
+	{
+		return new NullType();
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{

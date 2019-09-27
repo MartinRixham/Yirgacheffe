@@ -168,6 +168,20 @@ public enum PrimitiveType implements Type
 
 	public Result convertTo(Type type)
 	{
+		if (type instanceof GenericType)
+		{
+			String descriptor =
+				"(" + this.toJVMType() + ")L" +
+					this.toFullyQualifiedType() + ";";
+
+			return new Result().add(
+				new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					this.toFullyQualifiedType(),
+					"valueOf",
+					descriptor,
+					false));
+		}
 		if (type.equals(this))
 		{
 			return new Result();
@@ -282,5 +296,10 @@ public enum PrimitiveType implements Type
 					operator.integerOpcode(),
 					new LabelNode(label)));
 		}
+	}
+
+	public Type getTypeParameter(String typeName)
+	{
+		return new NullType();
 	}
 }

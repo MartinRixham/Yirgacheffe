@@ -160,6 +160,11 @@ public class ReferenceType implements Type
 		return false;
 	}
 
+	public Type getTypeParameter(String typeName)
+	{
+		return new NullType();
+	}
+
 	@Override
 	public int hashCode()
 	{

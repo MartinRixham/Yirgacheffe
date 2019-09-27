@@ -76,7 +76,7 @@ public class NullType implements Type
 
 	public String getSignature()
 	{
-		return null;
+		return this.toJVMType();
 	}
 
 	public boolean isPrimitive()
@@ -107,6 +107,11 @@ public class NullType implements Type
 	public Result compare(BooleanOperator operator, Label label)
 	{
 		return new Result();
+	}
+
+	public Type getTypeParameter(String typeName)
+	{
+		return new NullType();
 	}
 
 	@Override

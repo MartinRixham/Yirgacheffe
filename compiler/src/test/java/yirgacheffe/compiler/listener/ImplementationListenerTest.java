@@ -650,4 +650,78 @@ public class ImplementationListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testTypeParameterWithTypeBounds()
+	{
+		String source =
+			"class Fold<R implements Combinable<S>, S>\n" +
+			"{\n" +
+				"Array<R> array;\n" +
+				"public Fold(Array<R> array)\n" +
+				"{\n" +
+					"this.array = array;\n" +
+				"}\n" +
+				"public S with(S item)\n" +
+				"{\n" +
+					"for (Num i = 0; i < this.array.length(); i++)\n" +
+					"{\n" +
+						"item = this.array.get(i).combineWith(item);\n" +
+					"}\n" +
+					"return item;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testTypeParameterWithParameterisedTypeBounds()
+	{
+		String source =
+			"class Fold<R implements Combinable<String>>\n" +
+			"{\n" +
+				"Array<R> array;\n" +
+				"public Fold(Array<R> array)\n" +
+				"{\n" +
+					"this.array = array;\n" +
+				"}\n" +
+				"public String with(String item)\n" +
+				"{\n" +
+					"for (Num i = 0; i < this.array.length(); i++)\n" +
+					"{\n" +
+						"item = this.array.get(i).combineWith(item);\n" +
+					"}\n" +
+					"return item;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

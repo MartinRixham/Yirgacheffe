@@ -57,12 +57,12 @@ public class Function
 
 	public Array<Type> getParameterTypes()
 	{
-		Class<?>[] classes = this.executable.getParameterTypes();
+		java.lang.reflect.Type[] parameters = this.executable.getGenericParameterTypes();
 		Array<Type> types = new Array<>();
 
-		for (Class<?> clazz: classes)
+		for (java.lang.reflect.Type type: parameters)
 		{
-			types.push(Type.getType(clazz));
+			types.push(Type.getType(type, this.owner));
 		}
 
 		return types;

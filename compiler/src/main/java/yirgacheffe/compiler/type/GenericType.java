@@ -141,6 +141,18 @@ public class GenericType implements Type
 		return this.type;
 	}
 
+	public Type getTypeParameter(String typeName)
+	{
+		if (this.type instanceof BoundedType)
+		{
+			return type.getTypeParameter(typeName);
+		}
+		else
+		{
+			return new NullType();
+		}
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{

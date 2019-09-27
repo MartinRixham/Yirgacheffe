@@ -8,9 +8,9 @@ public class ClassSignature
 
 	private Array<Type> interfaces;
 
-	private Array<String> parameters;
+	private Array<BoundedType> parameters;
 
-	public ClassSignature(Array<Type> interfaces, Array<String> parameters)
+	public ClassSignature(Array<Type> interfaces, Array<BoundedType> parameters)
 	{
 		this.interfaces = interfaces;
 		this.parameters = parameters;
@@ -31,11 +31,9 @@ public class ClassSignature
 			signature.append("<");
 		}
 
-		for (String parameter: this.parameters)
+		for (BoundedType parameter: this.parameters)
 		{
-			signature.append(parameter);
-			signature.append(":");
-			signature.append(OBJECT);
+			signature.append(parameter.getSignature());
 		}
 
 		if (this.parameters.length() > 0)

@@ -119,4 +119,9 @@ public class AttemptedType implements Type
 	{
 		return new Result();
 	}
+
+	public Type getTypeParameter(String typeName)
+	{
+		return this.type.getTypeParameter(typeName);
+	}
 }

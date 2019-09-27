@@ -42,6 +42,7 @@ public class IntersectionTypeTest
 		assertFalse(type.isAssignableTo(linkedList));
 		assertTrue(type.isAssignableTo(list));
 		assertNotEquals(type, new ReferenceType(Object.class));
+		assertTrue(type.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test

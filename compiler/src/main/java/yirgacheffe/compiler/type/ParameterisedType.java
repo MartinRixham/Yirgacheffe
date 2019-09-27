@@ -193,9 +193,16 @@ public class ParameterisedType implements Type
 			.toString();
 	}
 
-	public Type getTypeParameterClass(String typeName)
+	public Type getTypeParameter(String typeName)
 	{
-		return this.typeParameters.get(typeName);
+		if (this.typeParameters.containsKey(typeName))
+		{
+			return this.typeParameters.get(typeName);
+		}
+		else
+		{
+			return new NullType();
+		}
 	}
 
 	@Override

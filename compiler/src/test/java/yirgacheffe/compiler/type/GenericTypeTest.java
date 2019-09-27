@@ -44,6 +44,7 @@ public class GenericTypeTest
 		assertFalse(type.isPrimitive());
 		assertEquals(type, referenceType);
 		assertEquals(type.hashCode(), referenceType.hashCode());
+		assertTrue(type.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test

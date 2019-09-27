@@ -16,9 +16,9 @@ public class DelegateTest
 	public void testDelegation() throws Exception
 	{
 		String source =
-			"class MyClass implements Comparable<String>\n" +
+			"class MyProxy implements Comparable<String>\n" +
 			"{\n" +
-				"public MyClass()\n" +
+				"public MyProxy()\n" +
 				"{\n" +
 					"delegate(\"thingy\");\n" +
 				"}\n" +
@@ -37,9 +37,9 @@ public class DelegateTest
 
 		BytecodeClassLoader classLoader = new BytecodeClassLoader();
 
-		classLoader.add("MyClass", result.getBytecode());
+		classLoader.add("MyProxy", result.getBytecode());
 
-		Class<?> myClass = classLoader.loadClass("MyClass");
+		Class<?> myClass = classLoader.loadClass("MyProxy");
 		Object my = myClass.getConstructor().newInstance();
 		Method compareTo = myClass.getMethod("compareTo", Object.class);
 

@@ -50,6 +50,8 @@ public class ParameterisedTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertTrue(type.hasParameter());
 		assertFalse(type.isPrimitive());
+		assertEquals(new ReferenceType(String.class), type.getTypeParameter("E"));
+		assertEquals(referenceType.hashCode(), type.hashCode());
 	}
 
 	@Test

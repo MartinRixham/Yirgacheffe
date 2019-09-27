@@ -5,6 +5,7 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 
 public interface Type
@@ -45,8 +46,17 @@ public interface Type
 
 	Result compare(BooleanOperator operator, Label label);
 
+	Type getTypeParameter(String typeName);
+
 	static Type getType(java.lang.reflect.Type type, Type owner)
 	{
+		if (type instanceof GenericArrayType)
+		{
+			Type componentType =
+				Type.getType(((GenericArrayType) type).getGenericComponentType(), owner);
+
+			return new ArrayType("[Ljava.lang.Object;", componentType);
+		}
 		if (type instanceof ParameterizedType)
 		{
 			ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -65,16 +75,19 @@ public interface Type
 		}
 		if (type instanceof Class)
 		{
-			return Type.getType((Class) type);
+			return Type.getType((Class<?>) type);
+		}
+		else if (owner instanceof ParameterisedType)
+		{
+			Type returnType = owner.getTypeParameter(type.getTypeName());
+
+			return new GenericType(returnType);
 		}
 		else
 		{
-			ParameterisedType parameterisedOwner = (ParameterisedType) owner;
+			GenericType genericOwner = (GenericType) owner;
 
-			Type returnType =
-				parameterisedOwner.getTypeParameterClass(type.getTypeName());
-
-			return new GenericType(returnType);
+			return genericOwner.getTypeParameter(type.getTypeName());
 		}
 	}
 

@@ -18,7 +18,7 @@ public class NullTypeTest
 		Type type = new NullType();
 
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
-		assertEquals(null, type.getSignature());
+		assertEquals("Ljava/lang/Object;", type.getSignature());
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
@@ -29,6 +29,7 @@ public class NullTypeTest
 		assertEquals("java.lang.Object", type.toString());
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
+		assertTrue(type.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test

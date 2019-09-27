@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -8,6 +7,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.type.BoundedType;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
@@ -24,6 +24,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class ClassListener extends PackageListener
 
 	protected Array<Type> interfaces = new Array<>();
 
-	private Array<String> typeParameters = new Array<>();
+	private Array<BoundedType> typeParameters = new Array<>();
 
 	protected Type thisType = new NullType();
 
@@ -82,12 +83,7 @@ public class ClassListener extends PackageListener
 				}
 				else
 				{
-					Array<Type> parameterTypes = new Array<>();
-
-					for (TypeVariable parameter: parameters)
-					{
-						parameterTypes.push(new VariableType(parameter.getName()));
-					}
+					Array<Type> parameterTypes = this.getTypeParameters(parameters);
 
 					this.thisType = new ParameterisedType(thisType, parameterTypes);
 				}
@@ -95,6 +91,62 @@ public class ClassListener extends PackageListener
 			catch (ClassNotFoundException | NoClassDefFoundError e)
 			{
 			}
+		}
+	}
+
+	private Array<Type> getTypeParameters(TypeVariable[] parameters)
+	{
+		Array<Type> parameterTypes = new Array<>();
+
+		for (TypeVariable parameter: parameters)
+		{
+			java.lang.reflect.Type[] typeBounds = parameter.getBounds();
+			Type typeBound;
+
+			if (typeBounds.length == 0)
+			{
+				typeBound = new ReferenceType(Object.class);
+			}
+			else
+			{
+				typeBound = getType(typeBounds[0]);
+			}
+
+			parameterTypes.push(
+				new BoundedType(parameter.getName(), typeBound));
+		}
+
+		return parameterTypes;
+	}
+
+	private Type getType(java.lang.reflect.Type type)
+	{
+		if (type instanceof Class)
+		{
+			return new ReferenceType((Class<?>) type);
+		}
+		else if (type instanceof ParameterizedType)
+		{
+			ParameterizedType parameterisedType = (ParameterizedType) type;
+
+			ReferenceType primaryType =
+				new ReferenceType((Class<?>) parameterisedType.getRawType());
+
+			java.lang.reflect.Type[] typeArguments =
+				parameterisedType.getActualTypeArguments();
+
+			Array<Type> arguments = new Array<>();
+
+			for (java.lang.reflect.Type argument: typeArguments)
+			{
+				arguments.push(this.getType(argument));
+			}
+
+			return new ParameterisedType(primaryType, arguments);
+		}
+		else
+		{
+			return new VariableType(type.getTypeName());
 		}
 	}
 
@@ -181,18 +233,41 @@ public class ClassListener extends PackageListener
 	}
 
 	@Override
+	public void enterGenericTypes(YirgacheffeParser.GenericTypesContext context)
+	{
+		if (context != null)
+		{
+			for (YirgacheffeParser.GenericTypeContext type: context.genericType())
+			{
+				String name = type.Identifier().getText();
+
+				this.types.put(name, new VariableType(name));
+			}
+		}
+	}
+
+	@Override
 	public void exitGenericTypes(YirgacheffeParser.GenericTypesContext context)
 	{
-		Array<String> parameters = new Array<>();
+		Array<BoundedType> parameters = new Array<>();
 
 		if (context != null)
 		{
-			for (TerminalNode type: context.Identifier())
+			for (YirgacheffeParser.GenericTypeContext type: context.genericType())
 			{
-				String name = type.getText();
+				String name = type.Identifier().getText();
+				Type typeBound;
 
-				parameters.push(name);
-				this.types.put(name, new VariableType(name));
+				if (type.type() == null)
+				{
+					typeBound = new ReferenceType(Object.class);
+				}
+				else
+				{
+					typeBound = this.types.getType(type.type());
+				}
+
+				parameters.push(new BoundedType(name, typeBound));
 			}
 		}
 

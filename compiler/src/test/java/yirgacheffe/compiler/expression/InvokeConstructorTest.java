@@ -166,7 +166,7 @@ public class InvokeConstructorTest
 		TypeInsnNode fourthInstruction = (TypeInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.ANEWARRAY, fourthInstruction.getOpcode());
-		assertEquals("java/lang/Object", fourthInstruction.desc);
+		assertEquals("java/lang/String", fourthInstruction.desc);
 
 		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
 

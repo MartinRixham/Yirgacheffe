@@ -33,6 +33,7 @@ public class ReferenceTypeTest
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
+		assertTrue(type.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test

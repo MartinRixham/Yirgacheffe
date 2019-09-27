@@ -257,7 +257,7 @@ public class ArgumentsTest
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
 		assertEquals(1, parameterTypes.length());
-		assertEquals(new ReferenceType(Object.class), parameterTypes.get(0));
+		assertEquals("java/lang/String", parameterTypes.get(0).toFullyQualifiedType());
 	}
 
 	@Test

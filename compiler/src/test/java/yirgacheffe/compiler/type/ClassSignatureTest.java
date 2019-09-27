@@ -29,7 +29,9 @@ public class ClassSignatureTest
 	@Test
 	public void testSignatureWithParameter()
 	{
-		ClassSignature signature = new ClassSignature(new Array<>(), new Array<>("T"));
+		BoundedType typeBound = new BoundedType("T", new ReferenceType(Object.class));
+		Array<BoundedType> parameters = new Array<>(typeBound);
+		ClassSignature signature = new ClassSignature(new Array<>(), parameters);
 
 		assertEquals("<T:Ljava/lang/Object;>Ljava/lang/Object;", signature.toString());
 	}

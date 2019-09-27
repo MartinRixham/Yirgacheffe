@@ -31,6 +31,7 @@ public class ArrayTypeTest
 		assertEquals(Opcodes.ACONST_NULL, stringArray.getZero());
 		assertFalse(stringArray.hasParameter());
 		assertFalse(stringArray.isPrimitive());
+		assertTrue(stringArray.getTypeParameter("") instanceof NullType);
 	}
 
 	@Test
