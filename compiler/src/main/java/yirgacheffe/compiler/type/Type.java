@@ -83,6 +83,12 @@ public interface Type
 
 			return new GenericType(returnType);
 		}
+		else if (owner instanceof BoundedType)
+		{
+			BoundedType bounderOwner = (BoundedType) owner;
+
+			return getType(type, bounderOwner.getTypeBound());
+		}
 		else
 		{
 			GenericType genericOwner = (GenericType) owner;

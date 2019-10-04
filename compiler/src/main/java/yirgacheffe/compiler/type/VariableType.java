@@ -61,7 +61,16 @@ public class VariableType implements Type
 
 	public boolean isAssignableTo(Type other)
 	{
-		return other instanceof VariableType;
+		if (other instanceof VariableType)
+		{
+			VariableType otherType = (VariableType) other;
+
+			return otherType.name.equals(this.name);
+		}
+		else
+		{
+			return other.isAssignableTo(this);
+		}
 	}
 
 	public boolean hasParameter()

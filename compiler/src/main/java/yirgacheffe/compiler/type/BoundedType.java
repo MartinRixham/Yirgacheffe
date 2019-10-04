@@ -64,7 +64,7 @@ public class BoundedType implements Type
 
 	public boolean isAssignableTo(Type other)
 	{
-		return other instanceof VariableType;
+		return other.toString().equals(this.name);
 	}
 
 	public boolean hasParameter()
@@ -109,7 +109,19 @@ public class BoundedType implements Type
 
 	public Type getTypeParameter(String typeName)
 	{
-		return this.typeBound.getTypeParameter(typeName);
+		Type parameter = this.typeBound.getTypeParameter(typeName);
+
+		if (parameter.toString().equals(this.name))
+		{
+			return this;
+		}
+
+		return parameter;
+	}
+
+	public Type getTypeBound()
+	{
+		return this.typeBound;
 	}
 
 	@Override

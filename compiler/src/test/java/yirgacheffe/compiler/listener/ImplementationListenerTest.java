@@ -724,4 +724,61 @@ public class ImplementationListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testRecursiveTypeBound() throws Exception
+	{
+		String source =
+			"class Reduce<T implements Combinable<T>>\n" +
+			"{\n" +
+				"Array<T> array;\n" +
+				"public Reduce(Array<T> array)\n" +
+				"{\n" +
+					"this.array = array;\n" +
+				"}\n" +
+				"public T to()\n" +
+				"{\n" +
+					"T item = this.array.get(0);\n" +
+					"for (Num i = 1; i < this.array.length(); i++)\n" +
+					"{\n" +
+						"item = this.array.get(i)" +
+							".combineWith(item).combineWith(item);\n" +
+					"}\n" +
+					"return item;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(2);
+
+		assertEquals("to", method.name);
+
+		InsnList instructions = method.instructions;
+
+		assertEquals(50, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+	}
 }

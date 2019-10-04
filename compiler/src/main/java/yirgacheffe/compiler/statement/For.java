@@ -79,12 +79,17 @@ public class For implements Statement
 	}
 	public Array<VariableRead> getVariableReads()
 	{
-		return this.initialiser.getVariableReads();
+		return this.initialiser.getVariableReads()
+			.concat(this.exitCondition.getVariableReads())
+			.concat(this.incrementer.getVariableReads())
+			.concat(this.statement.getVariableReads());
 	}
 
 	public Array<VariableWrite> getVariableWrites()
 	{
-		return this.initialiser.getVariableWrites();
+		return this.initialiser.getVariableWrites()
+			.concat(this.incrementer.getVariableWrites())
+			.concat(this.statement.getVariableWrites());
 	}
 
 	public FieldAssignment getFieldAssignments()
