@@ -5,13 +5,13 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.Parameters;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.BoundedType;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
-import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.VariableType;
@@ -24,7 +24,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,76 +76,11 @@ public class ClassListener extends PackageListener
 				Class<?> clazz = thisType.reflectionClass();
 				TypeVariable[] parameters = clazz.getTypeParameters();
 
-				if (parameters.length == 0)
-				{
-					this.thisType = thisType;
-				}
-				else
-				{
-					Array<Type> parameterTypes = this.getTypeParameters(parameters);
-
-					this.thisType = new ParameterisedType(thisType, parameterTypes);
-				}
+				this.thisType = new Parameters(parameters, thisType).getType();
 			}
 			catch (ClassNotFoundException | NoClassDefFoundError e)
 			{
 			}
-		}
-	}
-
-	private Array<Type> getTypeParameters(TypeVariable[] parameters)
-	{
-		Array<Type> parameterTypes = new Array<>();
-
-		for (TypeVariable parameter: parameters)
-		{
-			java.lang.reflect.Type[] typeBounds = parameter.getBounds();
-			Type typeBound;
-
-			if (typeBounds.length == 0)
-			{
-				typeBound = new ReferenceType(Object.class);
-			}
-			else
-			{
-				typeBound = getType(typeBounds[0]);
-			}
-
-			parameterTypes.push(
-				new BoundedType(parameter.getName(), typeBound));
-		}
-
-		return parameterTypes;
-	}
-
-	private Type getType(java.lang.reflect.Type type)
-	{
-		if (type instanceof Class)
-		{
-			return new ReferenceType((Class<?>) type);
-		}
-		else if (type instanceof ParameterizedType)
-		{
-			ParameterizedType parameterisedType = (ParameterizedType) type;
-
-			ReferenceType primaryType =
-				new ReferenceType((Class<?>) parameterisedType.getRawType());
-
-			java.lang.reflect.Type[] typeArguments =
-				parameterisedType.getActualTypeArguments();
-
-			Array<Type> arguments = new Array<>();
-
-			for (java.lang.reflect.Type argument: typeArguments)
-			{
-				arguments.push(this.getType(argument));
-			}
-
-			return new ParameterisedType(primaryType, arguments);
-		}
-		else
-		{
-			return new VariableType(type.getTypeName());
 		}
 	}
 
