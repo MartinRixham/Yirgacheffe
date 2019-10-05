@@ -726,23 +726,23 @@ public class ImplementationListenerTest
 	}
 
 	@Test
-	public void testRecursiveTypeBound() throws Exception
+	public void testRecursiveTypeBound()
 	{
 		String source =
-			"class Reduce<T implements Combinable<T>>\n" +
+			"class Reduce<S implements Combinable<S>>\n" +
 			"{\n" +
-				"Array<T> array;\n" +
-				"public Reduce(Array<T> array)\n" +
+				"Array<S> array;\n" +
+				"public Reduce(Array<S> array)\n" +
 				"{\n" +
 					"this.array = array;\n" +
 				"}\n" +
-				"public T to()\n" +
+				"public S to()\n" +
 				"{\n" +
-					"T item = this.array.get(0);\n" +
+					"S item = this.array.get(0);\n" +
 					"for (Num i = 1; i < this.array.length(); i++)\n" +
 					"{\n" +
 						"item = this.array.get(i)" +
-							".combineWith(item).combineWith(item);\n" +
+							".combineWith(item).combineWith(item).combineWith(item);\n" +
 					"}\n" +
 					"return item;\n" +
 				"}\n" +
@@ -774,7 +774,7 @@ public class ImplementationListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(50, instructions.size());
+		assertEquals(57, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 

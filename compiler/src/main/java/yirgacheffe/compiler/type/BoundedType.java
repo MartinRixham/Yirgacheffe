@@ -119,11 +119,6 @@ public class BoundedType implements Type
 		return parameter;
 	}
 
-	public Type getTypeBound()
-	{
-		return this.typeBound;
-	}
-
 	@Override
 	public String toString()
 	{

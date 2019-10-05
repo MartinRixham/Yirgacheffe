@@ -77,23 +77,11 @@ public interface Type
 		{
 			return Type.getType((Class<?>) type);
 		}
-		else if (owner instanceof ParameterisedType)
+		else
 		{
 			Type returnType = owner.getTypeParameter(type.getTypeName());
 
 			return new GenericType(returnType);
-		}
-		else if (owner instanceof BoundedType)
-		{
-			BoundedType bounderOwner = (BoundedType) owner;
-
-			return getType(type, bounderOwner.getTypeBound());
-		}
-		else
-		{
-			GenericType genericOwner = (GenericType) owner;
-
-			return genericOwner.getTypeParameter(type.getTypeName());
 		}
 	}
 
