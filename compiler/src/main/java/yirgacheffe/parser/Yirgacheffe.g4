@@ -189,7 +189,7 @@ postdecrement: unaryExpression MinusMinus;
 predecrement: MinusMinus unaryExpression;
 
 unaryExpression:
-	(instantiation | literal | variableRead | thisRead | parenthesis)
+	(instantiation | literal | variableRead | thisRead | enumeration | parenthesis)
 	(methodCall | fieldRead)*;
 
 variableRead: Identifier;
@@ -197,6 +197,8 @@ variableRead: Identifier;
 thisRead: This;
 
 fieldRead: '.' Identifier;
+
+enumeration: type ':' expression;
 
 parenthesis: '(' expression ')';
 

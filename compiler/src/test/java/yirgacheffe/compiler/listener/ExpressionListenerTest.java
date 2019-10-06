@@ -10,6 +10,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
@@ -289,5 +290,66 @@ public class ExpressionListenerTest
 			"type yirgacheffe.lang.System.\n" +
 			"line 7:4 Method MyClass.print(yirgacheffe.lang.System) not found.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testGettingEnumeration()
+	{
+		String enumerationSource =
+			"enumeration MyEnum of Num\n" +
+			"{\n" +
+				"1:()\n" +
+				"2:()\n" +
+				"3:()\n" +
+				"MyEnum() {}\n" +
+			"\n}";
+
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyEnum method()\n" +
+				"{\n" +
+					"return MyEnum:2;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler enumCompiler = new Compiler("", enumerationSource);
+		Compiler compiler = new Compiler("", source);
+
+		enumCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		enumCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(2, instructions.size());
+
+		MethodInsnNode firstInstruction = (MethodInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.INVOKESTATIC, firstInstruction.getOpcode());
+		assertEquals("2", firstInstruction.name);
+		assertEquals("MyEnum", firstInstruction.owner);
+		assertEquals("()LMyEnum;", firstInstruction.desc);
 	}
 }
