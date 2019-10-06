@@ -96,4 +96,23 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		assertEquals(
 			"line 3:6 java.lang.String is not an enumeration.", errors.get(0).toString());
 	}
+
+	@Test
+	public void testConstantConstantOfWrongType()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Variables variables = new LocalVariables(new HashMap<>());
+		Type type = new ReferenceType(this.getClass());
+		Expression expression = new Bool("true");
+
+		Expression enumeration = new Enumeration(coordinate, type, expression);
+
+		Result result = enumeration.compile(variables);
+
+		assertEquals(2, result.getErrors().length());
+		assertEquals(
+			"line 3:5 Expected enumeration constant of type " +
+				"java.lang.String but found Bool.",
+			result.getErrors().get(0).toString());
+	}
 }

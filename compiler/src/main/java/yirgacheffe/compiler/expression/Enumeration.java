@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -35,32 +36,45 @@ public class Enumeration implements Expression
 		Literal literal = (Literal) expression;
 		String value = literal.getValue().toString();
 		Result result = new Result();
+		Type type = this.type;
 
-		if (!this.isEnumeration(this.type))
+		if (!this.isEnumeration(type))
 		{
 			String message = type + " is not an enumeration.";
 
-			result = result.add(new Error(coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		Type literalType = literal.getType(variables);
+		Type constantType = this.getConstantType(type);
+
+		if (!literalType.isAssignableTo(constantType))
+		{
+			String message =
+				"Expected enumeration constant of type " +
+				constantType + " but found " + literalType + ".";
+
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		try
 		{
-			this.type.reflectionClass().getMethod(value);
+			type.reflectionClass().getMethod(value);
 		}
 		catch (NoSuchMethodException e)
 		{
 			String message = "Unknown enumeration constant '" + value + "'.";
 
-			result = result.add(new Error(coordinate, message));
+			result = result.add(new Error(this.coordinate, message));
 		}
 
 		result = result.add(new MethodInsnNode(
 			Opcodes.INVOKESTATIC,
-			this.type.toFullyQualifiedType(),
+			type.toFullyQualifiedType(),
 			value,
 			"()" + type.toJVMType()));
 
-		variables.stackPush(this.type);
+		variables.stackPush(type);
 
 		return result;
 	}
@@ -69,6 +83,22 @@ public class Enumeration implements Expression
 	{
 		return yirgacheffe.lang.Enumeration.class.isAssignableFrom(
 			type.reflectionClass());
+	}
+
+	private Type getConstantType(Type type)
+	{
+		java.lang.reflect.Type[] interfaces =
+			type.reflectionClass().getGenericInterfaces();
+
+		for (java.lang.reflect.Type interfaceType: interfaces)
+		{
+			if (interfaceType.getTypeName().startsWith("yirgacheffe.lang.Enumeration"))
+			{
+				return Type.getType(interfaceType, type).getTypeParameter("T");
+			}
+		}
+
+		return new NullType();
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
