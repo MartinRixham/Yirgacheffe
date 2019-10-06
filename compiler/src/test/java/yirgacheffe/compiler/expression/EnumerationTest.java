@@ -18,7 +18,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class EnumerationTest
+public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 {
 	public static EnumerationTest thingy()
 	{
@@ -77,5 +77,23 @@ public class EnumerationTest
 		assertEquals(1, errors.length());
 		assertEquals(
 			"line 3:6 Unknown enumeration constant 'sumpt'.", errors.get(0).toString());
+	}
+
+	@Test
+	public void testNotAnEnumeration()
+	{
+		Coordinate coordinate = new Coordinate(3, 6);
+		Variables variables = new LocalVariables(new HashMap<>());
+		Type type = new ReferenceType(String.class);
+		Expression expression = new Streeng("\"length\"");
+
+		Expression enumeration = new Enumeration(coordinate, type, expression);
+
+		Result result = enumeration.compile(variables);
+		Array<Error> errors = result.getErrors();
+
+		assertEquals(1, errors.length());
+		assertEquals(
+			"line 3:6 java.lang.String is not an enumeration.", errors.get(0).toString());
 	}
 }

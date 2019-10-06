@@ -36,6 +36,13 @@ public class Enumeration implements Expression
 		String value = literal.getValue().toString();
 		Result result = new Result();
 
+		if (!this.isEnumeration(this.type))
+		{
+			String message = type + " is not an enumeration.";
+
+			result = result.add(new Error(coordinate, message));
+		}
+
 		try
 		{
 			this.type.reflectionClass().getMethod(value);
@@ -56,6 +63,12 @@ public class Enumeration implements Expression
 		variables.stackPush(this.type);
 
 		return result;
+	}
+
+	private boolean isEnumeration(Type type)
+	{
+		return yirgacheffe.lang.Enumeration.class.isAssignableFrom(
+			type.reflectionClass());
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

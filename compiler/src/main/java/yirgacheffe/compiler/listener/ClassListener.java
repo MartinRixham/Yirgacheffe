@@ -163,7 +163,7 @@ public class ClassListener extends PackageListener
 			this.className,
 			null,
 			"java/lang/Object",
-			null);
+			new String[] {"yirgacheffe/lang/Enumeration"});
 	}
 
 	@Override
