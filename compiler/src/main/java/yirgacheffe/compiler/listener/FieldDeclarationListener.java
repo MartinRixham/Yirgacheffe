@@ -104,7 +104,7 @@ public class FieldDeclarationListener extends MethodListener
 		this.methodNode =
 			new MethodNode(
 				Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
-				"0" + literal.getValue().toString(),
+				literal.getValue().toString(),
 				"()" + this.thisType.toJVMType(),
 				null,
 				null);

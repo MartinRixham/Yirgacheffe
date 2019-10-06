@@ -378,7 +378,7 @@ public class ClassListenerTest
 
 		MethodNode method = classNode.methods.get(0);
 
-		assertEquals("0ONE", method.name);
+		assertEquals("ONE", method.name);
 		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, method.access);
 		assertEquals("()LMyNumeration;", method.desc);
 
