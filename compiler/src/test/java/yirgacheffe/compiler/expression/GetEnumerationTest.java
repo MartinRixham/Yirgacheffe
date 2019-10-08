@@ -14,15 +14,16 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Enumeration;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
+public class GetEnumerationTest implements Enumeration<String>
 {
-	public static EnumerationTest thingy()
+	public static GetEnumerationTest thingy()
 	{
 		return null;
 	}
@@ -35,7 +36,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Streeng("\"thingy\"");
 
-		Expression enumeration = new Enumeration(coordinate, type, expression);
+		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compileCondition(variables, null, null);
 
@@ -55,11 +56,11 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		assertEquals("thingy", firstInstruction.name);
 
 		assertEquals(
-			"yirgacheffe/compiler/expression/EnumerationTest",
+			"yirgacheffe/compiler/expression/GetEnumerationTest",
 			firstInstruction.owner);
 
 		assertEquals(
-			"()Lyirgacheffe/compiler/expression/EnumerationTest;",
+			"()Lyirgacheffe/compiler/expression/GetEnumerationTest;",
 			firstInstruction.desc);
 	}
 
@@ -71,7 +72,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Streeng("\"sumpt\"");
 
-		Expression enumeration = new Enumeration(coordinate, type, expression);
+		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compile(variables);
 		Array<Error> errors = result.getErrors();
@@ -89,7 +90,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		Type type = new ReferenceType(String.class);
 		Expression expression = new Streeng("\"length\"");
 
-		Expression enumeration = new Enumeration(coordinate, type, expression);
+		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compile(variables);
 		Array<Error> errors = result.getErrors();
@@ -107,7 +108,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Bool("true");
 
-		Expression enumeration = new Enumeration(coordinate, type, expression);
+		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compile(variables);
 
@@ -126,7 +127,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new This(new ReferenceType(String.class));
 
-		Expression enumeration = new Enumeration(coordinate, type, expression);
+		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compile(variables);
 
@@ -136,7 +137,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(3, instructions.length());
+		assertEquals(4, instructions.length());
 
 		FieldInsnNode firstInstruction = (FieldInsnNode) instructions.get(0);
 
@@ -144,7 +145,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 		assertEquals("values", firstInstruction.name);
 
 		assertEquals(
-			"yirgacheffe/compiler/expression/EnumerationTest",
+			"yirgacheffe/compiler/expression/GetEnumerationTest",
 			firstInstruction.owner);
 
 		assertEquals("Ljava/util/Map;", firstInstruction.desc);
@@ -156,7 +157,7 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 
 		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKEINTERFACE, thirdInstruction.getOpcode());
 		assertEquals("get", thirdInstruction.name);
 		assertEquals("java/util/Map", thirdInstruction.owner);
 		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", thirdInstruction.desc);

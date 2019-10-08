@@ -15,8 +15,6 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 public class FunctionCallListener extends ExpressionListener
 {
-	private Array<Expression> arguments;
-
 	public FunctionCallListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);

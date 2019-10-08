@@ -113,9 +113,7 @@ public class GenericType implements Type
 		else
 		{
 			result = result
-				.add(new TypeInsnNode(
-					Opcodes.CHECKCAST,
-					this.toFullyQualifiedType()));
+				.add(new TypeInsnNode(Opcodes.CHECKCAST, this.toFullyQualifiedType()));
 		}
 
 		return result;

@@ -13,7 +13,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
-public class Enumeration implements Expression
+public class GetEnumeration implements Expression
 {
 	private Coordinate coordinate;
 
@@ -21,7 +21,7 @@ public class Enumeration implements Expression
 
 	private Expression expression;
 
-	public Enumeration(Coordinate coordinate, Type type, Expression expression)
+	public GetEnumeration(Coordinate coordinate, Type type, Expression expression)
 	{
 		this.coordinate = coordinate;
 		this.type = type;
@@ -90,11 +90,12 @@ public class Enumeration implements Expression
 				.concat(this.expression.compile(variables))
 				.concat(expressionType.convertTo(new ReferenceType(Object.class)))
 				.add(new MethodInsnNode(
-					Opcodes.INVOKEVIRTUAL,
+					Opcodes.INVOKEINTERFACE,
 					"java/util/Map",
 					"get",
 					"(Ljava/lang/Object;)Ljava/lang/Object;"
-				));
+				))
+				.concat(new ReferenceType(Object.class).convertTo(this.type));
 
 			variables.stackPop();
 		}

@@ -6,14 +6,18 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
-import yirgacheffe.compiler.type.Classes;
+import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
+import yirgacheffe.compiler.type.Classes;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -374,7 +378,15 @@ public class ClassListenerTest
 
 		reader.accept(classNode, 0);
 
-		assertEquals(5, classNode.methods.size());
+		FieldNode valuesField = classNode.fields.get(0);
+
+		assertEquals("values", valuesField.name);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, valuesField.access);
+		assertEquals("Ljava/util/Map;", valuesField.desc);
+
+		assertEquals(6, classNode.methods.size());
+
+		this.checkEnumerationInitialiser(classNode.methods.get(5));
 
 		MethodNode method = classNode.methods.get(0);
 
@@ -386,28 +398,105 @@ public class ClassListenerTest
 
 		assertEquals(5, instructions.size());
 
-		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+		FieldInsnNode firstInstruction = (FieldInsnNode) instructions.get(0);
 
-		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(Opcodes.GETSTATIC, firstInstruction.getOpcode());
+		assertEquals("MyNumeration", firstInstruction.owner);
+		assertEquals("values", firstInstruction.name);
+		assertEquals("Ljava/util/Map;", firstInstruction.desc);
 
-		FieldInsnNode secondInstruction = (FieldInsnNode) instructions.get(1);
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.GETFIELD, secondInstruction.getOpcode());
-		assertEquals("MyNumeration", secondInstruction.owner);
-		assertEquals("0values", secondInstruction.name);
-		assertEquals("Ljava/util/Map;", secondInstruction.desc);
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("ONE", secondInstruction.cst);
 
-		LdcInsnNode thirdInstruction = (LdcInsnNode) instructions.get(2);
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.LDC, thirdInstruction.getOpcode());
-		assertEquals("ONE", thirdInstruction.cst);
+		assertEquals(Opcodes.INVOKEINTERFACE, thirdInstruction.getOpcode());
+		assertEquals("java/util/Map", thirdInstruction.owner);
+		assertEquals("get", thirdInstruction.name);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", thirdInstruction.desc);
+	}
 
-		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
+	private void checkEnumerationInitialiser(MethodNode initialiser)
+	{
+		assertEquals("<clinit>", initialiser.name);
+		assertEquals(Opcodes.ACC_STATIC, initialiser.access);
+		assertEquals("()V", initialiser.desc);
 
-		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("java/util/Map", fourthInstruction.owner);
-		assertEquals("get", fourthInstruction.name);
-		assertEquals("(Ljava/lang/String;)LMyNumeration;", fourthInstruction.desc);
+		InsnList instructions = initialiser.instructions;
+
+		assertEquals(25, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/util/HashMap", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirdInstruction.getOpcode());
+		assertEquals("java/util/HashMap", thirdInstruction.owner);
+		assertEquals("<init>", thirdInstruction.name);
+		assertEquals("()V", thirdInstruction.desc);
+
+		FieldInsnNode fourthInstruction = (FieldInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.PUTSTATIC, fourthInstruction.getOpcode());
+		assertEquals("MyNumeration", fourthInstruction.owner);
+		assertEquals("values", fourthInstruction.name);
+		assertEquals("Ljava/util/Map;", fourthInstruction.desc);
+
+		FieldInsnNode fifthInstruction = (FieldInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.GETSTATIC, fifthInstruction.getOpcode());
+		assertEquals("MyNumeration", fifthInstruction.owner);
+		assertEquals("values", fifthInstruction.name);
+		assertEquals("Ljava/util/Map;", fifthInstruction.desc);
+
+		LdcInsnNode sixthInstruction = (LdcInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.LDC, sixthInstruction.getOpcode());
+		assertEquals("ONE", sixthInstruction.cst);
+
+		TypeInsnNode seventhInstruction = (TypeInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.NEW, seventhInstruction.getOpcode());
+		assertEquals("MyNumeration", seventhInstruction.desc);
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.DUP, eighthInstruction.getOpcode());
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.ICONST_1, ninthInstruction.getOpcode());
+
+		InsnNode tenthInstruction = (InsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.I2D, tenthInstruction.getOpcode());
+
+		assertTrue(instructions.get(10) instanceof LabelNode);
+		assertTrue(instructions.get(11) instanceof LineNumberNode);
+
+		MethodInsnNode thirteenthInstruction = (MethodInsnNode) instructions.get(12);
+
+		assertEquals(Opcodes.INVOKESPECIAL, thirteenthInstruction.getOpcode());
+		assertEquals("<init>", thirteenthInstruction.name);
+
+		MethodInsnNode fourteenthInstruction = (MethodInsnNode) instructions.get(13);
+
+		assertEquals(Opcodes.INVOKEINTERFACE, fourteenthInstruction.getOpcode());
+		assertEquals("java/util/Map", fourteenthInstruction.owner);
+		assertEquals("put", fourteenthInstruction.name);
+
+		assertEquals(
+			"(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+			fourteenthInstruction.desc);
 	}
 
 	@Test
@@ -434,6 +523,67 @@ public class ClassListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 3:0 Enumeration constructor cannot be public.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testEnumerationFromUnknownVariable()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"Num number;\n" +
+				"\"ONE\":(1);\n" +
+				"\"TWO\":(thingy);\n" +
+				"MyNumeration(Num number)\n" +
+				"{\n" +
+					"this.number = number;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 5:7 Unknown local variable 'thingy'.\n", result.getErrors());
+	}
+
+	@Test
+	public void testEnumerationFromArgumentOfWrongType()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"Num number;\n" +
+				"\"ONE\":(1);\n" +
+				"\"TWO\":(\"\");\n" +
+				"MyNumeration(Num number)\n" +
+				"{\n" +
+					"this.number = number;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 5:0 Constructor MyNumeration(java.lang.String) not found.\n",
 			result.getErrors());
 	}
 }

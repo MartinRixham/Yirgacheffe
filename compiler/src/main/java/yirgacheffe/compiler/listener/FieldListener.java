@@ -6,24 +6,28 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
+import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
-import yirgacheffe.compiler.type.ReferenceType;
-import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.compiler.statement.StoreConstant;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 public class FieldListener extends ConstructorListener
 {
+	protected Array<Expression> arguments;
+
 	public FieldListener(String sourceFile, Classes classes)
 	{
 		super(sourceFile, classes);
@@ -148,26 +152,34 @@ public class FieldListener extends ConstructorListener
 		YirgacheffeParser.ConstantConstructorContext context)
 	{
 		Literal literal = Literal.parse(context.literal().getText());
+		Coordinate coordinate = new Coordinate(context);
 
 		Result result = new Result()
-			.add(new VarInsnNode(Opcodes.ALOAD, 0))
 			.add(new FieldInsnNode(
-				Opcodes.GETFIELD,
+				Opcodes.GETSTATIC,
 				this.className,
-				"0values",
+				"values",
 				"Ljava/util/Map;"))
 			.add(new LdcInsnNode(literal.getValue()))
+			.concat(literal.getType().convertTo(new ReferenceType(Object.class)))
 			.add(new MethodInsnNode(
-				Opcodes.INVOKEVIRTUAL,
+				Opcodes.INVOKEINTERFACE,
 				"java/util/Map",
 				"get",
-				"(" + new ReferenceType(literal.getValue().getClass()).toJVMType() + ")" +
-					"L" + this.className + ";"))
+				"(Ljava/lang/Object;)Ljava/lang/Object;",
+				true))
+			.concat(new ReferenceType(Object.class).convertTo(this.thisType))
 			.add(new InsnNode(Opcodes.ARETURN));
 
 		for (AbstractInsnNode instruction: result.getInstructions())
 		{
 			this.methodNode.instructions.add(instruction);
 		}
+
+		Expression invokeConstructor =
+			new InvokeConstructor(coordinate, this.thisType, this.arguments);
+
+		this.staticStatements.push(
+			new StoreConstant(this.thisType, literal, invokeConstructor));
 	}
 }

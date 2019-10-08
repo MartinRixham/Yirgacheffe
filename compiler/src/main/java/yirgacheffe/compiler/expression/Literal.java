@@ -1,8 +1,12 @@
 package yirgacheffe.compiler.expression;
 
+import yirgacheffe.compiler.type.Type;
+
 public interface Literal extends Expression
 {
 	Object getValue();
+
+	Type getType();
 
 	static Literal parse(String text)
 	{

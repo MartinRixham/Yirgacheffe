@@ -1,13 +1,18 @@
 package yirgacheffe.compiler.listener;
 
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Parameters;
+import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.type.BoundedType;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
@@ -15,16 +20,17 @@ import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.VariableType;
+import yirgacheffe.compiler.variables.LocalVariables;
+import yirgacheffe.generated.DefaultConstructor;
+import yirgacheffe.generated.DelegationMethod;
+import yirgacheffe.generated.MainMethod;
 import yirgacheffe.lang.Array;
-import yirgacheffe.lang.Bootstrap;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +55,8 @@ public class ClassListener extends PackageListener
 	protected boolean hasDelegate = false;
 
 	protected boolean inEnumeration = false;
+
+	protected Array<Statement> staticStatements = new Array<>();
 
 	public ClassListener(String sourceFile, Classes classes)
 	{
@@ -164,6 +172,64 @@ public class ClassListener extends PackageListener
 			null,
 			"java/lang/Object",
 			new String[] {"yirgacheffe/lang/Enumeration"});
+
+		this.classNode.fields.add(
+			new FieldNode(
+				Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
+				"values",
+				"Ljava/util/Map;",
+				null,
+				null));
+	}
+
+	@Override
+	public void exitEnumerationDefinition(
+		YirgacheffeParser.EnumerationDefinitionContext context)
+	{
+		MethodNode method =
+			new MethodNode(
+				Opcodes.ACC_STATIC,
+				"<clinit>",
+				"()V",
+				null,
+				null);
+
+		method.visitTypeInsn(Opcodes.NEW, "java/util/HashMap");
+		method.visitInsn(Opcodes.DUP);
+
+		method.visitMethodInsn(
+			Opcodes.INVOKESPECIAL,
+			"java/util/HashMap",
+			"<init>",
+			"()V",
+			false);
+
+		method.visitFieldInsn(
+			Opcodes.PUTSTATIC,
+			this.thisType.toFullyQualifiedType(),
+			"values",
+			"Ljava/util/Map;");
+
+		Result result = new Result();
+		LocalVariables variables = new LocalVariables(new HashMap<>());
+		Signature signature = new Signature(new NullType(), "", new Array<>());
+
+		for (Statement statement: this.staticStatements)
+		{
+			result = result.concat(statement.compile(variables, signature));
+		}
+
+		this.errors.push(result.getErrors());
+		this.errors.push(variables.getErrors());
+
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			method.instructions.add(instruction);
+		}
+
+		method.instructions.add(new InsnNode(Opcodes.RETURN));
+
+		this.classNode.methods.add(method);
 	}
 
 	@Override
@@ -221,7 +287,8 @@ public class ClassListener extends PackageListener
 
 		if (this.mainMethodName != null)
 		{
-			this.makeMainMethod();
+			this.classNode.methods.add(
+				new MainMethod(this.className, this.mainMethodName).generate());
 		}
 
 		if (!this.hasConstructor && this.mainMethodName == null)
@@ -233,7 +300,10 @@ public class ClassListener extends PackageListener
 
 		if (!this.hasDefaultConstructor && this.mainMethodName != null)
 		{
-			this.makeDefaultConstructor(context);
+			this.checkFieldInitialisation(context);
+
+			this.classNode.methods.add(
+				new DefaultConstructor(this.className, this.thisType).generate());
 		}
 
 		this.checkInterfaceMethodImplementations(context);
@@ -258,88 +328,6 @@ public class ClassListener extends PackageListener
 		}
 	}
 
-	private void makeMainMethod()
-	{
-		MethodVisitor methodVisitor =
-			this.classNode.visitMethod(
-				Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,
-				"main",
-				"([Ljava/lang/String;)V",
-				null,
-				null);
-
-		methodVisitor.visitTypeInsn(Opcodes.NEW, this.className);
-		methodVisitor.visitInsn(Opcodes.DUP);
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			this.className,
-			"<init>",
-			"()V",
-			false);
-
-		methodVisitor.visitTypeInsn(Opcodes.NEW, "yirgacheffe/lang/Array");
-		methodVisitor.visitInsn(Opcodes.DUP);
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			"yirgacheffe/lang/Array",
-			"<init>",
-			"([Ljava/lang/Object;)V",
-			false);
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKEVIRTUAL,
-			this.className,
-			this.mainMethodName,
-			"(Lyirgacheffe/lang/Array;)V",
-			false);
-
-		methodVisitor.visitInsn(Opcodes.RETURN);
-	}
-
-	private void makeDefaultConstructor(YirgacheffeParser.ClassDefinitionContext context)
-	{
-		this.checkFieldInitialisation(context);
-
-		MethodVisitor methodVisitor =
-			this.classNode.visitMethod(
-				Opcodes.ACC_PUBLIC,
-				"<init>",
-				"()V",
-				null,
-				null);
-
-		methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-
-		methodVisitor.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			"java/lang/Object",
-			"<init>",
-			"()V",
-			false);
-
-		Method[] methods = this.thisType.reflectionClass().getDeclaredMethods();
-
-		for (Method method: methods)
-		{
-			if (method.getName().startsWith("0init_field"))
-			{
-				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-
-				methodVisitor.visitMethodInsn(
-					Opcodes.INVOKEVIRTUAL,
-					this.className,
-					method.getName(),
-					"()V",
-					false);
-			}
-		}
-
-		methodVisitor.visitInsn(Opcodes.RETURN);
-	}
-
 	private void checkInterfaceMethodImplementations(
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
@@ -357,60 +345,8 @@ public class ClassListener extends PackageListener
 		{
 			if (this.delegatedInterfaces.implementsMethod(method, this.thisType))
 			{
-				MethodVisitor methodVisitor =
-					this.classNode.visitMethod(
-						Opcodes.ACC_PUBLIC,
-						method.getName(),
-						method.getSignature().getDescriptor(),
-						method.getSignature().getSignature(),
-						null);
-
-				methodVisitor.visitVarInsn(Opcodes.ALOAD, 0);
-
-				methodVisitor.visitFieldInsn(
-					Opcodes.GETFIELD,
-					this.className,
-					"0delegate",
-					"Ljava/lang/Object;");
-
-				methodVisitor.visitTypeInsn(
-					Opcodes.CHECKCAST,
-					method.getOwner().toFullyQualifiedType());
-
-				Array<Type> parameters = method.getParameterTypes();
-
-				for (int i = 0; i < parameters.length(); i++)
-				{
-					Type parameter = parameters.get(i);
-
-					methodVisitor.visitVarInsn(parameter.getLoadInstruction(), i + 1);
-				}
-
-				MethodType methodType =
-					MethodType.methodType(
-						CallSite.class,
-						MethodHandles.Lookup.class,
-						String.class,
-						MethodType.class);
-
-				Handle bootstrapMethod =
-					new Handle(
-						Opcodes.H_INVOKESTATIC,
-						Bootstrap.class.getName().replace(".", "/"),
-						"bootstrapPrivate",
-						methodType.toMethodDescriptorString(),
-						false);
-
-				String descriptor =
-					"(" + method.getOwner().toJVMType() +
-						method.getSignature().getDescriptor().substring(1);
-
-				methodVisitor.visitInvokeDynamicInsn(
-					method.getName(),
-					descriptor,
-					bootstrapMethod);
-
-				methodVisitor.visitInsn(method.getReturnType().getReturnInstruction());
+				this.classNode.methods.add(
+					new DelegationMethod(this.className, method).generate());
 			}
 			else
 			{

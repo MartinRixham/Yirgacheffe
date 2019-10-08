@@ -97,7 +97,15 @@ public class ReferenceType implements Type
 
 	public Result convertTo(Type type)
 	{
-		return new Result();
+		if (this.isAssignableTo(type))
+		{
+			return new Result();
+		}
+		else
+		{
+			return new Result()
+				.add(new TypeInsnNode(Opcodes.CHECKCAST, type.toFullyQualifiedType()));
+		}
 	}
 
 	public Result swapWith(Type type)

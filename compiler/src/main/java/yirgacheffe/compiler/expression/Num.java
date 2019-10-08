@@ -24,7 +24,7 @@ public class Num implements Expression, Literal
 		return this.getType();
 	}
 
-	private Type getType()
+	public Type getType()
 	{
 		for (char character: this.text.toCharArray())
 		{

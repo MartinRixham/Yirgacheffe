@@ -19,6 +19,11 @@ public class Streeng implements Expression, Literal
 
 	public Type getType(Variables variables)
 	{
+		return this.getType();
+	}
+
+	public Type getType()
+	{
 		return new ReferenceType(String.class);
 	}
 

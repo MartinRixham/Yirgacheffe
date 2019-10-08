@@ -30,6 +30,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -344,7 +345,10 @@ public class MethodListener extends TypeListener
 
 		for (Field field: fields)
 		{
-			names.add(field.getName());
+			if (!Modifier.isStatic(field.getModifiers()))
+			{
+				names.add(field.getName());
+			}
 		}
 
 		return names;

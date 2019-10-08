@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.Enumeration;
+import yirgacheffe.compiler.expression.GetEnumeration;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
@@ -57,6 +57,6 @@ public class ExpressionListener extends LoopListener
 		Type type = this.types.getType(context.type());
 		Expression expression = this.expressions.pop();
 
-		this.expressions.push(new Enumeration(coordinate, type, expression));
+		this.expressions.push(new GetEnumeration(coordinate, type, expression));
 	}
 }
