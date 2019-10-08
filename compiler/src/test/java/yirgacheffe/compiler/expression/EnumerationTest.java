@@ -3,7 +3,9 @@ package yirgacheffe.compiler.expression;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -114,5 +116,49 @@ public class EnumerationTest implements yirgacheffe.lang.Enumeration<String>
 			"line 3:5 Expected enumeration constant of type " +
 				"java.lang.String but found Bool.",
 			result.getErrors().get(0).toString());
+	}
+
+	@Test
+	public void testGettingEnumerationFromExpression()
+	{
+		Coordinate coordinate = new Coordinate(3, 5);
+		Variables variables = new LocalVariables(new HashMap<>());
+		Type type = new ReferenceType(this.getClass());
+		Expression expression = new This(new ReferenceType(String.class));
+
+		Expression enumeration = new Enumeration(coordinate, type, expression);
+
+		Result result = enumeration.compile(variables);
+
+		Array<VariableRead> reads = enumeration.getVariableReads();
+
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(3, instructions.length());
+
+		FieldInsnNode firstInstruction = (FieldInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.GETSTATIC, firstInstruction.getOpcode());
+		assertEquals("values", firstInstruction.name);
+
+		assertEquals(
+			"yirgacheffe/compiler/expression/EnumerationTest",
+			firstInstruction.owner);
+
+		assertEquals("Ljava/util/Map;", firstInstruction.desc);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ALOAD, secondInstruction.getOpcode());
+		assertEquals(0, secondInstruction.var);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, thirdInstruction.getOpcode());
+		assertEquals("get", thirdInstruction.name);
+		assertEquals("java/util/Map", thirdInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", thirdInstruction.desc);
 	}
 }

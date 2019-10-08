@@ -2,11 +2,13 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -33,8 +35,6 @@ public class Enumeration implements Expression
 
 	public Result compile(Variables variables)
 	{
-		Literal literal = (Literal) expression;
-		String value = literal.getValue().toString();
 		Result result = new Result();
 		Type type = this.type;
 
@@ -45,34 +45,59 @@ public class Enumeration implements Expression
 			result = result.add(new Error(this.coordinate, message));
 		}
 
-		Type literalType = literal.getType(variables);
+		Type expressionType = this.expression.getType(variables);
 		Type constantType = this.getConstantType(type);
 
-		if (!literalType.isAssignableTo(constantType))
+		if (!expressionType.isAssignableTo(constantType))
 		{
 			String message =
 				"Expected enumeration constant of type " +
-				constantType + " but found " + literalType + ".";
+				constantType + " but found " + expressionType + ".";
 
 			result = result.add(new Error(this.coordinate, message));
 		}
 
-		try
+		if (this.expression instanceof Literal)
 		{
-			type.reflectionClass().getMethod(value);
+			Literal literal = (Literal) this.expression;
+			String value = literal.getValue().toString();
+
+			try
+			{
+				type.reflectionClass().getMethod(value);
+			}
+			catch (NoSuchMethodException e)
+			{
+				String message = "Unknown enumeration constant '" + value + "'.";
+
+				result = result.add(new Error(this.coordinate, message));
+			}
+
+			result = result.add(new MethodInsnNode(
+				Opcodes.INVOKESTATIC,
+				type.toFullyQualifiedType(),
+				value,
+				"()" + type.toJVMType()));
 		}
-		catch (NoSuchMethodException e)
+		else
 		{
-			String message = "Unknown enumeration constant '" + value + "'.";
+			result = result
+				.add(new FieldInsnNode(
+					Opcodes.GETSTATIC,
+					type.toFullyQualifiedType(),
+					"values",
+					"Ljava/util/Map;"))
+				.concat(this.expression.compile(variables))
+				.concat(expressionType.convertTo(new ReferenceType(Object.class)))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKEVIRTUAL,
+					"java/util/Map",
+					"get",
+					"(Ljava/lang/Object;)Ljava/lang/Object;"
+				));
 
-			result = result.add(new Error(this.coordinate, message));
+			variables.stackPop();
 		}
-
-		result = result.add(new MethodInsnNode(
-			Opcodes.INVOKESTATIC,
-			type.toFullyQualifiedType(),
-			value,
-			"()" + type.toJVMType()));
 
 		variables.stackPush(type);
 
