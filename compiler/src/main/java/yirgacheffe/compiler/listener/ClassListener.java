@@ -169,6 +169,14 @@ public class ClassListener extends PackageListener
 
 		Type constantType = this.types.getType(context.type());
 
+		if (!constantType.isPrimitive() &&
+			!constantType.isAssignableTo(new ReferenceType(String.class)))
+		{
+			String message = "Cannot enumerate type " + constantType + ".";
+
+			this.errors.push(new Error(context.type(), message));
+		}
+
 		Type interfaceType =
 			new ParameterisedType(
 				new ReferenceType(Enumeration.class),

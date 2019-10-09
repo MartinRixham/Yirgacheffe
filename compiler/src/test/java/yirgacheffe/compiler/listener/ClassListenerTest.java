@@ -583,7 +583,7 @@ public class ClassListenerTest
 	}
 
 	@Test
-	public void testEnumerationFromArgumentOfWrongConstantType()
+	public void testEnumerationFromConstantOfWrongType()
 	{
 		String source =
 			"enumeration MyNumeration of String\n" +
@@ -607,6 +607,33 @@ public class ClassListenerTest
 
 		assertEquals(
 			"line 3:0 Enumeration constant 1 is not of type java.lang.String.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testEnumerationOfNonEnumerableType()
+	{
+		String source =
+			"enumeration MyNumeration of Object\n" +
+			"{\n" +
+				"MyNumeration()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:28 Cannot enumerate type java.lang.Object.\n",
 			result.getErrors());
 	}
 }
