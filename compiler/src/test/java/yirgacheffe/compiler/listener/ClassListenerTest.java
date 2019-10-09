@@ -285,7 +285,6 @@ public class ClassListenerTest
 			"}";
 
 		Classes classes = new Classes();
-
 		Compiler compiler = new Compiler("", source);
 
 		compiler.compileInterface(classes);
@@ -362,7 +361,6 @@ public class ClassListenerTest
 			"}";
 
 		Classes classes = new Classes();
-
 		Compiler compiler = new Compiler("", source);
 
 		compiler.compileInterface(classes);
@@ -511,7 +509,6 @@ public class ClassListenerTest
 			"}";
 
 		Classes classes = new Classes();
-
 		Compiler compiler = new Compiler("", source);
 
 		compiler.compileInterface(classes);
@@ -542,7 +539,6 @@ public class ClassListenerTest
 			"}";
 
 		Classes classes = new Classes();
-
 		Compiler compiler = new Compiler("", source);
 
 		compiler.compileInterface(classes);
@@ -571,7 +567,6 @@ public class ClassListenerTest
 			"}";
 
 		Classes classes = new Classes();
-
 		Compiler compiler = new Compiler("", source);
 
 		compiler.compileInterface(classes);
@@ -584,6 +579,34 @@ public class ClassListenerTest
 
 		assertEquals(
 			"line 5:0 Constructor MyNumeration(java.lang.String) not found.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testEnumerationFromArgumentOfWrongConstantType()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"1:();\n" +
+				"MyNumeration()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 3:0 Enumeration constant 1 is not of type java.lang.String.\n",
 			result.getErrors());
 	}
 }

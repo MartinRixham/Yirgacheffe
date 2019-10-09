@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.type.Classes;
+import yirgacheffe.compiler.type.ConstantType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
@@ -100,6 +101,16 @@ public class FieldDeclarationListener extends MethodListener
 		YirgacheffeParser.ConstantConstructorContext context)
 	{
 		Literal literal = Literal.parse(context.literal().getText());
+		ConstantType constantType = new ConstantType(this.thisType);
+
+		if (!constantType.matches(literal.getType()))
+		{
+			String message =
+				"Enumeration constant " + literal.getValue() +
+				" is not of type " + constantType + ".";
+
+			this.errors.push(new Error(context, message));
+		}
 
 		this.methodNode =
 			new MethodNode(

@@ -17,6 +17,7 @@ import yirgacheffe.compiler.type.BoundedType;
 import yirgacheffe.compiler.type.ClassSignature;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.VariableType;
@@ -25,6 +26,7 @@ import yirgacheffe.generated.DefaultConstructor;
 import yirgacheffe.generated.DelegationMethod;
 import yirgacheffe.generated.MainMethod;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Enumeration;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
@@ -165,11 +167,21 @@ public class ClassListener extends PackageListener
 		{
 		}
 
+		Type constantType = this.types.getType(context.type());
+
+		Type interfaceType =
+			new ParameterisedType(
+				new ReferenceType(Enumeration.class),
+				new Array<>(constantType));
+
+		ClassSignature signature =
+			new ClassSignature(new Array<>(interfaceType), new Array<>());
+
 		this.classNode.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
 			this.className,
-			null,
+			signature.toString(),
 			"java/lang/Object",
 			new String[] {"yirgacheffe/lang/Enumeration"});
 

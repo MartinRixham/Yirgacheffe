@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ConstantType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -46,9 +46,9 @@ public class GetEnumeration implements Expression
 		}
 
 		Type expressionType = this.expression.getType(variables);
-		Type constantType = this.getConstantType(type);
+		ConstantType constantType = new ConstantType(type);
 
-		if (!expressionType.isAssignableTo(constantType))
+		if (!constantType.matches(expressionType))
 		{
 			String message =
 				"Expected enumeration constant of type " +
@@ -109,22 +109,6 @@ public class GetEnumeration implements Expression
 	{
 		return yirgacheffe.lang.Enumeration.class.isAssignableFrom(
 			type.reflectionClass());
-	}
-
-	private Type getConstantType(Type type)
-	{
-		java.lang.reflect.Type[] interfaces =
-			type.reflectionClass().getGenericInterfaces();
-
-		for (java.lang.reflect.Type interfaceType: interfaces)
-		{
-			if (interfaceType.getTypeName().startsWith("yirgacheffe.lang.Enumeration"))
-			{
-				return Type.getType(interfaceType, type).getTypeParameter("T");
-			}
-		}
-
-		return new NullType();
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
