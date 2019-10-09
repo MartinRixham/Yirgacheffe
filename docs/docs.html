@@ -1,6 +1,6 @@
 <p>Yirgacheffe is a simple language designed to run on the JVM and is in many ways similar to Java. While it lacks many of the features of the modern Java language and even some of Java's more traditional ones, it is still possible to write good object oriented code in Yirgacheffe. Below are listed some of the features that Yirgacheffe lacks along with suggestions of what can be used instead.</p>
 <h3>Inheritance</h3>
-<p>There is no <code>extends</code> keyword in yirgacheffe so you can't have one class inherit functionality from another.</p>
+<p>There is no <code>extends</code> keyword in Yirgacheffe so you can't have one class inherit functionality from another.</p>
 <p>Use composition instead... No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.</p>
 <p>OK so you want to write a class that is just like another but with one method implemented differently. No problem. You can satisfy an interface by delegating to an implementation of that interface. The delegate then handles calls to any interface methods not implemented by the delegating class.</p>
 <pre><code>class MyClass implements Comparable&lt;String&gt;
@@ -97,6 +97,37 @@
 <p>Break is easy to avoid. Just put your loop inside a method then <code>return</code> can be used to exit the loop early.</p>
 <p>Avoiding continue is usually just a case of changing some conditions around. It's a bit case specific but I've never seen a case where continue is unavoidable.</p>
 <h3>Switch Statements</h3>
+<p>The secret to writing good object oriented code is to minimise branching (now you know) so the temptation to leave out a language feature designed to enable branching is irresistible. The right way to handle cases with a finite number of values is with enumerations. In Yirgacheffe enumerations are just a little different than in Java.</p>
+<pre><code>enumeration MyNumeration of Bool
+{
+    String message;
+
+    true:(&quot;The truth!&quot;);
+
+    false:(&quot;Lies!&quot;);
+
+    MyNumeration(String message)
+    {
+        this.message = message;
+    }
+
+    public String getMessage()
+    {
+        return this.message;
+    }
+}
+</code></pre>
+<!-- break -->
+<pre><code>class MyClass
+{
+    main method(Array&lt;String&gt; args)
+    {
+        MyNumeration myEnum = MyNumeration:true;
+
+        new System().getOut().println(myEnum.getMessage());
+    }
+}
+</code></pre>
 <h3>Lambda Expressions</h3>
 <p>There are no lambda expressions or first class functions but that doesn't mean you can't pass a callback. Remember that an object is just a collection of callbacks attached to some data, so if you want to pass a callback just put it on an object.</p>
 <p>OK so you really want your code to execute out of order so you can do an asynchronous operation such as making an HTTP call. In this case you can declare a method as parallel and it will be executed on a separate thread.</p>

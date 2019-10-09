@@ -5,7 +5,7 @@ Below are listed some of the features that Yirgacheffe lacks along with suggesti
 
 ### Inheritance
 
-There is no `extends` keyword in yirgacheffe so you can't have one class inherit functionality from another.
+There is no `extends` keyword in Yirgacheffe so you can't have one class inherit functionality from another.
 
 Use composition instead...
 No seriously, readers of your code will be very grateful if you take the trouble to clearly define interfaces between your classes instead of just smooshing them together into one class hierarchy.
@@ -154,6 +154,40 @@ Avoiding continue is usually just a case of changing some conditions around.
 It's a bit case specific but I've never seen a case where continue is unavoidable.
 
 ### Switch Statements
+
+The secret to writing good object oriented code is to minimise branching (now you know) so the temptation to leave out a language feature designed to enable branching is irresistible.
+The right way to handle cases with a finite number of values is with enumerations.
+In Yirgacheffe enumerations are just a little different than in Java.
+
+    enumeration MyNumeration of Bool
+    {
+        String message;
+    
+        true:("The truth!");
+    
+        false:("Lies!");
+    
+        MyNumeration(String message)
+        {
+            this.message = message;
+        }
+    
+        public String getMessage()
+        {
+            return this.message;
+        }
+    }
+<!-- break -->
+
+    class MyClass
+    {
+        main method(Array<String> args)
+        {
+            MyNumeration myEnum = MyNumeration:true;
+    
+            new System().getOut().println(myEnum.getMessage());
+        }
+    }
 
 ### Lambda Expressions
 
