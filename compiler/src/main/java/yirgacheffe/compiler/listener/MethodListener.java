@@ -117,6 +117,13 @@ public class MethodListener extends TypeListener
 			isPrivate = context.modifier().Private() != null;
 		}
 
+		if (this.inInterface)
+		{
+			String message = "Method body not permitted for interface method.";
+
+			this.errors.push(new Error(context, message));
+		}
+
 		if (context.signature().Identifier() != null)
 		{
 			name = context.signature().Identifier().getText();
@@ -260,6 +267,13 @@ public class MethodListener extends TypeListener
 		{
 			this.methodNode.visitInsn(this.returnType.getZero());
 			this.methodNode.visitInsn(this.returnType.getReturnInstruction());
+
+			if (this.inInterface || !this.inConstructor)
+			{
+				String message = "Missing return statement.";
+
+				this.errors.push(new Error(coordinate, message));
+			}
 		}
 		else if (!returns && this.returnType.equals(PrimitiveType.VOID))
 		{

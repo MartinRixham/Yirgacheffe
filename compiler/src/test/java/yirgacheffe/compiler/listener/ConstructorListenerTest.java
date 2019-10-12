@@ -1190,4 +1190,92 @@ public class ConstructorListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testInterfaceWithConstructor()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"MyInterface()\n" +
+				"{\n" +
+					"return new MutableReference<MyInterface>().get();" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("MyInterface.yg", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(1, classNode.methods.size());
+
+		MethodNode constructor = classNode.methods.get(0);
+
+		assertEquals("0this", constructor.name);
+		assertEquals("()LMyInterface;", constructor.desc);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, constructor.access);
+	}
+
+	@Test
+	public void testInterfaceWithConstructorWithMissingReturn()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"MyInterface()\n" +
+				"{\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("MyInterface.yg", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 5:0 Missing return statement.\n", result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceWithConstructorWithThisRead()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"MyInterface()\n" +
+				"{\n" +
+					"return this;\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("MyInterface.yg", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:7 Cannot reference 'this' in interface constructor.\n",
+			result.getErrors());
+	}
 }

@@ -60,6 +60,8 @@ public class ClassListener extends PackageListener
 
 	protected boolean inEnumeration = false;
 
+	protected boolean inInterface = false;
+
 	protected Array<Statement> staticStatements = new Array<>();
 
 	public ClassListener(String sourceFile, Classes classes)
@@ -80,25 +82,33 @@ public class ClassListener extends PackageListener
 		{
 			this.className = this.directory + context.Identifier().get(0).getText();
 
-			try
-			{
-				ReferenceType thisType =
-					this.classes.loadClass(this.className.replace("/", "."));
+			this.thisType = getClassType();
+		}
+	}
 
-				Class<?> clazz = thisType.reflectionClass();
-				TypeVariable[] parameters = clazz.getTypeParameters();
+	public Type getClassType()
+	{
+		try
+		{
+			ReferenceType thisType =
+				this.classes.loadClass(this.className.replace("/", "."));
 
-				this.thisType = new Parameters(parameters, thisType).getType();
-			}
-			catch (ClassNotFoundException | NoClassDefFoundError e)
-			{
-			}
+			Class<?> clazz = thisType.reflectionClass();
+			TypeVariable[] parameters = clazz.getTypeParameters();
+
+			return new Parameters(parameters, thisType).getType();
+		}
+		catch (ClassNotFoundException | NoClassDefFoundError e)
+		{
+			return new NullType();
 		}
 	}
 
 	@Override
 	public void exitClassDeclaration(YirgacheffeParser.ClassDeclarationContext context)
 	{
+		this.inInterface = false;
+
 		if (context.Class() == null)
 		{
 			String message = "Expected declaration of class or interface.";
@@ -130,6 +140,8 @@ public class ClassListener extends PackageListener
 	public void exitInterfaceDeclaration(
 		YirgacheffeParser.InterfaceDeclarationContext context)
 	{
+		this.inInterface = true;
+
 		if (context.Identifier() == null)
 		{
 			String message = "Interface identifier expected.";
@@ -139,6 +151,7 @@ public class ClassListener extends PackageListener
 		else
 		{
 			this.className = this.directory + context.Identifier().getText();
+			this.thisType = this.getClassType();
 		}
 
 		ClassSignature signature =
@@ -324,13 +337,6 @@ public class ClassListener extends PackageListener
 			String message = "Interface cannot contain field.";
 
 			this.errors.push(new Error(context.field(0), message));
-		}
-
-		for (YirgacheffeParser.FunctionContext interfaceMethod: context.function())
-		{
-			String message = "Method body not permitted for interface method.";
-
-			this.errors.push(new Error(interfaceMethod, message));
 		}
 	}
 

@@ -34,7 +34,14 @@ public class ConstructorListener extends MainMethodListener
 	public void enterConstructorDeclaration(
 		YirgacheffeParser.ConstructorDeclarationContext context)
 	{
-		this.returnType = PrimitiveType.VOID;
+		if (this.inInterface)
+		{
+			this.returnType = this.thisType;
+		}
+		else
+		{
+			this.returnType = PrimitiveType.VOID;
+		}
 	}
 
 	@Override
@@ -64,7 +71,7 @@ public class ConstructorListener extends MainMethodListener
 
 		boolean isPrivate = false;
 
-		if (!this.inEnumeration && context.modifier() == null)
+		if (!this.inEnumeration && !this.inInterface && context.modifier() == null)
 		{
 			String message =
 				"Expected public or private access modifier " +
@@ -88,21 +95,47 @@ public class ConstructorListener extends MainMethodListener
 			isPrivate = context.modifier().Private() != null;
 		}
 
+		if (!inInterface)
+		{
+			this.methodNode =
+				new MethodNode(
+					isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
+					isValid ? "<init>" : UUID.randomUUID().toString(),
+					this.signature.getDescriptor(),
+					this.signature.getSignature(),
+					null);
+
+			this.classNode.methods.add(methodNode);
+
+			if (!isValid)
+			{
+				return;
+			}
+
+			this.methodNode.instructions = this.getConstructorInstructions(context);
+		}
+
 		this.methodNode =
 			new MethodNode(
-				isPrivate ? Opcodes.ACC_PRIVATE : Opcodes.ACC_PUBLIC,
-				isValid ? "<init>" : UUID.randomUUID().toString(),
+				this.inInterface ?
+					Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC :
+					Opcodes.ACC_PRIVATE,
+				"0this",
 				this.signature.getDescriptor(),
 				this.signature.getSignature(),
 				null);
 
 		this.classNode.methods.add(this.methodNode);
 
-		if (!isValid)
+		if (signature.parameter().size() == 0)
 		{
-			return;
+			this.hasDefaultConstructor = true;
 		}
+	}
 
+	private InsnList getConstructorInstructions(
+		YirgacheffeParser.ConstructorDeclarationContext context)
+	{
 		InsnList instructions = new InsnList();
 
 		instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
@@ -141,27 +174,12 @@ public class ConstructorListener extends MainMethodListener
 
 		String descriptor =
 			"(L" + this.className + ";" +
-			this.signature.getDescriptor().substring(1);
+				this.signature.getDescriptor().substring(1);
 
 		instructions.add(new InvokeDynamicInsnNode("0this", descriptor, bootstrapMethod));
 		instructions.add(new InsnNode(Opcodes.RETURN));
 
-		methodNode.instructions.add(instructions);
-
-		this.methodNode =
-			new MethodNode(
-				Opcodes.ACC_PRIVATE,
-				"0this",
-				this.signature.getDescriptor(),
-				this.signature.getSignature(),
-				null);
-
-		this.classNode.methods.add(this.methodNode);
-
-		if (signature.parameter().size() == 0)
-		{
-			this.hasDefaultConstructor = true;
-		}
+		return instructions;
 	}
 
 	private InsnList createInitialiserCalls(

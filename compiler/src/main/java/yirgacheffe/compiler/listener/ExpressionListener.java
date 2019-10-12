@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.GetEnumeration;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Literal;
@@ -29,6 +30,13 @@ public class ExpressionListener extends LoopListener
 	@Override
 	public void enterThisRead(YirgacheffeParser.ThisReadContext context)
 	{
+		if (this.inInterface)
+		{
+			String message = "Cannot reference 'this' in interface constructor.";
+
+			this.errors.push(new Error(context, message));
+		}
+
 		this.expressions.push(new This(this.thisType));
 	}
 

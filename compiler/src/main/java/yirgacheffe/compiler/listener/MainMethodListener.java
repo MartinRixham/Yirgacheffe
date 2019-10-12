@@ -29,6 +29,13 @@ public class MainMethodListener extends ParallelMethodListener
 	public void exitMainMethodDeclaration(
 		YirgacheffeParser.MainMethodDeclarationContext context)
 	{
+		if (this.inInterface)
+		{
+			String message = "Method body not permitted for interface method.";
+
+			this.errors.push(new Error(context, message));
+		}
+
 		this.checkPrivate(context);
 
 		YirgacheffeParser.SignatureContext signature = context.signature();

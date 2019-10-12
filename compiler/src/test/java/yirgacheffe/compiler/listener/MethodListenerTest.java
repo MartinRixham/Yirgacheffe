@@ -414,4 +414,29 @@ public class MethodListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testMissingReturnStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num myMethod()" +
+				"{" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 3:0 Missing return statement.\n", result.getErrors());
+	}
 }
