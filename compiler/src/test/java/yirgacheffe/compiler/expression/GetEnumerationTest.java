@@ -42,6 +42,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 
 		Array<VariableRead> reads = enumeration.getVariableReads();
 
+		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 		assertFalse(enumeration.isCondition(variables));
 		assertEquals(0, reads.length());
@@ -131,8 +132,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 
 		Result result = enumeration.compile(variables);
 
-		Array<VariableRead> reads = enumeration.getVariableReads();
-
+		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();

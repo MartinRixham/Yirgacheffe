@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class InvokeMethod implements Expression
+public class InvokeMethod implements Expression, Parameterisable
 {
 	private Coordinate coordinate;
 

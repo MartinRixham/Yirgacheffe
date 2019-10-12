@@ -3,6 +3,7 @@ package yirgacheffe.compiler.variables;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.expression.OptimisedExpression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.AttemptedType;
@@ -143,7 +144,7 @@ public class LocalVariables implements Variables
 
 	public Expression getOptimisedExpression(Expression variableRead)
 	{
-		return this.optimisedVariables.get(variableRead);
+		return new OptimisedExpression(this.optimisedVariables.get(variableRead));
 	}
 
 	public boolean hasConstant(String name)

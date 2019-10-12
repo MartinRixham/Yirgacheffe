@@ -8,8 +8,8 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.Parameterisable;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -50,7 +50,7 @@ public class TailCall implements Statement
 
 		if (invocation.equals(this) && !(this.invocation instanceof AttemptedStatement))
 		{
-			InvokeMethod invokeMethod = (InvokeMethod) invocation;
+			Parameterisable invokeMethod = (Parameterisable) invocation;
 
 			Result result = invokeMethod.compileArguments(variables);
 
