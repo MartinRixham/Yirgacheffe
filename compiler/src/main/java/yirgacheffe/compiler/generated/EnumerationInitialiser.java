@@ -1,4 +1,4 @@
-package yirgacheffe.generated;
+package yirgacheffe.compiler.generated;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
