@@ -19,6 +19,8 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.Classes;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -376,6 +378,8 @@ public class ClassListenerTest
 
 		reader.accept(classNode, 0);
 
+		assertEquals(Arrays.asList("yirgacheffe/lang/Enumeration"), classNode.interfaces);
+
 		FieldNode valuesField = classNode.fields.get(0);
 
 		assertEquals("values", valuesField.name);
@@ -635,5 +639,87 @@ public class ClassListenerTest
 		assertEquals(
 			"line 1:28 Cannot enumerate type java.lang.Object.\n",
 			result.getErrors());
+	}
+
+	@Test
+	public void testEnumerationWithDefualt()
+	{
+		String source =
+			"enumeration MyNumeration of String\n" +
+			"{\n" +
+				"MyNumeration()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals("MyNumeration", classNode.name);
+
+		MethodNode initialiser = classNode.methods.get(2);
+
+		assertEquals(
+			Arrays.asList("yirgacheffe/lang/EnumerationWithDefault"),
+			classNode.interfaces);
+		assertEquals("<clinit>", initialiser.name);
+		assertEquals(Opcodes.ACC_STATIC, initialiser.access);
+		assertEquals("()V", initialiser.desc);
+
+		InsnList instructions = initialiser.instructions;
+
+		assertEquals(8, instructions.size());
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/DefaultingHashMap", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		TypeInsnNode thirdInstruction = (TypeInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.NEW, thirdInstruction.getOpcode());
+		assertEquals("MyNumeration", thirdInstruction.desc);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DUP, fourthInstruction.getOpcode());
+
+		MethodInsnNode fifthInstruction = (MethodInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKESPECIAL, fifthInstruction.getOpcode());
+		assertEquals("MyNumeration", fifthInstruction.owner);
+		assertEquals("<init>", fifthInstruction.name);
+		assertEquals("()V", fifthInstruction.desc);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKESPECIAL, sixthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/DefaultingHashMap", sixthInstruction.owner);
+		assertEquals("<init>", sixthInstruction.name);
+		assertEquals("(Ljava/lang/Object;)V", sixthInstruction.desc);
+
+		FieldInsnNode seventhInstruction = (FieldInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.PUTSTATIC, seventhInstruction.getOpcode());
+		assertEquals("MyNumeration", seventhInstruction.owner);
+		assertEquals("values", seventhInstruction.name);
+		assertEquals("Ljava/util/Map;", seventhInstruction.desc);
 	}
 }

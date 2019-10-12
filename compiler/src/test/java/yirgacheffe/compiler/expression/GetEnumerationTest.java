@@ -14,14 +14,14 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
-import yirgacheffe.lang.Enumeration;
+import yirgacheffe.lang.EnumerationWithDefault;
 
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class GetEnumerationTest implements Enumeration<String>
+public class GetEnumerationTest implements EnumerationWithDefault<String>
 {
 	public static GetEnumerationTest thingy()
 	{
@@ -101,7 +101,7 @@ public class GetEnumerationTest implements Enumeration<String>
 	}
 
 	@Test
-	public void testConstantConstantOfWrongType()
+	public void testConstantOfWrongType()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());

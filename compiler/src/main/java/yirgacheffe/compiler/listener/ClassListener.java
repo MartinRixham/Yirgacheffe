@@ -24,6 +24,7 @@ import yirgacheffe.compiler.type.VariableType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.generated.DefaultConstructor;
 import yirgacheffe.generated.DelegationMethod;
+import yirgacheffe.generated.EnumerationInitialiser;
 import yirgacheffe.generated.MainMethod;
 import yirgacheffe.lang.Array;
 import yirgacheffe.lang.Enumeration;
@@ -32,6 +33,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -191,7 +193,7 @@ public class ClassListener extends PackageListener
 			this.className,
 			signature.toString(),
 			"java/lang/Object",
-			new String[] {"yirgacheffe/lang/Enumeration"});
+			null);
 
 		this.classNode.fields.add(
 			new FieldNode(
@@ -206,29 +208,13 @@ public class ClassListener extends PackageListener
 	public void exitEnumerationDefinition(
 		YirgacheffeParser.EnumerationDefinitionContext context)
 	{
-		MethodNode method =
-			new MethodNode(
-				Opcodes.ACC_STATIC,
-				"<clinit>",
-				"()V",
-				null,
-				null);
+		this.classNode.interfaces =
+			Arrays.asList(
+				this.hasDefaultConstructor ?
+					"yirgacheffe/lang/EnumerationWithDefault" :
+					"yirgacheffe/lang/Enumeration");
 
-		method.visitTypeInsn(Opcodes.NEW, "java/util/HashMap");
-		method.visitInsn(Opcodes.DUP);
-
-		method.visitMethodInsn(
-			Opcodes.INVOKESPECIAL,
-			"java/util/HashMap",
-			"<init>",
-			"()V",
-			false);
-
-		method.visitFieldInsn(
-			Opcodes.PUTSTATIC,
-			this.thisType.toFullyQualifiedType(),
-			"values",
-			"Ljava/util/Map;");
+		MethodNode method = new EnumerationInitialiser(this.thisType).generate();
 
 		Result result = new Result();
 		LocalVariables variables = new LocalVariables(new HashMap<>());

@@ -12,6 +12,8 @@ import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.Enumeration;
+import yirgacheffe.lang.EnumerationWithDefault;
 
 public class GetEnumeration implements Expression
 {
@@ -81,6 +83,15 @@ public class GetEnumeration implements Expression
 		}
 		else
 		{
+			if (!this.hasDefault(type))
+			{
+				String message =
+					"Cannot dynamically access enumeration without default constructor.";
+
+				result = result
+					.add(new Error(coordinate, message));
+			}
+
 			result = result
 				.add(new FieldInsnNode(
 					Opcodes.GETSTATIC,
@@ -107,8 +118,15 @@ public class GetEnumeration implements Expression
 
 	private boolean isEnumeration(Type type)
 	{
-		return yirgacheffe.lang.Enumeration.class.isAssignableFrom(
-			type.reflectionClass());
+		Class<?> reflectionClass = type.reflectionClass();
+
+		return Enumeration.class.isAssignableFrom(reflectionClass) ||
+			EnumerationWithDefault.class.isAssignableFrom(reflectionClass);
+	}
+
+	private boolean hasDefault(Type type)
+	{
+		return EnumerationWithDefault.class.isAssignableFrom(type.reflectionClass());
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

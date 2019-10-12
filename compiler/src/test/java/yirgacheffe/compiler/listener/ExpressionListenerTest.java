@@ -302,7 +302,7 @@ public class ExpressionListenerTest
 				"2:()\n" +
 				"3:()\n" +
 				"MyEnum() {}\n" +
-			"\n}";
+			"}";
 
 		String source =
 			"class MyClass\n" +
@@ -351,5 +351,51 @@ public class ExpressionListenerTest
 		assertEquals("2", firstInstruction.name);
 		assertEquals("MyEnum", firstInstruction.owner);
 		assertEquals("()LMyEnum;", firstInstruction.desc);
+	}
+
+	@Test
+	public void testGettingEnumerationWithoutDefault()
+	{
+		String enumerationSource =
+			"enumeration MyEnum of Num\n" +
+			"{\n" +
+				"String name;\n" +
+				"1:(\"One\")\n" +
+				"2:(\"Two\")\n" +
+				"3:(\"Three\")\n" +
+				"MyEnum(String name) { this.name = name; }\n" +
+			"}";
+
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyEnum method(Num number)\n" +
+				"{\n" +
+					"return MyEnum:number;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler enumCompiler = new Compiler("", enumerationSource);
+		Compiler compiler = new Compiler("", source);
+
+		enumCompiler.compileClassDeclaration(classes);
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		enumCompiler.compileInterface(classes);
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:7 Cannot dynamically access enumeration " +
+				"without default constructor.\n",
+			result.getErrors());
 	}
 }
