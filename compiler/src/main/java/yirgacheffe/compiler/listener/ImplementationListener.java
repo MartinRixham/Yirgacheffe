@@ -7,6 +7,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class ImplementationListener extends ClassListener
 {
@@ -61,7 +62,10 @@ public class ImplementationListener extends ClassListener
 
 			for (Method method: methods)
 			{
-				this.interfaceMethods.push(new Function(interfaceType, method));
+				if (!Modifier.isStatic(method.getModifiers()))
+				{
+					this.interfaceMethods.push(new Function(interfaceType, method));
+				}
 			}
 		}
 	}
