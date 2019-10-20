@@ -296,7 +296,7 @@ public class ExpressionListenerTest
 	public void testGettingEnumeration()
 	{
 		String enumerationSource =
-			"enumeration MyEnum of Num\n" +
+			"class MyEnum enumerates Num\n" +
 			"{\n" +
 				"1:()\n" +
 				"2:()\n" +
@@ -357,7 +357,7 @@ public class ExpressionListenerTest
 	public void testGettingEnumerationWithoutDefault()
 	{
 		String enumerationSource =
-			"enumeration MyEnum of Num\n" +
+			"class MyEnum enumerates Num\n" +
 			"{\n" +
 				"String name;\n" +
 				"1:(\"One\")\n" +

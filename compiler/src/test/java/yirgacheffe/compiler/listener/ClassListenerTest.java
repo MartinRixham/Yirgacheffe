@@ -353,7 +353,7 @@ public class ClassListenerTest
 	public void testEnumeration()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"Num number;\n" +
 				"\"ONE\":(1);\n" +
@@ -511,7 +511,7 @@ public class ClassListenerTest
 	public void testEnumerationConstructorCannotBePublic()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"public MyNumeration()\n" +
 				"{\n" +
@@ -537,7 +537,7 @@ public class ClassListenerTest
 	public void testEnumerationFromUnknownVariable()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"Num number;\n" +
 				"\"ONE\":(1);\n" +
@@ -565,7 +565,7 @@ public class ClassListenerTest
 	public void testEnumerationFromArgumentOfWrongType()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"Num number;\n" +
 				"\"ONE\":(1);\n" +
@@ -596,7 +596,7 @@ public class ClassListenerTest
 	public void testEnumerationFromConstantOfWrongType()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"1:();\n" +
 				"MyNumeration()\n" +
@@ -624,7 +624,7 @@ public class ClassListenerTest
 	public void testEnumerationOfNonEnumerableType()
 	{
 		String source =
-			"enumeration MyNumeration of Object\n" +
+			"class MyNumeration enumerates Object\n" +
 			"{\n" +
 				"MyNumeration()\n" +
 				"{\n" +
@@ -643,7 +643,7 @@ public class ClassListenerTest
 		assertFalse(result.isSuccessful());
 
 		assertEquals(
-			"line 1:28 Cannot enumerate type java.lang.Object.\n",
+			"line 1:30 Cannot enumerate type java.lang.Object.\n",
 			result.getErrors());
 	}
 
@@ -651,7 +651,7 @@ public class ClassListenerTest
 	public void testEnumerationWithDefualt()
 	{
 		String source =
-			"enumeration MyNumeration of String\n" +
+			"class MyNumeration enumerates String\n" +
 			"{\n" +
 				"MyNumeration()\n" +
 				"{\n" +

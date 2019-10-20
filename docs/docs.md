@@ -159,7 +159,7 @@ The secret to writing good object oriented code is to minimise branching (now yo
 The right way to handle cases with a finite number of values is with enumerations.
 In Yirgacheffe enumerations are just a little different than in Java.
 
-    enumeration MyNumeration of Bool
+    class MyNumeration enumerates Bool
     {
         String message;
     

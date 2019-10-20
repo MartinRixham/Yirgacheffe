@@ -26,7 +26,7 @@ enumerationDefinition: enumerationDeclaration
 		(function | parallelMethod | field | constantConstructor)*
 	'}';
 
-enumerationDeclaration: Enumeration Identifier Of type;
+enumerationDeclaration: Class Identifier Enumerates type;
 
 implementation: Implements type? (',' type)*;
 
@@ -220,7 +220,7 @@ Package: 'package';
 Import: 'import';
 Class: 'class';
 Interface: 'interface';
-Enumeration: 'enumeration';
+Enumerates: 'enumerates';
 Public: 'public';
 Private: 'private';
 Const: 'const';
@@ -237,7 +237,6 @@ For: 'for';
 Parallel: 'parallel';
 Try: 'try';
 Delegate: 'delegate';
-Of: 'of';
 
 // operators
 Remainder: '%';

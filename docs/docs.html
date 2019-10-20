@@ -98,7 +98,7 @@
 <p>Avoiding continue is usually just a case of changing some conditions around. It's a bit case specific but I've never seen a case where continue is unavoidable.</p>
 <h3>Switch Statements</h3>
 <p>The secret to writing good object oriented code is to minimise branching (now you know) so the temptation to leave out a language feature designed to enable branching is irresistible. The right way to handle cases with a finite number of values is with enumerations. In Yirgacheffe enumerations are just a little different than in Java.</p>
-<pre><code>enumeration MyNumeration of Bool
+<pre><code>class MyNumeration enumerates Bool
 {
     String message;
 

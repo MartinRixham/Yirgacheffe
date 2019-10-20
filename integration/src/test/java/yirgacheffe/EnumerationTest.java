@@ -27,7 +27,7 @@ public class EnumerationTest
 	public void testEnumeration() throws Exception
 	{
 		String enumerationSource =
-			"enumeration MyNumeration of Bool" +
+			"class MyNumeration enumerates Bool" +
 			"{" +
 				"String message;\n" +
 				"true:(\"The truth!\");\n" +
