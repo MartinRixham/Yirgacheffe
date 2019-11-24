@@ -17,8 +17,11 @@ import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.Implementation;
+import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -126,5 +129,12 @@ public class FunctionCallTest
 		assertEquals(1, functionCall.getVariableReads().length());
 		assertEquals(variable, functionCall.getVariableReads().get(0));
 		assertFalse(functionCall.getFieldAssignments().contains(""));
+		assertFalse(functionCall.isEmpty());
+
+		Type thisType = new ReferenceType(this.getClass());
+		Implementation implementation =
+			functionCall.getDelegatedInterfaces(new HashMap<>(), thisType);
+
+		assertTrue(implementation instanceof NullImplementation);
 	}
 }

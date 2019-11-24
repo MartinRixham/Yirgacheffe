@@ -2,8 +2,10 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.lang.Array;
 
 public class ArrayType implements Type
 {
@@ -91,7 +93,10 @@ public class ArrayType implements Type
 		}
 		else
 		{
-			return false;
+			ReferenceType arrayType = new ReferenceType(Array.class);
+			Type type = new ParameterisedType(arrayType, new Array<>(this.type));
+
+			return type.isAssignableTo(other);
 		}
 	}
 
@@ -117,7 +122,20 @@ public class ArrayType implements Type
 
 	public Result convertTo(Type type)
 	{
-		return new Result();
+		if (type instanceof ParameterisedType)
+		{
+			return new Result()
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Array",
+					"fromArray",
+					"([Ljava/lang/Object;)Lyirgacheffe/lang/Array;",
+					false));
+		}
+		else
+		{
+			return new Result();
+		}
 	}
 
 	public Result swapWith(Type type)

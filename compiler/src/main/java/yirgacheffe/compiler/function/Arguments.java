@@ -88,7 +88,7 @@ public class Arguments
 			{
 				exactMatches += THOUSAND;
 			}
-			else if (parameterType.isPrimitive())
+			else if (parameterType.isPrimitive() || parameterType instanceof ArrayType)
 			{
 				exactMatches++;
 			}

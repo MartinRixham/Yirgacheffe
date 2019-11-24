@@ -11,6 +11,11 @@ public class Array<T> implements Iterable<T>
 
 	private Object[] array;
 
+	public static <T> Array<T> fromArray(T[] array)
+	{
+		return new Array<>(array);
+	}
+
 	public Array()
 	{
 		this.array = new Object[1 << LOG_THIRTY_TWO];

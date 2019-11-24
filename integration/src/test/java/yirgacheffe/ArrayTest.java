@@ -65,4 +65,46 @@ public class ArrayTest
 
 		java.lang.System.setOut(originalOut);
 	}
+
+	@Test
+	public void testAutomaticallyCreateArrayFromReturnValue() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+				"public Void hello()\n" +
+				"{\n" +
+					"Array<String> numbers = \"1,2,3,4,5\".split(\",\");" +
+					"new System().getOut().println(numbers);" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		classLoader.add("MyClass", result.getBytecode());
+
+		PrintStream originalOut = java.lang.System.out;
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		java.lang.System.setOut(out);
+
+		Class<?> myClass = classLoader.loadClass("MyClass");
+		Object my = myClass.getConstructor().newInstance();
+		Method hello = myClass.getMethod("hello");
+
+		hello.invoke(my);
+
+		assertEquals("[1, 2, 3, 4, 5]\n", spyOut.toString());
+
+		java.lang.System.setOut(originalOut);
+	}
 }

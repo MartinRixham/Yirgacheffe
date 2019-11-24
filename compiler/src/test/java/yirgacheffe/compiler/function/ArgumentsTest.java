@@ -281,7 +281,7 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
-		assertEquals(0, matchResult.score());
+		assertEquals(1, matchResult.score());
 		assertEquals("yirgacheffe.lang.Array", matchResult.getName());
 		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());

@@ -13,9 +13,11 @@ import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.function.Arguments;
+import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -85,6 +87,14 @@ public class InvokeMethod implements Expression, Parameterisable
 			GenericType genericType = (GenericType) returnType;
 
 			return genericType.unwrap();
+		}
+
+		if (returnType instanceof ArrayType)
+		{
+			ArrayType arrayType = (ArrayType) returnType;
+			ReferenceType type = new ReferenceType(Array.class);
+
+			return new ParameterisedType(type, new Array<>(arrayType.getElementType()));
 		}
 
 		return returnType;

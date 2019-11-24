@@ -3,8 +3,10 @@ package yirgacheffe.compiler.type;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +49,19 @@ public class ArrayTypeTest
 	}
 
 	@Test
+	public void testArrayIsAssignableToYirgacheffeArray()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.Object;", new ReferenceType(String.class));
+
+		ReferenceType arrayType = new ReferenceType(Array.class);
+		Type objectType = new ReferenceType(Object.class);
+		Type other = new ParameterisedType(arrayType, new Array<>(objectType));
+
+		assertTrue(type.isAssignableTo(other));
+	}
+
+	@Test
 	public void testArrayIsNotAssignableToAnythingElse()
 	{
 		Type first =
@@ -79,6 +94,25 @@ public class ArrayTypeTest
 
 		assertEquals(0, result.getErrors().length());
 		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
+	public void testConvertToArrayObject()
+	{
+		Type stringType = new ReferenceType(String.class);
+		ReferenceType arrayType = new ReferenceType(Array.class);
+		Type arrayObjectType = new ParameterisedType(arrayType, new Array<>(stringType));
+
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.convertTo(arrayObjectType);
+
+		assertEquals(1, result.getInstructions().length());
+
+		MethodInsnNode instruction = (MethodInsnNode) result.getInstructions().get(0);
+
+		assertEquals("fromArray", instruction.name);
 	}
 
 	@Test

@@ -77,9 +77,9 @@ public final class Bootstrap
 	}
 
 	public static CallSite bootstrapPrivate(
-			MethodHandles.Lookup lookup,
-			String name,
-			MethodType type)
+		MethodHandles.Lookup lookup,
+		String name,
+		MethodType type)
 	{
 		return bootstrap(lookup, name, type, true);
 	}
