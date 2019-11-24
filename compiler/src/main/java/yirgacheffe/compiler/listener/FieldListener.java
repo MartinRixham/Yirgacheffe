@@ -12,6 +12,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.FieldRead;
 import yirgacheffe.compiler.expression.InvokeConstructor;
+import yirgacheffe.compiler.expression.InvokeInterfaceConstructor;
 import yirgacheffe.compiler.expression.Literal;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.statement.FieldWrite;
@@ -176,10 +177,22 @@ public class FieldListener extends ConstructorListener
 			this.methodNode.instructions.add(instruction);
 		}
 
-		Expression invokeConstructor =
-			new InvokeConstructor(coordinate, this.thisType, this.arguments);
+		Expression invokeConstructor = this.getConstructorCall(coordinate);
 
 		this.staticStatements.push(
 			new StoreConstant(this.thisType, literal, invokeConstructor));
+	}
+
+	private Expression getConstructorCall(Coordinate coordinate)
+	{
+		if (this.inInterface)
+		{
+			return
+				new InvokeInterfaceConstructor(coordinate, this.thisType, this.arguments);
+		}
+		else
+		{
+			return new InvokeConstructor(coordinate, this.thisType, this.arguments);
+		}
 	}
 }

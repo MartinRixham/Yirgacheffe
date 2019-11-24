@@ -59,7 +59,7 @@ public class ExpressionListener extends LoopListener
 	}
 
 	@Override
-	public void exitEnumeration(YirgacheffeParser.EnumerationContext context)
+	public void exitEnumerationAccess(YirgacheffeParser.EnumerationAccessContext context)
 	{
 		Coordinate coordinate = new Coordinate(context);
 		Type type = this.types.getType(context.type());

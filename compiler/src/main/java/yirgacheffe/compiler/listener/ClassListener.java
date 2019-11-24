@@ -28,12 +28,12 @@ import yirgacheffe.compiler.generated.EnumerationInitialiser;
 import yirgacheffe.compiler.generated.MainMethod;
 import yirgacheffe.lang.Array;
 import yirgacheffe.lang.Enumeration;
+import yirgacheffe.lang.EnumerationWithDefault;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -55,6 +55,8 @@ public class ClassListener extends PackageListener
 	private Array<BoundedType> typeParameters = new Array<>();
 
 	protected Type thisType = new NullType();
+
+	private Type constantType;
 
 	protected boolean hasDelegate = false;
 
@@ -115,25 +117,6 @@ public class ClassListener extends PackageListener
 
 			this.errors.push(new Error(context, message));
 		}
-
-		String[] interfaces = new String[this.interfaces.length()];
-
-		for (int i = 0; i < this.interfaces.length(); i++)
-		{
-			interfaces[i] =
-				this.interfaces.get(i).toFullyQualifiedType();
-		}
-
-		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters);
-
-		this.classNode.visit(
-			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
-			this.className,
-			signature.toString(),
-			"java/lang/Object",
-			interfaces);
 	}
 
 	@Override
@@ -167,22 +150,11 @@ public class ClassListener extends PackageListener
 	}
 
 	@Override
-	public void exitEnumerationDeclaration(
-		YirgacheffeParser.EnumerationDeclarationContext context)
+	public void exitEnumeration(YirgacheffeParser.EnumerationContext context)
 	{
 		this.inEnumeration = true;
-		this.className = this.directory + context.Identifier().getText();
 
-		try
-		{
-			this.thisType =
-				this.classes.loadClass(this.className.replace("/", "."));
-		}
-		catch (ClassNotFoundException | NoClassDefFoundError e)
-		{
-		}
-
-		Type constantType = this.types.getType(context.type());
+		constantType = this.types.getType(context.type());
 
 		if (!constantType.isPrimitive() &&
 			!constantType.isAssignableTo(new ReferenceType(String.class)))
@@ -191,64 +163,6 @@ public class ClassListener extends PackageListener
 
 			this.errors.push(new Error(context.type(), message));
 		}
-
-		Type interfaceType =
-			new ParameterisedType(
-				new ReferenceType(Enumeration.class),
-				new Array<>(constantType));
-
-		ClassSignature signature =
-			new ClassSignature(new Array<>(interfaceType), new Array<>());
-
-		this.classNode.visit(
-			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
-			this.className,
-			signature.toString(),
-			"java/lang/Object",
-			null);
-
-		this.classNode.fields.add(
-			new FieldNode(
-				Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC,
-				"values",
-				"Ljava/util/Map;",
-				null,
-				null));
-	}
-
-	@Override
-	public void exitEnumerationDefinition(
-		YirgacheffeParser.EnumerationDefinitionContext context)
-	{
-		this.classNode.interfaces =
-			Arrays.asList(
-				this.hasDefaultConstructor ?
-					"yirgacheffe/lang/EnumerationWithDefault" :
-					"yirgacheffe/lang/Enumeration");
-
-		MethodNode method = new EnumerationInitialiser(this.thisType).generate();
-
-		Result result = new Result();
-		LocalVariables variables = new LocalVariables(new HashMap<>());
-		Signature signature = new Signature(new NullType(), "", new Array<>());
-
-		for (Statement statement: this.staticStatements)
-		{
-			result = result.concat(statement.compile(variables, signature));
-		}
-
-		this.errors.push(result.getErrors());
-		this.errors.push(variables.getErrors());
-
-		for (AbstractInsnNode instruction: result.getInstructions())
-		{
-			method.instructions.add(instruction);
-		}
-
-		method.instructions.add(new InsnNode(Opcodes.RETURN));
-
-		this.classNode.methods.add(method);
 	}
 
 	@Override
@@ -296,6 +210,30 @@ public class ClassListener extends PackageListener
 	@Override
 	public void exitClassDefinition(YirgacheffeParser.ClassDefinitionContext context)
 	{
+		if (this.inEnumeration)
+		{
+			this.createEnumeration();
+		}
+
+		String[] interfaces = new String[this.interfaces.length()];
+
+		for (int i = 0; i < this.interfaces.length(); i++)
+		{
+			interfaces[i] =
+				this.interfaces.get(i).toFullyQualifiedType();
+		}
+
+		ClassSignature signature =
+			new ClassSignature(this.interfaces, this.typeParameters);
+
+		this.classNode.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
+			this.className,
+			signature.toString(),
+			"java/lang/Object",
+			interfaces);
+
 		for (YirgacheffeParser.InterfaceMethodDeclarationContext interfaceMethod:
 			context.interfaceMethodDeclaration())
 		{
@@ -332,12 +270,57 @@ public class ClassListener extends PackageListener
 	public void exitInterfaceDefinition(
 		YirgacheffeParser.InterfaceDefinitionContext context)
 	{
+		if (this.inEnumeration)
+		{
+			this.createEnumeration();
+		}
+
 		if (context.field().size() > 0)
 		{
 			String message = "Interface cannot contain field.";
 
 			this.errors.push(new Error(context.field(0), message));
 		}
+	}
+
+	private void createEnumeration()
+	{
+		ReferenceType enumType = this.hasDefaultConstructor ?
+			new ReferenceType(EnumerationWithDefault.class) :
+			new ReferenceType(Enumeration.class);
+
+		this.interfaces.push(new ParameterisedType(enumType, new Array<>(constantType)));
+
+		this.classNode.fields.add(
+			new FieldNode(
+				Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+				"values",
+				"Ljava/util/Map;",
+				null,
+				null));
+
+		MethodNode method = new EnumerationInitialiser(this.thisType).generate();
+
+		Result result = new Result();
+		LocalVariables variables = new LocalVariables(new HashMap<>());
+		Signature signature = new Signature(new NullType(), "", new Array<>());
+
+		for (Statement statement: this.staticStatements)
+		{
+			result = result.concat(statement.compile(variables, signature));
+		}
+
+		this.errors.push(result.getErrors());
+		this.errors.push(variables.getErrors());
+
+		for (AbstractInsnNode instruction: result.getInstructions())
+		{
+			method.instructions.add(instruction);
+		}
+
+		method.instructions.add(new InsnNode(Opcodes.RETURN));
+
+		this.classNode.methods.add(method);
 	}
 
 	private void checkInterfaceMethodImplementations(

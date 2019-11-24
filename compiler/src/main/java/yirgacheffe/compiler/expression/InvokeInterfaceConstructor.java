@@ -2,26 +2,24 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.AmbiguousMatchResult;
+import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.type.MismatchedTypes;
-import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
-public class InvokeConstructor implements Expression
+public class InvokeInterfaceConstructor implements Expression
 {
 	private Coordinate coordinate;
 
@@ -29,7 +27,7 @@ public class InvokeConstructor implements Expression
 
 	private Array<Expression> arguments;
 
-	public InvokeConstructor(
+	public InvokeInterfaceConstructor(
 		Coordinate coordinate,
 		Type owner,
 		Array<Expression> arguments)
@@ -53,31 +51,27 @@ public class InvokeConstructor implements Expression
 			return new Result();
 		}
 
-		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
 		Arguments arguments = new Arguments(this.arguments, variables);
 		MatchResult matchResult = new FailedMatchResult();
 
-		for (Constructor<?> constructor : constructors)
+		for (Function method: this.getMethods())
 		{
-			Function function = new Function(this.owner, constructor);
-
-			matchResult = matchResult.betterOf(arguments.matches(function));
+			matchResult = matchResult.betterOf(arguments.matches(method));
 		}
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
 		String descriptor =
-			"(" + arguments.getDescriptor(parameterTypes) + ")V";
+			"(" + arguments.getDescriptor(parameterTypes) + ")" +
+				this.owner.toJVMType();
 
 		Result result = new Result()
-			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
-			.add(new InsnNode(Opcodes.DUP))
 			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile())
 			.add(new MethodInsnNode(
-				Opcodes.INVOKESPECIAL,
+				Opcodes.INVOKESTATIC,
 				this.owner.toFullyQualifiedType(),
-				"<init>",
+				"0this",
 				descriptor,
 				false))
 			.concat(this.getError(matchResult, arguments));
@@ -85,6 +79,22 @@ public class InvokeConstructor implements Expression
 		variables.stackPush(this.owner);
 
 		return result;
+	}
+
+	private Array<Function> getMethods()
+	{
+		Array<Function> constructorMethods = new Array<>();
+		Method[] methods = this.owner.reflectionClass().getMethods();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals("0this"))
+			{
+				constructorMethods.push(new Function(owner, method));
+			}
+		}
+
+		return constructorMethods;
 	}
 
 	private Result getError(MatchResult matchResult, Arguments arguments)

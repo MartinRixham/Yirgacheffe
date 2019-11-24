@@ -3,7 +3,7 @@ grammar Yirgacheffe;
 compilationUnit:
 	packageDeclaration
 	importStatement*
-	(classDefinition | interfaceDefinition | enumerationDefinition)*
+	(classDefinition | interfaceDefinition)*
 	EOF;
 
 replLine: expression? | importStatement* | statement*;
@@ -14,28 +14,23 @@ packageName: Identifier ('.' Identifier)*;
 
 importStatement: Import packageName '.' Identifier semicolon;
 
+implementation: Implements type? (',' type)*;
+
+enumeration: Enumerates type;
+
 classDefinition: classDeclaration
 	'{'
-		(function | parallelMethod | interfaceMethodDeclaration | field)*
+		(function | parallelMethod | interfaceMethodDeclaration | field | constantConstructor)*
 	'}';
 
-classDeclaration: (Class | Identifier) Identifier? genericTypes? implementation?;
-
-enumerationDefinition: enumerationDeclaration
-	'{'
-		(function | parallelMethod | field | constantConstructor)*
-	'}';
-
-enumerationDeclaration: Class Identifier Enumerates type;
-
-implementation: Implements type? (',' type)*;
+classDeclaration: (Class | Identifier) Identifier? genericTypes? enumeration? implementation?;
 
 interfaceDefinition: interfaceDeclaration
 	'{'
-		(function | interfaceMethodDeclaration | field)*
+		(function | interfaceMethodDeclaration | field | constantConstructor)*
 	'}';
 
-interfaceDeclaration: Interface Identifier? genericTypes?;
+interfaceDeclaration: Interface Identifier? genericTypes? enumeration? implementation?;
 
 genericTypes: '<' genericType? (',' genericType)* '>';
 
@@ -189,7 +184,7 @@ postdecrement: unaryExpression MinusMinus;
 predecrement: MinusMinus unaryExpression;
 
 unaryExpression:
-	(instantiation | selfInstantiation | literal | variableRead | thisRead | enumeration | parenthesis)
+	(instantiation | selfInstantiation | literal | variableRead | thisRead | enumerationAccess | parenthesis)
 	(methodCall | fieldRead)*;
 
 variableRead: Identifier;
@@ -198,7 +193,7 @@ thisRead: This;
 
 fieldRead: '.' Identifier;
 
-enumeration: type ':' expression;
+enumerationAccess: type ':' expression;
 
 parenthesis: '(' expression ')';
 

@@ -386,11 +386,14 @@ public class ClassListenerTest
 
 		assertEquals(Arrays.asList("yirgacheffe/lang/Enumeration"), classNode.interfaces);
 
-		FieldNode valuesField = classNode.fields.get(0);
+		FieldNode valuesField = classNode.fields.get(1);
 
 		assertEquals("values", valuesField.name);
-		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, valuesField.access);
 		assertEquals("Ljava/util/Map;", valuesField.desc);
+
+		assertEquals(
+			Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_FINAL,
+			valuesField.access);
 
 		assertEquals(6, classNode.methods.size());
 
@@ -424,6 +427,56 @@ public class ClassListenerTest
 		assertEquals("java/util/Map", thirdInstruction.owner);
 		assertEquals("get", thirdInstruction.name);
 		assertEquals("(Ljava/lang/Object;)Ljava/lang/Object;", thirdInstruction.desc);
+	}
+
+	@Test
+	public void testInterfaceEnumeration()
+	{
+		String implementationSource =
+			"class MyImplementation implements MyInterface" +
+			"{" +
+				"String message;\n" +
+				"public MyImplementation(String message)\n" +
+				"{\n" +
+					"this.message = message;\n" +
+				"}\n" +
+				"public String getMessage()\n" +
+				"{\n" +
+					"return this.message;\n" +
+				"}\n" +
+			"}";
+
+		String enumerationSource =
+			"interface MyInterface enumerates Bool" +
+			"{" +
+				"true:(\"The truth!\");\n" +
+				"false:(\"Lies!\");\n" +
+				"MyInterface(String message)\n" +
+				"{\n" +
+					"return new MyImplementation(message);\n" +
+				"}\n" +
+				"String getMessage();\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler implementationCompiler = new Compiler("", implementationSource);
+		Compiler enumerationCompiler = new Compiler("", enumerationSource);
+
+		implementationCompiler.compileClassDeclaration(classes);
+		enumerationCompiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		implementationCompiler.compileInterface(classes);
+		enumerationCompiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult implementationResult = implementationCompiler.compile(classes);
+		CompilationResult enumerationResult = enumerationCompiler.compile(classes);
+
+		assertTrue(implementationResult.isSuccessful());
+		assertTrue(enumerationResult.isSuccessful());
 	}
 
 	private void checkEnumerationInitialiser(MethodNode initialiser)

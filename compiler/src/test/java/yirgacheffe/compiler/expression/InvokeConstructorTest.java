@@ -34,7 +34,7 @@ public class InvokeConstructorTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num("1.0");
-		Array<Expression> arguments = new Array<Expression>(one);
+		Array<Expression> arguments = new Array<>(one);
 
 		InvokeConstructor invokeConstructor =
 			new InvokeConstructor(
@@ -89,7 +89,7 @@ public class InvokeConstructorTest
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num("1.0");
-		Array<Expression> arguments = new Array<Expression>(one);
+		Array<Expression> arguments = new Array<>(one);
 
 		InvokeConstructor invokeConstructor =
 			new InvokeConstructor(
@@ -108,7 +108,7 @@ public class InvokeConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(String.class);
-		Array<Expression> arguments = new Array<Expression>();
+		Array<Expression> arguments = new Array<>();
 
 		InvokeConstructor invokeConstructor =
 			new InvokeConstructor(

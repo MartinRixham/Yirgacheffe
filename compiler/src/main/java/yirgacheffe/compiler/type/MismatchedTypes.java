@@ -1,5 +1,7 @@
 package yirgacheffe.compiler.type;
 
+import yirgacheffe.compiler.Result;
+
 public class MismatchedTypes
 {
 	private String from;
