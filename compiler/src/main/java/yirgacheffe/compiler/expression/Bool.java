@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -11,10 +12,13 @@ import yirgacheffe.lang.Array;
 
 public class Bool implements Expression, Literal
 {
+	private Coordinate coordinate;
+
 	private String text;
 
-	public Bool(String text)
+	public Bool(Coordinate coordinate, String text)
 	{
+		this.coordinate = coordinate;
 		this.text = text;
 	}
 
@@ -64,5 +68,10 @@ public class Bool implements Expression, Literal
 	public Object getValue()
 	{
 		return this.text.equals("true");
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 }

@@ -28,8 +28,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("0");
-		Num secondOperand = new Num("1");
+		Num firstOperand = new Num(coordinate, "0");
+		Num secondOperand = new Num(coordinate, "1");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -68,8 +68,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("0");
-		Num secondOperand = new Num("1");
+		Num firstOperand = new Num(coordinate, "0");
+		Num secondOperand = new Num(coordinate, "1");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -116,8 +116,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num(coordinate, "3");
+		Num secondOperand = new Num(coordinate, "2");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -155,8 +155,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("1");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num(coordinate, "1");
+		Num secondOperand = new Num(coordinate, "2");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -197,8 +197,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2.0");
+		Num firstOperand = new Num(coordinate, "3");
+		Num secondOperand = new Num(coordinate, "2.0");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -240,8 +240,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3.0");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num(coordinate, "3.0");
+		Num secondOperand = new Num(coordinate, "2");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -283,8 +283,8 @@ public class BinaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3.0");
-		This secondOperand = new This(new ReferenceType(Object.class));
+		Num firstOperand = new Num(coordinate, "3.0");
+		This secondOperand = new This(coordinate, new ReferenceType(Object.class));
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -339,5 +339,6 @@ public class BinaryOperationTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(coordinate, operation.getCoordinate());
 	}
 }

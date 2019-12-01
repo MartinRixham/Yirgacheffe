@@ -35,7 +35,7 @@ public class FieldReadTest
 		FieldRead fieldRead =
 			new FieldRead(
 				coordinate,
-				new This(owner),
+				new This(coordinate, owner),
 				"out");
 
 		Type type = fieldRead.getType(variables);
@@ -82,5 +82,6 @@ public class FieldReadTest
 		Array<VariableRead> reads = fieldRead.getVariableReads();
 
 		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(coordinate, fieldRead.getCoordinate());
 	}
 }

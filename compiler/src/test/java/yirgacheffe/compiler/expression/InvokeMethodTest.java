@@ -55,7 +55,7 @@ public class InvokeMethodTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
-		Expression expression = new Streeng("\"thingy\"");
+		Expression expression = new Streeng(coordinate, "\"thingy\"");
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -105,7 +105,7 @@ public class InvokeMethodTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
-		Expression expression = new This(testClass);
+		Expression expression = new This(coordinate, testClass);
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -155,8 +155,8 @@ public class InvokeMethodTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
-		Expression expression = new Streeng("\"thingy\"");
-		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
+		Expression expression = new Streeng(coordinate, "\"thingy\"");
+		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\"sumpt\""));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -207,8 +207,8 @@ public class InvokeMethodTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
-		Expression expression = new Streeng("\"thingy\"");
-		Array<Expression> arguments = new Array<>(new Streeng("\"sumpt\""));
+		Expression expression = new Streeng(coordinate, "\"thingy\"");
+		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\"sumpt\""));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -232,6 +232,7 @@ public class InvokeMethodTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals("sumpt", firstInstruction.cst);
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
+		assertEquals(coordinate, invokeMethod.getCoordinate());
 	}
 
 	@Test
@@ -251,7 +252,7 @@ public class InvokeMethodTest
 				new Array<>());
 
 		Array<Expression> arguments =
-			new Array<>(new Num("1.0"));
+			new Array<>(new Num(coordinate, "1.0"));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -327,8 +328,8 @@ public class InvokeMethodTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
-		This testClass = new This(new ReferenceType(this.getClass()));
-		Array<Expression> arguments = new Array<>(new Num("1"));
+		This testClass = new This(coordinate, new ReferenceType(this.getClass()));
+		Array<Expression> arguments = new Array<>(new Num(coordinate, "1"));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -426,7 +427,7 @@ public class InvokeMethodTest
 	public void testInvalidArgument()
 	{
 		Coordinate coordinate = new Coordinate(2, 4);
-		This testClass = new This(new ReferenceType(this.getClass()));
+		This testClass = new This(coordinate, new ReferenceType(this.getClass()));
 		String name = "method";
 		Array<Expression> arguments =
 			new Array<>(new InvalidExpression(PrimitiveType.DOUBLE));
@@ -454,9 +455,9 @@ public class InvokeMethodTest
 	public void testEqualsTailCall()
 	{
 		Coordinate coordinate = new Coordinate(2, 4);
-		This testClass = new This(new ReferenceType(this.getClass()));
+		This testClass = new This(coordinate, new ReferenceType(this.getClass()));
 		String name = "myMethod";
-		Num number = new Num("1.0");
+		Num number = new Num(coordinate, "1.0");
 		Array<Expression> arguments = new Array<>(number);
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -484,8 +485,10 @@ public class InvokeMethodTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
-		Expression expression = new This(testClass);
-		Array<Expression> arguments = new Array<>(new Num("1.0"), new Num("2.0"));
+		Expression expression = new This(coordinate, testClass);
+
+		Array<Expression> arguments =
+			new Array<>(new Num(coordinate, "1.0"), new Num(coordinate, "2.0"));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(
@@ -572,10 +575,12 @@ public class InvokeMethodTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(0, 1);
 		Type testClass = new ReferenceType(this.getClass());
-		Expression expression = new This(testClass);
+		Expression expression = new This(coordinate, testClass);
 
 		Array<Expression> arguments =
-			new Array<>(new Streeng("\"one\""), new Streeng("\"two\""));
+			new Array<>(
+				new Streeng(coordinate, "\"one\""),
+				new Streeng(coordinate, "\"two\""));
 
 		InvokeMethod invokeMethod =
 			new InvokeMethod(

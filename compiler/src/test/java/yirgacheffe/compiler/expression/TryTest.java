@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -23,8 +24,9 @@ public class TryTest
 	@Test
 	public void testCompilingTry()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Try tryExpression = new Try(new Num("1"));
+		Try tryExpression = new Try(new Num(coordinate, "1"));
 
 		Result result = tryExpression.compileCondition(variables, null, null);
 
@@ -33,6 +35,7 @@ public class TryTest
 		assertEquals(0, result.getErrors().length());
 		assertTrue(tryExpression.getType(null).isAssignableTo(PrimitiveType.INT));
 		assertEquals(0, tryExpression.getVariableReads().length());
+		assertEquals(coordinate, tryExpression.getCoordinate());
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 

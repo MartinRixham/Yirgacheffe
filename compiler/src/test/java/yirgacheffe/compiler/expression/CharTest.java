@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -20,9 +21,10 @@ public class CharTest
 	@Test
 	public void testCompilingCharacter()
 	{
+		Coordinate coordinate = new Coordinate(6, 7);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Char literal = new Char("'r'");
+		Char literal = new Char(coordinate, "'r'");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -41,14 +43,16 @@ public class CharTest
 		assertEquals('r', firstInstruction.cst);
 
 		assertEquals("java/lang/Character", type.toFullyQualifiedType());
+		assertEquals(coordinate, literal.getCoordinate());
 	}
 
 	@Test
 	public void testCompilingWhitespace()
 	{
+		Coordinate coordinate = new Coordinate(3, 75);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Char literal = new Char("'\n'");
+		Char literal = new Char(coordinate, "'\n'");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compileCondition(variables, null, null);

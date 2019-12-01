@@ -41,7 +41,7 @@ public class FunctionCallTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Array<Expression> arguments =
-			new Array<>(new Num("3.0"));
+			new Array<>(new Num(coordinate, "3.0"));
 
 		InvokeConstructor invoke =
 			new InvokeConstructor(
@@ -120,6 +120,11 @@ public class FunctionCallTest
 				{
 
 					return new Array<>(variable);
+				}
+
+				public Coordinate getCoordinate()
+				{
+					return new Coordinate(0, 0);
 				}
 			};
 

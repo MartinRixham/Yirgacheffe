@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -78,6 +79,11 @@ public class OptimisedExpression implements Expression, Parameterisable
 	public Array<Type> getParameters(Variables variables)
 	{
 		return ((Parameterisable) this.expression).getParameters(variables);
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.expression.getCoordinate();
 	}
 
 	@Override

@@ -34,13 +34,14 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
-		Expression expression = new Streeng("\"thingy\"");
+		Expression expression = new Streeng(coordinate, "\"thingy\"");
 
 		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
 		Result result = enumeration.compileCondition(variables, null, null);
 
 		Array<VariableRead> reads = enumeration.getVariableReads();
+		assertEquals(coordinate, enumeration.getCoordinate());
 
 		assertEquals(1, variables.getStack().length());
 		assertEquals(0, result.getErrors().length());
@@ -71,7 +72,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
-		Expression expression = new Streeng("\"sumpt\"");
+		Expression expression = new Streeng(coordinate, "\"sumpt\"");
 
 		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
@@ -89,7 +90,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type type = new ReferenceType(String.class);
-		Expression expression = new Streeng("\"length\"");
+		Expression expression = new Streeng(coordinate, "\"length\"");
 
 		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
@@ -107,7 +108,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
-		Expression expression = new Bool("true");
+		Expression expression = new Bool(coordinate, "true");
 
 		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 
@@ -126,7 +127,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
-		Expression expression = new This(new ReferenceType(String.class));
+		Expression expression = new This(coordinate, new ReferenceType(String.class));
 
 		Expression enumeration = new GetEnumeration(coordinate, type, expression);
 

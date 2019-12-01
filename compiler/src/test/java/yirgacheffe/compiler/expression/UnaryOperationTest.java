@@ -30,7 +30,7 @@ public class UnaryOperationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
-		This operand = new This(new ReferenceType(String.class));
+		This operand = new This(coordinate, new ReferenceType(String.class));
 
 		UnaryOperation postincrement =
 			new UnaryOperation(coordinate, operand, false, true);
@@ -49,7 +49,7 @@ public class UnaryOperationTest
 	{
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
-		This operand = new This(new ReferenceType(String.class));
+		This operand = new This(coordinate, new ReferenceType(String.class));
 
 		UnaryOperation postincrement =
 			new UnaryOperation(coordinate, operand, false, true);
@@ -82,6 +82,7 @@ public class UnaryOperationTest
 			postincrement.getDelegatedInterfaces(new HashMap<>(), PrimitiveType.DOUBLE);
 
 		assertTrue(delegatedInterfaces instanceof NullImplementation);
+		assertEquals(coordinate, postincrement.getCoordinate());
 	}
 
 	@Test

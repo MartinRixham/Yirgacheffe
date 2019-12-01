@@ -13,14 +13,14 @@ import yirgacheffe.lang.Array;
 
 public class VariableRead implements Expression
 {
-	private String name;
-
 	private Coordinate coordinate;
+
+	private String name;
 
 	public VariableRead(Coordinate coordinate, String name)
 	{
-		this.name = name;
 		this.coordinate = coordinate;
+		this.name = name;
 	}
 
 	public Type getType(Variables variables)
@@ -91,6 +91,11 @@ public class VariableRead implements Expression
 		}
 	}
 
+	public Array<VariableRead> getVariableReads()
+	{
+		return new Array<>(this);
+	}
+
 	public Coordinate getCoordinate()
 	{
 		return this.coordinate;
@@ -121,10 +126,5 @@ public class VariableRead implements Expression
 	public int hashCode()
 	{
 		return this.name.hashCode();
-	}
-
-	public Array<VariableRead> getVariableReads()
-	{
-		return new Array<>(this);
 	}
 }

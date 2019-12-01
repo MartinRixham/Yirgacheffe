@@ -47,9 +47,9 @@ public class LocalVariablesTest
 	@Test
 	public void testWriteDeclaredVariable()
 	{
-		LocalVariables variables = new LocalVariables(new HashMap<>());
-		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
+		LocalVariables variables = new LocalVariables(new HashMap<>());
+		Expression expression = new Num(coordinate, "123");
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
@@ -61,9 +61,9 @@ public class LocalVariablesTest
 	@Test
 	public void testWriteUndeclaredVariable()
 	{
-		LocalVariables variables = new LocalVariables(new HashMap<>());
-		Expression expression = new Num("123");
 		Coordinate coordinate = new Coordinate(1, 0);
+		LocalVariables variables = new LocalVariables(new HashMap<>());
+		Expression expression = new Num(coordinate, "123");
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
 
 		variables.write(write);

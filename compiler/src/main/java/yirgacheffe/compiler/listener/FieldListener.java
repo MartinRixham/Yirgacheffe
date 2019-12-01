@@ -152,8 +152,8 @@ public class FieldListener extends ConstructorListener
 	public void exitConstantConstructor(
 		YirgacheffeParser.ConstantConstructorContext context)
 	{
-		Literal literal = Literal.parse(context.literal().getText());
 		Coordinate coordinate = new Coordinate(context);
+		Literal literal = Literal.parse(coordinate, context.literal().getText());
 
 		Result result = new Result()
 			.add(new FieldInsnNode(

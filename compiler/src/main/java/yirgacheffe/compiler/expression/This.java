@@ -4,16 +4,20 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 public class This implements Expression
 {
+	private Coordinate coordinate;
+
 	private Type type;
 
-	public This(Type type)
+	public This(Coordinate coordinate, Type type)
 	{
+		this.coordinate = coordinate;
 		this.type = type;
 	}
 
@@ -42,5 +46,10 @@ public class This implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 }

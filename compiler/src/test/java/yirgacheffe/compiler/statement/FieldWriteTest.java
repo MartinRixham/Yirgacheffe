@@ -41,8 +41,8 @@ public class FieldWriteTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
-		Expression owner = new This(new ReferenceType(this.getClass()));
-		Expression value = new Streeng("\"sumpt\"");
+		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
+		Expression value = new Streeng(coordinate, "\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
@@ -79,8 +79,8 @@ public class FieldWriteTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
-		Expression owner = new This(new ReferenceType(this.getClass()));
-		Expression value = new Streeng("\"one\"");
+		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
+		Expression value = new Streeng(coordinate, "\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
@@ -98,8 +98,8 @@ public class FieldWriteTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
-		Expression owner = new This(new ReferenceType(this.getClass()));
-		Expression value = new Num("1.0");
+		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
+		Expression value = new Num(coordinate, "1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
@@ -132,8 +132,8 @@ public class FieldWriteTest
 	public void testFieldWriteHasFirstOperand()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Num one = new Num("1.0");
-		Num two = new Num("2");
+		Num one = new Num(coordinate, "1.0");
+		Num two = new Num(coordinate, "2");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "field", one, two);
 
 		assertTrue(fieldWrite.getExpression() instanceof Nothing);

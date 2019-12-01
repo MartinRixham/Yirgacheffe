@@ -3,6 +3,7 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -10,10 +11,13 @@ import yirgacheffe.lang.Array;
 
 public class Char implements Expression, Literal
 {
+	private Coordinate coordinate;
+
 	private String text;
 
-	public Char(String text)
+	public Char(Coordinate coordinate, String text)
 	{
+		this.coordinate = coordinate;
 		this.text = text;
 	}
 
@@ -56,5 +60,10 @@ public class Char implements Expression, Literal
 	public Object getValue()
 	{
 		return this.text.charAt(1);
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 }

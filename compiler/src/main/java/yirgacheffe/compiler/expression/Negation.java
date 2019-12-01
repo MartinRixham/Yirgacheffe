@@ -59,4 +59,9 @@ public class Negation implements Expression
 	{
 		return this.expression.getVariableReads();
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

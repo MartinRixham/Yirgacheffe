@@ -37,7 +37,9 @@ public class ExpressionListener extends LoopListener
 			this.errors.push(new Error(context, message));
 		}
 
-		this.expressions.push(new This(this.thisType));
+		Coordinate coordinate = new Coordinate(context);
+
+		this.expressions.push(new This(coordinate, this.thisType));
 	}
 
 	@Override
@@ -53,9 +55,10 @@ public class ExpressionListener extends LoopListener
 	@Override
 	public void enterLiteral(YirgacheffeParser.LiteralContext context)
 	{
+		Coordinate coordinate = new Coordinate(context);
 		String text = context.getText();
 
-		this.expressions.push(Literal.parse(text));
+		this.expressions.push(Literal.parse(coordinate, text));
 	}
 
 	@Override

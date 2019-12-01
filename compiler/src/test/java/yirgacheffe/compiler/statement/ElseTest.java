@@ -40,9 +40,9 @@ public class ElseTest
 	@Test
 	public void testElseStatement()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 5);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new Bool(coordinate, "true");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
@@ -235,7 +235,8 @@ public class ElseTest
 		Expression condition = new Nothing();
 
 		Delegate delegate =
-			new Delegate(coordinate, "MyClass", new Array<>(new Streeng("\"\"")));
+			new Delegate(
+				coordinate, "MyClass", new Array<>(new Streeng(coordinate, "\"\"")));
 
 		Statement statement = new FunctionCall(delegate);
 		If ifStatement = new If(condition, statement);

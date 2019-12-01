@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -21,9 +22,10 @@ public class ThisTest
 	@Test
 	public void testCompilingThis()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		This thisRead = new This(new ReferenceType(this.getClass()));
+		This thisRead = new This(coordinate, new ReferenceType(this.getClass()));
 
 		Type type = thisRead.getType(variables);
 		Result result = thisRead.compileCondition(variables, null, null);
@@ -47,10 +49,14 @@ public class ThisTest
 	@Test
 	public void testGettingVariableReads()
 	{
-		Expression thisStatement = new This(new ReferenceType(this.getClass()));
+		Coordinate coordinate = new Coordinate(3, 65);
+
+		Expression thisStatement =
+			new This(coordinate, new ReferenceType(this.getClass()));
 
 		Array<VariableRead> reads = thisStatement.getVariableReads();
 
 		assertEquals(0, reads.length());
+		assertEquals(coordinate, thisStatement.getCoordinate());
 	}
 }

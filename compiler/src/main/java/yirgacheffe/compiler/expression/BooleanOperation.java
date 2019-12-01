@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -127,5 +128,10 @@ public class BooleanOperation implements Expression
 	{
 		return this.firstOperand.getVariableReads()
 			.concat(this.secondOperand.getVariableReads());
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.firstOperand.getCoordinate();
 	}
 }

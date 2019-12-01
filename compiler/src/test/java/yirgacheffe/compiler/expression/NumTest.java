@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -21,9 +22,10 @@ public class NumTest
 	@Test
 	public void testCompilingZero()
 	{
+		Coordinate coordinate = new Coordinate(4, 8);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("0.0");
+		Num literal = new Num(coordinate, "0.0");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -43,9 +45,10 @@ public class NumTest
 	@Test
 	public void testCompilingOne()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("1.0");
+		Num literal = new Num(coordinate, "1.0");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -62,9 +65,10 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerZero()
 	{
+		Coordinate coordinate = new Coordinate(7, 9);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("0");
+		Num literal = new Num(coordinate, "0");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -82,9 +86,10 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerOne()
 	{
+		Coordinate coordinate = new Coordinate(2, 56);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("1");
+		Num literal = new Num(coordinate, "1");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -102,9 +107,10 @@ public class NumTest
 	@Test
 	public void testCompilingInteger()
 	{
+		Coordinate coordinate = new Coordinate(3, 67);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("2.0");
+		Num literal = new Num(coordinate, "2.0");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -124,9 +130,10 @@ public class NumTest
 	@Test
 	public void testCompilingDecimal()
 	{
+		Coordinate coordinate = new Coordinate(3, 67);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("0.5");
+		Num literal = new Num(coordinate, "0.5");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -146,9 +153,10 @@ public class NumTest
 	@Test
 	public void testCompilingIntegerTwo()
 	{
+		Coordinate coordinate = new Coordinate(5, 76);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Num literal = new Num("2");
+		Num literal = new Num(coordinate, "2");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compileCondition(variables, null, null);
@@ -163,5 +171,6 @@ public class NumTest
 		assertEquals(Opcodes.LDC, firstInstruction.getOpcode());
 		assertEquals(2L, firstInstruction.cst);
 		assertEquals("java/lang/Long", type.toFullyQualifiedType());
+		assertEquals(coordinate, literal.getCoordinate());
 	}
 }

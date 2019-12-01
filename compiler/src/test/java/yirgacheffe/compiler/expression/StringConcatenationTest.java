@@ -29,8 +29,8 @@ public class StringConcatenationTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
-		Expression firstOperand = new Num("3.0");
-		Expression secondOperand = new Num("2.0");
+		Expression firstOperand = new Num(coordinate, "3.0");
+		Expression secondOperand = new Num(coordinate, "2.0");
 
 		BinaryOperation binaryOperation =
 			new BinaryOperation(coordinate, operator, firstOperand, secondOperand);
@@ -51,6 +51,7 @@ public class StringConcatenationTest
 		InsnNode nthInstruction = (InsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.DADD, nthInstruction.getOpcode());
+		assertEquals(coordinate, binaryOperation.getCoordinate());
 	}
 
 	@Test
@@ -58,9 +59,9 @@ public class StringConcatenationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Streeng firstOperand = new Streeng("\"this\"");
-		Streeng secondOperand = new Streeng("\"that\"");
-		Streeng thirdOperand = new Streeng("\"tother\"");
+		Streeng firstOperand = new Streeng(coordinate, "\"this\"");
+		Streeng secondOperand = new Streeng(coordinate, "\"that\"");
+		Streeng thirdOperand = new Streeng(coordinate, "\"tother\"");
 
 		BinaryOperation operation =
 			new BinaryOperation(
@@ -156,8 +157,8 @@ public class StringConcatenationTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
-		Expression firstOperand = new Streeng("\"thingy\"");
-		Expression secondOperand = new Num("2.0");
+		Expression firstOperand = new Streeng(coordinate, "\"thingy\"");
+		Expression secondOperand = new Num(coordinate, "2.0");
 
 		BinaryOperation binaryOperation =
 			new BinaryOperation(coordinate, operator, firstOperand, secondOperand);
@@ -231,8 +232,8 @@ public class StringConcatenationTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
-		Expression firstOperand = new Num("2.0");
-		Expression secondOperand = new Streeng("\"thingy\"");
+		Expression firstOperand = new Num(coordinate, "2.0");
+		Expression secondOperand = new Streeng(coordinate, "\"thingy\"");
 
 		BinaryOperation binaryOperation =
 			new BinaryOperation(coordinate, operator, firstOperand, secondOperand);

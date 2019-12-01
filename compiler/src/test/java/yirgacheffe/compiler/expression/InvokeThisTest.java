@@ -21,7 +21,7 @@ public class InvokeThisTest
 	{
 		Coordinate coordinate = new Coordinate(3, 3);
 		Type string = new ReferenceType(String.class);
-		Array<Expression> arguments = new Array<>(new Streeng("thingy"));
+		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "thingy"));
 		InvokeThis invokeThis = new InvokeThis(coordinate, string, arguments);
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -29,5 +29,6 @@ public class InvokeThisTest
 
 		assertEquals(0, result.getErrors().length());
 		assertFalse(invokeThis.isCondition(variables));
+		assertEquals(coordinate, invokeThis.getCoordinate());
 	}
 }

@@ -152,4 +152,9 @@ public class InvokeThis implements Expression
 
 		return variableReads;
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

@@ -46,4 +46,9 @@ public class InvalidExpression implements Expression
 	{
 		return new Array<>();
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return new Coordinate(0, 0);
+	}
 }

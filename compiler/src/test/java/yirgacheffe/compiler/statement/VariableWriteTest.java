@@ -33,9 +33,9 @@ public class VariableWriteTest
 	@Test
 	public void testVariableWrite()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression value = new Streeng("\"sumpt\"");
 		Coordinate coordinate = new Coordinate(4, 2);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression value = new Streeng(coordinate, "\"sumpt\"");
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
 
@@ -84,8 +84,8 @@ public class VariableWriteTest
 	public void testEqualVariables()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Streeng firstString = new Streeng("\"string\"");
-		Streeng secondString = new Streeng("\"thingy\"");
+		Streeng firstString = new Streeng(coordinate, "\"string\"");
+		Streeng secondString = new Streeng(coordinate, "\"thingy\"");
 		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
 		VariableWrite secondVariable = new VariableWrite(coordinate, "var", secondString);
 
@@ -97,7 +97,7 @@ public class VariableWriteTest
 	public void testNotEqualToString()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Streeng firstString = new Streeng("\"string\"");
+		Streeng firstString = new Streeng(coordinate, "\"string\"");
 		VariableWrite firstVariable = new VariableWrite(coordinate, "var", firstString);
 		Object secondVariable = new Object();
 
@@ -109,7 +109,7 @@ public class VariableWriteTest
 	public void testEqualToVariableRead()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Streeng string = new Streeng("\"my string\"");
+		Streeng string = new Streeng(coordinate, "\"my string\"");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 

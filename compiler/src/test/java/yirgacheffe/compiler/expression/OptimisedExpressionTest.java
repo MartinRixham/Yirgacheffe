@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -31,5 +32,9 @@ public class OptimisedExpressionTest
 		assertFalse(optimisedExpression.isCondition(variables));
 		assertEquals(0, reads.length());
 		assertEquals(nothing.hashCode(), optimisedExpression.hashCode());
+
+		assertEquals(
+			0,
+			optimisedExpression.getCoordinate().compareTo(new Coordinate(0, 0)));
 	}
 }

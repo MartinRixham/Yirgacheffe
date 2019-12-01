@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -88,5 +89,10 @@ public class Try implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.expression.getVariableReads();
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.expression.getCoordinate();
 	}
 }

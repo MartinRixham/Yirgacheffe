@@ -136,4 +136,9 @@ public class Equation implements Expression
 		return this.firstOperand.getVariableReads()
 			.concat(this.secondOperand.getVariableReads());
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

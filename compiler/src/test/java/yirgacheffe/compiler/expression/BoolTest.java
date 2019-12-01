@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -20,9 +21,10 @@ public class BoolTest
 	@Test
 	public void testCompilingFalse()
 	{
+		Coordinate coordinate = new Coordinate(8, 30);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Bool literal = new Bool("false");
+		Bool literal = new Bool(coordinate, "false");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -37,14 +39,16 @@ public class BoolTest
 
 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
 		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
+		assertEquals(coordinate, literal.getCoordinate());
 	}
 
 	@Test
 	public void testCompilingTrue()
 	{
+		Coordinate coordinate = new Coordinate(5, 7);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Bool literal = new Bool("true");
+		Bool literal = new Bool(coordinate, "true");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compileCondition(variables, null, null);

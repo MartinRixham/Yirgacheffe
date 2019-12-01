@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.function;
 
 import org.junit.Test;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
@@ -39,8 +40,9 @@ public class ArgumentsTest
 	@Test
 	public void testGettingStringPrintlnMethod()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression string = new Streeng("\"\"");
+		Expression string = new Streeng(coordinate, "\"\"");
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
@@ -72,8 +74,9 @@ public class ArgumentsTest
 	@Test
 	public void testGettingBooleanPrintlnMethod()
 	{
+		Coordinate coordinate = new Coordinate(4, 56);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression bool = new Bool("true");
+		Expression bool = new Bool(coordinate, "true");
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
@@ -134,12 +137,13 @@ public class ArgumentsTest
 	@Test
 	public void testAmbiguousMatching()
 	{
+		Coordinate coordinate = new Coordinate(3, 65);
 		Variables variables = new LocalVariables(new HashMap<>());
 		ReferenceType hashMap = new ReferenceType(HashMap.class);
 		Type string = new ReferenceType(String.class);
 		Array<Type> strings = new Array<>(string, string);
 		Type mapType = new ParameterisedType(hashMap, strings);
-		Array<Expression> args = new Array<>(new This(mapType));
+		Array<Expression> args = new Array<>(new This(coordinate, mapType));
 		Arguments arguments = new Arguments(args, variables);
 		Type testClass = new ReferenceType(ArgumentsTest.class);
 		Method[] methods = testClass.reflectionClass().getMethods();
@@ -169,10 +173,11 @@ public class ArgumentsTest
 	@Test
 	public void testMismatchedParameters()
 	{
+		Coordinate coordinate = new Coordinate(3, 65);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
-		Array<Expression> args = new Array<>(new Bool("true"));
+		Array<Expression> args = new Array<>(new Bool(coordinate, "true"));
 		Arguments arguments = new Arguments(args, variables);
 		MatchResult matchResult = new FailedMatchResult();
 
@@ -200,10 +205,11 @@ public class ArgumentsTest
 	@Test
 	public void testConstructorCallWithWrongArgument()
 	{
+		Coordinate coordinate = new Coordinate(3, 34);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
-		Array<Expression> args = new Array<>(new Num("1"));
+		Array<Expression> args = new Array<>(new Num(coordinate, "1"));
 		Arguments arguments = new Arguments(args, variables);
 		MatchResult matchResult = new FailedMatchResult();
 
@@ -228,13 +234,14 @@ public class ArgumentsTest
 	@Test
 	public void testMethodCallWithMismatchedTypeParameter()
 	{
+		Coordinate coordinate = new Coordinate(3, 4);
 		Variables variables = new LocalVariables(new HashMap<>());
 		ReferenceType mutableReference = new ReferenceType(MutableReference.class);
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);
 		Type owner = new ParameterisedType(mutableReference, new Array<>(string));
 		Method[] methods = mutableReference.reflectionClass().getMethods();
-		Array<Expression> args = new Array<>(new This(object));
+		Array<Expression> args = new Array<>(new This(coordinate, object));
 		Arguments arguments = new Arguments(args, variables);
 		MatchResult matchResult = new FailedMatchResult();
 
@@ -263,12 +270,14 @@ public class ArgumentsTest
 	@Test
 	public void testArrayConstructor()
 	{
+		Coordinate coordinate = new Coordinate(3, 45);
 		Variables variables = new LocalVariables(new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Array<Type> typeParams = new Array<>(string);
 		Type array = new ParameterisedType(new ReferenceType(Array.class), typeParams);
 		Constructor<?>[] constructors = array.reflectionClass().getConstructors();
-		Expression argument = new This(new ArrayType("[Ljava.lang.String;", string));
+		ArrayType arrayType = new ArrayType("[Ljava.lang.String;", string);
+		Expression argument = new This(coordinate, arrayType);
 		Array<Expression> args = new Array<>(argument);
 		Arguments arguments = new Arguments(args, variables);
 		MatchResult matchResult = new FailedMatchResult();

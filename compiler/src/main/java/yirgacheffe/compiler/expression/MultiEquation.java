@@ -170,4 +170,9 @@ public class MultiEquation implements Expression
 	{
 		return new Array<>();
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

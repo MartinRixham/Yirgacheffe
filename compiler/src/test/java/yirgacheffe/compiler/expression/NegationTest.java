@@ -23,7 +23,7 @@ public class NegationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
-		This operand = new This(new ReferenceType(String.class));
+		This operand = new This(coordinate, new ReferenceType(String.class));
 		Negation negation = new Negation(coordinate, operand);
 
 		Type type = negation.getType(variables);
@@ -43,7 +43,7 @@ public class NegationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
-		Expression operand = new Num("1");
+		Expression operand = new Num(coordinate, "1");
 		Negation negation = new Negation(coordinate, operand);
 
 		Type type = negation.getType(variables);
@@ -65,5 +65,6 @@ public class NegationTest
 		Array<VariableRead> reads = negation.getVariableReads();
 
 		assertTrue(reads.indexOf(read) >= 0);
+		assertEquals(coordinate, negation.getCoordinate());
 	}
 }

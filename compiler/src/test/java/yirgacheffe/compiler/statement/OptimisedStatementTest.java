@@ -39,7 +39,8 @@ public class OptimisedStatementTest
 		Coordinate coordinate = new Coordinate(2, 6);
 
 		Delegate delegate =
-			new Delegate(coordinate, "MyClass", new Array<>(new Streeng("\"\"")));
+			new Delegate(
+				coordinate, "MyClass", new Array<>(new Streeng(coordinate, "\"\"")));
 
 		Statement statement = new FunctionCall(delegate);
 		Statement optimisedStatement = new OptimisedStatement(statement);

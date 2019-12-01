@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 
 public interface Literal extends Expression
@@ -8,23 +9,23 @@ public interface Literal extends Expression
 
 	Type getType();
 
-	static Literal parse(String text)
+	static Literal parse(Coordinate coordinate, String text)
 	{
 		if (text.startsWith("\""))
 		{
-			return new Streeng(text);
+			return new Streeng(coordinate, text);
 		}
 		else if (text.startsWith("'"))
 		{
-			return new Char(text);
+			return new Char(coordinate, text);
 		}
 		else if (text.equals("true") || text.equals("false"))
 		{
-			return new Bool(text);
+			return new Bool(coordinate, text);
 		}
 		else
 		{
-			return new Num(text);
+			return new Num(coordinate, text);
 		}
 	}
 }

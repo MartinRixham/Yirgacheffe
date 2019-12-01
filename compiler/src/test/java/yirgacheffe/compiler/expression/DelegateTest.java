@@ -20,7 +20,7 @@ public class DelegateTest
 	{
 		Coordinate coordinate = new Coordinate(2, 9);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Array<Expression> arguments = new Array<>(new Streeng("\"\""));
+		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\"\""));
 
 		Delegate delegate = new Delegate(coordinate, "MyClass", arguments);
 
@@ -30,5 +30,6 @@ public class DelegateTest
 		assertEquals(0, result.getErrors().length());
 		assertFalse(delegate.isCondition(variables));
 		assertEquals(0, delegate.getVariableReads().length());
+		assertEquals(coordinate, delegate.getCoordinate());
 	}
 }

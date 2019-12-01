@@ -34,7 +34,11 @@ public class MultiEquationTest
 		Array<Comparator> comparators = new Array<>(lessThan, lessThan, greaterThan);
 
 		Array<Expression> expressions =
-			new Array<>(new Num("1"), new Num("1"), new Num("1"), new Num("0"));
+			new Array<>(
+				new Num(coordinate, "1"),
+				new Num(coordinate, "1"),
+				new Num(coordinate, "1"),
+				new Num(coordinate, "0"));
 
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -112,7 +116,7 @@ public class MultiEquationTest
 		Array<Comparator> comparators = new Array<>(lessThan);
 
 		Array<Expression> expressions =
-			new Array<>(new Num("1"), new Num("1.0"));
+			new Array<>(new Num(coordinate, "1"), new Num(coordinate, "1.0"));
 
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -154,10 +158,10 @@ public class MultiEquationTest
 
 		Array<Expression> expressions =
 			new Array<>(
-				new Num("1"),
-				new Streeng("\"\""),
-				new Num("1"),
-				new This(new ReferenceType(Object.class)));
+				new Num(coordinate, "1"),
+				new Streeng(coordinate, "\"\""),
+				new Num(coordinate, "1"),
+				new This(coordinate, new ReferenceType(Object.class)));
 
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -188,7 +192,7 @@ public class MultiEquationTest
 		Array<Comparator> comparators = new Array<>(lessThan);
 
 		Array<Expression> expressions =
-			new Array<>(new Streeng("\"\""), new Streeng("\"\""));
+			new Array<>(new Streeng(coordinate, "\"\""), new Streeng(coordinate, "\"\""));
 
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -210,7 +214,7 @@ public class MultiEquationTest
 		Array<Comparator> comparators = new Array<>(new Equals());
 
 		Array<Expression> expressions =
-			new Array<>(new Num("1"), new Bool("true"));
+			new Array<>(new Num(coordinate, "1"), new Bool(coordinate, "true"));
 
 		Variables variables = new LocalVariables(new HashMap<>());
 
@@ -223,5 +227,7 @@ public class MultiEquationTest
 		assertEquals(
 			"line 3:5 Cannot compare Num and Bool.",
 			result.getErrors().get(0).toString());
+
+		assertEquals(coordinate, equation.getCoordinate());
 	}
 }

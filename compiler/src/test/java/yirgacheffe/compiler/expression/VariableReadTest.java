@@ -126,11 +126,12 @@ public class VariableReadTest
 	public void testEqualToVariableWrite()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		Streeng string = new Streeng("\"my string\"");
+		Streeng string = new Streeng(coordinate, "\"my string\"");
 		VariableRead variableRead = new VariableRead(coordinate, "myVar");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVar", string);
 
 		assertEquals(variableRead, variableWrite);
 		assertEquals(variableRead.hashCode(), variableWrite.hashCode());
+		assertEquals(coordinate, variableRead.getCoordinate());
 	}
 }

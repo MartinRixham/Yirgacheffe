@@ -49,8 +49,8 @@ public class ForTest
 	@Test
 	public void testExitConditionTrue()
 	{
-		Expression tru = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 4);
+		Expression tru = new Bool(coordinate, "true");
 		Block block = new Block(coordinate, new Array<>());
 
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);

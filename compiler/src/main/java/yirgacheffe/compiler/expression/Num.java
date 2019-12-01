@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -12,10 +13,13 @@ import yirgacheffe.lang.Array;
 
 public class Num implements Expression, Literal
 {
+	private Coordinate coordinate;
+
 	private String text;
 
-	public Num(String text)
+	public Num(Coordinate coordinate, String text)
 	{
+		this.coordinate = coordinate;
 		this.text = text;
 	}
 
@@ -123,5 +127,10 @@ public class Num implements Expression, Literal
 		{
 			return Double.valueOf(this.text);
 		}
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 }

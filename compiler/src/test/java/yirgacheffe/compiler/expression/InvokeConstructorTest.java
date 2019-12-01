@@ -33,7 +33,7 @@ public class InvokeConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 		Array<Expression> arguments = new Array<>(one);
 
 		InvokeConstructor invokeConstructor =
@@ -88,7 +88,7 @@ public class InvokeConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 		Array<Expression> arguments = new Array<>(one);
 
 		InvokeConstructor invokeConstructor =
@@ -119,6 +119,7 @@ public class InvokeConstructorTest
 		Result result = invokeConstructor.compile(variables);
 
 		assertEquals(0, result.getErrors().length());
+		assertEquals(coordinate, invokeConstructor.getCoordinate());
 	}
 
 	@Test
@@ -129,8 +130,8 @@ public class InvokeConstructorTest
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
 		Type owner = new ParameterisedType(array, typeParameters);
-		Expression one = new Streeng("\"one\"");
-		Expression two = new Streeng("\"two\"");
+		Expression one = new Streeng(coordinate, "\"one\"");
+		Expression two = new Streeng(coordinate, "\"two\"");
 		Array<Expression> arguments = new Array<>(one, two);
 
 		InvokeConstructor invokeConstructor =
@@ -223,8 +224,8 @@ public class InvokeConstructorTest
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
 		Type owner = new ParameterisedType(array, typeParameters);
-		Expression one = new Num("1");
-		Expression two = new Num("2");
+		Expression one = new Num(coordinate, "1");
+		Expression two = new Num(coordinate, "2");
 		Array<Expression> arguments = new Array<>(one, two);
 
 		InvokeConstructor invokeConstructor =

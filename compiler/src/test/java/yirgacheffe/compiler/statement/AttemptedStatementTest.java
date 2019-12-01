@@ -21,7 +21,7 @@ public class AttemptedStatementTest
 		Coordinate coordinate = new Coordinate(3, 5);
 
 		Statement postincrement =
-			new UnaryOperation(coordinate, new Num("1"), false, true);
+			new UnaryOperation(coordinate, new Num(coordinate, "1"), false, true);
 
 		Statement attemptedStatement = new AttemptedStatement(postincrement);
 

@@ -151,4 +151,9 @@ public class BinaryOperation implements Expression
 	{
 		return this.secondOperand.getType(variables).toJVMType();
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

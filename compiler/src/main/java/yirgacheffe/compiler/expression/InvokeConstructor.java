@@ -141,4 +141,9 @@ public class InvokeConstructor implements Expression
 
 		return variableReads;
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

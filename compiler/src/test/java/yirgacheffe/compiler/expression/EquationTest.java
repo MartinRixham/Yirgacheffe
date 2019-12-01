@@ -35,8 +35,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Num firstOperand = new Num("3.0");
-		Num secondOperand = new Num("2.0");
+		Num firstOperand = new Num(coordinate, "3.0");
+		Num secondOperand = new Num(coordinate, "2.0");
 		Comparator equals = new Equals();
 
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
@@ -99,8 +99,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Num firstOperand = new Num("3.0");
-		Num secondOperand = new Num("2.0");
+		Num firstOperand = new Num(coordinate, "3.0");
+		Num secondOperand = new Num(coordinate, "2.0");
 		Comparator notEquals = new NotEquals();
 
 		Equation equation =
@@ -162,8 +162,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Bool firstOperand = new Bool("true");
-		Bool secondOperand = new Bool("false");
+		Bool firstOperand = new Bool(coordinate, "true");
+		Bool secondOperand = new Bool(coordinate, "false");
 		Comparator equals = new Equals();
 
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
@@ -218,8 +218,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Num firstOperand = new Num("1");
-		Num secondOperand = new Num("0");
+		Num firstOperand = new Num(coordinate, "1");
+		Num secondOperand = new Num(coordinate, "0");
 		Comparator equals = new Equals();
 
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
@@ -274,8 +274,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Bool firstOperand = new Bool("true");
-		Bool secondOperand = new Bool("false");
+		Bool firstOperand = new Bool(coordinate, "true");
+		Bool secondOperand = new Bool(coordinate, "false");
 		Comparator notEquals = new NotEquals();
 
 		Equation equation =
@@ -341,6 +341,7 @@ public class EquationTest
 
 		assertTrue(reads.indexOf(firstOperand) >= 0);
 		assertTrue(reads.indexOf(secondOperand) >= 0);
+		assertEquals(coordinate, operation.getCoordinate());
 	}
 
 	@Test
@@ -348,8 +349,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Num firstOperand = new Num("3");
-		Num secondOperand = new Num("2.0");
+		Num firstOperand = new Num(coordinate, "3");
+		Num secondOperand = new Num(coordinate, "2.0");
 		Comparator equals = new Equals();
 
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
@@ -414,8 +415,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Num firstOperand = new Num("3.0");
-		Num secondOperand = new Num("2");
+		Num firstOperand = new Num(coordinate, "3.0");
+		Num secondOperand = new Num(coordinate, "2");
 		Comparator equals = new Equals();
 
 		Equation equation = new Equation(coordinate, equals, firstOperand, secondOperand);
@@ -480,8 +481,8 @@ public class EquationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Num firstOperand = new Num("3.0");
-		This secondOperand = new This(new ReferenceType(Object.class));
+		Num firstOperand = new Num(coordinate, "3.0");
+		This secondOperand = new This(coordinate, new ReferenceType(Object.class));
 		Comparator greaterThan = new GreaterThan();
 
 		Equation operation =
@@ -502,8 +503,8 @@ public class EquationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Bool firstOperand = new Bool("true");
-		Bool secondOperand = new Bool("false");
+		Bool firstOperand = new Bool(coordinate, "true");
+		Bool secondOperand = new Bool(coordinate, "false");
 		Comparator greaterThan = new GreaterThan();
 
 		Equation operation =
@@ -524,8 +525,8 @@ public class EquationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Streeng firstOperand = new Streeng("\"thingy\"");
-		Streeng secondOperand = new Streeng("\"sumpt\"");
+		Streeng firstOperand = new Streeng(coordinate, "\"thingy\"");
+		Streeng secondOperand = new Streeng(coordinate, "\"sumpt\"");
 		Comparator greaterThan = new GreaterThan();
 
 		Equation operation =
@@ -547,8 +548,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression firstOperand = new This(new ReferenceType(Object.class));
-		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Expression firstOperand = new This(coordinate, new ReferenceType(Object.class));
+		Expression secondOperand = new This(coordinate, new ReferenceType(Object.class));
 		Comparator notEquals = new Equals();
 
 		Equation equation =
@@ -606,8 +607,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression firstOperand = new This(new ReferenceType(Object.class));
-		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Expression firstOperand = new This(coordinate, new ReferenceType(Object.class));
+		Expression secondOperand = new This(coordinate, new ReferenceType(Object.class));
 		Comparator notEquals = new NotEquals();
 
 		Equation equation =
@@ -665,8 +666,8 @@ public class EquationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Expression firstOperand = new This(new ReferenceType(Object.class));
-		Expression secondOperand = new This(new ReferenceType(Object.class));
+		Expression firstOperand = new This(coordinate, new ReferenceType(Object.class));
+		Expression secondOperand = new This(coordinate, new ReferenceType(Object.class));
 		Comparator greaterThan = new GreaterThan();
 
 		Equation operation =
@@ -688,8 +689,8 @@ public class EquationTest
 	{
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
-		Expression firstOperand = new Bool("true");
-		Expression secondOperand = new Num("1");
+		Expression firstOperand = new Bool(coordinate, "true");
+		Expression secondOperand = new Num(coordinate, "1");
 
 		Equation operation =
 			new Equation(coordinate, new Equals(), firstOperand, secondOperand);
@@ -710,8 +711,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression firstOperand = new This(new ReferenceType(String.class));
-		Expression secondOperand = new This(new ReferenceType(String.class));
+		Expression firstOperand = new This(coordinate, new ReferenceType(String.class));
+		Expression secondOperand = new This(coordinate, new ReferenceType(String.class));
 		Comparator equals = new Equals();
 
 		Equation equation =
@@ -751,8 +752,8 @@ public class EquationTest
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(new HashMap<>());
-		Expression firstOperand = new This(new ReferenceType(String.class));
-		Expression secondOperand = new This(new ReferenceType(String.class));
+		Expression firstOperand = new This(coordinate, new ReferenceType(String.class));
+		Expression secondOperand = new This(coordinate, new ReferenceType(String.class));
 		Comparator notEquals = new NotEquals();
 
 		Equation equation =

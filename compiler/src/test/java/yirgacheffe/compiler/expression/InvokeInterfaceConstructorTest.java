@@ -34,7 +34,7 @@ public class InvokeInterfaceConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 		Array<Expression> arguments = new Array<>(one);
 
 		InvokeInterfaceConstructor invokeConstructor =
@@ -80,7 +80,7 @@ public class InvokeInterfaceConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 		Array<Expression> arguments = new Array<>(one);
 
 		InvokeInterfaceConstructor invokeConstructor =
@@ -92,6 +92,7 @@ public class InvokeInterfaceConstructorTest
 		Result result = invokeConstructor.compile(variables);
 
 		assertEquals(0, result.getErrors().length());
+		assertEquals(coordinate, invokeConstructor.getCoordinate());
 	}
 
 	@Test
@@ -100,7 +101,9 @@ public class InvokeInterfaceConstructorTest
 		Variables variables = new LocalVariables(new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
-		Array<Expression> arguments = new Array<>(new This(PrimitiveType.DOUBLE));
+
+		Array<Expression> arguments =
+			new Array<>(new This(coordinate, PrimitiveType.DOUBLE));
 
 		InvokeInterfaceConstructor invokeConstructor =
 			new InvokeInterfaceConstructor(

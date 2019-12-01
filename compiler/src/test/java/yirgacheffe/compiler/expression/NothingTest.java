@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.junit.Test;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -28,5 +29,6 @@ public class NothingTest
 		assertEquals(0, result.getErrors().length());
 		assertFalse(nothing.isCondition(variables));
 		assertEquals(0, reads.length());
+		assertEquals(0, nothing.getCoordinate().compareTo(new Coordinate(0, 0)));
 	}
 }

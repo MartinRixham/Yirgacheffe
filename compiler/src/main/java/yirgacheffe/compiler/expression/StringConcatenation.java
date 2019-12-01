@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -76,5 +77,10 @@ public class StringConcatenation implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.binaryOperation.getVariableReads();
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.binaryOperation.getCoordinate();
 	}
 }

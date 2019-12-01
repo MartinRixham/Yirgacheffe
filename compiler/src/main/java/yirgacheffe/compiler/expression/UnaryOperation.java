@@ -152,6 +152,11 @@ public class UnaryOperation implements Expression, Statement
 		return this.expression.getVariableReads();
 	}
 
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
+
 	public Array<VariableWrite> getVariableWrites()
 	{
 		return new Array<>();

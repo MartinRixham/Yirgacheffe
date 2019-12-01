@@ -44,9 +44,9 @@ public class IfTest
 	@Test
 	public void testIfStatement()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new Bool("true");
 		Coordinate coordinate = new Coordinate(3, 5);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new Bool(coordinate, "true");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
@@ -130,9 +130,9 @@ public class IfTest
 	@Test
 	public void testIfObject()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new This(new ReferenceType(Object.class));
 		Coordinate coordinate = new Coordinate(3, 5);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new This(coordinate, new ReferenceType(Object.class));
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
@@ -165,9 +165,9 @@ public class IfTest
 	@Test
 	public void testIfString()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new Streeng("\"thingy\"");
 		Coordinate coordinate = new Coordinate(3, 5);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new Streeng(coordinate, "\"thingy\"");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
@@ -238,9 +238,9 @@ public class IfTest
 	@Test
 	public void testIfDouble()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		Expression condition = new Num("1.1");
 		Coordinate coordinate = new Coordinate(3, 5);
+		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Expression condition = new Num(coordinate, "1.1");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
@@ -294,7 +294,8 @@ public class IfTest
 		Expression condition = new Nothing();
 
 		Delegate delegate =
-			new Delegate(coordinate, "MyClass", new Array<>(new Streeng("\"\"")));
+			new Delegate(
+				coordinate, "MyClass", new Array<>(new Streeng(coordinate, "\"\"")));
 
 		Statement statement = new FunctionCall(delegate);
 		If ifStatement = new If(condition, statement);

@@ -4,8 +4,10 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Literal;
+import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.ConstantType;
 import yirgacheffe.compiler.type.Type;
@@ -32,6 +34,7 @@ public class FieldDeclarationListener extends MethodListener
 
 		if (declarationContext.Const() == null)
 		{
+			Coordinate coordinate = new Coordinate(context);
 			String field = declarationContext.Identifier().getSymbol().getText();
 
 			this.methodNode =
@@ -44,7 +47,7 @@ public class FieldDeclarationListener extends MethodListener
 
 			this.classNode.methods.add(this.methodNode);
 
-			this.enterThisRead(null);
+			this.expressions.push(new This(coordinate, this.thisType));
 		}
 	}
 
@@ -100,7 +103,8 @@ public class FieldDeclarationListener extends MethodListener
 	public void enterConstantConstructor(
 		YirgacheffeParser.ConstantConstructorContext context)
 	{
-		Literal literal = Literal.parse(context.literal().getText());
+		Coordinate coordinate = new Coordinate(context);
+		Literal literal = Literal.parse(coordinate, context.literal().getText());
 		ConstantType constantType = new ConstantType(this.thisType);
 
 		if (!constantType.matches(literal.getType()))

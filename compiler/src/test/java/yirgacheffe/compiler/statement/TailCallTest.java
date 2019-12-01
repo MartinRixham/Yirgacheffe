@@ -57,8 +57,8 @@ public class TailCallTest
 	public void testCompilingTailCall()
 	{
 		Coordinate coordinate = new Coordinate(4, 6);
-		Expression number = new Num("1.0");
-		Expression string = new Streeng("\"\"");
+		Expression number = new Num(coordinate, "1.0");
+		Expression string = new Streeng(coordinate, "\"\"");
 
 		Array<Expression> arguments = new Array<>(number, string);
 
@@ -67,7 +67,7 @@ public class TailCallTest
 				coordinate,
 				"method",
 				"MyClass",
-				new This(new ReferenceType(this.getClass())),
+				new This(coordinate, new ReferenceType(this.getClass())),
 				arguments);
 
 		Statement invocation = new FunctionCall(invokeMethod);

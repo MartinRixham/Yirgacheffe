@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
@@ -20,7 +21,8 @@ public class StreengTest
 	@Test
 	public void testCompilingStringLiteral()
 	{
-		Streeng literal = new Streeng("\"thingy\"");
+		Coordinate coordinate = new Coordinate(3, 65);
+		Streeng literal = new Streeng(coordinate, "\"thingy\"");
 		Variables variables = new LocalVariables(new HashMap<>());
 
 		Type type = literal.getType(variables);
@@ -43,9 +45,10 @@ public class StreengTest
 	@Test
 	public void testCompilingStringWithQuotes()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		Variables variables = new LocalVariables(new HashMap<>());
 
-		Streeng literal = new Streeng("\"thi\"ngy\"");
+		Streeng literal = new Streeng(coordinate, "\"thi\"ngy\"");
 
 		Type type = literal.getType(variables);
 		Result result = literal.compileCondition(variables, null, null);
@@ -61,5 +64,6 @@ public class StreengTest
 		assertEquals("thi\"ngy", firstInstruction.cst);
 
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
+		assertEquals(coordinate, literal.getCoordinate());
 	}
 }

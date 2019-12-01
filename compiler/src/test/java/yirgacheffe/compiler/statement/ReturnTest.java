@@ -79,7 +79,7 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Expression expression = new Num("1.0");
+		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
@@ -105,7 +105,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
-		Expression expression = new Num("1.0");
+		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
@@ -137,7 +137,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
-		Expression expression = new Num("1.0");
+		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
@@ -162,7 +162,7 @@ public class ReturnTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
-		Expression expression = new Bool("1");
+		Expression expression = new Bool(coordinate, "1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 		LocalVariables variables = new LocalVariables(new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
@@ -186,7 +186,7 @@ public class ReturnTest
 	public void testReturnEqualToExpression()
 	{
 		Coordinate coordinate = new Coordinate(2, 3);
-		Expression expression = new Num("1.0");
+		Expression expression = new Num(coordinate, "1.0");
 
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
 

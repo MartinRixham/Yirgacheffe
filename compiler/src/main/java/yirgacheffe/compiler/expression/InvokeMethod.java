@@ -271,6 +271,11 @@ public class InvokeMethod implements Expression, Parameterisable
 		return parameters;
 	}
 
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{

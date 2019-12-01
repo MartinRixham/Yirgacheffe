@@ -85,4 +85,9 @@ public class FieldRead implements Expression
 	{
 		return this.owner.getVariableReads();
 	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
+	}
 }

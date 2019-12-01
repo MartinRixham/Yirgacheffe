@@ -2,6 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -34,5 +35,10 @@ public class Nothing implements Expression
 	public Array<VariableRead> getVariableReads()
 	{
 		return new Array<>();
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return new Coordinate(0, 0);
 	}
 }

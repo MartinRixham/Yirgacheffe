@@ -112,7 +112,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1.0");
+		Expression number = new Num(coordinate, "1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -152,7 +152,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1.0");
+		Expression number = new Num(coordinate, "1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -216,8 +216,8 @@ public class BlockTest
 		VariableDeclaration notherVariableDeclaration =
 			new VariableDeclaration("notherVariable", PrimitiveType.DOUBLE);
 
-		Expression one = new Num("1.0");
-		Expression two = new Num("2.0");
+		Expression one = new Num(coordinate, "1.0");
+		Expression two = new Num(coordinate, "2.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -301,7 +301,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1.0");
+		Expression number = new Num(coordinate, "1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", number);
 		VariableRead returnVariableRead = new VariableRead(coordinate, "myVariable");
 
@@ -389,7 +389,7 @@ public class BlockTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
-		This testClass = new This(new ReferenceType(this.getClass()));
+		This testClass = new This(coordinate, new ReferenceType(this.getClass()));
 
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration(
@@ -469,7 +469,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("var", PrimitiveType.DOUBLE);
 
-		Expression number = new Num("1.0");
+		Expression number = new Num(coordinate, "1.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var", number);
 
 		VariableRead firstRead = new VariableRead(coordinate, "var");
@@ -518,7 +518,7 @@ public class BlockTest
 
 		VariableDeclaration firstDeclaration =
 			new VariableDeclaration("var1", PrimitiveType.DOUBLE);
-		Expression number = new Num("1.0");
+		Expression number = new Num(coordinate, "1.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var1", number);
 
 		VariableDeclaration secondDeclaration =
@@ -576,13 +576,13 @@ public class BlockTest
 
 		VariableDeclaration firstDeclaration =
 			new VariableDeclaration("var1", PrimitiveType.DOUBLE);
-		Expression number = new Num("0.0");
+		Expression number = new Num(coordinate, "0.0");
 		VariableWrite firstWrite = new VariableWrite(coordinate, "var1", number);
 
 		VariableDeclaration secondDeclaration =
 			new VariableDeclaration("var2", PrimitiveType.DOUBLE);
 		VariableRead firstRead = new VariableRead(coordinate, "var1");
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 
 		Expression addition =
 			new BinaryOperation(
@@ -663,7 +663,7 @@ public class BlockTest
 		VariableDeclaration notherVariableDeclaration =
 			new VariableDeclaration("notherVariable", PrimitiveType.DOUBLE);
 
-		Expression one = new Num("1.0");
+		Expression one = new Num(coordinate, "1.0");
 		VariableWrite variableWrite = new VariableWrite(coordinate, "myVariable", one);
 		VariableRead variableRead = new VariableRead(coordinate, "myVariable");
 
@@ -727,14 +727,14 @@ public class BlockTest
 	public void testDelegatedInterfacesFromLastDelegation() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
-		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
+		Array<Expression> emptyString = new Array<>(new Streeng(coordinate, "\"\""));
 		Delegate stringDelegate = new Delegate(coordinate, "MyClass", emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
 		Type dub = new ReferenceType(Double.class);
 
 		Delegate doubleDelegate =
-			new Delegate(coordinate, "MyClass", new Array<>(new This(dub)));
+			new Delegate(coordinate, "MyClass", new Array<>(new This(coordinate, dub)));
 
 		Statement second = new FunctionCall(doubleDelegate);
 		Block block = new Block(coordinate, new Array<>(first, second));
@@ -754,7 +754,7 @@ public class BlockTest
 	public void testDelegatedInterfacesFromDelegation() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(2, 6);
-		Array<Expression> emptyString = new Array<>(new Streeng("\"\""));
+		Array<Expression> emptyString = new Array<>(new Streeng(coordinate, "\"\""));
 		Delegate stringDelegate = new Delegate(coordinate, "MyClass", emptyString);
 		Statement first = new FunctionCall(stringDelegate);
 
