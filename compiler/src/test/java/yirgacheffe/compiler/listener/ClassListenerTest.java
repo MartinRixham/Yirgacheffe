@@ -477,6 +477,13 @@ public class ClassListenerTest
 
 		assertTrue(implementationResult.isSuccessful());
 		assertTrue(enumerationResult.isSuccessful());
+
+		ClassReader reader = new ClassReader(enumerationResult.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(Arrays.asList("yirgacheffe/lang/Enumeration"), classNode.interfaces);
 	}
 
 	private void checkEnumerationInitialiser(MethodNode initialiser)

@@ -136,17 +136,6 @@ public class ClassListener extends PackageListener
 			this.className = this.directory + context.Identifier().getText();
 			this.thisType = this.getClassType();
 		}
-
-		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters);
-
-		this.classNode.visit(
-			Opcodes.V1_8,
-			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-			this.className,
-			signature.toString(),
-			"java/lang/Object",
-			null);
 	}
 
 	@Override
@@ -274,6 +263,25 @@ public class ClassListener extends PackageListener
 		{
 			this.createEnumeration();
 		}
+
+		String[] interfaces = new String[this.interfaces.length()];
+
+		for (int i = 0; i < this.interfaces.length(); i++)
+		{
+			interfaces[i] =
+				this.interfaces.get(i).toFullyQualifiedType();
+		}
+
+		ClassSignature signature =
+			new ClassSignature(this.interfaces, this.typeParameters);
+
+		this.classNode.visit(
+			Opcodes.V1_8,
+			Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
+			this.className,
+			signature.toString(),
+			"java/lang/Object",
+			interfaces);
 
 		if (context.field().size() > 0)
 		{
