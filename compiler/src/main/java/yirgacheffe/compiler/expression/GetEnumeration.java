@@ -79,7 +79,8 @@ public class GetEnumeration implements Expression
 				Opcodes.INVOKESTATIC,
 				type.toFullyQualifiedType(),
 				value,
-				"()" + type.toJVMType()));
+				"()" + type.toJVMType(),
+				this.type.reflectionClass().isInterface()));
 		}
 		else
 		{
