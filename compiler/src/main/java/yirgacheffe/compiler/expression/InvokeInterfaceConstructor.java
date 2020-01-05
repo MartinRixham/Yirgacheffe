@@ -12,7 +12,6 @@ import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.type.MismatchedTypes;
-import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -44,13 +43,6 @@ public class InvokeInterfaceConstructor implements Expression
 
 	public Result compile(Variables variables)
 	{
-		if (this.owner instanceof NullType)
-		{
-			variables.stackPush(this.owner);
-
-			return new Result();
-		}
-
 		Arguments arguments = new Arguments(this.arguments, variables);
 		MatchResult matchResult = new FailedMatchResult();
 
@@ -73,7 +65,7 @@ public class InvokeInterfaceConstructor implements Expression
 				this.owner.toFullyQualifiedType(),
 				"0this",
 				descriptor,
-				false))
+				true))
 			.concat(this.getError(matchResult, arguments));
 
 		variables.stackPush(this.owner);

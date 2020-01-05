@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class InvokeInterfaceConstructorTest
 {
@@ -69,7 +70,7 @@ public class InvokeInterfaceConstructorTest
 		assertEquals("MyInterface", fourthInstruction.owner);
 		assertEquals("0this", fourthInstruction.name);
 		assertEquals("(D)LMyInterface;", fourthInstruction.desc);
-		assertFalse(fourthInstruction.itf);
+		assertTrue(fourthInstruction.itf);
 
 		assertEquals("MyInterface", type.toFullyQualifiedType());
 	}

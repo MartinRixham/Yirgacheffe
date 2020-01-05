@@ -14,7 +14,6 @@ import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.function.Arguments;
-import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -46,13 +45,6 @@ public class InvokeConstructor implements Expression
 
 	public Result compile(Variables variables)
 	{
-		if (this.owner instanceof NullType)
-		{
-			variables.stackPush(this.owner);
-
-			return new Result();
-		}
-
 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
 		Arguments arguments = new Arguments(this.arguments, variables);
 		MatchResult matchResult = new FailedMatchResult();
