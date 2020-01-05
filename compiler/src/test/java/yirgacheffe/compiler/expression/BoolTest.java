@@ -22,7 +22,7 @@ public class BoolTest
 	public void testCompilingFalse()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Bool literal = new Bool(coordinate, "false");
 
@@ -46,7 +46,7 @@ public class BoolTest
 	public void testCompilingTrue()
 	{
 		Coordinate coordinate = new Coordinate(5, 7);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Bool literal = new Bool(coordinate, "true");
 

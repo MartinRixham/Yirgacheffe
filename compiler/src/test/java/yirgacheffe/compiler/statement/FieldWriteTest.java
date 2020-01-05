@@ -44,7 +44,7 @@ public class FieldWriteTest
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Streeng(coordinate, "\"sumpt\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -82,7 +82,7 @@ public class FieldWriteTest
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Streeng(coordinate, "\"one\"");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "one", owner, value);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertFalse(fieldWrite.returns());
@@ -101,7 +101,7 @@ public class FieldWriteTest
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Num(coordinate, "1.0");
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -122,7 +122,7 @@ public class FieldWriteTest
 		Expression owner = new InvalidExpression(testClass);
 		Expression value = new InvalidExpression(string);
 		FieldWrite fieldWrite = new FieldWrite(coordinate, "myField", owner, value);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = fieldWrite.compile(variables, caller);
 
 		assertEquals(2, result.getErrors().length());

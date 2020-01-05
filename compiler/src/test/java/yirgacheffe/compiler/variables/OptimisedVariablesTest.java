@@ -15,7 +15,7 @@ public class OptimisedVariablesTest
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		Variables variables = new OptimisedVariables(new LocalVariables(new HashMap<>()));
+		Variables variables = new OptimisedVariables(new LocalVariables(1, new HashMap<>()));
 
 		assertEquals(0, variables.getVariables().keySet().size());
 		assertEquals(0, variables.getVariable("").getIndex());

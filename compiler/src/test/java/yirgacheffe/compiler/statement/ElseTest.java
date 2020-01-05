@@ -46,7 +46,7 @@ public class ElseTest
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = elseStatement.compile(variables, caller);
 
@@ -99,7 +99,7 @@ public class ElseTest
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		Statement ifStatement = new Block(coordinate, new Array<>());
 		Else elseStatement = new Else(coordinate, ifStatement, statement);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = elseStatement.compile(variables, caller);
 
@@ -115,7 +115,7 @@ public class ElseTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -132,7 +132,7 @@ public class ElseTest
 	{
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		If precondition =
 			new If(new Nothing(), new DoNothing());

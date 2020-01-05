@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class LocalVariables implements Variables
 {
-	private int nextVariableIndex = 1;
+	private int nextVariableIndex;
 
 	private Map<String, Variable> variables = new HashMap<>();
 
@@ -34,8 +34,9 @@ public class LocalVariables implements Variables
 
 	private Map<Delegate, Type> delegateTypes = new HashMap<>();
 
-	public LocalVariables(Map<String, Object> constants)
+	public LocalVariables(int initialVariableIndex, Map<String, Object> constants)
 	{
+		this.nextVariableIndex = initialVariableIndex;
 		this.constants = constants;
 	}
 

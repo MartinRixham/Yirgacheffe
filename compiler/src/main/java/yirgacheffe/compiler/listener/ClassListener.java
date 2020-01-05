@@ -310,7 +310,7 @@ public class ClassListener extends PackageListener
 		MethodNode method = new EnumerationInitialiser(this.thisType).generate();
 
 		Result result = new Result();
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Signature signature = new Signature(new NullType(), "", new Array<>());
 
 		for (Statement statement: this.staticStatements)

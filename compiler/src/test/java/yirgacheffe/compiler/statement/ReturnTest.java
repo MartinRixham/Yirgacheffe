@@ -34,7 +34,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(0, variables.getStack().length());
@@ -63,7 +63,7 @@ public class ReturnTest
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertTrue(returnStatement.returns());
@@ -81,7 +81,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -107,7 +107,7 @@ public class ReturnTest
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -139,7 +139,7 @@ public class ReturnTest
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, returnType, expression);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -164,7 +164,7 @@ public class ReturnTest
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Bool(coordinate, "1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = returnStatement.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());

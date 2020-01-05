@@ -21,7 +21,7 @@ public class NegationTest
 	@Test
 	public void testNegationOfWrongType()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(coordinate, new ReferenceType(String.class));
 		Negation negation = new Negation(coordinate, operand);
@@ -41,7 +41,7 @@ public class NegationTest
 	@Test
 	public void testNegation()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		Expression operand = new Num(coordinate, "1");
 		Negation negation = new Negation(coordinate, operand);

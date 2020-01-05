@@ -25,7 +25,7 @@ public class TryTest
 	public void testCompilingTry()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Try tryExpression = new Try(new Num(coordinate, "1"));
 
 		Result result = tryExpression.compileCondition(variables, null, null);

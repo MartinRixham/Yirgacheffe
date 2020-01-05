@@ -27,7 +27,7 @@ public class StoreConstantTest
 			new StoreConstant(new NullType(), new Nothing(), new Nothing());
 
 		Signature caller = new Signature(new NullType(), "method", new Array<>());
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = storeConstant.compile(variables, caller);
 

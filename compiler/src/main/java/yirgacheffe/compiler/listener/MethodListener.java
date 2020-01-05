@@ -248,7 +248,8 @@ public class MethodListener extends TypeListener
 
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
-		LocalVariables variables = new LocalVariables(this.constants);
+		int initialVariableIndex = this.inInterface ? 0 : 1;
+		LocalVariables variables = new LocalVariables(initialVariableIndex, this.constants);
 		boolean returns = block.returns();
 
 		Result result = block.compile(variables, this.signature);

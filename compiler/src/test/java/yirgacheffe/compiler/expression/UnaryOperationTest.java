@@ -28,7 +28,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementOfWrongType()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(coordinate, new ReferenceType(String.class));
 
@@ -47,7 +47,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementStatementOfWrongType()
 	{
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 6);
 		This operand = new This(coordinate, new ReferenceType(String.class));
 
@@ -88,7 +88,7 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementInteger()
 	{
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		variables.declare("variable", PrimitiveType.INT);
 

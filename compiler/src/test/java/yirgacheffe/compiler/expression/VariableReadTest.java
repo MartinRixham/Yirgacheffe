@@ -25,7 +25,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingStringRead()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type owner = new ReferenceType(String.class);
 
 		variables.declare("myVariable", owner);
@@ -52,7 +52,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingNumberRead()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type owner = PrimitiveType.DOUBLE;
 
 		variables.declare("myVariable", owner);
@@ -77,7 +77,7 @@ public class VariableReadTest
 	@Test
 	public void testCompilingIntegerRead()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type owner = PrimitiveType.INT;
 
 		variables.declare("myVariable", owner);

@@ -23,7 +23,7 @@ public class NumTest
 	public void testCompilingZero()
 	{
 		Coordinate coordinate = new Coordinate(4, 8);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "0.0");
 
@@ -46,7 +46,7 @@ public class NumTest
 	public void testCompilingOne()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "1.0");
 
@@ -66,7 +66,7 @@ public class NumTest
 	public void testCompilingIntegerZero()
 	{
 		Coordinate coordinate = new Coordinate(7, 9);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "0");
 
@@ -87,7 +87,7 @@ public class NumTest
 	public void testCompilingIntegerOne()
 	{
 		Coordinate coordinate = new Coordinate(2, 56);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "1");
 
@@ -108,7 +108,7 @@ public class NumTest
 	public void testCompilingInteger()
 	{
 		Coordinate coordinate = new Coordinate(3, 67);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "2.0");
 
@@ -131,7 +131,7 @@ public class NumTest
 	public void testCompilingDecimal()
 	{
 		Coordinate coordinate = new Coordinate(3, 67);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "0.5");
 
@@ -154,7 +154,7 @@ public class NumTest
 	public void testCompilingIntegerTwo()
 	{
 		Coordinate coordinate = new Coordinate(5, 76);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Num literal = new Num(coordinate, "2");
 

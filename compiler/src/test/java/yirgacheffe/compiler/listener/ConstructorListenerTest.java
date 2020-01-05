@@ -1278,4 +1278,50 @@ public class ConstructorListenerTest
 			"line 5:7 Cannot reference 'this' in interface constructor.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testInterfaceWithConstructorWithVariableRead()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"MyInterface(MyInterface other)\n" +
+				"{\n" +
+					"return other;\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("MyInterface.yg", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(1, classNode.methods.size());
+
+		MethodNode constructor = classNode.methods.get(0);
+
+		assertEquals("0this", constructor.name);
+		assertEquals("(LMyInterface;)LMyInterface;", constructor.desc);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, constructor.access);
+
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(2, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+	}
 }

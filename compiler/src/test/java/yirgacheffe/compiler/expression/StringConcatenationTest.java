@@ -26,7 +26,7 @@ public class StringConcatenationTest
 	@Test
 	public void testNumberAddition()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Num(coordinate, "3.0");
@@ -57,7 +57,7 @@ public class StringConcatenationTest
 	@Test
 	public void testCompilingStringConcatenation()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3,  6);
 		Streeng firstOperand = new Streeng(coordinate, "\"this\"");
 		Streeng secondOperand = new Streeng(coordinate, "\"that\"");
@@ -154,7 +154,7 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateStringWithNumber()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Streeng(coordinate, "\"thingy\"");
@@ -229,7 +229,7 @@ public class StringConcatenationTest
 	@Test
 	public void testConcatenateNumberWithString()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Operator operator = Operator.ADD;
 		Expression firstOperand = new Num(coordinate, "2.0");

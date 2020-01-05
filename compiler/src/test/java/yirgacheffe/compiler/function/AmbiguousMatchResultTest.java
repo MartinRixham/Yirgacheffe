@@ -16,7 +16,7 @@ public class AmbiguousMatchResultTest
 	@Test
 	public void testAmbiguousMatchResult()
 	{
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		MatchResult matchResult = new AmbiguousMatchResult(1);
 
 		assertEquals("", matchResult.getName());

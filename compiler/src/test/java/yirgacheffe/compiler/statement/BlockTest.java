@@ -59,7 +59,7 @@ public class BlockTest
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration("myVariable", PrimitiveType.DOUBLE);
 		Block block = new Block(coordinate, new Array<>(variableDeclaration));
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		block.compile(variables, caller);
 
@@ -82,7 +82,7 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = block.compile(variables, caller);
 
 		assertEquals(1, result.getErrors().length());
@@ -97,7 +97,7 @@ public class BlockTest
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement);
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Result result = block.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -123,7 +123,7 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -168,7 +168,7 @@ public class BlockTest
 		Array<Statement> statements =
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -245,7 +245,7 @@ public class BlockTest
 				functionCall);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -328,7 +328,7 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -416,7 +416,7 @@ public class BlockTest
 			new Array<>(variableDeclaration, variableWrite, functionCall);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -490,7 +490,7 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -548,7 +548,7 @@ public class BlockTest
 				fourthWrite);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -600,7 +600,7 @@ public class BlockTest
 				secondWrite);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 
@@ -685,7 +685,7 @@ public class BlockTest
 				returnStatement);
 
 		Block block = new Block(coordinate, statements);
-		LocalVariables variables = new LocalVariables(new HashMap<>());
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = block.compile(variables, caller);
 

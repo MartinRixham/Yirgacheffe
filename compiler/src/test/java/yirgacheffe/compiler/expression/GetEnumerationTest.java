@@ -32,7 +32,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 	public void testGettingConstant()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Streeng(coordinate, "\"thingy\"");
 
@@ -70,7 +70,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 	public void testGettingMissingConstant()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Streeng(coordinate, "\"sumpt\"");
 
@@ -88,7 +88,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 	public void testNotAnEnumeration()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type type = new ReferenceType(String.class);
 		Expression expression = new Streeng(coordinate, "\"length\"");
 
@@ -106,7 +106,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 	public void testConstantOfWrongType()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new Bool(coordinate, "true");
 
@@ -125,7 +125,7 @@ public class GetEnumerationTest implements EnumerationWithDefault<String>
 	public void testGettingEnumerationFromExpression()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type type = new ReferenceType(this.getClass());
 		Expression expression = new This(coordinate, new ReferenceType(String.class));
 

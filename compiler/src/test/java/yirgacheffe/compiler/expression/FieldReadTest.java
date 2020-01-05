@@ -28,7 +28,7 @@ public class FieldReadTest
 	public void testCompilingFieldRead()
 	{
 		Coordinate coordinate = new Coordinate(3, 4);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Type owner = new ReferenceType(System.class);
 

@@ -23,7 +23,7 @@ public class ThisTest
 	public void testCompilingThis()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		This thisRead = new This(coordinate, new ReferenceType(this.getClass()));
 

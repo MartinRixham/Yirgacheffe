@@ -11,6 +11,9 @@ import yirgacheffe.lang.Bootstrap;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -164,6 +167,12 @@ public class EnumerationTest
 		classLoader.add("MyImplementation", implementationResult.getBytecode());
 		classLoader.add("MyInterface", enumerationResult.getBytecode());
 		classLoader.add("MyClass", result.getBytecode());
+
+		Path interfacePath = Paths.get("MyInterface.class");
+		Path path = Paths.get("MyClass.class");
+
+		Files.write(interfacePath, enumerationResult.getBytecode());
+		Files.write(path, result.getBytecode());
 
 		PrintStream originalOut = System.out;
 		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
