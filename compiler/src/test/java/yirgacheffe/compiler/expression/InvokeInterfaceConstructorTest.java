@@ -115,6 +115,7 @@ public class InvokeInterfaceConstructorTest
 		Result result = invokeConstructor.compile(variables);
 
 		assertEquals(0, result.getErrors().length());
+		assertEquals(0, invokeConstructor.getVariableReads().length());
 	}
 
 	private Class<?> getInterfaceClass() throws Exception

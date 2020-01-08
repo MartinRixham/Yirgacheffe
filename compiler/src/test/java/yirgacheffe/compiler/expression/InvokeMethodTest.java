@@ -324,6 +324,55 @@ public class InvokeMethodTest
 	}
 
 	@Test
+	public void testCompilingInvocationWithArrayReturnType()
+	{
+		Variables variables = new LocalVariables(1, new HashMap<>());
+		Coordinate coordinate = new Coordinate(0, 1);
+		Expression expression = new This(coordinate, new ReferenceType(String.class));
+		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\" \""));
+
+		InvokeMethod invokeMethod =
+			new InvokeMethod(
+				coordinate,
+				"split",
+				"MyClass",
+				expression,
+				arguments);
+
+		Type type = invokeMethod.getType(variables);
+		Result result = invokeMethod.compile(variables);
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(6, instructions.length());
+		assertEquals("yirgacheffe/lang/Array", type.toFullyQualifiedType());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals(" ", secondInstruction.cst);
+
+		assertTrue(instructions.get(2) instanceof LabelNode);
+		assertTrue(instructions.get(3) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode fifthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, fifthInstruction.getOpcode());
+		assertEquals("split", fifthInstruction.name);
+
+		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKESTATIC, sixthInstruction.getOpcode());
+		assertEquals("fromArray", sixthInstruction.name);
+	}
+
+	@Test
 	public void testPassingIntegerToNumberMethod()
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>());
