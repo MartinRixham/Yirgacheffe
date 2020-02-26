@@ -423,6 +423,42 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testBranchWithElseDoesNotDelegate()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)\n" +
+					"{\n" +
+						"return;\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+					"}\n" +
+					"delegate(\"\");\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testDelegationBeforeBranch()
 	{
 		String source =
