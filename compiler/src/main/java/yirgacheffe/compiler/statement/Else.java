@@ -111,10 +111,9 @@ public class Else implements ConditionalStatement
 		Implementation statementInterfaces =
 			this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 
-		if (preconditionInterfaces instanceof NullImplementation ||
-			statementInterfaces instanceof NullImplementation)
+		if (preconditionInterfaces instanceof NullImplementation)
 		{
-			return new NullImplementation();
+			return preconditionInterfaces;
 		}
 
 		return preconditionInterfaces.intersect(statementInterfaces);
