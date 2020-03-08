@@ -613,6 +613,72 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testInterfaceNotDelegatedFromBranch()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)" +
+					"{\n" +
+						"delegate(\"\");\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(java.lang.String).\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testInterfaceDelegatedFromBothBranches()
+	{
+		String source =
+			"class MyClass implements Comparable<String>\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)" +
+					"{\n" +
+						"delegate(\"thingy\");\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+						"delegate(\"sumpt\");\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testConstructorCallsLaterInitialiser()
 	{
 		String source =

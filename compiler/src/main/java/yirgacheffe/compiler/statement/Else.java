@@ -13,6 +13,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
+import yirgacheffe.compiler.implementation.BranchImplementation;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.Type;
@@ -111,9 +112,16 @@ public class Else implements ConditionalStatement
 		Implementation statementInterfaces =
 			this.statement.getDelegatedInterfaces(delegateTypes, thisType);
 
-		if (preconditionInterfaces instanceof NullImplementation)
+		if (preconditionInterfaces instanceof BranchImplementation ||
+			statementInterfaces instanceof BranchImplementation)
 		{
-			return preconditionInterfaces;
+			return new BranchImplementation();
+		}
+
+		if (preconditionInterfaces instanceof NullImplementation ||
+			statementInterfaces instanceof NullImplementation)
+		{
+			return new NullImplementation();
 		}
 
 		return preconditionInterfaces.intersect(statementInterfaces);
