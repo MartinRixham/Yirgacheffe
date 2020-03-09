@@ -855,6 +855,41 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testInitialiseBranchFieldAfterBranch()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"String sumpt;\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (true)\n" +
+					"{\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+					"}\n" +
+					"this.sumpt = \"sumpt\";" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testBranchesDoNotInitialiseField()
 	{
 		String source =
