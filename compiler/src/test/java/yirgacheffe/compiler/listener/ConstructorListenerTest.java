@@ -423,6 +423,40 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testBranchDoesNotDelegateTwoInterface()
+	{
+		String source =
+			"class MyClass implements Comparable<String>, Runnable\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"if (false)" +
+					"{\n" +
+						"delegate(\"\");\n" +
+						"return;\n" +
+					"}\n" +
+					"delegate(this);\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Void run().\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testBranchWithElseDoesNotDelegate()
 	{
 		String source =

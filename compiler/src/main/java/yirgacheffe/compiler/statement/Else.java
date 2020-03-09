@@ -115,7 +115,7 @@ public class Else implements ConditionalStatement
 		if (preconditionInterfaces instanceof BranchImplementation ||
 			statementInterfaces instanceof BranchImplementation)
 		{
-			return new BranchImplementation();
+			return preconditionInterfaces.intersect(statementInterfaces);
 		}
 
 		if (preconditionInterfaces instanceof NullImplementation ||

@@ -236,9 +236,9 @@ public class Block implements Statement
 			delegatedInterfaces = delegatedInterfaces.intersect(interfaces);
 		}
 
-		if (this.returns() && delegatedInterfaces instanceof NullImplementation)
+		if (this.returns())
 		{
-			return new BranchImplementation();
+			return new BranchImplementation(delegatedInterfaces);
 		}
 
 		return delegatedInterfaces;

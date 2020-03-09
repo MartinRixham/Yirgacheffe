@@ -5,13 +5,30 @@ import yirgacheffe.compiler.type.Type;
 
 public class BranchImplementation implements Implementation
 {
-	public Implementation intersect(Implementation implementation)
+	private Implementation implementation;
+
+	public BranchImplementation(Implementation implementation)
 	{
-		return this;
+		this.implementation = implementation;
+	}
+
+	public Implementation intersect(Implementation other)
+	{
+		if (other instanceof BranchImplementation)
+		{
+			BranchImplementation branchImplementation = (BranchImplementation) other;
+
+			return new BranchImplementation(
+				this.implementation.intersect(branchImplementation.implementation));
+		}
+		else
+		{
+			return this;
+		}
 	}
 
 	public boolean implementsMethod(Function method, Type thisType)
 	{
-		return false;
+		return implementation.implementsMethod(method, thisType);
 	}
 }
