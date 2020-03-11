@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
@@ -69,11 +70,11 @@ public class FunctionCall implements Statement
 	{
 		if (this.expression instanceof InvokeThis)
 		{
-			return new FieldAssignment(new Array<>("this"));
+			return new BlockFieldAssignment(new Array<>("this"));
 		}
 		else
 		{
-			return new FieldAssignment(new Array<>());
+			return new BlockFieldAssignment(new Array<>());
 		}
 	}
 

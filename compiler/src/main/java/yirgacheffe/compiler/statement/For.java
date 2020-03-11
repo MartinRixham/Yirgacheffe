@@ -5,6 +5,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Equation;
@@ -94,7 +95,7 @@ public class For implements Statement
 
 	public FieldAssignment getFieldAssignments()
 	{
-		return new FieldAssignment(new Array<>());
+		return new BlockFieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(

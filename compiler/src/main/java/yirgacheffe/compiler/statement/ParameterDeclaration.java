@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
@@ -51,7 +52,7 @@ public class ParameterDeclaration implements Statement
 
 	public FieldAssignment getFieldAssignments()
 	{
-		return new FieldAssignment(new Array<>());
+		return new BlockFieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(

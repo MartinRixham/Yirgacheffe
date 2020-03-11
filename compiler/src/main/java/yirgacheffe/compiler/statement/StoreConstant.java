@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
@@ -71,7 +72,7 @@ public class StoreConstant implements Statement
 
 	public FieldAssignment getFieldAssignments()
 	{
-		return new FieldAssignment(new Array<>());
+		return new BlockFieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(

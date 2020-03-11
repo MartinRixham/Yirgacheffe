@@ -3,6 +3,7 @@ package yirgacheffe.compiler.statement;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
@@ -94,7 +95,7 @@ public class Return implements Statement
 
 	public FieldAssignment getFieldAssignments()
 	{
-		return new FieldAssignment(new Array<>());
+		return new BlockFieldAssignment(new Array<>());
 	}
 
 	public Implementation getDelegatedInterfaces(
