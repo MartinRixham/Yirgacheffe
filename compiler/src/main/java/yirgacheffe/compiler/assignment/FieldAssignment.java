@@ -70,14 +70,34 @@ public class FieldAssignment
 
 	public FieldAssignment intersect(FieldAssignment other)
 	{
-		if (this.branch == null)
+		if (this.branch != null && other.branch != null)
 		{
-			return new FieldAssignment(this.fields, other);
+			return new FieldAssignment(
+				this.intersectWith(other.fields), other.branch.intersect(this.branch));
+		}
+		else if (this.branch == null)
+		{
+			return new FieldAssignment(this.intersectWith(other.fields), other.branch);
 		}
 		else
 		{
-			return new FieldAssignment(this.fields, other.intersect(this.branch));
+			return new FieldAssignment(this.intersectWith(other.fields), this.branch);
 		}
+	}
+
+	private Array<String> intersectWith(Array<String> others)
+	{
+		Array<String> intersection = new Array<>();
+
+		for (String field: this.fields)
+		{
+			if (others.contains(field))
+			{
+				intersection.push(field);
+			}
+		}
+
+		return intersection;
 	}
 
 	public boolean contains(String field)

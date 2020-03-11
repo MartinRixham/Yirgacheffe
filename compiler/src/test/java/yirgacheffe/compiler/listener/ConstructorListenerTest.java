@@ -855,23 +855,23 @@ public class ConstructorListenerTest
 	}
 
 	@Test
-	public void testInitialiseBranchFieldAfterBranch()
+	public void testInitialiseFieldAfterBranch()
 	{
 		String source =
 			"class MyClass\n" +
-			"{\n" +
+				"{\n" +
 				"String sumpt;\n" +
 				"public MyClass()\n" +
 				"{\n" +
-					"if (true)\n" +
-					"{\n" +
-					"}\n" +
-					"else\n" +
-					"{\n" +
-					"}\n" +
-					"this.sumpt = \"sumpt\";" +
+				"if (true)\n" +
+				"{\n" +
 				"}\n" +
-			"}";
+				"else\n" +
+				"{\n" +
+				"}\n" +
+				"this.sumpt = \"sumpt\";" +
+				"}\n" +
+				"}";
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
