@@ -88,18 +88,7 @@ public class Else implements ConditionalStatement
 		FieldAssignment preconditionAssignments = this.precondition.getFieldAssignments();
 		FieldAssignment statementAssignments = this.statement.getFieldAssignments();
 
-		if (preconditionAssignments.contains("this"))
-		{
-			return statementAssignments;
-		}
-		else if (statementAssignments.contains("this"))
-		{
-			return preconditionAssignments;
-		}
-		else
-		{
-			return preconditionAssignments.intersect(statementAssignments);
-		}
+		return preconditionAssignments.intersect(statementAssignments);
 	}
 
 	public Implementation getDelegatedInterfaces(

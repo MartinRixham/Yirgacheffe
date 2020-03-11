@@ -55,13 +55,6 @@ public class BlockFieldAssignment implements FieldAssignment
 
 	public boolean contains(String field)
 	{
-		if (this.fields.contains("this"))
-		{
-			return true;
-		}
-		else
-		{
-			return this.fields.contains(field);
-		}
+		return this.fields.contains(field);
 	}
 }

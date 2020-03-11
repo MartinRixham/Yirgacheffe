@@ -8,7 +8,7 @@ public interface FieldAssignment
 
 	FieldAssignment combineWith(Array<String> fields);
 
-	BranchedFieldAssignment combineWith(Array<String> fields, FieldAssignment branch);
+	FieldAssignment combineWith(Array<String> fields, FieldAssignment branch);
 
 	FieldAssignment intersect(FieldAssignment other);
 

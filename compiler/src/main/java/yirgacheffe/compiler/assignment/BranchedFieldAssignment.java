@@ -14,7 +14,7 @@ public class BranchedFieldAssignment implements FieldAssignment
 		this.branch = branch;
 	}
 
-	public BranchedFieldAssignment combineWith(FieldAssignment other)
+	public FieldAssignment combineWith(FieldAssignment other)
 	{
 		return other.combineWith(this.fields, this.branch);
 	}
@@ -66,13 +66,6 @@ public class BranchedFieldAssignment implements FieldAssignment
 
 	public boolean contains(String field)
 	{
-		if (this.fields.contains("this"))
-		{
-			return true;
-		}
-		else
-		{
-			return this.fields.contains(field) && this.branch.contains(field);
-		}
+		return this.fields.contains(field) && this.branch.contains(field);
 	}
 }
