@@ -156,6 +156,25 @@ public class YirgacheffeTest
 	}
 
 	@Test
+	public void testThreadClassNotGeneratedForFaultyParallelMethod() throws Exception
+	{
+		PrintStream originalError = System.err;
+		ByteArrayOutputStream spyError = new ByteArrayOutputStream();
+		PrintStream error = new PrintStream(spyError);
+
+		System.setErr(error);
+
+		Yirgacheffe.main(new String[] {"example/FaultyParallel.yg"});
+
+		assertEquals(
+			"Errors in file example/FaultyParallel.yg:\n" +
+			"line 7:4 Parallel method must have interface return type.\n",
+			spyError.toString());
+
+		System.setErr(originalError);
+	}
+
+	@Test
 	public void testImplementingInterface() throws Exception
 	{
 		PrintStream originalError = System.err;

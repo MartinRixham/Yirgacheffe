@@ -23,6 +23,11 @@ public class ParallelMethodListener extends FieldDeclarationListener
 	public void exitParallelMethodDeclaration(
 		YirgacheffeParser.ParallelMethodDeclarationContext context)
 	{
+		if (!this.returnType.reflectionClass().isInterface())
+		{
+			return;
+		}
+
 		MethodNode methodVisitor = this.methodNode;
 
 		String methodName =
@@ -77,15 +82,13 @@ public class ParallelMethodListener extends FieldDeclarationListener
 
 		ClassNode writer = new ClassNode();
 
-		String returnType = this.returnType.toFullyQualifiedType();
-
 		writer.visit(
 			Opcodes.V1_8,
 			Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
 			runnableClass,
 			null,
 			"java/lang/Object",
-			new String[] {"java/lang/Runnable", returnType});
+			new String[] {"java/lang/Runnable", this.returnType.toFullyQualifiedType()});
 
 		String signature =
 			this.signature
@@ -108,37 +111,28 @@ public class ParallelMethodListener extends FieldDeclarationListener
 	@Override
 	public void exitParallelMethod(YirgacheffeParser.ParallelMethodContext context)
 	{
-
-		YirgacheffeParser.TypeContext typeContext =
-			context.parallelMethodDeclaration()
-				.classMethodDeclaration()
-				.returnType()
-				.type();
-
-		Type type = this.types.getType(typeContext);
-
-		if (type.reflectionClass().isInterface())
-		{
-			String methodName =
-				context.parallelMethodDeclaration().classMethodDeclaration()
-					.signature().Identifier().getText();
-
-			RunnableClass runnableClass =
-				new RunnableClass(
-					this.sourceFile,
-					this.className,
-					this.className + "$" + methodName,
-					methodName,
-					type,
-					this.signature);
-
-			this.generatedClasses.push(runnableClass.compile(this.generatedClassWriter));
-		}
-		else
+		if (!this.returnType.reflectionClass().isInterface())
 		{
 			String message = "Parallel method must have interface return type.";
 
 			this.errors.push(new Error(context, message));
+
+			return;
 		}
+
+		String methodName =
+			context.parallelMethodDeclaration().classMethodDeclaration()
+				.signature().Identifier().getText();
+
+		RunnableClass runnableClass =
+			new RunnableClass(
+				this.sourceFile,
+				this.className,
+				this.className + "$" + methodName,
+				methodName,
+				this.returnType,
+				this.signature);
+
+		this.generatedClasses.push(runnableClass.compile(this.generatedClassWriter));
 	}
 }

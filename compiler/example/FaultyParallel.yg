@@ -1,0 +1,11 @@
+package example;
+
+class FaultyParallel
+{
+    public FaultyParallel() {}
+
+    parallel public String getString()
+    {
+        return "thingy";
+    }
+}

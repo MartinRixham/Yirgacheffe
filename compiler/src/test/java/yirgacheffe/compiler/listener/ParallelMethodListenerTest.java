@@ -43,9 +43,18 @@ public class ParallelMethodListenerTest
 				"public MyClass() {}\n" +
 			"}";
 
-		Compiler compiler = new Compiler("", source);
+		Compiler compiler = new Compiler("MyClass.yg", source);
+		Classes classes = new Classes();
 
-		CompilationResult result = compiler.compile(new Classes());
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
