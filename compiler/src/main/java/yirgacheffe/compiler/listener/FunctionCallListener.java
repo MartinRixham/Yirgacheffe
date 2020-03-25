@@ -34,12 +34,7 @@ public class FunctionCallListener extends ExpressionListener
 
 		Type owner = this.types.getType(context.type());
 		Coordinate coordinate = new Coordinate(context);
-
-		Expression invoke =
-			new InvokeConstructor(
-				coordinate,
-				owner,
-				this.arguments);
+		Expression invoke = new InvokeConstructor(coordinate, owner, this.arguments);
 
 		this.expressions.push(invoke);
 	}
@@ -57,16 +52,9 @@ public class FunctionCallListener extends ExpressionListener
 		try
 		{
 			String fullyQualifiedType = this.className.replace("/", ".");
-
 			Type thisType = this.classes.loadClass(fullyQualifiedType);
-
 			Coordinate coordinate = new Coordinate(context);
-
-			Expression invoke =
-				new InvokeThis(
-					coordinate,
-					thisType,
-					this.arguments);
+			Expression invoke = new InvokeThis(coordinate, thisType, this.arguments);
 
 			this.expressions.push(invoke);
 		}
