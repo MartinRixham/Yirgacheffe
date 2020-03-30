@@ -265,8 +265,8 @@ public class DynamicDispatchTest
 
 		System.out.println(
 			"---------- execution took " +
-				Duration.ofNanos(endTime - startTime).getSeconds() +
-				" seconds ----------");
+			Duration.ofNanos(endTime - startTime).getSeconds() +
+			" seconds ----------");
 	}
 
 	private static long getCPUTime()

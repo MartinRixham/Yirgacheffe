@@ -1,7 +1,6 @@
 package yirgacheffe;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
@@ -24,7 +23,6 @@ public class InterfaceConstructorTest
 		Bootstrap.clearCache();
 	}
 
-	@Ignore
 	@Test
 	public void testInterfaceConstructor() throws Exception
 	{
