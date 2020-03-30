@@ -994,7 +994,7 @@ public class ConstructorListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 5:0 Constructor MyClass(java.lang.String) not found.\n",
+			"line 5:0 Invoked constructor MyClass(java.lang.String) not found.\n",
 			result.getErrors());
 	}
 

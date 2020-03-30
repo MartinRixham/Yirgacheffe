@@ -84,7 +84,10 @@ public class ParameterisedType implements Type
 
 		for (TypeVariable type: primaryClass.getTypeParameters())
 		{
-			typeNames.push(this.typeParameters.get(type.getName()).toString());
+			if (this.typeParameters.containsKey(type.getName()))
+			{
+				typeNames.push(this.typeParameters.get(type.getName()).toString());
+			}
 		}
 
 		return this.primaryType +

@@ -6,16 +6,13 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.function.AmbiguousMatchResult;
+import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.TailCall;
-import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
-import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -102,27 +99,23 @@ public class InvokeMethod implements Expression, Parameterisable
 
 	public Result compile(Variables variables)
 	{
-		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
 		Array<Function> namedMethods = this.getMethodsNamed(owner, this.name);
-		MatchResult matchResult = new FailedMatchResult();
+		String name = "method " + owner + "." + this.name;
+
+		Arguments arguments =
+			new Arguments(
+				this.coordinate,
+				name,
+				this.arguments,
+				variables);
+
+		MatchResult matchResult = arguments.matches();
 
 		for (Function function: namedMethods)
 		{
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
-
-		String ownerDescriptor = owner.toFullyQualifiedType();
-		Array<Type> parameterTypes = matchResult.getParameterTypes();
-
-		StringBuilder descriptor =
-			new StringBuilder(
-				'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
-				ownerDescriptor + ';' : ownerDescriptor));
-
-		descriptor.append(arguments.getDescriptor(parameterTypes));
-		descriptor.append(')');
-		descriptor.append(matchResult.getReturnType().toJVMType());
 
 		MethodType methodType =
 			MethodType.methodType(
@@ -141,6 +134,15 @@ public class InvokeMethod implements Expression, Parameterisable
 				methodType.toMethodDescriptorString(),
 				false);
 
+		String ownerDescriptor = owner.toFullyQualifiedType();
+		Array<Type> parameterTypes = matchResult.getParameterTypes();
+
+		String descriptor =
+			'(' + (ownerDescriptor.charAt(0) != '[' ? 'L' +
+			ownerDescriptor + ';' : ownerDescriptor) +
+			arguments.getDescriptor(parameterTypes) + ')' +
+			matchResult.getReturnType().toJVMType();
+
 		Type returnType = matchResult.getReturnType();
 
 		Result result = new Result()
@@ -150,10 +152,9 @@ public class InvokeMethod implements Expression, Parameterisable
 			.concat(this.coordinate.compile())
 			.add(new InvokeDynamicInsnNode(
 				matchResult.getName(),
-				descriptor.toString(),
+				descriptor,
 				bootstrapMethod))
-			.concat(returnType.convertTo(this.getType(variables)))
-			.concat(this.getError(matchResult, owner, arguments));
+			.concat(returnType.convertTo(this.getType(variables)));
 
 		variables.stackPop();
 		variables.stackPush(returnType);
@@ -163,52 +164,24 @@ public class InvokeMethod implements Expression, Parameterisable
 
 	public Result compileArguments(Variables variables)
 	{
-		Arguments arguments = new Arguments(this.arguments, variables);
 		Type owner = this.owner.getType(variables);
 		Array<Function> namedMethods = this.getMethodsNamed(owner, this.name);
-		MatchResult matchResult = new FailedMatchResult();
+		String name = "Method " + this.owner + "." + this.name + this.arguments;
+		MatchResult matchResult = new FailedMatchResult(this.coordinate, name);
+
+		Arguments arguments =
+			new Arguments(
+				this.coordinate,
+				name,
+				this.arguments,
+				variables);
 
 		for (Function function: namedMethods)
 		{
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
 
-		return matchResult.compileArguments(variables)
-			.concat(this.getError(matchResult, owner, arguments));
-	}
-
-	private Result getError(
-		MatchResult matchResult, Type owner, Arguments arguments)
-	{
-		Result result = new Result();
-
-		if (matchResult instanceof FailedMatchResult)
-		{
-			String message =
-				"Method " + owner + "." + this.name + arguments + " not found.";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
-		else if (matchResult instanceof AmbiguousMatchResult)
-		{
-			String message =
-				"Ambiguous call to method " + owner + "." + this.name + arguments + ".";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
-
-		for (MismatchedTypes mismatchedTypes: matchResult.getMismatchedParameters())
-		{
-			String message =
-				"Argument of type " +
-				mismatchedTypes.from() +
-				" cannot be assigned to generic parameter of type " +
-				mismatchedTypes.to() + ".";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
-
-		return result;
+		return matchResult.compileArguments(variables);
 	}
 
 	public Array<Function> getMethodsNamed(Type owner, String name)

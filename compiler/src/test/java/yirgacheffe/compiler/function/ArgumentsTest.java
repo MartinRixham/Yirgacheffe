@@ -2,6 +2,7 @@ package yirgacheffe.compiler.function;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
@@ -44,10 +45,10 @@ public class ArgumentsTest
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Expression string = new Streeng(coordinate, "\"\"");
 		Array<Expression> args = new Array<>(string);
-		Arguments arguments = new Arguments(args, variables);
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
 		Method[] methods = printStream.reflectionClass().getMethods();
-		MatchResult matchResult = new FailedMatchResult();
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Method method: methods)
 		{
@@ -62,7 +63,7 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
 		assertEquals("println", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
+		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
@@ -78,10 +79,10 @@ public class ArgumentsTest
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Expression bool = new Bool(coordinate, "true");
 		Array<Expression> args = new Array<>(bool);
-		Arguments arguments = new Arguments(args, variables);
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
 		Method[] methods = printStream.reflectionClass().getMethods();
-		MatchResult matchResult = new FailedMatchResult();
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Method method: methods)
 		{
@@ -96,7 +97,7 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
 		assertEquals("println", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
+		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
@@ -108,11 +109,15 @@ public class ArgumentsTest
 	@Test
 	public void testFailedToMatchFunction()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
-		Arguments arguments = new Arguments(new Array<>(), variables);
-		MatchResult matchResult = new FailedMatchResult();
+
+		Arguments arguments =
+			new Arguments(coordinate, "method", new Array<>(), variables);
+
+		MatchResult matchResult = arguments.matches();
 
 		for (Method method: methods)
 		{
@@ -126,8 +131,12 @@ public class ArgumentsTest
 
 		assertTrue(matchResult instanceof FailedMatchResult);
 		assertEquals("", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Error> errors =  matchResult.compileArguments(variables).getErrors();
+
+		assertEquals(1, errors.length());
+		assertEquals("line 3:6 Invoked method() not found.", errors.get(0).toString());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
@@ -144,10 +153,10 @@ public class ArgumentsTest
 		Array<Type> strings = new Array<>(string, string);
 		Type mapType = new ParameterisedType(hashMap, strings);
 		Array<Expression> args = new Array<>(new This(coordinate, mapType));
-		Arguments arguments = new Arguments(args, variables);
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type testClass = new ReferenceType(ArgumentsTest.class);
 		Method[] methods = testClass.reflectionClass().getMethods();
-		MatchResult matchResult = new FailedMatchResult();
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Method method: methods)
 		{
@@ -162,8 +171,16 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof AmbiguousMatchResult);
 		assertEquals(0, matchResult.score());
 		assertEquals("", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Error> errors =  matchResult.compileArguments(variables).getErrors();
+
+		assertEquals(1, errors.length());
+
+		assertEquals(
+			"line 3:65 Ambiguous call to " +
+			"method(java.util.HashMap<java.lang.String,java.lang.String>).",
+			errors.get(0).toString());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
@@ -178,8 +195,8 @@ public class ArgumentsTest
 		Type string = new ReferenceType(String.class);
 		Method[] methods = string.reflectionClass().getMethods();
 		Array<Expression> args = new Array<>(new Bool(coordinate, "true"));
-		Arguments arguments = new Arguments(args, variables);
-		MatchResult matchResult = new FailedMatchResult();
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Method method: methods)
 		{
@@ -194,8 +211,14 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof FailedMatchResult);
 		assertEquals(-1, matchResult.score());
 		assertEquals("", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Error> errors = matchResult.compileArguments(variables).getErrors();
+
+		assertEquals(1, errors.length());
+		assertEquals(
+			"line 3:65 Invoked method(Bool) not found.",
+			errors.get(0).toString());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
@@ -210,8 +233,8 @@ public class ArgumentsTest
 		Type string = new ReferenceType(String.class);
 		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
 		Array<Expression> args = new Array<>(new Num(coordinate, "1"));
-		Arguments arguments = new Arguments(args, variables);
-		MatchResult matchResult = new FailedMatchResult();
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Constructor<?> constructor: constructors)
 		{
@@ -223,8 +246,15 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof FailedMatchResult);
 		assertEquals(-1, matchResult.score());
 		assertEquals("", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
+
+		Array<Error> errors = matchResult.compileArguments(variables).getErrors();
+
+		assertEquals(1, errors.length());
+
+		assertEquals(
+			"line 3:34 Invoked method(Num) not found.",
+			errors.get(0).toString());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
 
@@ -242,8 +272,8 @@ public class ArgumentsTest
 		Type owner = new ParameterisedType(mutableReference, new Array<>(string));
 		Method[] methods = mutableReference.reflectionClass().getMethods();
 		Array<Expression> args = new Array<>(new This(coordinate, object));
-		Arguments arguments = new Arguments(args, variables);
-		MatchResult matchResult = new FailedMatchResult();
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Method method: methods)
 		{
@@ -258,7 +288,7 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1000, matchResult.score());
 		assertEquals("set", matchResult.getName());
-		assertEquals(1, matchResult.getMismatchedParameters().length());
+		assertEquals(1, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();
@@ -279,8 +309,8 @@ public class ArgumentsTest
 		ArrayType arrayType = new ArrayType("[Ljava.lang.String;", string);
 		Expression argument = new This(coordinate, arrayType);
 		Array<Expression> args = new Array<>(argument);
-		Arguments arguments = new Arguments(args, variables);
-		MatchResult matchResult = new FailedMatchResult();
+		Arguments arguments = new Arguments(coordinate, "method", args, variables);
+		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
 		for (Constructor<?> constructor: constructors)
 		{
@@ -292,7 +322,7 @@ public class ArgumentsTest
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
 		assertEquals(1, matchResult.score());
 		assertEquals("yirgacheffe.lang.Array", matchResult.getName());
-		assertEquals(0, matchResult.getMismatchedParameters().length());
+		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();

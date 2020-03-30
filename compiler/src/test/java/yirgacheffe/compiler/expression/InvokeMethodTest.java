@@ -643,7 +643,7 @@ public class InvokeMethodTest
 
 		assertEquals(1, result.getErrors().length());
 		assertEquals(
-			"line 0:1 Method " +
+			"line 0:1 Invoked method " +
 			"yirgacheffe.compiler.expression.InvokeMethodTest" +
 			".method(java.lang.String,java.lang.String) not found.",
 			result.getErrors().get(0).toString());

@@ -1,6 +1,8 @@
 package yirgacheffe.compiler.function;
 
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.MismatchedTypes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -8,6 +10,10 @@ import yirgacheffe.lang.Array;
 
 public class SuccessfulMatchResult implements MatchResult
 {
+	private Coordinate coordinate;
+
+	private String name;
+
 	private Function function;
 
 	private Arguments arguments;
@@ -17,11 +23,15 @@ public class SuccessfulMatchResult implements MatchResult
 	private int score;
 
 	public SuccessfulMatchResult(
+		Coordinate coordinate,
+		String name,
 		Function function,
 		Arguments arguments,
 		int score,
 		Array<MismatchedTypes> mismatchedParameters)
 	{
+		this.coordinate = coordinate;
+		this.name = name;
 		this.function = function;
 		this.arguments = arguments;
 		this.score = score;
@@ -33,7 +43,26 @@ public class SuccessfulMatchResult implements MatchResult
 		return this.arguments.compile(
 			this.function.getParameterTypes(),
 			this.function.hasVariableArguments(),
-			variables);
+			variables)
+			.concat(this.getError());
+	}
+
+	private Result getError()
+	{
+		Result result = new Result();
+
+		for (MismatchedTypes mismatchedTypes: this.mismatchedParameters)
+		{
+			String message =
+				"Argument of type " +
+					mismatchedTypes.from() +
+					" cannot be assigned to generic parameter of type " +
+					mismatchedTypes.to() + ".";
+
+			result = result.add(new Error(this.coordinate, message));
+		}
+
+		return result;
 	}
 
 	public String getName()
@@ -51,11 +80,6 @@ public class SuccessfulMatchResult implements MatchResult
 		return this.function.getReturnType();
 	}
 
-	public Array<MismatchedTypes> getMismatchedParameters()
-	{
-		return this.mismatchedParameters;
-	}
-
 	public MatchResult betterOf(MatchResult other)
 	{
 		if (this.score > other.score())
@@ -68,7 +92,7 @@ public class SuccessfulMatchResult implements MatchResult
 		}
 		else
 		{
-			return new AmbiguousMatchResult(this.score);
+			return new AmbiguousMatchResult(this.coordinate, this.name, this.score);
 		}
 	}
 

@@ -7,13 +7,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.function.AmbiguousMatchResult;
-import yirgacheffe.compiler.function.FailedMatchResult;
+import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.MatchResult;
-import yirgacheffe.compiler.type.MismatchedTypes;
-import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -46,8 +42,16 @@ public class InvokeConstructor implements Expression
 	public Result compile(Variables variables)
 	{
 		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
-		Arguments arguments = new Arguments(this.arguments, variables);
-		MatchResult matchResult = new FailedMatchResult();
+		String name = "constructor " + this.owner;
+
+		Arguments arguments =
+			new Arguments(
+				this.coordinate,
+				name,
+				this.arguments,
+				variables);
+
+		MatchResult matchResult = arguments.matches();
 
 		for (Constructor<?> constructor : constructors)
 		{
@@ -71,43 +75,9 @@ public class InvokeConstructor implements Expression
 				this.owner.toFullyQualifiedType(),
 				"<init>",
 				descriptor,
-				false))
-			.concat(this.getError(matchResult, arguments));
+				false));
 
 		variables.stackPush(this.owner);
-
-		return result;
-	}
-
-	private Result getError(MatchResult matchResult, Arguments arguments)
-	{
-		Result result = new Result();
-
-		if (matchResult instanceof FailedMatchResult)
-		{
-			String message =
-				"Constructor " + this.owner + arguments + " not found.";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
-		else if (matchResult instanceof AmbiguousMatchResult)
-		{
-			String message =
-				"Ambiguous call to constructor " + this.owner + arguments + ".";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
-
-		for (MismatchedTypes mismatchedTypes: matchResult.getMismatchedParameters())
-		{
-			String message =
-				"Argument of type " +
-				mismatchedTypes.from() +
-				" cannot be assigned to generic parameter of type " +
-				mismatchedTypes.to() + ".";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
 
 		return result;
 	}

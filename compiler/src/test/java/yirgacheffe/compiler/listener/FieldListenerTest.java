@@ -974,7 +974,7 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 6:0 Cannot assign expression of type Num " +
-				"to field of type java.lang.String.\n",
+			"to field of type java.lang.String.\n",
 			result.getErrors());
 	}
 
@@ -999,7 +999,7 @@ public class FieldListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 6:0 Unknown local variable 'out'.\n" +
-				"line 6:3 Method java.lang.Object.println(Num) not found.\n",
+			"line 6:3 Invoked method java.lang.Object.println(Num) not found.\n",
 			result.getErrors());
 	}
 
@@ -1318,7 +1318,7 @@ public class FieldListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals("line 10:4 Unknown field 'out'.\n" +
-			"line 10:8 Method java.lang.Object.println() not found.\n",
+			"line 10:8 Invoked method java.lang.Object.println() not found.\n",
 			result.getErrors());
 	}
 

@@ -344,8 +344,8 @@ public class ClassListenerTest
 		assertEquals(
 			"line 1:8 Package name yirgacheffe does not correspond to the file path .\n" +
 			"line 5:7 Unrecognised type: MyClass is not a type.\n" +
-			"line 7:11 Method java.lang.Object.method() not found.\n" +
-			"line 7:20 Method java.lang.Object.method() not found.\n",
+			"line 7:11 Invoked method java.lang.Object.method() not found.\n" +
+			"line 7:20 Invoked method java.lang.Object.method() not found.\n",
 			result.getErrors());
 	}
 
@@ -648,7 +648,7 @@ public class ClassListenerTest
 		assertFalse(result.isSuccessful());
 
 		assertEquals(
-			"line 5:0 Constructor MyNumeration(java.lang.String) not found.\n",
+			"line 5:0 Invoked constructor MyNumeration(java.lang.String) not found.\n",
 			result.getErrors());
 	}
 

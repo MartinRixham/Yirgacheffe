@@ -1,7 +1,8 @@
 package yirgacheffe.compiler.function;
 
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.type.MismatchedTypes;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
@@ -9,10 +10,19 @@ import yirgacheffe.lang.Array;
 
 public class AmbiguousMatchResult implements MatchResult
 {
+	private Coordinate coordinate;
+
+	private String name;
+
 	private int score;
 
-	public AmbiguousMatchResult(int score)
+	public AmbiguousMatchResult(
+		Coordinate coordinate,
+		String name,
+		int score)
 	{
+		this.coordinate = coordinate;
+		this.name = name;
 		this.score = score;
 	}
 
@@ -35,7 +45,9 @@ public class AmbiguousMatchResult implements MatchResult
 
 	public Result compileArguments(Variables variables)
 	{
-		return new Result();
+		String message = "Ambiguous call to " + this.name + ".";
+
+		return new Result().add(new Error(this.coordinate, message));
 	}
 
 	public String getName()
@@ -51,10 +63,5 @@ public class AmbiguousMatchResult implements MatchResult
 	public Type getReturnType()
 	{
 		return new NullType();
-	}
-
-	public Array<MismatchedTypes> getMismatchedParameters()
-	{
-		return new Array<>();
 	}
 }
