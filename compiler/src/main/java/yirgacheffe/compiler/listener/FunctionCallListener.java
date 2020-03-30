@@ -7,6 +7,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.InvokeThis;
+import yirgacheffe.compiler.expression.InvokeThisInterface;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -54,7 +55,17 @@ public class FunctionCallListener extends ExpressionListener
 			String fullyQualifiedType = this.className.replace("/", ".");
 			Type thisType = this.classes.loadClass(fullyQualifiedType);
 			Coordinate coordinate = new Coordinate(context);
-			Expression invoke = new InvokeThis(coordinate, thisType, this.arguments);
+
+			Expression invoke;
+
+			if (this.inInterface)
+			{
+				invoke = new InvokeThisInterface(coordinate, thisType, this.arguments);
+			}
+			else
+			{
+				invoke = new InvokeThis(coordinate, thisType, this.arguments);
+			}
 
 			this.expressions.push(invoke);
 		}
