@@ -56,7 +56,7 @@ public class AmbiguousMatchResultTest
 		MatchResult firstResult = new AmbiguousMatchResult(coordinate, "method", 1);
 		MatchResult secondResult = new AmbiguousMatchResult(coordinate, "method", 1);
 
-		assertEquals(firstResult, firstResult.betterOf(secondResult));
-		assertEquals(secondResult, secondResult.betterOf(firstResult));
+		assertEquals(secondResult, firstResult.betterOf(secondResult));
+		assertEquals(firstResult, secondResult.betterOf(firstResult));
 	}
 }

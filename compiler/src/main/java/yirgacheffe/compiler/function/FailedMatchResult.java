@@ -27,9 +27,9 @@ public class FailedMatchResult implements MatchResult
 		return other;
 	}
 
-	public int score()
+	public boolean betters(int score)
 	{
-		return -1;
+		return false;
 	}
 
 	public Result compileArguments(Variables variables)

@@ -61,7 +61,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
-		assertEquals(1000, matchResult.score());
 		assertEquals("println", matchResult.getName());
 		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
@@ -95,7 +94,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
-		assertEquals(1000, matchResult.score());
 		assertEquals("println", matchResult.getName());
 		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
@@ -169,7 +167,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof AmbiguousMatchResult);
-		assertEquals(0, matchResult.score());
 		assertEquals("", matchResult.getName());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
 
@@ -209,7 +206,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof FailedMatchResult);
-		assertEquals(-1, matchResult.score());
 		assertEquals("", matchResult.getName());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
 
@@ -244,7 +240,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof FailedMatchResult);
-		assertEquals(-1, matchResult.score());
 		assertEquals("", matchResult.getName());
 		assertTrue(matchResult.getReturnType() instanceof NullType);
 
@@ -286,7 +281,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
-		assertEquals(1000, matchResult.score());
 		assertEquals("set", matchResult.getName());
 		assertEquals(1, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());
@@ -320,7 +314,6 @@ public class ArgumentsTest
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);
-		assertEquals(1, matchResult.score());
 		assertEquals("yirgacheffe.lang.Array", matchResult.getName());
 		assertEquals(0, matchResult.compileArguments(variables).getErrors().length());
 		assertEquals(PrimitiveType.VOID, matchResult.getReturnType());

@@ -9,7 +9,7 @@ public interface MatchResult
 {
 	MatchResult betterOf(MatchResult other);
 
-	int score();
+	boolean betters(int score);
 
 	Result compileArguments(Variables variables);
 

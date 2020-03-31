@@ -38,6 +38,28 @@ public class SuccessfulMatchResult implements MatchResult
 		this.mismatchedParameters = mismatchedParameters;
 	}
 
+	public MatchResult betterOf(MatchResult other)
+	{
+		if (other == this)
+		{
+			return new AmbiguousMatchResult(this.coordinate, this.name, this.score);
+		}
+		else if (other.betters(this.score))
+		{
+			return new AmbiguousMatchResult(this.coordinate, this.name, this.score)
+				.betterOf(other);
+		}
+		else
+		{
+			return other.betterOf(other).betterOf(this);
+		}
+	}
+
+	public boolean betters(int score)
+	{
+		return this.score > score;
+	}
+
 	public Result compileArguments(Variables variables)
 	{
 		return this.arguments.compile(
@@ -78,26 +100,5 @@ public class SuccessfulMatchResult implements MatchResult
 	public Type getReturnType()
 	{
 		return this.function.getReturnType();
-	}
-
-	public MatchResult betterOf(MatchResult other)
-	{
-		if (this.score > other.score())
-		{
-			return this;
-		}
-		else if (this.score < other.score())
-		{
-			return other;
-		}
-		else
-		{
-			return new AmbiguousMatchResult(this.coordinate, this.name, this.score);
-		}
-	}
-
-	public int score()
-	{
-		return this.score;
 	}
 }

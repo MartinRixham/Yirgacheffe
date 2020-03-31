@@ -28,7 +28,7 @@ public class AmbiguousMatchResult implements MatchResult
 
 	public MatchResult betterOf(MatchResult other)
 	{
-		if (this.score < other.score())
+		if (other.betters(this.score))
 		{
 			return other;
 		}
@@ -38,9 +38,9 @@ public class AmbiguousMatchResult implements MatchResult
 		}
 	}
 
-	public int score()
+	public boolean betters(int score)
 	{
-		return this.score;
+		return this.score >= score;
 	}
 
 	public Result compileArguments(Variables variables)
