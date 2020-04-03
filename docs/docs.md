@@ -48,6 +48,11 @@ There are some good uses of static methods such a factory methods, but you can d
 There is always a temptation to abuse static members and when they are misused the implications are inherently non-local.
 So static methods, as well as non-constant static fields have been left out of Yirgacheffe.
 
+OK so I've thought about it and I've decided to include factory methods in the form of interface constructors.
+An interface constructor is defined on an interface and called much like a class constructor.
+It differs from a class constructor in that it must explicitly return a concrete implementation of the interface being constructed.
+This should allow factory methods to be written without significantly extending the semantics of Yirgacheffe or allowing static methods in the general case.
+
 ### Type Casting
 
 You cannot cast an object down to it's specific subtype or check an object's subtype with `instanceof`.

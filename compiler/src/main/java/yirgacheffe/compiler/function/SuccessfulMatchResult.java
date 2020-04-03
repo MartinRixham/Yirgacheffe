@@ -77,9 +77,9 @@ public class SuccessfulMatchResult implements MatchResult
 		{
 			String message =
 				"Argument of type " +
-					mismatchedTypes.from() +
-					" cannot be assigned to generic parameter of type " +
-					mismatchedTypes.to() + ".";
+				mismatchedTypes.from() +
+				" cannot be assigned to generic parameter of type " +
+				mismatchedTypes.to() + ".";
 
 			result = result.add(new Error(this.coordinate, message));
 		}

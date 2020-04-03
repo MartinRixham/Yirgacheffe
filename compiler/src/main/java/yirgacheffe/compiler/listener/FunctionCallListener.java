@@ -5,9 +5,9 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
+import yirgacheffe.compiler.expression.InvokeInterfaceConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.InvokeThis;
-import yirgacheffe.compiler.expression.InvokeThisInterface;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -35,7 +35,17 @@ public class FunctionCallListener extends ExpressionListener
 
 		Type owner = this.types.getType(context.type());
 		Coordinate coordinate = new Coordinate(context);
-		Expression invoke = new InvokeConstructor(coordinate, owner, this.arguments);
+
+		Expression invoke;
+
+		if (owner.reflectionClass().isInterface())
+		{
+			invoke = new InvokeInterfaceConstructor(coordinate, owner, this.arguments);
+		}
+		else
+		{
+			invoke = new InvokeConstructor(coordinate, owner, this.arguments);
+		}
 
 		this.expressions.push(invoke);
 	}
@@ -60,7 +70,8 @@ public class FunctionCallListener extends ExpressionListener
 
 			if (this.inInterface)
 			{
-				invoke = new InvokeThisInterface(coordinate, thisType, this.arguments);
+				invoke =
+					new InvokeInterfaceConstructor(coordinate, thisType, this.arguments);
 			}
 			else
 			{
