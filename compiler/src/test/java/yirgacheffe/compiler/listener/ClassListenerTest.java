@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
@@ -36,7 +35,7 @@ public class ClassListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(1, result.getErrors().split("\n").length);
-		assertEquals("line 1:23 mismatched input", result.getErrors().substring(0, 26));
+		assertEquals("line 1:23 Missing '}'.\n", result.getErrors());
 	}
 
 	@Test
@@ -163,7 +162,6 @@ public class ClassListenerTest
 			result.getErrors());
 	}
 
-	@Ignore
 	@Test
 	public void testClassWithMissingCloseBlock()
 	{

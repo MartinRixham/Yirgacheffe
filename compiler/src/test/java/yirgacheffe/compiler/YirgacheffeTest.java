@@ -62,8 +62,8 @@ public class YirgacheffeTest
 
 		assertEquals(
 			"Errors in file example/Unparsable.yg:\n" +
-			"line 1:40 mismatched input '{'",
-			spyError.toString().substring(0, 68));
+			"line 1:40 Missing '}'.\n",
+			spyError.toString());
 
 		System.setErr(originalError);
 	}

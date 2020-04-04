@@ -277,7 +277,7 @@ public class DynamicDispatchTest
 	}
 }
 
-// previous runs
+// previous runs with cache disabled
 // ---------- execution took 50 seconds ----------
 // ---------- execution took 40 seconds ----------
 // ---------- execution took 38 seconds ----------
