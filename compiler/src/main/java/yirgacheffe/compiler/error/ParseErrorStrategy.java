@@ -4,23 +4,14 @@ import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.Parser;
-
-import java.util.Arrays;
+import yirgacheffe.lang.Array;
 
 public class ParseErrorStrategy extends DefaultErrorStrategy
 {
 	@Override
 	public void reportInputMismatch(Parser recognizer, InputMismatchException e)
 	{
-		String expectedTokens =
-			e.getExpectedTokens().toString(recognizer.getVocabulary());
-
-		String[] tokens =
-			expectedTokens
-				.substring(1, expectedTokens.length() - 1)
-				.split(", ");
-
-		if (Arrays.asList(tokens).contains("'}'"))
+		if (this.getTokens(recognizer).contains("'}'"))
 		{
 			String message = "Missing '}'";
 
@@ -32,11 +23,33 @@ public class ParseErrorStrategy extends DefaultErrorStrategy
 		}
 	}
 
-	/*@Override
-	public void reportMissingToken(Parser recognizer)
+	@Override
+	public void reportUnwantedToken(Parser recognizer)
 	{
-		super.reportMissingToken(recognizer);
-	}*/
+		if (this.getTokens(recognizer).contains("'}'"))
+		{
+			String message = "Missing '}'";
+
+			recognizer.notifyErrorListeners(recognizer.getCurrentToken(), message, null);
+		}
+		else
+		{
+			super.reportUnwantedToken(recognizer);
+		}
+	}
+
+	private Array<String> getTokens(Parser recognizer)
+	{
+		String expectedTokens =
+			recognizer.getExpectedTokens().toString(recognizer.getVocabulary());
+
+		String[] tokens =
+			expectedTokens
+				.substring(1, expectedTokens.length() - 1)
+				.split(", ");
+
+		return new Array<>(tokens);
+	}
 
 	@Override
 	public void reportNoViableAlternative(Parser recognizer, NoViableAltException e)

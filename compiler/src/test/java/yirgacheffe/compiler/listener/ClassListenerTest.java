@@ -39,6 +39,48 @@ public class ClassListenerTest
 	}
 
 	@Test
+	public void testAnotherParseError()
+	{
+		String source = "interface MyInterface {{}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(1, result.getErrors().split("\n").length);
+		assertEquals("line 1:23 Missing '}'.\n", result.getErrors());
+	}
+
+	@Test
+	public void testParseErrorWithRandomLetter()
+	{
+		String source = "interface MyInterface {}AA";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(1, result.getErrors().split("\n").length);
+		assertEquals(
+			"line 1:26 mismatched input " +
+			"'<EOF>' expecting {'{', 'enumerates', 'implements', '<', Identifier}.\n",
+			result.getErrors());
+	}
+
+	@Test
+	public void testParseErrorWithCloseBracket()
+	{
+		String source = "}";
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(1, result.getErrors().split("\n").length);
+		assertEquals(
+			"line 1:0 extraneous input '}' " +
+			"expecting {<EOF>, 'import', 'class', 'interface', Identifier}.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testNamedEmptyInterface()
 	{
 		String source = "interface MyInterface {}";
