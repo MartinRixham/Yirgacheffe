@@ -122,6 +122,15 @@ public class FunctionCallListener extends ExpressionListener
 	}
 
 	@Override
+	public void exitNotCallable(YirgacheffeParser.NotCallableContext context)
+	{
+		String message =
+			"'" + context.unaryExpression().getText() + "' is not a callable function.";
+
+		this.errors.push(new Error(context, message));
+	}
+
+	@Override
 	public void exitArguments(YirgacheffeParser.ArgumentsContext context)
 	{
 		Array<Expression> arguments = new Array<>();

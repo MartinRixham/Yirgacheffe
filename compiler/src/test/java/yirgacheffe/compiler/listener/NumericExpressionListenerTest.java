@@ -1124,4 +1124,65 @@ public class NumericExpressionListenerTest
 		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
 		assertEquals(1, fifthInstruction.var);
 	}
+
+	@Test
+	public void testPredecrementInRecursion()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method(Num i)" +
+				"{\n" +
+					"return this.method(--i);\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(6, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.DLOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DCONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DNEG, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DUP2, fourthInstruction.getOpcode());
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
+		assertEquals(1, fifthInstruction.var);
+	}
 }

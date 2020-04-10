@@ -166,7 +166,7 @@ public class InvokeMethod implements Expression, Parameterisable
 	{
 		Type owner = this.owner.getType(variables);
 		Array<Function> namedMethods = this.getMethodsNamed(owner, this.name);
-		String name = "Method " + this.owner + "." + this.name + this.arguments;
+		String name = "method " + owner + "." + this.name;
 		MatchResult matchResult = new FailedMatchResult(this.coordinate, name);
 
 		Arguments arguments =

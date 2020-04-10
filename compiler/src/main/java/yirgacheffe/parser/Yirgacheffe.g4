@@ -171,7 +171,8 @@ unaryOperation:
     postdecrement |
     predecrement |
     negation |
-    unaryExpression;
+    unaryExpression |
+    notCallable;
 
 negation: Subtract unaryExpression;
 
@@ -182,6 +183,8 @@ preincrement: PlusPlus unaryExpression;
 postdecrement: unaryExpression MinusMinus;
 
 predecrement: MinusMinus unaryExpression;
+
+notCallable: unaryExpression arguments;
 
 unaryExpression:
 	(instantiation | selfInstantiation | literal | variableRead | thisRead | enumerationAccess | parenthesis)

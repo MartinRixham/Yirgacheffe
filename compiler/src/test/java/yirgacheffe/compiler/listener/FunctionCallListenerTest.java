@@ -1247,6 +1247,30 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testMissingThis()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public String method(Num i)" +
+				"{\n" +
+					"String method = \"method\";" +
+					"return method(i);\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 4:32 'method' is not a callable function.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testCallingBrokenMethod()
 	{
 		String source =
