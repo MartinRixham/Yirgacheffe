@@ -348,6 +348,32 @@ public class ClassListenerTest
 	}
 
 	@Test
+	public void testInterfaceWithMainMethod()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:0 Method body not permitted for interface method.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testImportUnknownType()
 	{
 		String source =

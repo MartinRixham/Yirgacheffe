@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
@@ -63,26 +62,44 @@ public class ForTest
 
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
+		assertEquals(2, instructions.length());
+
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);
 
 		Label continueLabel = firstInstruction.getLabel();
 
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+		JumpInsnNode secondInstruction = (JumpInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+		assertEquals(Opcodes.GOTO, secondInstruction.getOpcode());
+		assertEquals(continueLabel, secondInstruction.label.getLabel());
+	}
 
-		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(2);
+	@Test
+	public void testExitConditionFalse()
+	{
+		Coordinate coordinate = new Coordinate(3, 4);
+		Expression fals = new Bool(coordinate, "false");
+		Block block = new Block(coordinate, new Array<>());
 
-		assertEquals(Opcodes.IFEQ, thirdInstruction.getOpcode());
+		For forStatement = new For(new DoNothing(), fals, new DoNothing(), block);
+
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		Result result = forStatement.compile(variables, null);
+
+		assertEquals(0, variables.getStack().length());
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		assertEquals(2, instructions.length());
+
+		JumpInsnNode thirdInstruction = (JumpInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.GOTO, thirdInstruction.getOpcode());
 
 		Label exitLabel = thirdInstruction.label.getLabel();
 
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.GOTO, fourthInstruction.getOpcode());
-		assertEquals(continueLabel, fourthInstruction.label.getLabel());
-
-		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		LabelNode fifthInstruction = (LabelNode) instructions.get(1);
 
 		assertEquals(exitLabel, fifthInstruction.getLabel());
 	}

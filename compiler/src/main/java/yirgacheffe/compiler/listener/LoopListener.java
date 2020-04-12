@@ -4,6 +4,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.statement.Block;
+import yirgacheffe.compiler.statement.DoNothing;
 import yirgacheffe.compiler.statement.For;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.type.Classes;
@@ -25,9 +26,7 @@ public class LoopListener extends StatementListener
 
 	public void exitForStatement(YirgacheffeParser.ForStatementContext context)
 	{
-		if (this.initialiser != null &&
-			this.exitCondition != null &&
-			this.incrementer != null &&
+		if (this.exitCondition != null &&
 			this.statements.length() > 0)
 		{
 			Coordinate coordinate = new Coordinate(context);
@@ -35,24 +34,30 @@ public class LoopListener extends StatementListener
 
 			For forStatement =
 				new For(
-					this.initialiser,
+					this.handleMissing(this.initialiser),
 					this.exitCondition,
-					this.incrementer,
+					this.handleMissing(this.incrementer),
 					statement);
 
 			this.statements.push(new Block(coordinate, new Array<>(forStatement)));
 		}
 	}
 
-	public void exitInitialiser(YirgacheffeParser.InitialiserContext context)
+	private Statement handleMissing(Statement statement)
 	{
-		if (context.statementLine() == null)
+		if (statement == null)
 		{
-			String message = "Missing loop initialiser.";
-
-			this.errors.push(new Error(context, message));
+			return new DoNothing();
 		}
 		else
+		{
+			return statement;
+		}
+	}
+
+	public void exitInitialiser(YirgacheffeParser.InitialiserContext context)
+	{
+		if (context.statementLine() != null)
 		{
 			this.initialiser = this.statements.pop();
 		}
@@ -74,13 +79,7 @@ public class LoopListener extends StatementListener
 
 	public void exitIncrementer(YirgacheffeParser.IncrementerContext context)
 	{
-		if (context.statementLine() == null)
-		{
-			String message = "Missing loop incrementer.";
-
-			this.errors.push(new Error(context, message));
-		}
-		else
+		if (context.statementLine() != null)
 		{
 			this.incrementer = this.statements.pop();
 		}

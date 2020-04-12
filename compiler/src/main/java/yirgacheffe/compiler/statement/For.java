@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
+import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
@@ -51,12 +52,22 @@ public class For implements Statement
 	{
 		Label exitLabel = new Label();
 		Label continueLabel = new Label();
+		Result initialiser = this.initialiser.compile(variables, caller);
 
-		Result result =
-			this.initialiser.compile(variables, caller)
-				.add(new LabelNode(continueLabel));
+		Result result = initialiser.add(new LabelNode(continueLabel));
 
-		if (this.exitCondition instanceof Equation)
+		if (this.exitCondition instanceof Bool)
+		{
+			Bool bool = (Bool) this.exitCondition;
+
+			if (bool.getValue().equals(false))
+			{
+				result =
+					initialiser
+						.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(exitLabel)));
+			}
+		}
+		else if (this.exitCondition instanceof Equation)
 		{
 			Equation equation = (Equation) this.exitCondition;
 
@@ -70,14 +81,35 @@ public class For implements Statement
 				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(exitLabel)));
 		}
 
-		variables.stackPop();
-
-		return result
+		result = result
 			.concat(this.statement.compile(variables, caller))
-			.concat(this.incrementer.compile(variables, caller))
-			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(continueLabel)))
-			.add(new LabelNode(exitLabel));
+			.concat(this.incrementer.compile(variables, caller));
+
+		if (this.exitCondition instanceof Bool)
+		{
+			Bool bool = (Bool) this.exitCondition;
+
+			if (bool.getValue().equals(true))
+			{
+				result = result
+					.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(continueLabel)));
+			}
+			else
+			{
+				result = result
+					.add(new LabelNode(exitLabel));
+			}
+		}
+		else
+		{
+			result = result
+				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(continueLabel)))
+				.add(new LabelNode(exitLabel));
+		}
+
+		return result;
 	}
+
 	public Array<VariableRead> getVariableReads()
 	{
 		return this.initialiser.getVariableReads()

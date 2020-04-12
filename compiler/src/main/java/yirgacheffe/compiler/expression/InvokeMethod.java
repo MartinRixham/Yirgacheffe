@@ -61,16 +61,7 @@ public class InvokeMethod implements Expression, Parameterisable
 		Type ownerType = this.owner.getType(variables);
 		Class<?> ownerClass = ownerType.reflectionClass();
 		Method[] methods = ownerClass.getDeclaredMethods();
-		Type returnType = new NullType();
-
-		for (Method method: methods)
-		{
-			if (method.getName().equals(this.name))
-			{
-				returnType = new Function(ownerType, method).getReturnType();
-				break;
-			}
-		}
+		Type returnType = this.getReturnType(ownerType, methods);
 
 		if (returnType.equals(PrimitiveType.INT) ||
 			returnType.equals(PrimitiveType.LONG) ||
@@ -95,6 +86,19 @@ public class InvokeMethod implements Expression, Parameterisable
 		}
 
 		return returnType;
+	}
+
+	private Type getReturnType(Type ownerType, Method[] methods)
+	{
+		for (Method method: methods)
+		{
+			if (method.getName().equals(this.name))
+			{
+				return new Function(ownerType, method).getReturnType();
+			}
+		}
+
+		return new NullType();
 	}
 
 	public Result compile(Variables variables)

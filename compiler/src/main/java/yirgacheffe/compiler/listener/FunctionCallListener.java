@@ -36,18 +36,20 @@ public class FunctionCallListener extends ExpressionListener
 		Type owner = this.types.getType(context.type());
 		Coordinate coordinate = new Coordinate(context);
 
-		Expression invoke;
+		this.expressions.push(this.getConstructorCall(coordinate, owner));
+	}
 
+	private Expression getConstructorCall(Coordinate coordinate, Type owner)
+	{
 		if (owner.reflectionClass().isInterface())
 		{
-			invoke = new InvokeInterfaceConstructor(coordinate, owner, this.arguments);
+			return
+				new InvokeInterfaceConstructor(coordinate, owner, this.arguments);
 		}
 		else
 		{
-			invoke = new InvokeConstructor(coordinate, owner, this.arguments);
+			return new InvokeConstructor(coordinate, owner, this.arguments);
 		}
-
-		this.expressions.push(invoke);
 	}
 
 	@Override
@@ -66,23 +68,24 @@ public class FunctionCallListener extends ExpressionListener
 			Type thisType = this.classes.loadClass(fullyQualifiedType);
 			Coordinate coordinate = new Coordinate(context);
 
-			Expression invoke;
-
-			if (this.inInterface)
-			{
-				invoke =
-					new InvokeInterfaceConstructor(coordinate, thisType, this.arguments);
-			}
-			else
-			{
-				invoke = new InvokeThis(coordinate, thisType, this.arguments);
-			}
-
-			this.expressions.push(invoke);
+			this.expressions.push(this.getThisCall(coordinate, thisType));
 		}
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
 			throw new RuntimeException(e);
+		}
+	}
+
+	private Expression getThisCall(Coordinate coordinate, Type thisType)
+	{
+		if (this.inInterface)
+		{
+			return
+				new InvokeInterfaceConstructor(coordinate, thisType, this.arguments);
+		}
+		else
+		{
+			return new InvokeThis(coordinate, thisType, this.arguments);
 		}
 	}
 

@@ -32,18 +32,21 @@ public class FieldRead implements Expression
 	{
 		Type ownerType = this.owner.getType(variables);
 		Field[] fields = ownerType.reflectionClass().getDeclaredFields();
-		Type type = new NullType();
 
+		return this.getType(ownerType, fields);
+	}
+
+	private Type getType(Type ownerType, Field[] fields)
+	{
 		for (Field field: fields)
 		{
 			if (field.getName().equals(this.name))
 			{
-				type = Type.getType(field.getGenericType(), ownerType);
-				break;
+				return Type.getType(field.getGenericType(), ownerType);
 			}
 		}
 
-		return type;
+		return new NullType();
 	}
 
 	public Result compile(Variables variables)
