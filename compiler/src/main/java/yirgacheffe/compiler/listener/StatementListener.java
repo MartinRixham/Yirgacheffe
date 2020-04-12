@@ -17,7 +17,6 @@ import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -39,20 +38,27 @@ public class StatementListener extends FieldListener
 	}
 
 	@Override
-	public void exitVariableDeclaration(
-		YirgacheffeParser.VariableDeclarationContext context)
+	public void exitStatementLine(YirgacheffeParser.StatementLineContext context)
 	{
-		Type type = this.types.getType(context.type());
-		String name = context.Identifier().getText();
-
-		this.statements.push(new VariableDeclaration(name, type));
-
-		if (type.equals(PrimitiveType.VOID))
+		if (context.variableDeclaration() != null)
 		{
-			String message = "Cannot declare variable of type Void.";
+			String message =
+				"Variable '" + context.variableDeclaration().Identifier() +
+				"' declared without assignment.";
 
 			this.errors.push(new Error(context, message));
 		}
+	}
+
+	@Override
+	public void exitVariableDeclaration(
+		YirgacheffeParser.VariableDeclarationContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		Type type = this.types.getType(context.type());
+		String name = context.Identifier().getText();
+
+		this.statements.push(new VariableDeclaration(coordinate, name, type));
 	}
 
 	@Override
@@ -62,17 +68,17 @@ public class StatementListener extends FieldListener
 		Expression expression = this.expressions.pop();
 		Coordinate coordinate = new Coordinate(context.getStart());
 
-		if (context.variableWrite() == null)
+		if (context.variableDeclaration() == null)
+		{
+			String name = context.Identifier().getText();
+
+			this.statements.push(new VariableWrite(coordinate, name, expression));
+		}
+		else
 		{
 			VariableDeclaration declaration = (VariableDeclaration) this.statements.pop();
 
 			this.statements.push(new VariableWrite(coordinate, declaration, expression));
-		}
-		else
-		{
-			String name = context.variableWrite().Identifier().getText();
-
-			this.statements.push(new VariableWrite(coordinate, name, expression));
 		}
 	}
 

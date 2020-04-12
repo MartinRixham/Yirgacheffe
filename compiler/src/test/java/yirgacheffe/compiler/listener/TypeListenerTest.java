@@ -17,9 +17,8 @@ public class TypeListenerTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"public MyClass()" +
+				"public MyClass(MutableReference ref)" +
 				"{\n" +
-					"MutableReference ref;\n" +
 				"}\n" +
 			"}";
 
@@ -28,7 +27,7 @@ public class TypeListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
-			"line 4:0 Missing type parameters for type" +
+			"line 3:15 Missing type parameters for type" +
 				" yirgacheffe.lang.MutableReference.\n",
 			result.getErrors());
 	}

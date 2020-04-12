@@ -42,7 +42,10 @@ public class StatementListenerTest
 		Compiler compiler = new Compiler("", source);
 		CompilationResult result = compiler.compile(new Classes());
 
-		assertTrue(result.isSuccessful());
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 4:0 Variable 'myVariable' declared without assignment.\n",
+			result.getErrors());
 	}
 
 	@Test
@@ -53,8 +56,8 @@ public class StatementListenerTest
 			"{\n" +
 				"public MyClass()" +
 				"{\n" +
-					"Num myVariable\n" +
-					"Num anotherVariable\n" +
+					"Num myVariable = 1\n" +
+					"Num anotherVariable = 2\n" +
 					"new String()\n" +
 				"}\n" +
 			"}";
@@ -174,7 +177,7 @@ public class StatementListenerTest
 			"{\n" +
 				"public Void method()" +
 				"{\n" +
-					"Num myVariable;\n" +
+					"Num myVariable = 1;\n" +
 					"{" +
 						"myVariable = 50;" +
 					"}\n" +
@@ -913,6 +916,26 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testVoidParameterDeclaration()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass(Void thingy)\n" +
+				"{\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 3:15 Cannot declare parameter of type Void.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testVoidVariableDeclaration()
 	{
 		String source =
@@ -920,12 +943,19 @@ public class StatementListenerTest
 			"{\n" +
 				"public MyClass()\n" +
 				"{\n" +
-					"Void thingy;\n" +
+					"Void sumpt = this.method();" +
 				"}\n" +
+				"private Void method() {}\n" +
 			"}\n";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(

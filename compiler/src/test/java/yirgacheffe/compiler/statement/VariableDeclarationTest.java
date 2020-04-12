@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -20,8 +21,9 @@ VariableDeclarationTest
 	@Test
 	public void testFirstOperandIsNothing()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		VariableDeclaration variableDeclaration =
-			new VariableDeclaration("var", PrimitiveType.DOUBLE);
+			new VariableDeclaration(coordinate, "var", PrimitiveType.DOUBLE);
 
 		Expression expression = variableDeclaration.getExpression();
 

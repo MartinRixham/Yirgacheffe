@@ -3,6 +3,8 @@ package yirgacheffe.compiler.statement;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
@@ -10,6 +12,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
@@ -18,12 +21,15 @@ import java.util.Map;
 
 public class VariableDeclaration implements Statement
 {
+	private Coordinate coordinate;
+
 	private String name;
 
 	private Type type;
 
-	public VariableDeclaration(String name, Type type)
+	public VariableDeclaration(Coordinate coordinate, String name, Type type)
 	{
+		this.coordinate = coordinate;
 		this.name = name;
 		this.type = type;
 	}
@@ -36,6 +42,13 @@ public class VariableDeclaration implements Statement
 	public Result compile(Variables variables, Signature caller)
 	{
 		variables.declare(this.name, this.type);
+
+		if (this.type.equals(PrimitiveType.VOID))
+		{
+			String message = "Cannot declare variable of type Void.";
+
+			return new Result().add(new Error(this.coordinate, message));
+		}
 
 		return new Result();
 	}

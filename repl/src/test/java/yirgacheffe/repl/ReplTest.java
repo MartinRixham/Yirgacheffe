@@ -213,14 +213,14 @@ public class ReplTest
 
 		InputStream in =
 			new ByteArrayInputStream(
-				("String thingy;\nthingy = \"thingy\";\nthingy").getBytes());
+				("String thingy = \"thingy\";\nthingy").getBytes());
 
 		Repl repl = new Repl(stream);
 
 		repl.read(in);
 
 		assertEquals(
-			"yirgacheffe> yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ",
+			"yirgacheffe> yirgacheffe> thingy\nyirgacheffe> ",
 			out.toString());
 	}
 

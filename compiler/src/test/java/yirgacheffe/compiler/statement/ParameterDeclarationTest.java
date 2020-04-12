@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -19,8 +20,9 @@ public class ParameterDeclarationTest
 	@Test
 	public void testParameterDeclaration()
 	{
+		Coordinate coordinate = new Coordinate(3, 5);
 		ParameterDeclaration parameterDeclaration =
-			new ParameterDeclaration("myParam", PrimitiveType.DOUBLE);
+			new ParameterDeclaration(coordinate, "myParam", PrimitiveType.DOUBLE);
 
 		assertEquals(new Array<>(), parameterDeclaration.getVariableReads());
 		assertEquals(new Array<>(), parameterDeclaration.getVariableWrites());

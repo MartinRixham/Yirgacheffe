@@ -115,11 +115,9 @@ ifStatement: If '(' expression ')' statement;
 
 elseStatement: Else statement;
 
-variableAssignment: (variableDeclaration | variableWrite) '=' expression;
+variableAssignment: (variableDeclaration | Identifier) '=' expression;
 
 variableDeclaration: type Identifier;
-
-variableWrite: Identifier;
 
 parameter: type? Identifier;
 

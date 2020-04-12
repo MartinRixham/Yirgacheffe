@@ -220,6 +220,7 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitParameter(YirgacheffeParser.ParameterContext context)
 	{
+		Coordinate coordinate = new Coordinate(context);
 		Type type = new NullType();
 
 		if (context.type() == null)
@@ -238,7 +239,7 @@ public class MethodListener extends TypeListener
 
 		String name = context.Identifier().getText();
 
-		this.statements.push(new ParameterDeclaration(name, type));
+		this.statements.push(new ParameterDeclaration(coordinate, name, type));
 	}
 
 	@Override
