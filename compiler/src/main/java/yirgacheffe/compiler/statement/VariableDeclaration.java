@@ -80,6 +80,16 @@ public class VariableDeclaration implements Statement
 		return new Nothing();
 	}
 
+	public boolean isEmpty()
+	{
+		return true;
+	}
+
+	public String getName()
+	{
+		return this.name;
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -100,15 +110,5 @@ public class VariableDeclaration implements Statement
 	public int hashCode()
 	{
 		return this.name.hashCode();
-	}
-
-	public boolean isEmpty()
-	{
-		return true;
-	}
-
-	public String getName()
-	{
-		return this.name;
 	}
 }

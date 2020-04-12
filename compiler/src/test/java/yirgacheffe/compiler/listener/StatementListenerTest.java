@@ -849,7 +849,7 @@ public class StatementListenerTest
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DNEG, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DSUB, thirdInstruction.getOpcode());
 
 		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
@@ -902,7 +902,7 @@ public class StatementListenerTest
 
 		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.DNEG, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DSUB, thirdInstruction.getOpcode());
 
 		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 

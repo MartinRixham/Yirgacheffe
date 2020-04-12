@@ -105,8 +105,11 @@ public class Block implements Statement
 			{
 				if (this.canOptimise(statement, variableRead, variableReads, i))
 				{
-					Statement optimisedStatement = new OptimisedStatement(statement);
-					this.statements.splice(i, 1, optimisedStatement);
+					if (!statement.isEmpty())
+					{
+						this.statements.splice(i, 1, new OptimisedStatement(statement));
+					}
+
 					variables.optimise(variableRead, statement.getExpression());
 					optimised = true;
 				}

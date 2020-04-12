@@ -2,7 +2,7 @@ package yirgacheffe.compiler.statement;
 
 import org.junit.Test;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
@@ -26,10 +26,13 @@ public class ParameterDeclarationTest
 
 		assertEquals(new Array<>(), parameterDeclaration.getVariableReads());
 		assertEquals(new Array<>(), parameterDeclaration.getVariableWrites());
-		assertTrue(parameterDeclaration.getExpression() instanceof Nothing);
 		assertTrue(parameterDeclaration.isEmpty());
-
 		assertFalse(parameterDeclaration.getFieldAssignments().contains(""));
+		assertTrue(parameterDeclaration.getExpression() instanceof VariableRead);
+
+		assertEquals(
+			new VariableRead(coordinate, "myParam"),
+			parameterDeclaration.getExpression());
 
 		Implementation delegatedInterfaces =
 			parameterDeclaration.getDelegatedInterfaces(new HashMap<>(), new NullType());

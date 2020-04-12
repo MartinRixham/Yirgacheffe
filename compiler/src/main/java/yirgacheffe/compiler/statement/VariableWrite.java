@@ -125,6 +125,11 @@ public class VariableWrite implements Statement
 		return this.name;
 	}
 
+	public boolean isEmpty()
+	{
+		return false;
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -145,10 +150,5 @@ public class VariableWrite implements Statement
 	public int hashCode()
 	{
 		return this.name.hashCode();
-	}
-
-	public boolean isEmpty()
-	{
-		return false;
 	}
 }

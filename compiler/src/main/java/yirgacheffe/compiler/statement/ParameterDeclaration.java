@@ -7,7 +7,6 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -77,11 +76,33 @@ public class ParameterDeclaration implements Statement
 
 	public Expression getExpression()
 	{
-		return new Nothing();
+		return new VariableRead(this.coordinate, this.name);
 	}
 
 	public boolean isEmpty()
 	{
 		return true;
+	}
+
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other instanceof String)
+		{
+			return this.name.equals(other);
+		}
+
+		if (other instanceof ParameterDeclaration || other instanceof VariableRead)
+		{
+			return other.equals(this.name);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return this.name.hashCode();
 	}
 }

@@ -51,19 +51,33 @@ public class UnaryOperation implements Expression, Statement
 
 	public Result compile(Variables variables)
 	{
+		Result result = new Result();
 		Type type = this.expression.getType(variables);
-		Result result = this.expression.compile(variables);
 
-		if (!this.pre)
+		if (variables.canOptimise(this.expression))
+		{
+			Expression optimisedExpression =
+				variables.getOptimisedExpression(this.expression);
+
+			result = result.concat(optimisedExpression.compile(variables));
+		}
+		else
+		{
+			result = result.concat(this.expression.compile(variables));
+		}
+
+		result = result.concat(type.convertTo(PrimitiveType.DOUBLE));
+
+		if (!this.pre && !variables.canOptimise(this.expression))
 		{
 			result = result.add(new InsnNode(Opcodes.DUP2));
 		}
 
 		result = result
 			.add(new InsnNode(Opcodes.DCONST_1))
-			.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DNEG));
+			.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB));
 
-		if (this.pre)
+		if (this.pre && !variables.canOptimise(this.expression))
 		{
 			result = result.add(new InsnNode(Opcodes.DUP2));
 		}
@@ -73,32 +87,55 @@ public class UnaryOperation implements Expression, Statement
 			.concat(this.updateVariable(variables));
 	}
 
+	private Result updateVariable(Variables variables)
+	{
+		if (this.expression instanceof VariableRead &&
+			!variables.canOptimise(this.expression))
+		{
+			VariableRead read = (VariableRead) this.expression;
+			Variable variable = variables.getVariable(read.getName());
+
+			return new Result().add(
+				new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
+		}
+
+		return new Result();
+	}
+
 	public Result compile(Variables variables, Signature caller)
 	{
 		Type type = this.expression.getType(variables);
-		Result result = new Result();
+		Result result = this.checkType(type);
+
+		if (!(this.expression instanceof VariableRead))
+		{
+			return result;
+		}
+
+		VariableRead read = (VariableRead) this.expression;
+
+		if (variables.canOptimise(read))
+		{
+			return result;
+		}
+
+		Variable variable = variables.getVariable(read.getName());
 
 		if (type.equals(PrimitiveType.INT))
 		{
-			if (this.expression instanceof VariableRead)
-			{
-				VariableRead read = (VariableRead) this.expression;
-				Variable variable = variables.getVariable(read.getName());
-
-				result = result.add(
-					new IincInsnNode(variable.getIndex(), this.increment ? 1 : -1));
-			}
+			result = result.add(
+				new IincInsnNode(variable.getIndex(), this.increment ? 1 : -1));
 		}
 		else
 		{
 			result = result
 				.concat(this.expression.compile(variables))
 				.add(new InsnNode(Opcodes.DCONST_1))
-				.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DNEG))
-				.concat(this.updateVariable(variables));
+				.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB))
+				.add(new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
 		}
 
-		return result.concat(this.checkType(type));
+		return result;
 	}
 
 	private Result checkType(Type type)
@@ -111,22 +148,6 @@ public class UnaryOperation implements Expression, Statement
 			String message = "Cannot " + increment + " " + type + ".";
 
 			result = result.add(new Error(this.coordinate, message));
-		}
-
-		return result;
-	}
-
-	private Result updateVariable(Variables variables)
-	{
-		Result result = new Result();
-
-		if (this.expression instanceof VariableRead)
-		{
-			VariableRead read = (VariableRead) this.expression;
-			Variable variable = variables.getVariable(read.getName());
-
-			result = result.add(
-				new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
 		}
 
 		return result;
