@@ -51,10 +51,11 @@ public class UnaryOperation implements Expression, Statement
 
 	public Result compile(Variables variables)
 	{
-		Result result = new Result();
 		Type type = this.expression.getType(variables);
+		Result result = this.checkType(type);
+		boolean canOptimise = variables.canOptimise(this.expression);
 
-		if (variables.canOptimise(this.expression))
+		if (canOptimise)
 		{
 			Expression optimisedExpression =
 				variables.getOptimisedExpression(this.expression);
@@ -66,31 +67,50 @@ public class UnaryOperation implements Expression, Statement
 			result = result.concat(this.expression.compile(variables));
 		}
 
-		result = result.concat(type.convertTo(PrimitiveType.DOUBLE));
-
-		if (!this.pre && !variables.canOptimise(this.expression))
+		if (type.equals(PrimitiveType.INT))
 		{
-			result = result.add(new InsnNode(Opcodes.DUP2));
+			if (this.pre || !canOptimise)
+			{
+				result = result
+					.add(new InsnNode(Opcodes.ICONST_1))
+					.add(new InsnNode(this.increment ? Opcodes.IADD : Opcodes.ISUB));
+			}
+		}
+		else
+		{
+			result = result.concat(type.convertTo(PrimitiveType.DOUBLE));
+
+			if (!this.pre && !canOptimise)
+			{
+				result = result.add(new InsnNode(Opcodes.DUP2));
+			}
+
+			if (this.pre || !canOptimise)
+			{
+				result = result
+					.add(new InsnNode(Opcodes.DCONST_1))
+					.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB));
+			}
+
+			if (this.pre && !canOptimise)
+			{
+				result = result.add(new InsnNode(Opcodes.DUP2));
+			}
 		}
 
-		result = result
-			.add(new InsnNode(Opcodes.DCONST_1))
-			.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB));
-
-		if (this.pre && !variables.canOptimise(this.expression))
+		if (canOptimise)
 		{
-			result = result.add(new InsnNode(Opcodes.DUP2));
+			return result;
 		}
-
-		return result
-			.concat(this.checkType(type))
-			.concat(this.updateVariable(variables));
+		else
+		{
+			return result.concat(this.updateVariable(variables));
+		}
 	}
 
 	private Result updateVariable(Variables variables)
 	{
-		if (this.expression instanceof VariableRead &&
-			!variables.canOptimise(this.expression))
+		if (this.expression instanceof VariableRead)
 		{
 			VariableRead read = (VariableRead) this.expression;
 			Variable variable = variables.getVariable(read.getName());
@@ -107,18 +127,13 @@ public class UnaryOperation implements Expression, Statement
 		Type type = this.expression.getType(variables);
 		Result result = this.checkType(type);
 
-		if (!(this.expression instanceof VariableRead))
+		if (!(this.expression instanceof VariableRead) ||
+			variables.canOptimise(this.expression))
 		{
 			return result;
 		}
 
 		VariableRead read = (VariableRead) this.expression;
-
-		if (variables.canOptimise(read))
-		{
-			return result;
-		}
-
 		Variable variable = variables.getVariable(read.getName());
 
 		if (type.equals(PrimitiveType.INT))

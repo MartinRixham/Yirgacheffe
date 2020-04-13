@@ -37,6 +37,7 @@ public class StringConcatenationTest
 
 		StringConcatenation concatenation = new StringConcatenation(binaryOperation);
 
+		assertEquals(coordinate, concatenation.getCoordinate());
 		assertFalse(concatenation.isCondition(variables));
 		assertEquals(PrimitiveType.DOUBLE, concatenation.getType(variables));
 		assertEquals(0, concatenation.getVariableReads().length());

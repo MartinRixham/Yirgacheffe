@@ -8,9 +8,11 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -947,7 +949,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(2, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -956,11 +958,7 @@ public class NumericExpressionListenerTest
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.DCONST_1, secondInstruction.getOpcode());
-
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.DADD, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
 	}
 
 	@Test
@@ -1031,7 +1029,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(4, instructions.size());
+		assertEquals(2, instructions.size());
 
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
@@ -1040,12 +1038,7 @@ public class NumericExpressionListenerTest
 
 		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.DCONST_1, secondInstruction.getOpcode());
-
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.DSUB, thirdInstruction.getOpcode());
-
+		assertEquals(Opcodes.DRETURN, secondInstruction.getOpcode());
 	}
 
 	@Test
@@ -1150,6 +1143,11 @@ public class NumericExpressionListenerTest
 
 		assertEquals(Opcodes.DSTORE, sixthInstruction.getOpcode());
 		assertEquals(1, sixthInstruction.var);
+
+		JumpInsnNode seventhInstruction = (JumpInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.GOTO, seventhInstruction.getOpcode());
+		assertEquals(label, seventhInstruction.label.getLabel());
 	}
 
 	@Test
@@ -1192,6 +1190,147 @@ public class NumericExpressionListenerTest
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(10, instructions.size());
+		assertEquals(9, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ICONST_1, thirdInstruction.getOpcode());
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ISUB, fourthInstruction.getOpcode());
+	}
+
+	@Test
+	public void testPostdecrementInRecursion()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Num method(Num i)\n" +
+				"{\n" +
+					"return this.method(i--);\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(5, instructions.size());
+
+		LabelNode firstInstruction = (LabelNode) instructions.get(0);
+		Label label = firstInstruction.getLabel();
+
+		assertTrue(instructions.get(1) instanceof FrameNode);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DLOAD, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DSTORE, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
+		assertEquals(label, fifthInstruction.label.getLabel());
+	}
+
+	@Test
+	public void testPostdecrementOfOptimisedVariable()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"Num i = 1;\n" +
+					"this.less(i--);\n" +
+				"}\n" +
+				"public Void less(Num number)\n" +
+				"{\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(7, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ICONST_1, secondInstruction.getOpcode());
+
+		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.I2D, thirdInstruction.getOpcode());
+
+		assertTrue(instructions.get(3) instanceof LabelNode);
+		assertTrue(instructions.get(4) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode sixthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, sixthInstruction.getOpcode());
+		assertEquals("less", sixthInstruction.name);
 	}
 }
