@@ -104,7 +104,7 @@ public class UnaryOperationTest
 
 		Result result = postincrement.compile(variables, caller);
 
-		assertEquals(0, variables.getStack().length());
+		assertEquals(1, variables.getStack().length());
 		assertEquals(PrimitiveType.INT, type);
 		assertEquals(0, result.getErrors().length());
 

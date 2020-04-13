@@ -1211,6 +1211,106 @@ public class NumericExpressionListenerTest
 	}
 
 	@Test
+	public void testPredecrementOfNotOptimisedVariable()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()\n" +
+				"{\n" +
+					"Num i = 1;\n" +
+					"this.less(--i);\n" +
+					"this.less(i);\n" +
+				"}\n" +
+				"public Void less(Num number)\n" +
+				"{\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(19, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_1, firstInstruction.getOpcode());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ISTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ILOAD, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ICONST_1, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.ISUB, sixthInstruction.getOpcode());
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.DUP, seventhInstruction.getOpcode());
+
+		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.ISTORE, eighthInstruction.getOpcode());
+		assertEquals(1, eighthInstruction.var);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.I2D, ninthInstruction.getOpcode());
+
+		assertTrue(instructions.get(9) instanceof LabelNode);
+		assertTrue(instructions.get(10) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode twelfthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, twelfthInstruction.getOpcode());
+		assertEquals("less", twelfthInstruction.name);
+		assertEquals("(LMyClass;D)V", twelfthInstruction.desc);
+
+		VarInsnNode thirteenthInstruction = (VarInsnNode) instructions.get(12);
+
+		assertEquals(Opcodes.ALOAD, thirteenthInstruction.getOpcode());
+		assertEquals(0, thirteenthInstruction.var);
+
+		VarInsnNode fourteenthInstruction = (VarInsnNode) instructions.get(13);
+
+		assertEquals(Opcodes.ILOAD, fourteenthInstruction.getOpcode());
+		assertEquals(1, fourteenthInstruction.var);
+	}
+
+	@Test
 	public void testPostdecrementInRecursion()
 	{
 		String source =

@@ -1,10 +1,6 @@
 package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.IincInsnNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
@@ -14,6 +10,9 @@ import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.VariableWrite;
+import yirgacheffe.compiler.step.FloatStep;
+import yirgacheffe.compiler.step.IntegerStep;
+import yirgacheffe.compiler.step.Stepable;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -52,6 +51,7 @@ public class UnaryOperation implements Expression, Statement
 	public Result compile(Variables variables)
 	{
 		Type type = this.expression.getType(variables);
+		Stepable stepper = this.getStepper(type);
 		Result result = this.checkType(type);
 		boolean canOptimise = variables.canOptimise(this.expression);
 
@@ -67,35 +67,21 @@ public class UnaryOperation implements Expression, Statement
 			result = result.concat(this.expression.compile(variables));
 		}
 
-		if (type.equals(PrimitiveType.INT))
+		result = result.concat(stepper.convertType());
+
+		if (!this.pre && !canOptimise)
 		{
-			if (this.pre || !canOptimise)
-			{
-				result = result
-					.add(new InsnNode(Opcodes.ICONST_1))
-					.add(new InsnNode(this.increment ? Opcodes.IADD : Opcodes.ISUB));
-			}
+			result = result.concat(stepper.duplicate());
 		}
-		else
+
+		if (this.pre || !canOptimise)
 		{
-			result = result.concat(type.convertTo(PrimitiveType.DOUBLE));
+			result = result.concat(stepper.stepOne(this.increment));
+		}
 
-			if (!this.pre && !canOptimise)
-			{
-				result = result.add(new InsnNode(Opcodes.DUP2));
-			}
-
-			if (this.pre || !canOptimise)
-			{
-				result = result
-					.add(new InsnNode(Opcodes.DCONST_1))
-					.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB));
-			}
-
-			if (this.pre && !canOptimise)
-			{
-				result = result.add(new InsnNode(Opcodes.DUP2));
-			}
+		if (this.pre && !canOptimise)
+		{
+			result = result.concat(stepper.duplicate());
 		}
 
 		if (canOptimise)
@@ -104,19 +90,18 @@ public class UnaryOperation implements Expression, Statement
 		}
 		else
 		{
-			return result.concat(this.updateVariable(variables));
+			return result.concat(this.updateVariable(stepper, variables));
 		}
 	}
 
-	private Result updateVariable(Variables variables)
+	private Result updateVariable(Stepable stepper, Variables variables)
 	{
 		if (this.expression instanceof VariableRead)
 		{
 			VariableRead read = (VariableRead) this.expression;
 			Variable variable = variables.getVariable(read.getName());
 
-			return new Result().add(
-				new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
+			return new Result().concat(stepper.store(variable.getIndex()));
 		}
 
 		return new Result();
@@ -125,6 +110,7 @@ public class UnaryOperation implements Expression, Statement
 	public Result compile(Variables variables, Signature caller)
 	{
 		Type type = this.expression.getType(variables);
+		Stepable stepper = this.getStepper(type);
 		Result result = this.checkType(type);
 
 		if (!(this.expression instanceof VariableRead) ||
@@ -136,21 +122,8 @@ public class UnaryOperation implements Expression, Statement
 		VariableRead read = (VariableRead) this.expression;
 		Variable variable = variables.getVariable(read.getName());
 
-		if (type.equals(PrimitiveType.INT))
-		{
-			result = result.add(
-				new IincInsnNode(variable.getIndex(), this.increment ? 1 : -1));
-		}
-		else
-		{
-			result = result
-				.concat(this.expression.compile(variables))
-				.add(new InsnNode(Opcodes.DCONST_1))
-				.add(new InsnNode(this.increment ? Opcodes.DADD : Opcodes.DSUB))
-				.add(new VarInsnNode(Opcodes.DSTORE, variable.getIndex()));
-		}
-
-		return result;
+		return this.getErrors(variables)
+			.concat(stepper.stepOne(variable.getIndex(), this.increment));
 	}
 
 	private Result checkType(Type type)
@@ -166,6 +139,30 @@ public class UnaryOperation implements Expression, Statement
 		}
 
 		return result;
+	}
+
+	private Result getErrors(Variables variables)
+	{
+		Result result = new Result();
+
+		for (Error error: this.expression.compile(variables).getErrors())
+		{
+			result = result.add(error);
+		}
+
+		return result;
+	}
+
+	private Stepable getStepper(Type type)
+	{
+		if (type.equals(PrimitiveType.INT))
+		{
+			return new IntegerStep();
+		}
+		else
+		{
+			return new FloatStep(type);
+		}
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
