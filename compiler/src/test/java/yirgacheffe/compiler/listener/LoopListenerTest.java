@@ -12,6 +12,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.CompilationResult;
@@ -68,7 +69,7 @@ public class LoopListenerTest
 
 		Label continueLabel = thirdInstruction.getLabel();
 
-		assertTrue(instructions.get(3) instanceof  FrameNode);
+		assertTrue(instructions.get(3) instanceof FrameNode);
 
 		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
 
@@ -119,6 +120,66 @@ public class LoopListenerTest
 		assertEquals(exitLabel, fourteenthInstruction.getLabel());
 
 		assertTrue(instructions.get(14) instanceof FrameNode);
+	}
+
+	@Test
+	public void testForLoopOnArray()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method(Array<String> array)" +
+				"{\n" +
+				"for (Num i = 0; i < array.length(); i++)\n" +
+				"{\n" +
+					"Num index = i;\n" +
+				"}\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(17, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ISTORE, secondInstruction.getOpcode());
+		assertEquals(2, secondInstruction.var);
+
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+
+		Label continueLabel = thirdInstruction.getLabel();
+
+		assertTrue(instructions.get(3) instanceof FrameNode);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ILOAD, fifthInstruction.getOpcode());
+		assertEquals(2, fifthInstruction.var);
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.ALOAD, sixthInstruction.getOpcode());
+		assertEquals(1, sixthInstruction.var);
+
+		assertTrue(instructions.get(6) instanceof LabelNode);
+		assertTrue(instructions.get(7) instanceof LineNumberNode);
 	}
 
 	@Test

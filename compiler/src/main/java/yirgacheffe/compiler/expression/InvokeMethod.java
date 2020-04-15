@@ -9,6 +9,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.LengthMethods;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.type.ArrayType;
@@ -42,6 +43,8 @@ public class InvokeMethod implements Expression, Parameterisable
 
 	private Array<Expression> arguments;
 
+	private LengthMethods lengthMethods = new LengthMethods();
+
 	public InvokeMethod(
 		Coordinate coordinate,
 		String name,
@@ -61,7 +64,22 @@ public class InvokeMethod implements Expression, Parameterisable
 		Type ownerType = this.owner.getType(variables);
 		Class<?> ownerClass = ownerType.reflectionClass();
 		Method[] methods = ownerClass.getDeclaredMethods();
-		Type returnType = this.getReturnType(ownerType, methods);
+		Type returnType = new NullType();
+
+		for (Method method: methods)
+		{
+			if (method.getName().equals(this.name))
+			{
+				Function function = new Function(ownerType, method);
+
+				if (this.lengthMethods.contains(function))
+				{
+					return PrimitiveType.INT;
+				}
+
+				returnType = function.getReturnType();
+			}
+		}
 
 		if (returnType.equals(PrimitiveType.INT) ||
 			returnType.equals(PrimitiveType.LONG) ||
@@ -86,19 +104,6 @@ public class InvokeMethod implements Expression, Parameterisable
 		}
 
 		return returnType;
-	}
-
-	private Type getReturnType(Type ownerType, Method[] methods)
-	{
-		for (Method method: methods)
-		{
-			if (method.getName().equals(this.name))
-			{
-				return new Function(ownerType, method).getReturnType();
-			}
-		}
-
-		return new NullType();
 	}
 
 	public Result compile(Variables variables)
