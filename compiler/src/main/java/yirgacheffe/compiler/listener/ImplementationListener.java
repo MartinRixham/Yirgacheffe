@@ -1,7 +1,7 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -64,7 +64,7 @@ public class ImplementationListener extends ClassListener
 			{
 				if (!Modifier.isStatic(method.getModifiers()))
 				{
-					this.interfaceMethods.push(new Function(interfaceType, method));
+					this.interfaceMethods.push(new ClassFunction(interfaceType, method));
 				}
 			}
 		}

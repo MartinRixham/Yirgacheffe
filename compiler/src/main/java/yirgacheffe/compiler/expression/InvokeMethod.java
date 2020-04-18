@@ -7,8 +7,10 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
+import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.function.LengthMethods;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.TailCall;
@@ -27,8 +29,6 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 public class InvokeMethod implements Expression, Parameterisable
@@ -70,7 +70,7 @@ public class InvokeMethod implements Expression, Parameterisable
 		{
 			if (method.getName().equals(this.name))
 			{
-				Function function = new Function(ownerType, method);
+				Function function = new ClassFunction(ownerType, method);
 
 				if (this.lengthMethods.contains(function))
 				{
@@ -195,22 +195,21 @@ public class InvokeMethod implements Expression, Parameterisable
 
 	public Array<Function> getMethodsNamed(Type owner, String name)
 	{
-		Set<Method> methodSet =
-			new HashSet<>(Arrays.asList(owner.reflectionClass().getMethods()));
+		Interface methods = owner.reflect();
+		Set<Function> methodSet = methods.getPublicMethods();
 
 		if (owner.toFullyQualifiedType().equals(this.caller))
 		{
-			methodSet.addAll(
-				Arrays.asList(owner.reflectionClass().getDeclaredMethods()));
+			methodSet.addAll(methods.getMethods());
 		}
 
 		Array<Function> namedMethods = new Array<>();
 
-		for (Method method: methodSet)
+		for (Function method: methodSet)
 		{
-			if (method.getName().equals(name))
+			if (method.isNamed(name))
 			{
-				namedMethods.push(new Function(owner, method));
+				namedMethods.push(method);
 			}
 		}
 

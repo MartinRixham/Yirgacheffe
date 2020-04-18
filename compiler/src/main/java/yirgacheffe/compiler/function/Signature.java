@@ -4,156 +4,21 @@ import org.objectweb.asm.Label;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
-public class Signature
+public interface Signature
 {
-	private Type returnType;
+	boolean isImplementedBy(Signature signature);
 
-	private String name;
+	String getDescriptor();
 
-	private Array<Type> parameters;
+	String getSignature();
 
-	private Label label = new Label();
+	Array<Type> getParameters();
 
-	public Signature(Type returnType, String name, Array<Type> parameters)
-	{
-		this.returnType = returnType;
-		this.name = name;
-		this.parameters = parameters;
-	}
+	String getName();
 
-	public boolean isImplementedBy(Signature signature)
-	{
-		if (this.name.equals(signature.name) &&
-			signature.returnType.isAssignableTo(this.returnType) &&
-			this.parameters.length() == signature.parameters.length())
-		{
-			for (int i = 0; i < this.parameters.length(); i++)
-			{
-				if (!this.parameters.get(i).isAssignableTo(signature.parameters.get(i)))
-				{
-					return false;
-				}
-			}
+	Type getReturnType();
 
-			return true;
-		}
+	Label getLabel();
 
-		return false;
-	}
-
-	public String getDescriptor()
-	{
-		String[] strings = new String[this.parameters.length()];
-
-		for (int i = 0; i < strings.length; i++)
-		{
-			strings[i] = this.parameters.get(i).toJVMType();
-		}
-
-		return "(" + String.join("", strings) + ")" + this.returnType.toJVMType();
-	}
-
-	public String getSignature()
-	{
-		if (this.returnType.hasParameter())
-		{
-			return this.reallyGetSignature();
-		}
-
-		for (Type type: this.parameters)
-		{
-			if (type.hasParameter())
-			{
-				return this.reallyGetSignature();
-			}
-		}
-
-		return null;
-	}
-
-	private String reallyGetSignature()
-	{
-		String[] strings = new String[this.parameters.length()];
-
-		for (int i = 0; i < strings.length; i++)
-		{
-			strings[i] = this.parameters.get(i).getSignature();
-		}
-
-		String returnType = this.returnType.getSignature();
-
-		return "(" + String.join("", strings) + ")" + returnType;
-	}
-
-	public Array<Type> getParameters()
-	{
-		return this.parameters;
-	}
-
-	public String getName()
-	{
-		return this.name;
-	}
-
-	public Type getReturnType()
-	{
-		return this.returnType;
-	}
-
-	public Label getLabel()
-	{
-		return this.label;
-	}
-
-	@Override
-	public boolean equals(Object other)
-	{
-		if (other instanceof Signature)
-		{
-			Signature signature = (Signature) other;
-
-			if (!this.name.equals(signature.name) ||
-				this.parameters.length() != signature.parameters.length())
-			{
-				return false;
-			}
-
-			for (int i = 0; i < this.parameters.length(); i++)
-			{
-				if (!this.parameters.get(i).toJVMType().equals(
-					signature.parameters.get(i).toJVMType()))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		throw new RuntimeException();
-	}
-
-	public boolean equals(String name, Array<Type> parameters)
-	{
-		return this.name.equals(name) && this.parameters.equals(parameters);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return this.name.hashCode() + this.parameters.hashCode();
-	}
-
-	@Override
-	public String toString()
-	{
-		String[] strings = new String[this.parameters.length()];
-
-		for (int i = 0; i < strings.length; i++)
-		{
-			strings[i] = this.parameters.get(i).toString();
-		}
-
-		return this.name + "(" + String.join(",", strings) + ")";
-	}
+	boolean equals(String name, Array<Type> parameters);
 }

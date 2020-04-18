@@ -4,6 +4,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.ClassInterface;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class AttemptedType implements Type
@@ -18,6 +20,11 @@ public class AttemptedType implements Type
 	public Class<?> reflectionClass()
 	{
 		return Object.class;
+	}
+
+	public Interface reflect()
+	{
+		return new ClassInterface(this, this.reflectionClass());
 	}
 
 	public String toJVMType()

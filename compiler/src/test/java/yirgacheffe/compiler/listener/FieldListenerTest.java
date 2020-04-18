@@ -1317,8 +1317,7 @@ public class FieldListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
-		assertEquals("line 10:4 Unknown field 'out'.\n" +
-			"line 10:8 Invoked method java.lang.Object.println() not found.\n",
+		assertEquals("line 10:4 Unknown field 'out'.\n",
 			result.getErrors());
 	}
 

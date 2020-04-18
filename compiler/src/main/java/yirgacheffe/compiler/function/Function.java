@@ -1,138 +1,25 @@
 package yirgacheffe.compiler.function;
 
-import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-public class Function
+public interface Function
 {
-	private Type owner;
+	boolean isNamed(String name);
 
-	private Executable executable;
+	String getName();
 
-	public Function(Type owner, Executable executable)
-	{
-		this.owner = owner;
-		this.executable = executable;
-	}
+	String getDescriptor();
 
-	public String getName()
-	{
-		return this.executable.getName();
-	}
+	Type getReturnType();
 
-	public String getDescriptor()
-	{
-		StringBuilder descriptor = new StringBuilder();
+	Array<Type> getParameterTypes();
 
-		descriptor.append("(");
+	boolean hasVariableArguments();
 
-		for (Type parameterType: this.getParameterTypes())
-		{
-			descriptor.append(parameterType.toJVMType());
-		}
+	Signature getSignature();
 
-		descriptor.append(")");
+	Type getOwner();
 
-		return descriptor.toString() + this.getReturnType().toJVMType();
-	}
-
-	public Type getReturnType()
-	{
-		if (this.executable instanceof Constructor)
-		{
-			return PrimitiveType.VOID;
-		}
-
-		Method method = (Method) this.executable;
-		java.lang.reflect.Type returned = method.getGenericReturnType();
-
-		return Type.getType(returned, this.owner);
-	}
-
-	public Array<Type> getParameterTypes()
-	{
-		java.lang.reflect.Type[] parameters = this.executable.getGenericParameterTypes();
-		Array<Type> types = new Array<>();
-
-		for (java.lang.reflect.Type type: parameters)
-		{
-			types.push(Type.getType(type, this.owner));
-		}
-
-		return types;
-	}
-
-	public boolean hasVariableArguments()
-	{
-		return Modifier.isTransient(this.executable.getModifiers());
-	}
-
-	@Override
-	public String toString()
-	{
-		String function = this.getReturnType() + " " + this.getName();
-
-		Array<String> parameters = new Array<>();
-
-		for (java.lang.reflect.Type parameter:
-			this.executable.getGenericParameterTypes())
-		{
-			parameters.push(Type.getType(parameter, this.owner).toString());
-		}
-
-		return function + "(" + parameters.join(",") + ")";
-	}
-
-	public Signature getSignature()
-	{
-		Array<Type> parameters = new Array<>();
-
-		for (java.lang.reflect.Type parameter:
-			this.executable.getGenericParameterTypes())
-		{
-			parameters.push(Type.getType(parameter, this.owner));
-		}
-
-		return new Signature(
-			this.getReturnType(),
-			this.getName(),
-			parameters);
-	}
-
-	public Type getOwner()
-	{
-		return this.owner;
-	}
-
-	public Array<java.lang.reflect.Type> getGenericParameterTypes()
-	{
-		return new Array<>(this.executable.getGenericParameterTypes());
-	}
-
-	@Override
-	public boolean equals(Object other)
-	{
-		if (other instanceof Function)
-		{
-			Function otherFunction = (Function) other;
-
-			return this.executable.equals(otherFunction.executable);
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return this.executable.hashCode();
-	}
+	Array<java.lang.reflect.Type> getGenericParameterTypes();
 }

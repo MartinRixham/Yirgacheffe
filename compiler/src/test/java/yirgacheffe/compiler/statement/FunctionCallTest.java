@@ -16,6 +16,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -38,7 +39,7 @@ public class FunctionCallTest
 	@Test
 	public void testFunctionThatReturnsDouble()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Array<Expression> arguments =
 			new Array<>(new Num(coordinate, "3.0"));

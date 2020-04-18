@@ -3,6 +3,8 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.ClassInterface;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -35,6 +37,11 @@ public class ParameterisedType implements Type
 	public Class<?> reflectionClass()
 	{
 		return this.primaryType.reflectionClass();
+	}
+
+	public Interface reflect()
+	{
+		return new ClassInterface(this, this.reflectionClass());
 	}
 
 	public String toJVMType()

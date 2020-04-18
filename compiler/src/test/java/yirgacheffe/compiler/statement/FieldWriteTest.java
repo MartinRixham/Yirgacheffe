@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -39,7 +40,7 @@ public class FieldWriteTest
 	@Test
 	public void testSuccessfulFieldWrite()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Streeng(coordinate, "\"sumpt\"");
@@ -77,7 +78,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToPrimitiveField()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Streeng(coordinate, "\"one\"");
@@ -96,7 +97,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignWrongTypeToStringField()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Expression owner = new This(coordinate, new ReferenceType(this.getClass()));
 		Expression value = new Num(coordinate, "1.0");
@@ -115,7 +116,7 @@ public class FieldWriteTest
 	@Test
 	public void testAssignInvalidExpressionToInvalidExpression()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(6, 0);
 		Type testClass = new ReferenceType(this.getClass());
 		Type string = new ReferenceType(String.class);

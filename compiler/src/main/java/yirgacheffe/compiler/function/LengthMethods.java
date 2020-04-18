@@ -15,10 +15,10 @@ public class LengthMethods
 		{
 			lengthMethods =
 				new Array(
-					new Function(
+					new ClassFunction(
 						new ReferenceType(Array.class),
 						Array.class.getMethod("length")),
-					new Function(
+					new ClassFunction(
 						new ReferenceType(Collection.class),
 						Collection.class.getMethod("size")));
 		}

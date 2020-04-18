@@ -21,7 +21,9 @@ public class SignatureTest
 	{
 		String name = "method";
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE);
-		Signature signature = new Signature(PrimitiveType.DOUBLE, name, parameters);
+
+		Signature signature =
+			new FunctionSignature(PrimitiveType.DOUBLE, name, parameters);
 
 		assertEquals("(D)D", signature.getDescriptor());
 		assertNull(signature.getSignature());
@@ -36,7 +38,7 @@ public class SignatureTest
 		Array<Type> typeParams = new Array<>(string, string);
 		Type returnType = new ParameterisedType(new ReferenceType(Map.class), typeParams);
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE);
-		Signature signature = new Signature(returnType, name, parameters);
+		Signature signature = new FunctionSignature(returnType, name, parameters);
 
 		assertEquals("(D)Ljava/util/Map;", signature.getDescriptor());
 
@@ -55,7 +57,9 @@ public class SignatureTest
 		Array<Type> typeParams = new Array<>(string, string);
 		Type map = new ParameterisedType(new ReferenceType(Map.class), typeParams);
 		Array<Type> parameters = new Array<>(map);
-		Signature signature = new Signature(PrimitiveType.DOUBLE, name, parameters);
+
+		Signature signature =
+			new FunctionSignature(PrimitiveType.DOUBLE, name, parameters);
 
 		assertEquals("(Ljava/util/Map;)D", signature.getDescriptor());
 
@@ -71,8 +75,9 @@ public class SignatureTest
 	{
 		Type dub = PrimitiveType.DOUBLE;
 		Array<Type> parameters = new Array<>(dub);
-		Signature firstSignature = new Signature(dub, "thingy", parameters);
-		Signature secondSignature = new Signature(dub, "sumpt", parameters);
+
+		Signature firstSignature = new FunctionSignature(dub, "thingy", parameters);
+		Signature secondSignature = new FunctionSignature(dub, "sumpt", parameters);
 
 		assertNotEquals(firstSignature, secondSignature);
 		assertFalse(firstSignature.isImplementedBy(secondSignature));
@@ -84,8 +89,12 @@ public class SignatureTest
 		Type dub = PrimitiveType.DOUBLE;
 		Array<Type> firstParameters = new Array<>(dub);
 		Array<Type> secondParameters = new Array<>(new ReferenceType(String.class));
-		Signature firstSignature = new Signature(dub, "thingy", firstParameters);
-		Signature secondSignature = new Signature(dub, "thingy", secondParameters);
+
+		Signature firstSignature =
+			new FunctionSignature(dub, "thingy", firstParameters);
+
+		Signature secondSignature =
+			new FunctionSignature(dub, "thingy", secondParameters);
 
 		assertNotEquals(firstSignature, secondSignature);
 		assertFalse(firstSignature.isImplementedBy(secondSignature));
@@ -97,8 +106,9 @@ public class SignatureTest
 		Type dub = PrimitiveType.DOUBLE;
 		Type bool = PrimitiveType.BOOLEAN;
 		Array<Type> parameters = new Array<>(new ReferenceType(String.class));
-		Signature firstSignature = new Signature(dub, "thingy", parameters);
-		Signature secondSignature = new Signature(bool, "thingy", parameters);
+
+		Signature firstSignature = new FunctionSignature(dub, "thingy", parameters);
+		Signature secondSignature = new FunctionSignature(bool, "thingy", parameters);
 
 		assertFalse(firstSignature.isImplementedBy(secondSignature));
 	}

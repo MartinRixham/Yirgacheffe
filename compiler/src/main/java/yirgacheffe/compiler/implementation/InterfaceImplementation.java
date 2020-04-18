@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.implementation;
 
+import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
@@ -44,7 +45,7 @@ public class InterfaceImplementation implements Implementation
 		{
 			for (Method interfaceMethod : interfaceType.reflectionClass().getMethods())
 			{
-				if (new Function(thisType, interfaceMethod).equals(method))
+				if (new ClassFunction(thisType, interfaceMethod).equals(method))
 				{
 					return true;
 				}

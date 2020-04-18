@@ -5,6 +5,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
@@ -188,7 +189,7 @@ public class RunnableClass
 
 		for (Method method: interfaceMethods)
 		{
-			Function function = new Function(this.type, method);
+			Function function = new ClassFunction(this.type, method);
 
 			MethodNode methodNode =
 				new MethodNode(

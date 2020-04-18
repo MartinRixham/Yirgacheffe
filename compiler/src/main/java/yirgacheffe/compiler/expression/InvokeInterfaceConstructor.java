@@ -12,7 +12,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Method;
+import java.util.Set;
 
 public class InvokeInterfaceConstructor implements Expression
 {
@@ -79,13 +79,13 @@ public class InvokeInterfaceConstructor implements Expression
 	private Array<Function> getMethods()
 	{
 		Array<Function> constructorMethods = new Array<>();
-		Method[] methods = this.owner.reflectionClass().getMethods();
+		Set<Function> methods = this.owner.reflect().getMethods();
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
-			if (method.getName().equals("0this"))
+			if (method.isNamed("0this"))
 			{
-				constructorMethods.push(new Function(owner, method));
+				constructorMethods.push(method);
 			}
 		}
 

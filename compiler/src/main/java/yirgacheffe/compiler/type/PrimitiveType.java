@@ -8,6 +8,8 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.ClassInterface;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
 import yirgacheffe.compiler.instructions.FloatInstructions;
 import yirgacheffe.compiler.instructions.Instructions;
@@ -80,6 +82,11 @@ public enum PrimitiveType implements Type
 	public Class<?> reflectionClass()
 	{
 		return this.reflectionClass;
+	}
+
+	public Interface reflect()
+	{
+		return new ClassInterface(this, this.reflectionClass());
 	}
 
 	public String toJVMType()

@@ -21,7 +21,8 @@ public class SuccessfulMatchResultTest
 		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Function function =
-			new Function(new ReferenceType(String.class), String.class.getConstructor());
+			new ClassFunction(
+				new ReferenceType(String.class), String.class.getConstructor());
 
 		Arguments arguments =
 			new Arguments(coordinate, "method", new Array<>(), variables);
@@ -55,7 +56,8 @@ public class SuccessfulMatchResultTest
 		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Function function =
-			new Function(new ReferenceType(String.class), String.class.getConstructor());
+			new ClassFunction(
+				new ReferenceType(String.class), String.class.getConstructor());
 
 		Arguments arguments =
 			new Arguments(coordinate, "method", new Array<>(), variables);
@@ -88,7 +90,8 @@ public class SuccessfulMatchResultTest
 		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		Function function =
-			new Function(new ReferenceType(String.class), String.class.getConstructor());
+			new ClassFunction(
+				new ReferenceType(String.class), String.class.getConstructor());
 
 		Arguments arguments =
 			new Arguments(coordinate, "method", new Array<>(), variables);

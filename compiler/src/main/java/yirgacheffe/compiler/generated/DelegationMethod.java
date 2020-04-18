@@ -18,7 +18,7 @@ public class DelegationMethod
 
 	private Function method;
 
-	public DelegationMethod(String owner,  Function method)
+	public DelegationMethod(String owner, Function method)
 	{
 		this.owner = owner;
 		this.method = method;
@@ -44,9 +44,9 @@ public class DelegationMethod
 
 		methodNode.visitTypeInsn(
 			Opcodes.CHECKCAST,
-			method.getOwner().toFullyQualifiedType());
+			this.method.getOwner().toFullyQualifiedType());
 
-		Array<Type> parameters = method.getParameterTypes();
+		Array<Type> parameters = this.method.getParameterTypes();
 
 		for (int i = 0; i < parameters.length(); i++)
 		{

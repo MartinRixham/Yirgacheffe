@@ -10,6 +10,7 @@ import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.BranchImplementation;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -68,7 +69,7 @@ public class Block implements Statement
 			Signature call =
 				i == statements.length() - 1 ?
 					caller :
-					new Signature(new NullType(), "", new Array<>());
+					new FunctionSignature(new NullType(), "", new Array<>());
 
 			result = result.concat(statements.get(i).compile(variables, call));
 

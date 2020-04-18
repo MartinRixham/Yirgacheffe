@@ -14,7 +14,7 @@ import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Constructor;
+import java.util.Set;
 
 public class InvokeConstructor implements Expression
 {
@@ -41,7 +41,7 @@ public class InvokeConstructor implements Expression
 
 	public Result compile(Variables variables)
 	{
-		Constructor<?>[] constructors = this.owner.reflectionClass().getConstructors();
+		Set<Function> constructors = this.owner.reflect().getPublicConstructors();
 		String name = "constructor " + this.owner;
 
 		Arguments arguments =
@@ -53,11 +53,9 @@ public class InvokeConstructor implements Expression
 
 		MatchResult matchResult = arguments.matches();
 
-		for (Constructor<?> constructor : constructors)
+		for (Function constructor : constructors)
 		{
-			Function function = new Function(this.owner, constructor);
-
-			matchResult = matchResult.betterOf(arguments.matches(function));
+			matchResult = matchResult.betterOf(arguments.matches(constructor));
 		}
 
 		Array<Type> parameterTypes = matchResult.getParameterTypes();

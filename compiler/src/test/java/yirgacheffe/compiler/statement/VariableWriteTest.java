@@ -12,6 +12,7 @@ import yirgacheffe.compiler.expression.InvalidExpression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -34,7 +35,7 @@ public class VariableWriteTest
 	public void testVariableWrite()
 	{
 		Coordinate coordinate = new Coordinate(4, 2);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression value = new Streeng(coordinate, "\"sumpt\"");
 		VariableWrite variableWrite =
 			new VariableWrite(coordinate, "myVariable", value);
@@ -65,7 +66,7 @@ public class VariableWriteTest
 	@Test
 	public void testWriteInvalidExpression()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 2);
 		Type string = new ReferenceType(String.class);
 		Expression value = new InvalidExpression(string);

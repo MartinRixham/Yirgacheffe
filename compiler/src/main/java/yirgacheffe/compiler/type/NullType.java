@@ -3,6 +3,8 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.function.NullInterface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class NullType implements Type
@@ -22,6 +24,11 @@ public class NullType implements Type
 	public Class<?> reflectionClass()
 	{
 		return Object.class;
+	}
+
+	public Interface reflect()
+	{
+		return new NullInterface();
 	}
 
 	public String toJVMType()

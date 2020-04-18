@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.MethodNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Parameters;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -311,7 +312,7 @@ public class ClassListener extends PackageListener
 
 		Result result = new Result();
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
-		Signature signature = new Signature(new NullType(), "", new Array<>());
+		Signature signature = new FunctionSignature(new NullType(), "", new Array<>());
 
 		for (Statement statement: this.staticStatements)
 		{

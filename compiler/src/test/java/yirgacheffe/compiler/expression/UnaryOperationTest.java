@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -54,7 +55,7 @@ public class UnaryOperationTest
 		UnaryOperation postincrement =
 			new UnaryOperation(coordinate, operand, false, true);
 
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 
 		Result result = postincrement.compile(variables, caller);
 
@@ -98,7 +99,7 @@ public class UnaryOperationTest
 		UnaryOperation postincrement =
 			new UnaryOperation(coordinate, variableRead, false, true);
 
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 
 		Type type = postincrement.getType(variables);
 

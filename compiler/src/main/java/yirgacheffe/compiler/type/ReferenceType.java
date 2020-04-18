@@ -8,6 +8,8 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.ClassInterface;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class ReferenceType implements Type
@@ -22,6 +24,11 @@ public class ReferenceType implements Type
 	public Class<?> reflectionClass()
 	{
 		return this.reflectionClass;
+	}
+
+	public Interface reflect()
+	{
+		return new ClassInterface(this, this.reflectionClass());
 	}
 
 	public String toJVMType()

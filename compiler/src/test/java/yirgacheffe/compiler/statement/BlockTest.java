@@ -22,6 +22,7 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
@@ -54,7 +55,7 @@ public class BlockTest
 	@Test
 	public void testFailToReadVariableDeclaredInBlock()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		VariableDeclaration variableDeclaration =
 			new VariableDeclaration(coordinate, "myVariable", PrimitiveType.DOUBLE);
@@ -77,7 +78,7 @@ public class BlockTest
 	@Test
 	public void testUnreachableCode()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement, returnStatement);
@@ -92,7 +93,7 @@ public class BlockTest
 	@Test
 	public void testReturnAtEndOfBlock()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		Array<Statement> statements = new Array<>(returnStatement);
@@ -106,7 +107,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForReturn()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -146,7 +147,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseRedundantLocalVariableForMethodCall()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -208,7 +209,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseTwoLocalVariablesForMethodCall()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -295,7 +296,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwice()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -386,7 +387,7 @@ public class BlockTest
 	@Test
 	public void testDoNotOptimiseVariableReferencedTwiceAndNotFirstOperand()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		This testClass = new This(coordinate, new ReferenceType(this.getClass()));
@@ -464,7 +465,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfLocalVariableLoadCalls()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =
@@ -514,7 +515,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseSequenceOfVariableDeclarationAndLoadCalls()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -572,7 +573,7 @@ public class BlockTest
 	@Test
 	public void testOptimiseVariableInAddition()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration firstDeclaration =
@@ -656,7 +657,7 @@ public class BlockTest
 	@Test
 	public void testDoNotCommuteReadAndWrite()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(4, 0);
 
 		VariableDeclaration variableDeclaration =

@@ -12,6 +12,7 @@ import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
@@ -381,7 +382,7 @@ public class MethodListener extends TypeListener
 	public void exitSignature(YirgacheffeParser.SignatureContext context)
 	{
 		this.signature =
-			new Signature(
+			new FunctionSignature(
 				this.returnType,
 				context.Identifier().getSymbol().getText(),
 				this.parameters);

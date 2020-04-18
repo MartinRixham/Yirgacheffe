@@ -4,6 +4,7 @@ import org.junit.Test;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -26,7 +27,7 @@ public class StoreConstantTest
 		Statement storeConstant =
 			new StoreConstant(new NullType(), new Nothing(), new Nothing());
 
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		Result result = storeConstant.compile(variables, caller);

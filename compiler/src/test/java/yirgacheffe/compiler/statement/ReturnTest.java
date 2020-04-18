@@ -10,6 +10,7 @@ import yirgacheffe.compiler.expression.Bool;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -31,7 +32,7 @@ public class ReturnTest
 	@Test
 	public void testVoidReturn()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.VOID);
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
@@ -60,7 +61,7 @@ public class ReturnTest
 	@Test
 	public void testVoidReturnWithNumReturnType()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE);
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
@@ -77,7 +78,7 @@ public class ReturnTest
 	@Test
 	public void testReturnNum()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Num(coordinate, "1.0");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);
@@ -102,7 +103,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnString()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = new ReferenceType(String.class);
 		Expression expression = new Num(coordinate, "1.0");
@@ -134,7 +135,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnBoolean()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Type returnType = PrimitiveType.BOOLEAN;
 		Expression expression = new Num(coordinate, "1.0");
@@ -160,7 +161,7 @@ public class ReturnTest
 	@Test
 	public void testFailToReturnDouble()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(5, 3);
 		Expression expression = new Bool(coordinate, "1");
 		Return returnStatement = new Return(coordinate, PrimitiveType.DOUBLE, expression);

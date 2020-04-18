@@ -54,7 +54,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("println"))
 			{
-				Function function = new Function(printStream, method);
+				Function function = new ClassFunction(printStream, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -87,7 +87,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("println"))
 			{
-				Function function = new Function(printStream, method);
+				Function function = new ClassFunction(printStream, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -121,7 +121,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("notAMethod"))
 			{
-				Function function = new Function(string, method);
+				Function function = new ClassFunction(string, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -160,7 +160,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("mapIt"))
 			{
-				Function function = new Function(testClass, method);
+				Function function = new ClassFunction(testClass, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -199,7 +199,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("split"))
 			{
-				Function function = new Function(string, method);
+				Function function = new ClassFunction(string, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -234,7 +234,7 @@ public class ArgumentsTest
 
 		for (Constructor<?> constructor: constructors)
 		{
-			Function function = new Function(string, constructor);
+			Function function = new ClassFunction(string, constructor);
 
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}
@@ -274,7 +274,7 @@ public class ArgumentsTest
 		{
 			if (method.getName().equals("set"))
 			{
-				Function function = new Function(owner, method);
+				Function function = new ClassFunction(owner, method);
 
 				matchResult = matchResult.betterOf(arguments.matches(function));
 			}
@@ -308,7 +308,7 @@ public class ArgumentsTest
 
 		for (Constructor<?> constructor: constructors)
 		{
-			Function function = new Function(array, constructor);
+			Function function = new ClassFunction(array, constructor);
 
 			matchResult = matchResult.betterOf(arguments.matches(function));
 		}

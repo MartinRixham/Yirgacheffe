@@ -14,6 +14,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.statement.TailCall;
@@ -519,7 +520,7 @@ public class InvokeMethodTest
 				arguments);
 
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE);
-		Signature signature = new Signature(new NullType(), name, parameters);
+		Signature signature = new FunctionSignature(new NullType(), name, parameters);
 
 		TailCall tailCall =
 			new TailCall(new FunctionCall(invokeMethod), signature, variables);

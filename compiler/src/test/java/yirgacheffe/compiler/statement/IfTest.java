@@ -21,6 +21,7 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
@@ -45,7 +46,7 @@ public class IfTest
 	public void testIfStatement()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression condition = new Bool(coordinate, "true");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
@@ -79,7 +80,7 @@ public class IfTest
 	@Test
 	public void testInvalidCondition()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		If ifStatement =
@@ -94,7 +95,7 @@ public class IfTest
 	@Test
 	public void testInvalidStatement()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
 		If statement =
@@ -131,7 +132,7 @@ public class IfTest
 	public void testIfObject()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression condition = new This(coordinate, new ReferenceType(Object.class));
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
@@ -166,7 +167,7 @@ public class IfTest
 	public void testIfString()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression condition = new Streeng(coordinate, "\"thingy\"");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
@@ -239,7 +240,7 @@ public class IfTest
 	public void testIfDouble()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression condition = new Num(coordinate, "1.1");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);

@@ -17,6 +17,7 @@ import yirgacheffe.compiler.expression.InvokeThis;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
@@ -41,7 +42,7 @@ public class ElseTest
 	public void testElseStatement()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Expression condition = new Bool(coordinate, "true");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
@@ -94,7 +95,7 @@ public class ElseTest
 	@Test
 	public void testElseNotPrecededByIf()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(3, 5);
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		Statement ifStatement = new Block(coordinate, new Array<>());
@@ -113,7 +114,7 @@ public class ElseTest
 	@Test
 	public void testInvalidPrecondition()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 
@@ -130,7 +131,7 @@ public class ElseTest
 	@Test
 	public void testInvalidStatement()
 	{
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Coordinate coordinate = new Coordinate(2, 4);
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 

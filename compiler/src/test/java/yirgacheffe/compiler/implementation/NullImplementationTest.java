@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.implementation;
 
 import org.junit.Test;
+import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -25,7 +26,7 @@ public class NullImplementationTest
 
 		for (Method method : interfaceType.reflectionClass().getMethods())
 		{
-			Function function = new Function(interfaceType, method);
+			Function function = new ClassFunction(interfaceType, method);
 
 			assertTrue(intersection.implementsMethod(function, interfaceType));
 			assertFalse(first.implementsMethod(function, interfaceType));

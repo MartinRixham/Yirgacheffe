@@ -5,6 +5,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.ClassInterface;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class GenericType implements Type
@@ -19,6 +21,11 @@ public class GenericType implements Type
 	public Class<?> reflectionClass()
 	{
 		return this.type.reflectionClass();
+	}
+
+	public Interface reflect()
+	{
+		return new ClassInterface(this, this.reflectionClass());
 	}
 
 	public String toJVMType()

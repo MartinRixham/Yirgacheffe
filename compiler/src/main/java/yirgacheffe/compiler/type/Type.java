@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -11,6 +12,8 @@ import java.lang.reflect.ParameterizedType;
 public interface Type
 {
 	Class<?> reflectionClass();
+
+	Interface reflect();
 
 	String toJVMType();
 

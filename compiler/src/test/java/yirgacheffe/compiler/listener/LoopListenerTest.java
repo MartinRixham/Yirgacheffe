@@ -427,4 +427,32 @@ public class LoopListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals("line 6:0 Unknown local variable 'i'.\n", result.getErrors());
 	}
+
+	@Test
+	public void testLoopOverNothing()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"for (Num i = 0; i < args.length(); i++)\n" +
+				"}\n" +
+			"}\n";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
 }

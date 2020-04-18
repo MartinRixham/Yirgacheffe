@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -40,7 +41,7 @@ public class TailCallTest
 	public void testTailCall()
 	{
 		Statement invocation = new DoNothing();
-		Signature caller = new Signature(new NullType(), "method", new Array<>());
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		Variables variables = new LocalVariables(1, new HashMap<>());
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
@@ -73,7 +74,7 @@ public class TailCallTest
 		Statement invocation = new FunctionCall(invokeMethod);
 		Type stringType = new ReferenceType(String.class);
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE, stringType);
-		Signature caller = new Signature(new NullType(), "method", parameters);
+		Signature caller = new FunctionSignature(new NullType(), "method", parameters);
 		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 		Result result = tailCall.compile(variables, caller);

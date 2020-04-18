@@ -14,12 +14,12 @@ public class FunctionTest
 		Class<?> string = "".getClass();
 
 		Function firstFunction =
-			new Function(
+			new ClassFunction(
 				new ReferenceType(string),
 				string.getMethod("toString"));
 
 		Function secondFunction =
-			new Function(
+			new ClassFunction(
 				new ReferenceType(string),
 				string.getMethod("toString"));
 
@@ -33,12 +33,12 @@ public class FunctionTest
 		Class<?> string = "".getClass();
 
 		Function firstFunction =
-			new Function(
+			new ClassFunction(
 				new ReferenceType(string),
 				string.getMethod("toString"));
 
 		Function secondFunction =
-			new Function(
+			new ClassFunction(
 				new ReferenceType(string),
 				string.getMethod("hashCode"));
 
@@ -52,7 +52,7 @@ public class FunctionTest
 		Class<?> string = "".getClass();
 
 		Function function =
-			new Function(
+			new ClassFunction(
 				new ReferenceType(string),
 				string.getMethod("toString"));
 
