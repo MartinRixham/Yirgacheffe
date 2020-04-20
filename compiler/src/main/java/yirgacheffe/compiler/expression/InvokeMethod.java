@@ -7,7 +7,6 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
-import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Interface;
@@ -28,7 +27,6 @@ import yirgacheffe.lang.Bootstrap;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 import java.util.Set;
 
 public class InvokeMethod implements Expression, Parameterisable
@@ -62,22 +60,20 @@ public class InvokeMethod implements Expression, Parameterisable
 	public Type getType(Variables variables)
 	{
 		Type ownerType = this.owner.getType(variables);
-		Class<?> ownerClass = ownerType.reflectionClass();
-		Method[] methods = ownerClass.getDeclaredMethods();
+		Interface members = ownerType.reflect();
+		Set<Function> methods = members.getMethods();
 		Type returnType = new NullType();
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals(this.name))
 			{
-				Function function = new ClassFunction(ownerType, method);
-
-				if (this.lengthMethods.contains(function))
+				if (this.lengthMethods.contains(method))
 				{
 					return PrimitiveType.INT;
 				}
 
-				returnType = function.getReturnType();
+				returnType = method.getReturnType();
 			}
 		}
 

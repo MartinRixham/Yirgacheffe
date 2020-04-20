@@ -5,7 +5,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.function.ClassInterface;
 import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -18,14 +17,14 @@ public class GenericType implements Type
 		this.type = type;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.type.reflectionClass();
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return this.type.reflect(this);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return this.type.reflect(type);
 	}
 
 	public String toJVMType()
@@ -113,7 +112,7 @@ public class GenericType implements Type
 				.add(new MethodInsnNode(
 					Opcodes.INVOKESTATIC,
 					"yirgacheffe/lang/Boxer",
-					"to" + this.reflectionClass().getSimpleName(),
+					"to" + this.reflect().getSimpleName(),
 					"(Ljava/lang/Object;)" + type.toJVMType(),
 					false));
 		}

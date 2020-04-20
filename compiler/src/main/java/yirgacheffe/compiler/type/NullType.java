@@ -31,6 +31,11 @@ public class NullType implements Type
 		return new NullInterface();
 	}
 
+	public Interface reflect(Type type)
+	{
+		return new NullInterface();
+	}
+
 	public String toJVMType()
 	{
 		return "Ljava/lang/Object;";
@@ -108,7 +113,7 @@ public class NullType implements Type
 
 	public Type intersect(Type type)
 	{
-		return new ReferenceType(Object.class);
+		return this;
 	}
 
 	public Result compare(BooleanOperator operator, Label label)

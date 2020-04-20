@@ -146,8 +146,7 @@ public class MultiEquation implements Expression
 	{
 		Type type = firstType.intersect(secondType);
 
-		if (firstType.isPrimitive() ^ secondType.isPrimitive() ||
-			!firstType.isAssignableTo(secondType) &&
+		if (!firstType.isAssignableTo(secondType) &&
 				!secondType.isAssignableTo(firstType) ||
 			!type.isAssignableTo(PrimitiveType.DOUBLE) &&
 				!(comparator instanceof Equals || comparator instanceof NotEquals))

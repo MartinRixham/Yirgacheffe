@@ -140,7 +140,7 @@ public class Arguments
 
 			if (parameter instanceof TypeVariable)
 			{
-				TypeVariable typeVariable = (TypeVariable) parameter;
+				TypeVariable<?> typeVariable = (TypeVariable<?>) parameter;
 				Type argumentType = this.argumentTypes.get(i);
 
 				boolean hasTypeParameter =

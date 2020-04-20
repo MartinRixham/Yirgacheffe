@@ -20,6 +20,7 @@ import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.util.Map;
+import java.util.Set;
 
 public class FunctionCall implements Statement
 {
@@ -88,13 +89,13 @@ public class FunctionCall implements Statement
 			Array<Type> delegatedInterfaces = new Array<>();
 			Type delegatedType = delegateTypes.get(this.expression);
 
-			java.lang.reflect.Type[] interfaces =
-				delegatedType.reflectionClass().getGenericInterfaces();
+			Set<java.lang.reflect.Type> interfaces =
+				delegatedType.reflect().getGenericInterfaces();
 
 			Array<Type> implementedInterfaces = new Array<>();
 
 			for (java.lang.reflect.Type tp:
-				thisType.reflectionClass().getGenericInterfaces())
+				thisType.reflect().getGenericInterfaces())
 			{
 				implementedInterfaces.push(Type.getType(tp, thisType));
 			}

@@ -5,15 +5,14 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class RunnableClass
 {
@@ -185,17 +184,15 @@ public class RunnableClass
 	private List<MethodNode> compileInterfaceMethods()
 	{
 		List<MethodNode> methods = new ArrayList<>();
-		Method[] interfaceMethods = this.type.reflectionClass().getMethods();
+		Set<Function> interfaceMethods = this.type.reflect().getPublicMethods();
 
-		for (Method method: interfaceMethods)
+		for (Function method: interfaceMethods)
 		{
-			Function function = new ClassFunction(this.type, method);
-
 			MethodNode methodNode =
 				new MethodNode(
 					Opcodes.ACC_PUBLIC,
 					method.getName(),
-					function.getDescriptor(),
+					method.getDescriptor(),
 					null,
 					null);
 
@@ -260,7 +257,7 @@ public class RunnableClass
 				"0return",
 				this.type.toJVMType());
 
-			Array<Type> parameters = function.getParameterTypes();
+			Array<Type> parameters = method.getParameterTypes();
 
 			for (int i = 0; i < parameters.length(); i++)
 			{
@@ -272,10 +269,10 @@ public class RunnableClass
 				Opcodes.INVOKEINTERFACE,
 				this.type.toFullyQualifiedType(),
 				method.getName(),
-				function.getDescriptor(),
+				method.getDescriptor(),
 				true);
 
-			methodNode.visitInsn(function.getReturnType().getReturnInstruction());
+			methodNode.visitInsn(method.getReturnType().getReturnInstruction());
 		}
 
 		return methods;

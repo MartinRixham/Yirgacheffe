@@ -69,15 +69,6 @@ public class EnumerationInitialiser
 
 	private boolean hasDefault()
 	{
-		try
-		{
-			this.owner.reflectionClass().getConstructor();
-
-			return true;
-		}
-		catch (NoSuchMethodException e)
-		{
-			return false;
-		}
+		return this.owner.reflect().hasDefaultConstructor();
 	}
 }

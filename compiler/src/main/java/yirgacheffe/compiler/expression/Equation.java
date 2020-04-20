@@ -99,8 +99,7 @@ public class Equation implements Expression
 		Type type = firstType.intersect(secondType);
 		Result result = new Result();
 
-		if (firstType.isPrimitive() ^ secondType.isPrimitive() ||
-			!firstType.isAssignableTo(secondType) &&
+		if (!firstType.isAssignableTo(secondType) &&
 				!secondType.isAssignableTo(firstType) ||
 			!type.isAssignableTo(PrimitiveType.DOUBLE) &&
 				!(this.comparator instanceof Equals ||

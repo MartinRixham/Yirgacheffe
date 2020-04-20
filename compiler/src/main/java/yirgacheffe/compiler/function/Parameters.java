@@ -12,11 +12,11 @@ import java.lang.reflect.TypeVariable;
 
 public class Parameters
 {
-	private TypeVariable[] parameters;
+	private Array<TypeVariable<?>> parameters;
 
 	private ReferenceType owner;
 
-	public Parameters(TypeVariable[] parameters, ReferenceType owner)
+	public Parameters(Array<TypeVariable<?>> parameters, ReferenceType owner)
 	{
 		this.parameters = parameters;
 		this.owner = owner;
@@ -24,7 +24,7 @@ public class Parameters
 
 	public Type getType()
 	{
-		if (this.parameters.length == 0)
+		if (this.parameters.length() == 0)
 		{
 			return this.owner;
 		}
@@ -36,11 +36,11 @@ public class Parameters
 		}
 	}
 
-	private Array<Type> getTypeParameters(TypeVariable[] parameters)
+	private Array<Type> getTypeParameters(Array<TypeVariable<?>> parameters)
 	{
 		Array<Type> parameterTypes = new Array<>();
 
-		for (TypeVariable parameter: parameters)
+		for (TypeVariable<?> parameter: parameters)
 		{
 			java.lang.reflect.Type[] typeBounds = parameter.getBounds();
 			Type typeBound;

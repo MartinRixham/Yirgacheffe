@@ -9,6 +9,7 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.FunctionSignature;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.function.Parameters;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -33,7 +34,6 @@ import yirgacheffe.lang.EnumerationWithDefault;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,8 +96,8 @@ public class ClassListener extends PackageListener
 			ReferenceType thisType =
 				this.classes.loadClass(this.className.replace("/", "."));
 
-			Class<?> clazz = thisType.reflectionClass();
-			TypeVariable[] parameters = clazz.getTypeParameters();
+			Interface members = thisType.reflect();
+			Array<TypeVariable<?>> parameters = members.getTypeParameters();
 
 			return new Parameters(parameters, thisType).getType();
 		}
@@ -367,14 +367,13 @@ public class ClassListener extends PackageListener
 		YirgacheffeParser.ClassDefinitionContext context)
 	{
 		String initialiserPrefix = "0init_field";
-		Class<?> reflectionClass = this.thisType.reflectionClass();
-
-		Method[] methods = reflectionClass.getDeclaredMethods();
+		Interface members = this.thisType.reflect();
+		Set<Function> methods = members.getMethods();
 
 		Set<String> fieldNames =
-			this.getFieldNames(reflectionClass.getDeclaredFields());
+			this.getFieldNames(members.getFields());
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().startsWith(initialiserPrefix))
 			{
@@ -392,7 +391,7 @@ public class ClassListener extends PackageListener
 		}
 	}
 
-	private Set<String> getFieldNames(Field[] fields)
+	private Set<String> getFieldNames(Set<Field> fields)
 	{
 		Set<String> names = new HashSet<>();
 

@@ -16,14 +16,14 @@ public class VariableType implements Type
 		this.name = name;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return Object.class;
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return new ClassInterface(this, Object.class);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return new ClassInterface(this, Object.class);
 	}
 
 	public String toJVMType()

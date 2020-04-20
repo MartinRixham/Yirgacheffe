@@ -624,7 +624,7 @@ public class FieldListenerTest
 
 		reader.accept(classNode, 0);
 
-		List methods = classNode.methods;
+		List<MethodNode> methods = classNode.methods;
 
 		assertEquals(4, methods.size());
 
@@ -642,6 +642,20 @@ public class FieldListenerTest
 
 		InsnList instructions = constructor.instructions;
 
+		assertEquals(9, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		MethodInsnNode secondInstruction = (MethodInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.INVOKESPECIAL, secondInstruction.getOpcode());
+		assertEquals("<init>", secondInstruction.name);
+		assertEquals("java/lang/Object", secondInstruction.owner);
+		assertEquals("()V", secondInstruction.desc);
+
 		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
 
 		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
@@ -650,7 +664,7 @@ public class FieldListenerTest
 		MethodInsnNode fourthInstruction = (MethodInsnNode) instructions.get(3);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
-		assertEquals("0init_field_myObject", fourthInstruction.name);
+		assertEquals("0init_field_myString", fourthInstruction.name);
 		assertEquals("MyClass", fourthInstruction.owner);
 		assertEquals("()V", fourthInstruction.desc);
 
@@ -662,7 +676,7 @@ public class FieldListenerTest
 		MethodInsnNode sixthInstruction = (MethodInsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, sixthInstruction.getOpcode());
-		assertEquals("0init_field_myString", sixthInstruction.name);
+		assertEquals("0init_field_myObject", sixthInstruction.name);
 		assertEquals("MyClass", sixthInstruction.owner);
 		assertEquals("()V", sixthInstruction.desc);
 	}

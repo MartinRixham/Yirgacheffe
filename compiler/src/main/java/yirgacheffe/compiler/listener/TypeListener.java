@@ -4,6 +4,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.TypeVariable;
@@ -41,11 +42,11 @@ public class TypeListener extends ImplementationListener
 	public void exitType(YirgacheffeParser.TypeContext context)
 	{
 		Type type = this.types.getType(context);
-		TypeVariable[] typeParameters = type.reflectionClass().getTypeParameters();
+		Array<TypeVariable<?>> typeParameters = type.reflect().getTypeParameters();
 
 		if (context.typeParameters() == null)
 		{
-			if (typeParameters.length > 0)
+			if (typeParameters.length() > 0)
 			{
 				String message =
 					"Missing type parameters for type " + type + ".";
@@ -53,11 +54,11 @@ public class TypeListener extends ImplementationListener
 				this.errors.push(new Error(context, message));
 			}
 		}
-		else if (typeParameters.length != context.typeParameters().type().size())
+		else if (typeParameters.length() != context.typeParameters().type().size())
 		{
 			String message =
 				"Type " + type.toFullyQualifiedType().replace('/', '.') + " requires " +
-				typeParameters.length + " parameter(s) but found " +
+				typeParameters.length() + " parameter(s) but found " +
 				context.typeParameters().type().size() + ".";
 
 			this.errors.push(new Error(context, message));

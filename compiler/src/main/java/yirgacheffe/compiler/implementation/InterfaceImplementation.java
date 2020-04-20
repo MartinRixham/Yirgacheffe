@@ -1,11 +1,8 @@
 package yirgacheffe.compiler.implementation;
 
-import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
-
-import java.lang.reflect.Method;
 
 public class InterfaceImplementation implements Implementation
 {
@@ -43,9 +40,9 @@ public class InterfaceImplementation implements Implementation
 	{
 		for (Type interfaceType : this.interfaces)
 		{
-			for (Method interfaceMethod : interfaceType.reflectionClass().getMethods())
+			for (Function interfaceMethod : interfaceType.reflect().getPublicMethods())
 			{
-				if (new ClassFunction(thisType, interfaceMethod).equals(method))
+				if (interfaceMethod.equals(method))
 				{
 					return true;
 				}

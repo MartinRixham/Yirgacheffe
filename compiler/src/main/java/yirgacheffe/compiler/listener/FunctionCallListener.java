@@ -41,7 +41,7 @@ public class FunctionCallListener extends ExpressionListener
 
 	private Expression getConstructorCall(Coordinate coordinate, Type owner)
 	{
-		if (owner.reflectionClass().isInterface())
+		if (owner.reflect().isInterface())
 		{
 			return
 				new InvokeInterfaceConstructor(coordinate, owner, this.arguments);

@@ -38,7 +38,7 @@ public class ParameterisedTypeTest
 		Type type = new ParameterisedType(referenceType, new Array<>(typeParameter));
 
 		assertEquals("java.util.List<java.lang.String>", type.toString());
-		assertEquals(List.class, type.reflectionClass());
+		assertTrue(type.reflect().doesImplement(List.class));
 		assertEquals("java/util/List", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/List;", type.toJVMType());
 		assertEquals("Ljava/util/List<Ljava/lang/String;>;", type.getSignature());

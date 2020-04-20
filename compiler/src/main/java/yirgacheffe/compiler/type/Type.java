@@ -11,9 +11,9 @@ import java.lang.reflect.ParameterizedType;
 
 public interface Type
 {
-	Class<?> reflectionClass();
-
 	Interface reflect();
+
+	Interface reflect(Type type);
 
 	String toJVMType();
 

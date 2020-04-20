@@ -10,6 +10,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -20,7 +22,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.UUID;
 
 public class ConstructorListener extends MainMethodListener
@@ -188,11 +190,11 @@ public class ConstructorListener extends MainMethodListener
 		InsnList instructions = new InsnList();
 
 		String initialiserPrefix = "0init_field";
-		Class<?> reflectionClass = this.thisType.reflectionClass();
+		Interface members = this.thisType.reflect();
 
-		Method[] methods = reflectionClass.getDeclaredMethods();
+		Set<Function> methods = members.getMethods();
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().startsWith(initialiserPrefix))
 			{

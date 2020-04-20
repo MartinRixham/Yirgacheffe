@@ -20,7 +20,7 @@ public class BoundedTypeTest
 		Type type = new BoundedType("T", new ReferenceType(Object.class));
 
 		assertEquals("java.lang.Object", type.toString());
-		assertEquals(loadedClass, type.reflectionClass());
+		assertTrue(type.reflect().doesImplement(loadedClass));
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("T:Ljava/lang/Object;", type.getSignature());

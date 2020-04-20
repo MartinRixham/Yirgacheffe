@@ -23,7 +23,7 @@ public class ParallelMethodListener extends FieldDeclarationListener
 	public void exitParallelMethodDeclaration(
 		YirgacheffeParser.ParallelMethodDeclarationContext context)
 	{
-		if (!this.returnType.reflectionClass().isInterface())
+		if (!this.returnType.reflect().isInterface())
 		{
 			return;
 		}
@@ -111,7 +111,7 @@ public class ParallelMethodListener extends FieldDeclarationListener
 	@Override
 	public void exitParallelMethod(YirgacheffeParser.ParallelMethodContext context)
 	{
-		if (!this.returnType.reflectionClass().isInterface())
+		if (!this.returnType.reflect().isInterface())
 		{
 			String message = "Parallel method must have interface return type.";
 

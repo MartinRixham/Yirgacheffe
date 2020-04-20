@@ -2,7 +2,6 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.function.ClassInterface;
 import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -18,14 +17,14 @@ public class IntersectionType implements Type
 		this.secondType = secondType;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.firstType.reflectionClass();
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return this.firstType.reflect(this);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return this.firstType.reflect(type);
 	}
 
 	public String toJVMType()

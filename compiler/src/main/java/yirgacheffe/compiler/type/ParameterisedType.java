@@ -3,7 +3,6 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.function.ClassInterface;
 import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
@@ -22,26 +21,26 @@ public class ParameterisedType implements Type
 	{
 		this.primaryType = primaryType;
 
-		TypeVariable[] genericTypes = primaryType.reflectionClass().getTypeParameters();
+		Array<TypeVariable<?>> genericTypes = primaryType.reflect().getTypeParameters();
 		Map<String, Type> types = new HashMap<>();
-		int typeCount = Math.min(genericTypes.length, typeParameters.length());
+		int typeCount = Math.min(genericTypes.length(), typeParameters.length());
 
 		for (int i = 0; i < typeCount; i++)
 		{
-			types.put(genericTypes[i].getName(), typeParameters.get(i));
+			types.put(genericTypes.get(i).getName(), typeParameters.get(i));
 		}
 
 		this.typeParameters = types;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.primaryType.reflectionClass();
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return this.primaryType.reflect(this);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return this.primaryType.reflect(type);
 	}
 
 	public String toJVMType()
@@ -87,9 +86,9 @@ public class ParameterisedType implements Type
 	public String toString()
 	{
 		Array<String> typeNames = new Array<>();
-		Class<?> primaryClass = this.primaryType.reflectionClass();
+		Interface members = this.primaryType.reflect();
 
-		for (TypeVariable type: primaryClass.getTypeParameters())
+		for (TypeVariable type: members.getTypeParameters())
 		{
 			if (this.typeParameters.containsKey(type.getName()))
 			{
@@ -132,9 +131,9 @@ public class ParameterisedType implements Type
 	public String getSignature()
 	{
 		Array<String> typeNames = new Array<>();
-		Class<?> primaryClass = this.primaryType.reflectionClass();
+		Interface members = this.primaryType.reflect();
 
-		for (TypeVariable type: primaryClass.getTypeParameters())
+		for (TypeVariable type: members.getTypeParameters())
 		{
 			Type parameterType = this.typeParameters.get(type.getName());
 

@@ -50,4 +50,9 @@ public class NullFunction implements Function
 	{
 		return new Array<>();
 	}
+
+	public boolean isStatic()
+	{
+		return false;
+	}
 }

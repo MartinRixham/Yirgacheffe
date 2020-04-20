@@ -20,10 +20,9 @@ import yirgacheffe.lang.Array;
 import yirgacheffe.lang.MutableReference;
 
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,16 +46,14 @@ public class ArgumentsTest
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
-		Method[] methods = printStream.reflectionClass().getMethods();
+		Set<Function> methods = printStream.reflect().getPublicMethods();
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				Function function = new ClassFunction(printStream, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -80,16 +77,14 @@ public class ArgumentsTest
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type printStream = new ReferenceType(PrintStream.class);
-		Method[] methods = printStream.reflectionClass().getMethods();
+		Set<Function> methods = printStream.reflect().getPublicMethods();
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("println"))
 			{
-				Function function = new ClassFunction(printStream, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -110,20 +105,18 @@ public class ArgumentsTest
 		Coordinate coordinate = new Coordinate(3, 6);
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type string = new ReferenceType(String.class);
-		Method[] methods = string.reflectionClass().getMethods();
+		Set<Function> methods = string.reflect().getPublicMethods();
 
 		Arguments arguments =
 			new Arguments(coordinate, "method", new Array<>(), variables);
 
 		MatchResult matchResult = arguments.matches();
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("notAMethod"))
 			{
-				Function function = new ClassFunction(string, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -153,16 +146,14 @@ public class ArgumentsTest
 		Array<Expression> args = new Array<>(new This(coordinate, mapType));
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		Type testClass = new ReferenceType(ArgumentsTest.class);
-		Method[] methods = testClass.reflectionClass().getMethods();
+		Set<Function> methods = testClass.reflect().getPublicMethods();
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("mapIt"))
 			{
-				Function function = new ClassFunction(testClass, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -190,18 +181,16 @@ public class ArgumentsTest
 		Coordinate coordinate = new Coordinate(3, 65);
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type string = new ReferenceType(String.class);
-		Method[] methods = string.reflectionClass().getMethods();
+		Set<Function> methods = string.reflect().getPublicMethods();
 		Array<Expression> args = new Array<>(new Bool(coordinate, "true"));
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("split"))
 			{
-				Function function = new ClassFunction(string, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -227,16 +216,14 @@ public class ArgumentsTest
 		Coordinate coordinate = new Coordinate(3, 34);
 		Variables variables = new LocalVariables(1, new HashMap<>());
 		Type string = new ReferenceType(String.class);
-		Constructor<?>[] constructors = string.reflectionClass().getConstructors();
+		Set<Function> constructors = string.reflect().getPublicConstructors();
 		Array<Expression> args = new Array<>(new Num(coordinate, "1"));
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Constructor<?> constructor: constructors)
+		for (Function constructor: constructors)
 		{
-			Function function = new ClassFunction(string, constructor);
-
-			matchResult = matchResult.betterOf(arguments.matches(function));
+			matchResult = matchResult.betterOf(arguments.matches(constructor));
 		}
 
 		assertTrue(matchResult instanceof FailedMatchResult);
@@ -265,18 +252,16 @@ public class ArgumentsTest
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);
 		Type owner = new ParameterisedType(mutableReference, new Array<>(string));
-		Method[] methods = mutableReference.reflectionClass().getMethods();
+		Set<Function> methods = owner.reflect().getPublicMethods();
 		Array<Expression> args = new Array<>(new This(coordinate, object));
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().equals("set"))
 			{
-				Function function = new ClassFunction(owner, method);
-
-				matchResult = matchResult.betterOf(arguments.matches(function));
+				matchResult = matchResult.betterOf(arguments.matches(method));
 			}
 		}
 
@@ -299,18 +284,16 @@ public class ArgumentsTest
 		Type string = new ReferenceType(String.class);
 		Array<Type> typeParams = new Array<>(string);
 		Type array = new ParameterisedType(new ReferenceType(Array.class), typeParams);
-		Constructor<?>[] constructors = array.reflectionClass().getConstructors();
+		Set<Function> constructors = array.reflect().getPublicConstructors();
 		ArrayType arrayType = new ArrayType("[Ljava.lang.String;", string);
 		Expression argument = new This(coordinate, arrayType);
 		Array<Expression> args = new Array<>(argument);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
 		MatchResult matchResult = new FailedMatchResult(coordinate, "method");
 
-		for (Constructor<?> constructor: constructors)
+		for (Function constructor: constructors)
 		{
-			Function function = new ClassFunction(array, constructor);
-
-			matchResult = matchResult.betterOf(arguments.matches(function));
+			matchResult = matchResult.betterOf(arguments.matches(constructor));
 		}
 
 		assertTrue(matchResult instanceof SuccessfulMatchResult);

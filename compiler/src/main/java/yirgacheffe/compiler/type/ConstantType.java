@@ -2,14 +2,16 @@ package yirgacheffe.compiler.type;
 
 import yirgacheffe.lang.Array;
 
+import java.util.Set;
+
 public class ConstantType
 {
 	private Type constantType = new NullType();
 
 	public ConstantType(Type type)
 	{
-		java.lang.reflect.Type[] interfaces =
-			type.reflectionClass().getGenericInterfaces();
+		Set<java.lang.reflect.Type> interfaces =
+			type.reflect().getGenericInterfaces();
 
 		for (java.lang.reflect.Type interfaceType: interfaces)
 		{
@@ -33,9 +35,7 @@ public class ConstantType
 		}
 		else
 		{
-			return type.isAssignableTo(this.constantType) ||
-				type.reflectionClass().isAssignableFrom(
-					this.constantType.reflectionClass());
+			return type.isAssignableTo(this.constantType);
 		}
 	}
 

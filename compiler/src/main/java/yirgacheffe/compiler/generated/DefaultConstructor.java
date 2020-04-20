@@ -2,9 +2,10 @@ package yirgacheffe.compiler.generated;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Type;
 
-import java.lang.reflect.Method;
+import java.util.Set;
 
 public class DefaultConstructor
 {
@@ -37,9 +38,9 @@ public class DefaultConstructor
 			"()V",
 			false);
 
-		Method[] methods = owner.reflectionClass().getDeclaredMethods();
+		Set<Function> methods = owner.reflect().getMethods();
 
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().startsWith("0init_field"))
 			{

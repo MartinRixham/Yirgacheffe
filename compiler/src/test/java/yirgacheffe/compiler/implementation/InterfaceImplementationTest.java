@@ -1,13 +1,10 @@
 package yirgacheffe.compiler.implementation;
 
 import org.junit.Test;
-import yirgacheffe.compiler.function.ClassFunction;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
-
-import java.lang.reflect.Method;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,11 +20,9 @@ public class InterfaceImplementationTest
 
 		Implementation intersection = first.intersect(second);
 
-		for (Method method : interfaceType.reflectionClass().getMethods())
+		for (Function method : interfaceType.reflect().getPublicMethods())
 		{
-			Function function = new ClassFunction(interfaceType, method);
-
-			assertTrue(intersection.implementsMethod(function, interfaceType));
+			assertTrue(intersection.implementsMethod(method, interfaceType));
 		}
 	}
 }

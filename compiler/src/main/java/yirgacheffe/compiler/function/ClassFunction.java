@@ -104,6 +104,11 @@ public class ClassFunction implements Function
 		return new Array<>(this.executable.getGenericParameterTypes());
 	}
 
+	public boolean isStatic()
+	{
+		return Modifier.isStatic(this.executable.getModifiers());
+	}
+
 	@Override
 	public String toString()
 	{

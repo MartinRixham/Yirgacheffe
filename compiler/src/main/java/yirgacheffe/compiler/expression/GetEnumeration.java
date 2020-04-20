@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.type.ConstantType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
@@ -64,11 +65,7 @@ public class GetEnumeration implements Expression
 			Literal literal = (Literal) this.expression;
 			String value = literal.getValue().toString();
 
-			try
-			{
-				type.reflectionClass().getMethod(value);
-			}
-			catch (NoSuchMethodException e)
+			if (!type.reflect().hasMethod(value))
 			{
 				String message = "Unknown enumeration constant '" + value + "'.";
 
@@ -80,7 +77,7 @@ public class GetEnumeration implements Expression
 				type.toFullyQualifiedType(),
 				value,
 				"()" + type.toJVMType(),
-				this.type.reflectionClass().isInterface()));
+				this.type.reflect().isInterface()));
 		}
 		else
 		{
@@ -119,15 +116,15 @@ public class GetEnumeration implements Expression
 
 	private boolean isEnumeration(Type type)
 	{
-		Class<?> reflectionClass = type.reflectionClass();
+		Interface members = type.reflect();
 
-		return Enumeration.class.isAssignableFrom(reflectionClass) ||
-			EnumerationWithDefault.class.isAssignableFrom(reflectionClass);
+		return members.doesImplement(Enumeration.class) ||
+			members.doesImplement(EnumerationWithDefault.class);
 	}
 
 	private boolean hasDefault(Type type)
 	{
-		return EnumerationWithDefault.class.isAssignableFrom(type.reflectionClass());
+		return type.reflect().doesImplement(EnumerationWithDefault.class);
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

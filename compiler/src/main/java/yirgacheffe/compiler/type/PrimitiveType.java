@@ -79,14 +79,14 @@ public enum PrimitiveType implements Type
 		this.order = order;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.reflectionClass;
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return new ClassInterface(this, this.reflectionClass);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return new ClassInterface(type, this.reflectionClass);
 	}
 
 	public String toJVMType()
@@ -148,7 +148,7 @@ public enum PrimitiveType implements Type
 		}
 		else
 		{
-			return other.reflectionClass().isAssignableFrom(this.reflectionClass);
+			return other.reflect().isImplementedBy(this.reflectionClass);
 		}
 	}
 

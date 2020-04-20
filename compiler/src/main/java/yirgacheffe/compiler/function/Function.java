@@ -22,4 +22,6 @@ public interface Function
 	Type getOwner();
 
 	Array<java.lang.reflect.Type> getGenericParameterTypes();
+
+	boolean isStatic();
 }

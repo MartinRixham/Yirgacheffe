@@ -3,7 +3,6 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.function.ClassInterface;
 import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -19,14 +18,14 @@ public class BoundedType implements Type
 		this.typeBound = typeBound;
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.typeBound.reflectionClass();
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return this.typeBound.reflect(this);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return this.typeBound.reflect(type);
 	}
 
 	public String toJVMType()

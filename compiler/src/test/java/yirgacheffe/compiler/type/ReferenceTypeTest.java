@@ -21,7 +21,7 @@ public class ReferenceTypeTest
 		Type type = new ReferenceType(loadedClass);
 
 		assertEquals("java.lang.String", type.toString());
-		assertEquals(loadedClass, type.reflectionClass());
+		assertTrue(type.reflect().doesImplement(loadedClass));
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
@@ -67,7 +67,7 @@ public class ReferenceTypeTest
 		Type second = new ReferenceType(String.class);
 
 		assertEquals(first, second);
-		assertEquals(first.hashCode(), first.reflectionClass().hashCode());
+		assertEquals(first.hashCode(), first.reflect().hashCode());
 	}
 
 	@Test

@@ -11,6 +11,7 @@ import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -55,15 +56,16 @@ public class FieldWrite implements Statement
 		Type ownerType = this.owner.getType(variables);
 		Type type = this.value.getType(variables);
 		Result result = new Result();
+		Interface members = ownerType.reflect();
 
-		try
+		if (members.hasField(this.name))
 		{
-			Field field = ownerType.reflectionClass().getDeclaredField(this.name);
+			Field field = members.getField(this.name);
 
 			Class<?> fieldClass = field.getType();
-			Class<?> expressionClass = type.reflectionClass();
+			Interface expressionClass = type.reflect();
 
-			if (!fieldClass.isAssignableFrom(expressionClass) &&
+			if (!expressionClass.doesImplement(fieldClass) &&
 				!fieldClass.getSimpleName()
 					.equals(expressionClass.getSimpleName().toLowerCase()))
 			{
@@ -75,7 +77,7 @@ public class FieldWrite implements Statement
 				result = result.add(new Error(this.coordinate, message));
 			}
 		}
-		catch (NoSuchFieldException e)
+		else
 		{
 			String message = "Assignment to unknown field '" + this.name + "'.";
 

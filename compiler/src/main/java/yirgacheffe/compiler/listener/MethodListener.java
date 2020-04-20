@@ -12,7 +12,9 @@ import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.FunctionSignature;
+import yirgacheffe.compiler.function.Interface;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
@@ -30,7 +32,6 @@ import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -311,14 +312,11 @@ public class MethodListener extends TypeListener
 		FieldAssignment fieldAssignments)
 	{
 		String initialiserPrefix = "0init_field";
-		Class<?> reflectionClass = this.thisType.reflectionClass();
+		Interface members = thisType.reflect();
+		Set<Function> methods = members.getMethods();
+		Set<String> fieldNames = this.getFieldNames(members.getFields());
 
-		Method[] methods = reflectionClass.getDeclaredMethods();
-
-		Set<String> fieldNames =
-			this.getFieldNames(reflectionClass.getDeclaredFields());
-
-		for (Method method: methods)
+		for (Function method: methods)
 		{
 			if (method.getName().startsWith(initialiserPrefix))
 			{
@@ -356,7 +354,7 @@ public class MethodListener extends TypeListener
 			this.delegatedInterfaces.intersect(delegatedInterfaces);
 	}
 
-	private Set<String> getFieldNames(Field[] fields)
+	private Set<String> getFieldNames(Set<Field> fields)
 	{
 		Set<String> names = new HashSet<>();
 

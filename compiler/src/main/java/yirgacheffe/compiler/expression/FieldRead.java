@@ -12,6 +12,7 @@ import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 public class FieldRead implements Expression
 {
@@ -31,12 +32,12 @@ public class FieldRead implements Expression
 	public Type getType(Variables variables)
 	{
 		Type ownerType = this.owner.getType(variables);
-		Field[] fields = ownerType.reflectionClass().getDeclaredFields();
+		Set<Field> fields = ownerType.reflect().getFields();
 
 		return this.getType(ownerType, fields);
 	}
 
-	private Type getType(Type ownerType, Field[] fields)
+	private Type getType(Type ownerType, Set<Field> fields)
 	{
 		for (Field field: fields)
 		{

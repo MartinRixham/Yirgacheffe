@@ -35,14 +35,14 @@ public class ArrayType implements Type
 		}
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return this.reflectionClass;
-	}
-
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass());
+		return new ClassInterface(this, this.reflectionClass);
+	}
+
+	public Interface reflect(Type type)
+	{
+		return new ClassInterface(type, this.reflectionClass);
 	}
 
 	public String toJVMType()
@@ -175,7 +175,7 @@ public class ArrayType implements Type
 	{
 		Type type = (Type) other;
 
-		return this.reflectionClass.equals(type.reflectionClass());
+		return type.reflect().equals(this.reflectionClass);
 	}
 
 	@Override

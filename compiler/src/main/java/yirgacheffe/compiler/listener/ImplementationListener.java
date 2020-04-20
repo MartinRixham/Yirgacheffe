@@ -1,13 +1,12 @@
 package yirgacheffe.compiler.listener;
 
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.function.ClassFunction;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.Set;
 
 public class ImplementationListener extends ClassListener
 {
@@ -36,7 +35,7 @@ public class ImplementationListener extends ClassListener
 
 				this.errors.push(new Error(typeContext, message));
 			}
-			else if (!type.reflectionClass().isInterface())
+			else if (!type.reflect().isInterface())
 			{
 				String message = "Cannot implement concrete type " + type + ".";
 
@@ -54,17 +53,17 @@ public class ImplementationListener extends ClassListener
 	private void getInterfaceMethods()
 	{
 		for (java.lang.reflect.Type type:
-			this.thisType.reflectionClass().getGenericInterfaces())
+			this.thisType.reflect().getGenericInterfaces())
 		{
 			Type interfaceType = Type.getType(type, thisType);
 
-			Method[] methods = interfaceType.reflectionClass().getMethods();
+			Set<Function> methods = interfaceType.reflect().getPublicMethods();
 
-			for (Method method: methods)
+			for (Function method: methods)
 			{
-				if (!Modifier.isStatic(method.getModifiers()))
+				if (!method.isStatic())
 				{
-					this.interfaceMethods.push(new ClassFunction(interfaceType, method));
+					this.interfaceMethods.push(method);
 				}
 			}
 		}

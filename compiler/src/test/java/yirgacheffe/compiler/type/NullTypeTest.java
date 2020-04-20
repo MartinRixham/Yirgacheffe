@@ -91,7 +91,7 @@ public class NullTypeTest
 
 		Type intersection = type.intersect(new ReferenceType(Object.class));
 
-		assertEquals(new ReferenceType(Object.class), intersection);
+		assertEquals(type, intersection);
 	}
 
 	@Test
