@@ -30,16 +30,27 @@ public class LoopListener extends StatementListener
 			this.statements.length() > 0)
 		{
 			Coordinate coordinate = new Coordinate(context);
-			Statement statement = this.statements.pop();
 
 			For forStatement =
 				new For(
 					this.handleMissing(this.initialiser),
 					this.exitCondition,
 					this.handleMissing(this.incrementer),
-					statement);
+					this.getStatement(context.statement()));
 
 			this.statements.push(new Block(coordinate, new Array<>(forStatement)));
+		}
+	}
+
+	private Statement getStatement(YirgacheffeParser.StatementContext context)
+	{
+		if (context == null)
+		{
+			return new DoNothing();
+		}
+		else
+		{
+			return this.statements.pop();
 		}
 	}
 
