@@ -22,6 +22,7 @@ public class ArrayTypeTest
 
 		assertEquals("java.lang.String[]", stringArray.toString());
 		assertEquals("String[]", stringArray.reflect().getSimpleName());
+		assertEquals("String[]", stringArray.reflect(stringArray).getSimpleName());
 		assertEquals("[Ljava/lang/String;", stringArray.toJVMType());
 		assertEquals("[Ljava/lang/String;", stringArray.getSignature());
 		assertEquals("java.lang.String[]", stringArray.toFullyQualifiedType());

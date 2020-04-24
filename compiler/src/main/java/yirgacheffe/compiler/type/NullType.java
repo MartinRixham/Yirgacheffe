@@ -21,11 +21,6 @@ public class NullType implements Type
 		this.name = "java.lang.Object";
 	}
 
-	public Class<?> reflectionClass()
-	{
-		return Object.class;
-	}
-
 	public Interface reflect()
 	{
 		return new NullInterface();

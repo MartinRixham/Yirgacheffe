@@ -23,6 +23,7 @@ public class AttemptedTypeTest
 
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertTrue(type.reflect().doesImplement(Object.class));
+		assertTrue(type.reflect(type).doesImplement(Object.class));
 		assertEquals(null, type.getSignature());
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals(1, type.width());

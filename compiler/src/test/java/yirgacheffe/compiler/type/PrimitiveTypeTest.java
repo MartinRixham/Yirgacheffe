@@ -44,6 +44,8 @@ public class PrimitiveTypeTest
 		PrimitiveType type = PrimitiveType.BOOLEAN;
 
 		assertEquals("Bool", type.toString());
+		assertTrue(type.reflect().doesImplement(Boolean.class));
+		assertTrue(type.reflect(type).doesImplement(Boolean.class));
 		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
 		assertEquals("Z", type.toJVMType());
 		assertEquals(1, type.width());

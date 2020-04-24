@@ -21,6 +21,7 @@ public class BoundedTypeTest
 
 		assertEquals("java.lang.Object", type.toString());
 		assertTrue(type.reflect().doesImplement(loadedClass));
+		assertTrue(type.reflect(type).doesImplement(loadedClass));
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("T:Ljava/lang/Object;", type.getSignature());

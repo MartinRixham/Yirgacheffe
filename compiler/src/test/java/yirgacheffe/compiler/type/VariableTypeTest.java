@@ -21,6 +21,7 @@ public class VariableTypeTest
 
 		assertEquals("T", type.toString());
 		assertTrue(type.reflect().doesImplement(loadedClass));
+		assertTrue(type.reflect(type).doesImplement(loadedClass));
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("TT;", type.getSignature());

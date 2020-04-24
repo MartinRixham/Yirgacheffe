@@ -27,6 +27,7 @@ public class IntersectionTypeTest
 
 		assertEquals("java.util.ArrayList", type.toString());
 		assertEquals(arrayList.reflect(), type.reflect());
+		assertEquals(arrayList.reflect(type), type.reflect(type));
 		assertEquals("java/util/ArrayList", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/ArrayList;", type.toJVMType());
 		assertEquals("Ljava/util/ArrayList;", type.getSignature());

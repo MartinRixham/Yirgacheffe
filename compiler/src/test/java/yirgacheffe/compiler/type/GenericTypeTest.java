@@ -30,6 +30,7 @@ public class GenericTypeTest
 
 		assertEquals("java.lang.String", type.toString());
 		assertTrue(type.reflect().doesImplement(loadedClass));
+		assertTrue(type.reflect(type).doesImplement(loadedClass));
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
