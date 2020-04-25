@@ -1,6 +1,7 @@
 package yirgacheffe.compiler.function;
 
 import org.objectweb.asm.Label;
+import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
@@ -13,12 +14,12 @@ public class NullSignature implements Signature
 
 	public String getDescriptor()
 	{
-		return null;
+		return "()V";
 	}
 
 	public String getSignature()
 	{
-		return null;
+		return "()V";
 	}
 
 	public Array<Type> getParameters()
@@ -28,16 +29,16 @@ public class NullSignature implements Signature
 
 	public String getName()
 	{
-		return null;
+		return "";
 	}
 
 	public Type getReturnType()
 	{
-		return null;
+		return new NullType();
 	}
 
 	public Label getLabel()
 	{
-		return null;
+		return new Label();
 	}
 }

@@ -53,6 +53,7 @@ public class ParameterisedTypeTest
 		assertFalse(type.isPrimitive());
 		assertEquals(new ReferenceType(String.class), type.getTypeParameter("E"));
 		assertEquals(referenceType.hashCode(), type.hashCode());
+		assertNotEquals(type, "");
 	}
 
 	@Test

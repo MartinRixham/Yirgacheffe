@@ -26,8 +26,7 @@ public class LoopListener extends StatementListener
 
 	public void exitForStatement(YirgacheffeParser.ForStatementContext context)
 	{
-		if (this.exitCondition != null &&
-			this.statements.length() > 0)
+		if (this.exitCondition != null)
 		{
 			Coordinate coordinate = new Coordinate(context);
 

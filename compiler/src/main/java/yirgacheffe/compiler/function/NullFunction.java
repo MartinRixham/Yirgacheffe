@@ -18,7 +18,7 @@ public class NullFunction implements Function
 
 	public String getDescriptor()
 	{
-		return null;
+		return "()V";
 	}
 
 	public Type getReturnType()
@@ -43,7 +43,7 @@ public class NullFunction implements Function
 
 	public Type getOwner()
 	{
-		return null;
+		return new NullType();
 	}
 
 	public Array<java.lang.reflect.Type> getGenericParameterTypes()
