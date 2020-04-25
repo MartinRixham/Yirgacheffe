@@ -9,11 +9,12 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.FunctionSignature;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.function.Parameters;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.member.Property;
 import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.type.BoundedType;
 import yirgacheffe.compiler.type.ClassSignature;
@@ -33,7 +34,6 @@ import yirgacheffe.lang.Enumeration;
 import yirgacheffe.lang.EnumerationWithDefault;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -391,11 +391,11 @@ public class ClassListener extends PackageListener
 		}
 	}
 
-	private Set<String> getFieldNames(Set<Field> fields)
+	private Set<String> getFieldNames(Set<Property> fields)
 	{
 		Set<String> names = new HashSet<>();
 
-		for (Field field: fields)
+		for (Property field: fields)
 		{
 			names.add(field.getName());
 		}

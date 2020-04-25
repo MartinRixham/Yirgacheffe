@@ -14,11 +14,12 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.FunctionSignature;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.InterfaceImplementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.member.Property;
 import yirgacheffe.compiler.statement.Block;
 import yirgacheffe.compiler.statement.LabelStatement;
 import yirgacheffe.compiler.statement.ParameterDeclaration;
@@ -31,8 +32,6 @@ import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -354,13 +353,13 @@ public class MethodListener extends TypeListener
 			this.delegatedInterfaces.intersect(delegatedInterfaces);
 	}
 
-	private Set<String> getFieldNames(Set<Field> fields)
+	private Set<String> getFieldNames(Set<Property> fields)
 	{
 		Set<String> names = new HashSet<>();
 
-		for (Field field: fields)
+		for (Property field: fields)
 		{
-			if (!Modifier.isStatic(field.getModifiers()))
+			if (!field.isStatic())
 			{
 				names.add(field.getName());
 			}

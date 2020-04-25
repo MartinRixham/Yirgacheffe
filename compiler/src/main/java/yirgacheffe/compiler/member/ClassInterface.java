@@ -1,5 +1,7 @@
-package yirgacheffe.compiler.function;
+package yirgacheffe.compiler.member;
 
+import yirgacheffe.compiler.function.ClassFunction;
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.lang.Array;
 
@@ -42,40 +44,28 @@ public class ClassInterface implements Interface
 		return this.makeFunctions(this.clazz.getMethods());
 	}
 
-	public Set<Field> getFields()
+	public Set<Property> getFields()
 	{
-		return new HashSet<>(Arrays.asList(this.clazz.getDeclaredFields()));
+		Set<Property> properties = new HashSet<>();
+
+		for (Field field: this.clazz.getDeclaredFields())
+		{
+			properties.add(new FieldProperty(this.type, field));
+		}
+
+		return properties;
 	}
 
-	public boolean hasField(String name)
+	public Property getField(String name)
 	{
 		try
 		{
-			this.clazz.getDeclaredField(name);
-
-			return true;
+			return new FieldProperty(this.type, this.clazz.getDeclaredField(name));
 		}
 		catch (NoSuchFieldException e)
 		{
-			return false;
+			return new NullProperty(name);
 		}
-	}
-
-	public Field getField(String name)
-	{
-		try
-		{
-			return this.clazz.getDeclaredField(name);
-		}
-		catch (NoSuchFieldException e)
-		{
-			return null;
-		}
-	}
-
-	public Set<Field> getPublicFields()
-	{
-		return null;
 	}
 
 	public Set<java.lang.reflect.Type> getGenericInterfaces()

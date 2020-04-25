@@ -6,22 +6,19 @@ import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
-import yirgacheffe.compiler.type.PrimitiveType;
-import yirgacheffe.compiler.type.ReferenceType;
+import yirgacheffe.compiler.member.Property;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 public class FieldWrite implements Statement
@@ -57,34 +54,10 @@ public class FieldWrite implements Statement
 		Type type = this.value.getType(variables);
 		Result result = new Result();
 		Interface members = ownerType.reflect();
-
-		if (members.hasField(this.name))
-		{
-			Field field = members.getField(this.name);
-
-			Class<?> fieldClass = field.getType();
-			Interface expressionClass = type.reflect();
-
-			if (!expressionClass.doesImplement(fieldClass) &&
-				!fieldClass.getSimpleName()
-					.equals(expressionClass.getSimpleName().toLowerCase()))
-			{
-				Type fieldType = this.getType(fieldClass);
-				String message =
-					"Cannot assign expression of type " + type +
-					" to field of type " + fieldType + ".";
-
-				result = result.add(new Error(this.coordinate, message));
-			}
-		}
-		else
-		{
-			String message = "Assignment to unknown field '" + this.name + "'.";
-
-			result = result.add(new Error(this.coordinate, message));
-		}
+		Property field = members.getField(this.name);
 
 		result = result
+			.concat(field.checkType(this.coordinate, type))
 			.concat(this.owner.compile(variables))
 			.concat(this.value.compile(variables))
 			.add(new FieldInsnNode(
@@ -97,18 +70,6 @@ public class FieldWrite implements Statement
 		variables.stackPop();
 
 		return result;
-	}
-
-	private Type getType(Class<?> clazz)
-	{
-		if (clazz.isPrimitive())
-		{
-			return PrimitiveType.valueOf(clazz.getName().toUpperCase());
-		}
-		else
-		{
-			return new ReferenceType(clazz);
-		}
 	}
 
 	public Array<VariableRead> getVariableReads()

@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.type.ConstantType;
 import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;

@@ -1,8 +1,8 @@
-package yirgacheffe.compiler.function;
+package yirgacheffe.compiler.member;
 
+import yirgacheffe.compiler.function.Function;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.TypeVariable;
 import java.util.Set;
 
@@ -16,11 +16,9 @@ public interface Interface
 
 	Set<Function> getPublicMethods();
 
-	Set<Field> getFields();
+	Set<Property> getFields();
 
-	boolean hasField(String name);
-
-	Field getField(String name);
+	Property getField(String name);
 
 	Set<java.lang.reflect.Type> getGenericInterfaces();
 

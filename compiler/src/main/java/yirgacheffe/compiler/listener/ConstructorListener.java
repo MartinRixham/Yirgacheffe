@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;

@@ -1,8 +1,9 @@
-package yirgacheffe.compiler.function;
+package yirgacheffe.compiler.member;
 
+import yirgacheffe.compiler.function.Function;
+import yirgacheffe.compiler.function.NullFunction;
 import yirgacheffe.lang.Array;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
@@ -31,19 +32,14 @@ public class NullInterface implements Interface
 		return new HashSet<>(Collections.singletonList(new NullFunction()));
 	}
 
-	public Set<Field> getFields()
+	public Set<Property> getFields()
 	{
 		return new HashSet<>();
 	}
 
-	public boolean hasField(String name)
+	public Property getField(String name)
 	{
-		return true;
-	}
-
-	public Field getField(String name)
-	{
-		return null;
+		return new NullProperty(name);
 	}
 
 	public Set<Type> getGenericInterfaces()

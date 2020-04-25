@@ -6,13 +6,11 @@ import org.objectweb.asm.tree.FieldInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.error.Error;
+import yirgacheffe.compiler.member.Property;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
-
-import java.lang.reflect.Field;
-import java.util.Set;
 
 public class FieldRead implements Expression
 {
@@ -32,22 +30,9 @@ public class FieldRead implements Expression
 	public Type getType(Variables variables)
 	{
 		Type ownerType = this.owner.getType(variables);
-		Set<Field> fields = ownerType.reflect().getFields();
+		Property field = ownerType.reflect().getField(this.name);
 
-		return this.getType(ownerType, fields);
-	}
-
-	private Type getType(Type ownerType, Set<Field> fields)
-	{
-		for (Field field: fields)
-		{
-			if (field.getName().equals(this.name))
-			{
-				return Type.getType(field.getGenericType(), ownerType);
-			}
-		}
-
-		return new NullType();
+		return field.getType();
 	}
 
 	public Result compile(Variables variables)

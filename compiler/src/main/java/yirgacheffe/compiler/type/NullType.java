@@ -3,8 +3,8 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.function.Interface;
-import yirgacheffe.compiler.function.NullInterface;
+import yirgacheffe.compiler.member.Interface;
+import yirgacheffe.compiler.member.NullInterface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 public class NullType implements Type

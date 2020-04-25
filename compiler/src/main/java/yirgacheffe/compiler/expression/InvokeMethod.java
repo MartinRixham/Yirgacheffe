@@ -9,7 +9,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
-import yirgacheffe.compiler.function.Interface;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.function.LengthMethods;
 import yirgacheffe.compiler.function.MatchResult;
 import yirgacheffe.compiler.statement.TailCall;
