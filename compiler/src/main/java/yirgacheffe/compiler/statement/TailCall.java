@@ -125,7 +125,7 @@ public class TailCall implements Statement
 			parameters.push(argument.getType(this.variables));
 		}
 
-		return this.caller.equals(name, parameters);
+		return this.caller.equals(new Array<>(name, parameters));
 	}
 
 	public boolean isEmpty()

@@ -93,17 +93,7 @@ public class VariableDeclaration implements Statement
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof String)
-		{
-			return this.name.equals(other);
-		}
-
-		if (other instanceof VariableDeclaration || other instanceof VariableWrite)
-		{
-			return other.equals(this.name);
-		}
-
-		return false;
+		return other.equals(this.name);
 	}
 
 	@Override

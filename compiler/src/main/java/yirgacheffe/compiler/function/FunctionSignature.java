@@ -109,34 +109,7 @@ public class FunctionSignature implements Signature
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof Signature)
-		{
-			Signature signature = (Signature) other;
-
-			if (!this.name.equals(signature.getName()) ||
-				this.parameters.length() != signature.getParameters().length())
-			{
-				return false;
-			}
-
-			for (int i = 0; i < this.parameters.length(); i++)
-			{
-				if (!this.parameters.get(i).toJVMType().equals(
-					signature.getParameters().get(i).toJVMType()))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		throw new RuntimeException();
-	}
-
-	public boolean equals(String name, Array<Type> parameters)
-	{
-		return this.name.equals(name) && this.parameters.equals(parameters);
+		return other.equals(new Array<>(this.name, this.parameters));
 	}
 
 	@Override

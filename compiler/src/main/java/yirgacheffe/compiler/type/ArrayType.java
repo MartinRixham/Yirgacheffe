@@ -173,9 +173,7 @@ public class ArrayType implements Type
 	@Override
 	public boolean equals(Object other)
 	{
-		Type type = (Type) other;
-
-		return type.reflect().equals(this.reflectionClass);
+		return other.equals(this.reflectionClass);
 	}
 
 	@Override

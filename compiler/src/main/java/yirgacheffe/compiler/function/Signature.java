@@ -19,6 +19,4 @@ public interface Signature
 	Type getReturnType();
 
 	Label getLabel();
-
-	boolean equals(String name, Array<Type> parameters);
 }

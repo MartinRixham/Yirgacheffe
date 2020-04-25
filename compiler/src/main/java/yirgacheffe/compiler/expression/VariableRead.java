@@ -5,7 +5,6 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
-import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.variables.Variables;
@@ -109,17 +108,7 @@ public class VariableRead implements Expression
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof String)
-		{
-			return this.name.equals(other);
-		}
-
-		if (other instanceof VariableRead || other instanceof VariableWrite)
-		{
-			return other.equals(this.name);
-		}
-
-		return false;
+		return other.equals(this.name);
 	}
 
 	@Override

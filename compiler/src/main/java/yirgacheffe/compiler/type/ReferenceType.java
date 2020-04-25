@@ -165,14 +165,7 @@ public class ReferenceType implements Type
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof ReferenceType)
-		{
-			ReferenceType referenceType = (ReferenceType) other;
-
-			return this.reflectionClass.equals(referenceType.reflectionClass);
-		}
-
-		return false;
+		return other.equals(this.reflectionClass);
 	}
 
 	public Type getTypeParameter(String typeName)

@@ -133,17 +133,7 @@ public class VariableWrite implements Statement
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof String)
-		{
-			return this.name.equals(other);
-		}
-
-		if (other instanceof VariableWrite || other instanceof VariableRead)
-		{
-			return other.equals(this.name);
-		}
-
-		return false;
+		return other.equals(this.name);
 	}
 
 	@Override

@@ -139,11 +139,6 @@ public class ClassInterface implements Interface
 		return functions;
 	}
 
-	public boolean equals(Class<?> other)
-	{
-		return this.clazz.equals(other);
-	}
-
 	@Override
 	public boolean equals(Object other)
 	{

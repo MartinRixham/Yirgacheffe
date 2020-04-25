@@ -40,9 +40,4 @@ public class NullSignature implements Signature
 	{
 		return null;
 	}
-
-	public boolean equals(String name, Array<Type> parameters)
-	{
-		return true;
-	}
 }

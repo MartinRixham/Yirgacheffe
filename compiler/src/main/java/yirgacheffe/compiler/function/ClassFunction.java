@@ -127,16 +127,7 @@ public class ClassFunction implements Function
 	@Override
 	public boolean equals(Object other)
 	{
-		if (other instanceof ClassFunction)
-		{
-			ClassFunction otherFunction = (ClassFunction) other;
-
-			return this.executable.equals(otherFunction.executable);
-		}
-		else
-		{
-			return false;
-		}
+		return other.equals(this.executable);
 	}
 
 	@Override
