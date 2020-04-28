@@ -859,19 +859,19 @@ public class ConstructorListenerTest
 	{
 		String source =
 			"class MyClass\n" +
-				"{\n" +
+			"{\n" +
 				"String sumpt;\n" +
 				"public MyClass()\n" +
 				"{\n" +
-				"if (true)\n" +
-				"{\n" +
+					"if (true)\n" +
+					"{\n" +
+					"}\n" +
+					"else\n" +
+					"{\n" +
+					"}\n" +
+					"this.sumpt = \"sumpt\";" +
 				"}\n" +
-				"else\n" +
-				"{\n" +
-				"}\n" +
-				"this.sumpt = \"sumpt\";" +
-				"}\n" +
-				"}";
+			"}";
 
 		Classes classes = new Classes();
 		Compiler compiler = new Compiler("", source);
@@ -1344,7 +1344,7 @@ public class ConstructorListenerTest
 		String source =
 			"interface MyInterface\n" +
 			"{\n" +
-				"public MyInterface()\n" +
+				"MyInterface()\n" +
 				"{\n" +
 					"return this();" +
 				"}\n" +
@@ -1384,12 +1384,41 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testInterfaceConstructorCannotBePrivate()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"private MyInterface()\n" +
+				"{\n" +
+					"return this();" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 3:0 Access modifier is not required " +
+				"for interface constructor declaration.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testCallingInterfaceConstructor()
 	{
 		String interfaceSource =
 			"interface MyInterface\n" +
 			"{\n" +
-				"public MyInterface()\n" +
+				"MyInterface()\n" +
 				"{\n" +
 					"return this();\n" +
 				"}\n" +

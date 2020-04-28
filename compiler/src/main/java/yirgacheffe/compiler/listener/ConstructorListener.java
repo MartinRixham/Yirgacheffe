@@ -81,6 +81,13 @@ public class ConstructorListener extends MainMethodListener
 
 			this.errors.push(new Error(context, message));
 		}
+		else if (this.inInterface && context.modifier() != null)
+		{
+			String message =
+				"Access modifier is not required for interface constructor declaration.";
+
+			this.errors.push(new Error(context, message));
+		}
 
 		if (this.inEnumeration &&
 			context.modifier() != null &&
