@@ -1339,6 +1339,110 @@ public class ConstructorListenerTest
 	}
 
 	@Test
+	public void testInterfaceConstructorCallsItself()
+	{
+		String source =
+			"interface MyInterface\n" +
+			"{\n" +
+				"public MyInterface()\n" +
+				"{\n" +
+					"return this();" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode constructor = classNode.methods.get(0);
+
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(4, instructions.size());
+
+		assertTrue(instructions.get(0) instanceof LabelNode);
+		assertTrue(instructions.get(1) instanceof LineNumberNode);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("MyInterface", thirdInstruction.owner);
+		assertEquals("0this", thirdInstruction.name);
+		assertEquals("()LMyInterface;", thirdInstruction.desc);
+	}
+
+	@Test
+	public void testCallingInterfaceConstructor()
+	{
+		String interfaceSource =
+			"interface MyInterface\n" +
+			"{\n" +
+				"public MyInterface()\n" +
+				"{\n" +
+					"return this();\n" +
+				"}\n" +
+			"}";
+
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"new MyInterface();\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+
+		new Compiler("", interfaceSource).compileInterface(classes);
+
+		classes.clearCache();
+
+		Compiler interfaceCompiler = new Compiler("", interfaceSource);
+		CompilationResult interfaceResult = interfaceCompiler.compile(classes);
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(interfaceResult.isSuccessful());
+		assertTrue(result.isSuccessful());
+		assertEquals("MyClass.class", result.getClassFileName());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode constructor = classNode.methods.get(0);
+
+		InsnList instructions = constructor.instructions;
+
+		assertEquals(5, instructions.size());
+
+		assertTrue(instructions.get(0) instanceof LabelNode);
+		assertTrue(instructions.get(1) instanceof LineNumberNode);
+
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("MyInterface", thirdInstruction.owner);
+		assertEquals("0this", thirdInstruction.name);
+		assertEquals("()LMyInterface;", thirdInstruction.desc);
+	}
+
+	@Test
 	public void testDelegateInterfaceWithNumberParameter()
 	{
 		String source =
