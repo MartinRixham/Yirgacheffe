@@ -8,7 +8,9 @@ import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ParameterisedType implements Type
@@ -22,7 +24,7 @@ public class ParameterisedType implements Type
 		this.primaryType = primaryType;
 
 		Array<TypeVariable<?>> genericTypes = primaryType.reflect().getTypeParameters();
-		Map<String, Type> types = new HashMap<>();
+		Map<String, Type> types = new LinkedHashMap<>();
 		int typeCount = Math.min(genericTypes.length(), typeParameters.length());
 
 		for (int i = 0; i < typeCount; i++)
@@ -105,11 +107,20 @@ public class ParameterisedType implements Type
 		if (other instanceof ParameterisedType)
 		{
 			ParameterisedType parameterisedType = (ParameterisedType) other;
+			Collection<Type> parameters = this.typeParameters.values();
+			Collection<Type> otherParameters = parameterisedType.typeParameters.values();
 
-			for (String key: this.typeParameters.keySet())
+			if (parameters.size() != otherParameters.size())
 			{
-				if (!this.typeParameters.get(key)
-					.isAssignableTo(parameterisedType.typeParameters.get(key)))
+				return false;
+			}
+
+			Iterator<Type> iterator = parameters.iterator();
+			Iterator<Type> otherIterator = otherParameters.iterator();
+
+			while (iterator.hasNext())
+			{
+				if (!iterator.next().isAssignableTo(otherIterator.next()))
 				{
 					return false;
 				}
@@ -133,7 +144,7 @@ public class ParameterisedType implements Type
 		Array<String> typeNames = new Array<>();
 		Interface members = this.primaryType.reflect();
 
-		for (TypeVariable type: members.getTypeParameters())
+		for (TypeVariable<?> type: members.getTypeParameters())
 		{
 			Type parameterType = this.typeParameters.get(type.getName());
 

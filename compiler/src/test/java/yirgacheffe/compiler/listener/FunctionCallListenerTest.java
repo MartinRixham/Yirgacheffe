@@ -1399,4 +1399,23 @@ public class FunctionCallListenerTest
 
 		assertTrue(result.isSuccessful());
 	}
+
+	@Test
+	public void testCreatingSet()
+	{
+		String source =
+			"import java.util.HashSet;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"new HashSet<String>(new Array<String>(\"\", \"\"));\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+	}
 }
