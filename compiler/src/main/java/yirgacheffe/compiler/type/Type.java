@@ -58,7 +58,7 @@ public interface Type
 			Type componentType =
 				Type.getType(((GenericArrayType) type).getGenericComponentType(), owner);
 
-			return new ArrayType("[Ljava.lang.Object;", componentType);
+			return new JVMArrayType("[Ljava.lang.Object;", componentType);
 		}
 		if (type instanceof ParameterizedType)
 		{
@@ -94,7 +94,7 @@ public interface Type
 		{
 			Type arrayType = Type.getType(clazz.getComponentType());
 
-			return new ArrayType(clazz.getName(), arrayType);
+			return new JVMArrayType(clazz.getName(), arrayType);
 		}
 		else if (clazz.isPrimitive())
 		{

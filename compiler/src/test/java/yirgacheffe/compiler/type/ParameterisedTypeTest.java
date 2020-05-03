@@ -12,6 +12,7 @@ import yirgacheffe.lang.Array;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -34,8 +35,8 @@ public class ParameterisedTypeTest
 	public void testTypeWithOneParameter()
 	{
 		ReferenceType referenceType = new ReferenceType(List.class);
-		Type typeParameter = new ReferenceType(String.class);
-		Type type = new ParameterisedType(referenceType, new Array<>(typeParameter));
+		Array<Type> typeParameter = new Array<>(new ReferenceType(String.class));
+		Type type = new ParameterisedType(referenceType, typeParameter);
 
 		assertEquals("java.util.List<java.lang.String>", type.toString());
 		assertTrue(type.reflect().doesImplement(List.class));
@@ -54,6 +55,9 @@ public class ParameterisedTypeTest
 		assertEquals(new ReferenceType(String.class), type.getTypeParameter("E"));
 		assertEquals(referenceType.hashCode(), type.hashCode());
 		assertNotEquals(type, "");
+
+		assertFalse(type.isAssignableTo(
+			new ParameterisedType(new ReferenceType(Set.class), typeParameter)));
 	}
 
 	@Test

@@ -33,8 +33,7 @@ public class Types
 			return new NullType(name);
 		}
 
-		if (context.typeParameters() != null &&
-			type instanceof ReferenceType)
+		if (context.typeParameters() != null && type instanceof ReferenceType)
 		{
 			Array<Type> typeParameters = new Array<>();
 
@@ -44,7 +43,17 @@ public class Types
 				typeParameters.push(this.getType(typeParameter));
 			}
 
-			return new ParameterisedType((ReferenceType) type, typeParameters);
+			ParameterisedType parameterisedType =
+				new ParameterisedType((ReferenceType) type, typeParameters);
+
+			if (type.equals(new ReferenceType(Array.class)))
+			{
+				return new ArrayType(parameterisedType);
+			}
+			else
+			{
+				return parameterisedType;
+			}
 		}
 		else
 		{

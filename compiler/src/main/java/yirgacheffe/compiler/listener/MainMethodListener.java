@@ -49,7 +49,7 @@ public class MainMethodListener extends ParallelMethodListener
 		else
 		{
 			Type parameterType = this.types.getType(signature.parameter().get(0).type());
-			ReferenceType arrayType = new ReferenceType(yirgacheffe.lang.Array.class);
+			ReferenceType arrayType = new ReferenceType(Array.class);
 			Type stringType = new ReferenceType(java.lang.String.class);
 			Type argsType =
 				new ParameterisedType(arrayType, new Array<>(stringType));

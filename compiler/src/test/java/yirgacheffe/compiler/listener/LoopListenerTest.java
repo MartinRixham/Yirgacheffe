@@ -130,10 +130,10 @@ public class LoopListenerTest
 			"{\n" +
 				"public Void method(Array<String> array)" +
 				"{\n" +
-				"for (Num i = 0; i < array.length(); i++)\n" +
-				"{\n" +
-					"Num index = i;\n" +
-				"}\n" +
+					"for (Num i = 0; i < array.length(); i++)\n" +
+					"{\n" +
+						"Num index = i;\n" +
+					"}\n" +
 				"}\n" +
 				"public MyClass() {}\n" +
 			"}";

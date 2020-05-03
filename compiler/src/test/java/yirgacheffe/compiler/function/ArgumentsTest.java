@@ -8,7 +8,7 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
-import yirgacheffe.compiler.type.ArrayType;
+import yirgacheffe.compiler.type.JVMArrayType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.ParameterisedType;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -285,7 +285,7 @@ public class ArgumentsTest
 		Array<Type> typeParams = new Array<>(string);
 		Type array = new ParameterisedType(new ReferenceType(Array.class), typeParams);
 		Set<Function> constructors = array.reflect().getPublicConstructors();
-		ArrayType arrayType = new ArrayType("[Ljava.lang.String;", string);
+		JVMArrayType arrayType = new JVMArrayType("[Ljava.lang.String;", string);
 		Expression argument = new This(coordinate, arrayType);
 		Array<Expression> args = new Array<>(argument);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
@@ -305,7 +305,7 @@ public class ArgumentsTest
 
 		assertEquals(1, parameterTypes.length());
 		assertEquals(
-			new ArrayType("[Ljava.lang.Object;", new ReferenceType(Object.class)),
+			new JVMArrayType("[Ljava.lang.Object;", new ReferenceType(Object.class)),
 			parameterTypes.get(0));
 	}
 }

@@ -1,184 +1,173 @@
 package yirgacheffe.compiler.type;
 
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
-import yirgacheffe.compiler.member.ClassInterface;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
+import java.util.Collection;
+
 public class ArrayType implements Type
 {
-	private String jvmType;
+	private ParameterisedType type;
 
-	private String fullyQualifiedType;
-
-	private Class<?> reflectionClass;
-
-	private Type type;
-
-	public ArrayType(String name, Type type)
+	public ArrayType(ParameterisedType type)
 	{
-		this.jvmType = name.replace(".", "/");
-		this.fullyQualifiedType = name.substring(2).replace(";", "[]");
 		this.type = type;
-
-		try
-		{
-			this.reflectionClass = Class.forName(name);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new RuntimeException(e);
-		}
 	}
 
 	public Interface reflect()
 	{
-		return new ClassInterface(this, this.reflectionClass);
+		return this.type.reflect();
 	}
 
 	public Interface reflect(Type type)
 	{
-		return new ClassInterface(type, this.reflectionClass);
+		return this.type.reflect(type);
 	}
 
 	public String toJVMType()
 	{
-		return this.jvmType;
+		return this.type.toJVMType();
 	}
 
 	public String toFullyQualifiedType()
 	{
-		return this.fullyQualifiedType;
+		return this.type.toFullyQualifiedType();
 	}
 
 	public int width()
 	{
-		return 1;
+		return this.type.width();
 	}
 
 	public int getReturnInstruction()
 	{
-		return Opcodes.ARETURN;
+		return this.type.getReturnInstruction();
 	}
 
 	public int getStoreInstruction()
 	{
-		return Opcodes.ASTORE;
+		return this.type.getStoreInstruction();
 	}
 
 	public int getArrayStoreInstruction()
 	{
-		return Opcodes.AASTORE;
+		return this.type.getArrayStoreInstruction();
 	}
 
 	public int getLoadInstruction()
 	{
-		return Opcodes.ALOAD;
+		return this.type.getLoadInstruction();
 	}
 
 	public int getZero()
 	{
-		return Opcodes.ACONST_NULL;
-	}
-
-	public String toString()
-	{
-		return this.fullyQualifiedType;
+		return this.type.getZero();
 	}
 
 	public boolean isAssignableTo(Type other)
 	{
-		if (other instanceof ArrayType)
-		{
-			ArrayType otherType = (ArrayType) other;
+		Type parameter = this.type.getTypeParameter("T");
 
-			return this.type.isAssignableTo(otherType.type);
-		}
-		else
-		{
-			ReferenceType arrayType = new ReferenceType(Array.class);
-			Type type = new ParameterisedType(arrayType, new Array<>(this.type));
+		Type collection =
+			new ParameterisedType(
+				new ReferenceType(Collection.class),
+				new Array<>(parameter));
 
-			return type.isAssignableTo(other);
-		}
+		return this.type.isAssignableTo(other) ||
+			collection.isAssignableTo(other);
 	}
 
 	public boolean hasParameter()
 	{
-		return false;
+		return this.type.hasParameter();
 	}
 
 	public String getSignature()
 	{
-		return this.jvmType;
+		return this.type.getSignature();
 	}
 
 	public boolean isPrimitive()
 	{
-		return false;
+		return this.type.isPrimitive();
 	}
 
 	public Result newArray()
 	{
-		return new Result();
+		return this.type.newArray();
 	}
 
 	public Result convertTo(Type type)
 	{
-		if (type instanceof ParameterisedType)
+		Type parameter = this.type.getTypeParameter("T");
+
+		Type collection =
+			new ParameterisedType(
+				new ReferenceType(Collection.class),
+				new Array<>(parameter));
+
+		if (collection.equals(type))
 		{
 			return new Result()
 				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
+					Opcodes.INVOKEVIRTUAL,
 					"yirgacheffe/lang/Array",
-					"fromArray",
-					"([Ljava/lang/Object;)Lyirgacheffe/lang/Array;",
+					"toArray",
+					"()[Ljava/lang/Object;",
+					false))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"java/util/Arrays",
+					"asList",
+					"([Ljava/lang/Object;)Ljava/util/List;",
 					false));
 		}
 		else
 		{
-			return new Result();
+			return this.type.convertTo(type);
 		}
 	}
 
 	public Result swapWith(Type type)
 	{
-		return new Result();
+		return this.type.swapWith(type);
 	}
 
 	public Type intersect(Type type)
 	{
-		return new ReferenceType(Object.class);
+		return this.type.intersect(type);
 	}
 
 	public Result compare(BooleanOperator operator, Label label)
 	{
-		return new Result();
+		return this.type.compare(operator, label);
 	}
 
 	public Type getTypeParameter(String typeName)
 	{
-		return new NullType();
+		return this.type.getTypeParameter(typeName);
 	}
 
-	public Type getElementType()
+	@Override
+	public String toString()
 	{
-		return this.type;
+		return this.type.toString();
 	}
 
 	@Override
 	public boolean equals(Object other)
 	{
-		return other.equals(this.reflectionClass);
+		return this.type.equals(other);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.reflectionClass.hashCode();
+		return this.type.hashCode();
 	}
 }

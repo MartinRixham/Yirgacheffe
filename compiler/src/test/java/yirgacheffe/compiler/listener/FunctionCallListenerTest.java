@@ -1457,7 +1457,15 @@ public class FunctionCallListenerTest
 		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
 
 		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Array", seventhInstruction.owner);
-		assertEquals("toArray9)", seventhInstruction.name);
+		assertEquals("yirgacheffe/lang/Array", eighthInstruction.owner);
+		assertEquals("toArray", eighthInstruction.name);
+		assertEquals("()[Ljava/lang/Object;", eighthInstruction.desc);
+
+		MethodInsnNode ninthInstruction = (MethodInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.INVOKESTATIC, ninthInstruction.getOpcode());
+		assertEquals("java/util/Arrays", ninthInstruction.owner);
+		assertEquals("asList", ninthInstruction.name);
+		assertEquals("([Ljava/lang/Object;)Ljava/util/List;", ninthInstruction.desc);
 	}
 }
