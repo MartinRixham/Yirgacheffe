@@ -110,7 +110,8 @@ public class ParameterisedType implements Type
 			Collection<Type> parameters = this.typeParameters.values();
 			Collection<Type> otherParameters = parameterisedType.typeParameters.values();
 
-			if (parameters.size() != otherParameters.size())
+			if (!this.primaryType.isAssignableTo(parameterisedType.primaryType) ||
+				parameters.size() != otherParameters.size())
 			{
 				return false;
 			}

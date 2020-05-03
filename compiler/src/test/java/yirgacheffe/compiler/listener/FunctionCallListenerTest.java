@@ -1409,7 +1409,7 @@ public class FunctionCallListenerTest
 			"{\n" +
 				"main method(Array<String> args)\n" +
 				"{\n" +
-					"new HashSet<String>(new Array<String>(\"\", \"\"));\n" +
+					"new HashSet<String>(new Array<String>());\n" +
 				"}\n" +
 			"}";
 
@@ -1417,5 +1417,47 @@ public class FunctionCallListenerTest
 		CompilationResult result = compiler.compile(new Classes());
 
 		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+		InsnList instructions = firstMethod.instructions;
+
+		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.NEW, firstInstruction.getOpcode());
+		assertEquals("java/util/HashSet", firstInstruction.desc);
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.DUP, secondInstruction.getOpcode());
+
+		TypeInsnNode thirdInstruction = (TypeInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.NEW, thirdInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", thirdInstruction.desc);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.DUP, fourthInstruction.getOpcode());
+
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
+
+		MethodInsnNode seventhInstruction = (MethodInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.INVOKESPECIAL, seventhInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", seventhInstruction.owner);
+		assertEquals("<init>", seventhInstruction.name);
+		assertEquals("()V", seventhInstruction.desc);
+
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKEVIRTUAL, eighthInstruction.getOpcode());
+		assertEquals("yirgacheffe/lang/Array", seventhInstruction.owner);
+		assertEquals("toArray9)", seventhInstruction.name);
 	}
 }
