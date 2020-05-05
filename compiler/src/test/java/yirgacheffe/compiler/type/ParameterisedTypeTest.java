@@ -90,7 +90,6 @@ public class ParameterisedTypeTest
 	@Test
 	public void testNotAssignableToReferenceType()
 	{
-
 		ReferenceType reference =
 			new ReferenceType(yirgacheffe.lang.MutableReference.class);
 		Type string = new ReferenceType(String.class);

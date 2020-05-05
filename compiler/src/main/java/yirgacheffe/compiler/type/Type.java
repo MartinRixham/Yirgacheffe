@@ -64,7 +64,7 @@ public interface Type
 		{
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			ReferenceType primaryType =
-				new ReferenceType((Class) parameterizedType.getRawType());
+				new ReferenceType((Class<?>) parameterizedType.getRawType());
 
 			Array<Type> typeParameters = new Array<>();
 

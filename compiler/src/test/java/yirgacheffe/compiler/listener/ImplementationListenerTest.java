@@ -781,4 +781,24 @@ public class ImplementationListenerTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(0, firstInstruction.var);
 	}
+
+	@Test
+	public void testTypeBoundOnArray()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"new Fold<String, String>(new Array<String>()).with(\"\");\n" +
+				"}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
 }
