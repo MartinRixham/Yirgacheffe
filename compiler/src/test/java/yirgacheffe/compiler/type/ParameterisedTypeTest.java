@@ -6,6 +6,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -44,6 +45,7 @@ public class ParameterisedTypeTest
 		assertEquals("java/util/List", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/List;", type.toJVMType());
 		assertEquals("Ljava/util/List<Ljava/lang/String;>;", type.getSignature());
+		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());

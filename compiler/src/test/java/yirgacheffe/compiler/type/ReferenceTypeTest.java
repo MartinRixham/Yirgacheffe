@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 
 import java.util.Random;
 
@@ -26,6 +27,7 @@ public class ReferenceTypeTest
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
+		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());

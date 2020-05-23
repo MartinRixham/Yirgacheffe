@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.ClassInterface;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
@@ -39,6 +40,11 @@ public class ReferenceType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.reflectionClass.getName().replace('.', '/');
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		return new Result();
 	}
 
 	public int width()

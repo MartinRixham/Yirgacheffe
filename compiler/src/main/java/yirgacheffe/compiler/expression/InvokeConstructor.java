@@ -64,6 +64,7 @@ public class InvokeConstructor implements Expression
 			"(" + arguments.getDescriptor(parameterTypes) + ")V";
 
 		Result result = new Result()
+			.concat(this.owner.construct(coordinate))
 			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
 			.add(new InsnNode(Opcodes.DUP))
 			.concat(matchResult.compileArguments(variables))

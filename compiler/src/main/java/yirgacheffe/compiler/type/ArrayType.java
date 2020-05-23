@@ -4,6 +4,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
@@ -37,6 +38,11 @@ public class ArrayType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.type.toFullyQualifiedType();
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		return this.type.construct(coordinate);
 	}
 
 	public int width()

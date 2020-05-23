@@ -3,6 +3,8 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
@@ -53,6 +55,36 @@ public class ParameterisedType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.primaryType.toFullyQualifiedType();
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		Result result =  this.primaryType.construct(coordinate);
+
+		Array<TypeVariable<?>> parameters =
+			this.primaryType.reflect().getTypeParameters();
+
+		for (TypeVariable<?> parameter: parameters)
+		{
+			if (this.typeParameters.containsKey(parameter.getName()))
+			{
+				Type typeParameter = this.typeParameters.get(parameter.getName());
+
+				result = result.concat(typeParameter.construct(coordinate));
+
+				Type bound = Type.getType(parameter.getBounds()[0], this);
+
+				if (!typeParameter.isAssignableTo(bound))
+				{
+					String message = "Type parameter " + typeParameter +
+						" does not satisfy type bound " + bound + ".";
+
+					result = result.add(new Error(coordinate, message));
+				}
+			}
+		}
+
+		return result;
 	}
 
 	public int width()

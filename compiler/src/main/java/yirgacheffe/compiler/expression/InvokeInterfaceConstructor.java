@@ -62,6 +62,7 @@ public class InvokeInterfaceConstructor implements Expression
 				this.owner.toJVMType();
 
 		Result result = new Result()
+			.concat(this.owner.construct(coordinate))
 			.concat(matchResult.compileArguments(variables))
 			.concat(this.coordinate.compile())
 			.add(new MethodInsnNode(

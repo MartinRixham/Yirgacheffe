@@ -800,5 +800,9 @@ public class ImplementationListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:0 Type parameter java.lang.String does not satisfy type bound " +
+			"yirgacheffe.lang.Combinable<java.lang.String>.\n",
+			result.getErrors());
 	}
 }

@@ -2,6 +2,7 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
@@ -35,6 +36,12 @@ public class IntersectionType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.firstType.toFullyQualifiedType();
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		return this.firstType.construct(coordinate)
+			.concat(secondType.construct(coordinate));
 	}
 
 	public int width()

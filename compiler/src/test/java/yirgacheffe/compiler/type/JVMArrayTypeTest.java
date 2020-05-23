@@ -5,6 +5,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -26,6 +27,7 @@ public class JVMArrayTypeTest
 		assertEquals("[Ljava/lang/String;", stringArray.toJVMType());
 		assertEquals("[Ljava/lang/String;", stringArray.getSignature());
 		assertEquals("java.lang.String[]", stringArray.toFullyQualifiedType());
+		assertEquals(0, stringArray.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, stringArray.width());
 		assertEquals(Opcodes.ARETURN, stringArray.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, stringArray.getStoreInstruction());

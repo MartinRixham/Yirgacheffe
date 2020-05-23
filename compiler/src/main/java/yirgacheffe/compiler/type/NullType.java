@@ -3,6 +3,7 @@ package yirgacheffe.compiler.type;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.member.NullInterface;
 import yirgacheffe.compiler.operator.BooleanOperator;
@@ -39,6 +40,11 @@ public class NullType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.name.replace(".", "/");
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		return new Result();
 	}
 
 	public int width()

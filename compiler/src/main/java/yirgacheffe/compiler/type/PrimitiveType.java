@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.ClassInterface;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.instructions.DoubleInstructions;
@@ -97,6 +98,11 @@ public enum PrimitiveType implements Type
 	public String toFullyQualifiedType()
 	{
 		return this.reflectionClass.getName().replace('.', '/');
+	}
+
+	public Result construct(Coordinate coordinate)
+	{
+		return new Result();
 	}
 
 	public int width()

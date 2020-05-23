@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 
 import static org.junit.Assert.assertEquals;
@@ -20,6 +21,7 @@ public class NullTypeTest
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertEquals("Ljava/lang/Object;", type.getSignature());
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
+		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.ASTORE, type.getStoreInstruction());

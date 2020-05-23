@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -27,6 +28,7 @@ public class PrimitiveTypeTest
 		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
 		assertEquals("V", type.getSignature());
+		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());
 		assertEquals(Opcodes.NOP, type.getStoreInstruction());

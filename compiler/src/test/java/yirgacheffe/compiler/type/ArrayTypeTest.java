@@ -3,6 +3,7 @@ package yirgacheffe.compiler.type;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
@@ -26,6 +27,7 @@ public class ArrayTypeTest
 		assertTrue(arrayType.reflect(type).doesImplement(Array.class));
 		assertEquals("yirgacheffe/lang/Array", arrayType.toFullyQualifiedType());
 		assertEquals("Lyirgacheffe/lang/Array;", arrayType.toJVMType());
+		assertEquals(0, arrayType.construct(new Coordinate(0, 0)).getErrors().length());
 
 		assertEquals(
 			"Lyirgacheffe/lang/Array<Ljava/lang/String;>;", arrayType.getSignature());
