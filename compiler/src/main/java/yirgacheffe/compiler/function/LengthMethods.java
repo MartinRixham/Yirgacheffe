@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class LengthMethods
 {
-	private static Array<Function> lengthMethods;
+	private static Array<ClassFunction> lengthMethods;
 
 	static
 	{

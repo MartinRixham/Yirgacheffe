@@ -31,7 +31,30 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M4</version>
         <configuration>
-          <argLine>-javaagent:../lib/target/yirgacheffe-lib.jar</argLine>
+          <argLine>-javaagent:${build.directory}/yirgacheffe-lib-${parent.version}.jar</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>yirgacheffe</groupId>
+              <artifactId>yirgacheffe-lib</artifactId>
+            </artifactItem>
+          </artifactItems>
+          <outputDirectory>${project.build.directory}</outputDirectory>
         </configuration>
       </plugin>
     </plugins>

@@ -158,11 +158,6 @@ public class DynamicDispatchTest
 	@Test
 	public void testMultipleDispatchOnParameterisedType() throws Exception
 	{
-		LinkedHashMap<String, String> map = new LinkedHashMap<>();
-		map.put("this", "that");
-		map.put("wot", "not");
-		map.put("thingy", "sumpt");
-
 		String source =
 			"import java.util.HashMap;\n" +
 			"class MyClass\n" +
