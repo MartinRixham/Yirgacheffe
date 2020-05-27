@@ -15,6 +15,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,23 +34,23 @@ public class DynamicDispatchTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main hello(Array<String> args)" +
+				"main hello(Array<String> args)\n" +
 				"{\n" +
-					"MyClass my = this;" +
-					"Object string = this.getString();" +
-					"Bool equal = my.equals(string);" +
-					"new System().getOut().println(equal);" +
+					"MyClass my = this;\n" +
+					"Object string = this.getString();\n" +
+					"Bool equal = my.equals(string);\n" +
+					"new System().getOut().println(equal);\n" +
 				"}\n" +
 
-				"private Object getString()" +
-				"{" +
-					"return \"thingy\";" +
-				"}" +
+				"private Object getString()\n" +
+				"{\n" +
+					"return \"thingy\";\n" +
+				"}\n" +
 
-				"private Bool equals(String other)" +
-				"{" +
-					"return true;" +
-				"}" +
+				"private Bool equals(String other)\n" +
+				"{\n" +
+					"return true;\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -94,28 +95,28 @@ public class DynamicDispatchTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main hello(Array<String> args)" +
+				"main hello(Array<String> args)\n" +
 				"{\n" +
-					"MyClass my = this;" +
-					"Object string = this.getString();" +
-					"Bool equal = my.getTruth(string, string);" +
-					"new System().getOut().println(equal);" +
+					"MyClass my = this;\n" +
+					"Object string = this.getString();\n" +
+					"Bool equal = my.getTruth(string, string);\n" +
+					"new System().getOut().println(equal);\n" +
 				"}\n" +
 
-				"public Object getString()" +
-				"{" +
-					"return \"thingy\";" +
-				"}" +
+				"public Object getString()\n" +
+				"{\n" +
+					"return \"thingy\";\n" +
+				"}\n" +
 
-				"public Bool getTruth(Object first, String second)" +
-				"{" +
-					"return true;" +
-				"}" +
+				"public Bool getTruth(Object first, String second)\n" +
+				"{\n" +
+					"return true;\n" +
+				"}\n" +
 
-				"public Bool getTruth(Object first, Object second)" +
-				"{" +
-					"return false;" +
-				"}" +
+				"public Bool getTruth(Object first, Object second)\n" +
+				"{\n" +
+					"return false;\n" +
+				"}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -150,6 +151,74 @@ public class DynamicDispatchTest
 		hello.invoke(null, (Object) args);
 
 		assertEquals("true\n", spyOut.toString());
+
+		java.lang.System.setOut(originalOut);
+	}
+
+	@Test
+	public void testMultipleDispatchOnParameterisedType() throws Exception
+	{
+		LinkedHashMap<String, String> map = new LinkedHashMap<>();
+		map.put("this", "that");
+		map.put("wot", "not");
+		map.put("thingy", "sumpt");
+
+		String source =
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"main hello(Array<String> args)\n" +
+				"{\n" +
+					"Object map = this.getMap();\n" +
+					"Bool equal = this.equals(map);\n" +
+					"new System().getOut().println(equal);\n" +
+				"}\n" +
+
+				"private Object getMap()\n" +
+				"{\n" +
+					"HashMap<String, String> map = new HashMap<String, String>();\n" +
+					"map.put(\"equal\", \"true\");\n" +
+					"return map;\n" +
+				"}\n" +
+
+				"private Bool equals(HashMap<String, Bool> other)\n" +
+				"{\n" +
+					"return other.get(\"equal\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		classLoader.add("MyClass", result.getBytecode());
+
+		PrintStream originalOut = java.lang.System.out;
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		java.lang.System.setOut(out);
+
+		Class<?> myClass = classLoader.loadClass("MyClass");
+		Method hello = myClass.getMethod("main", String[].class);
+		String[] args = {};
+
+		hello.invoke(null, (Object) args);
+
+		assertEquals("false\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}
