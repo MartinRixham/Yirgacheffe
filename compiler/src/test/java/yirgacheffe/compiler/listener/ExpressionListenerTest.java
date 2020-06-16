@@ -193,7 +193,7 @@ public class ExpressionListenerTest
 
 		MethodNode firstMethod = classNode.methods.get(0);
 
-		assertEquals(2, firstMethod.maxStack);
+		assertEquals(3, firstMethod.maxStack);
 		assertEquals(2, firstMethod.maxLocals);
 	}
 

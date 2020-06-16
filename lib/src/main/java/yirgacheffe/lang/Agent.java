@@ -28,7 +28,8 @@ public final class Agent
 				ProtectionDomain domain,
 				byte[] bytecode)
 			{
-				if (clazz.getTypeParameters().length == 0)
+
+				if (domain != null && domain.getPermissions().isReadOnly())
 				{
 					return bytecode;
 				}
@@ -46,8 +47,9 @@ public final class Agent
 						null,
 						null));
 
-				ClassWriter writer =
-					new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+				classNode.interfaces.add("yirgacheffe/lang/Typeable");
+
+				ClassWriter writer = new ClassWriter(0);
 
 				classNode.accept(writer);
 

@@ -31,7 +31,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M4</version>
         <configuration>
-          <argLine>-javaagent:${build.directory}/yirgacheffe-lib-${parent.version}.jar</argLine>
+          <argLine>-javaagent:${project.build.directory}/yirgacheffe-lib-${project.parent.version}.jar</argLine>
         </configuration>
       </plugin>
       <plugin>

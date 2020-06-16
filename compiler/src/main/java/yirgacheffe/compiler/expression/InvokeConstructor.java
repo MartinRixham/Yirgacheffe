@@ -2,7 +2,11 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
@@ -64,7 +68,7 @@ public class InvokeConstructor implements Expression
 			"(" + arguments.getDescriptor(parameterTypes) + ")V";
 
 		Result result = new Result()
-			.concat(this.owner.construct(coordinate))
+			.concat(this.owner.construct(this.coordinate))
 			.add(new TypeInsnNode(Opcodes.NEW, this.owner.toFullyQualifiedType()))
 			.add(new InsnNode(Opcodes.DUP))
 			.concat(matchResult.compileArguments(variables))
@@ -74,11 +78,37 @@ public class InvokeConstructor implements Expression
 				this.owner.toFullyQualifiedType(),
 				"<init>",
 				descriptor,
-				false));
+				false))
+			.concat(this.assignSignature());
 
 		variables.stackPush(this.owner);
 
 		return result;
+	}
+
+	private Result assignSignature()
+	{
+		if (this.owner.hasParameter())
+		{
+			Label label = new Label();
+
+			return new Result()
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new TypeInsnNode(Opcodes.INSTANCEOF, "yirgacheffe/lang/Typeable"))
+				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(label)))
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new LdcInsnNode(this.owner.getSignature()))
+				.add(new FieldInsnNode(
+					Opcodes.PUTFIELD,
+					this.owner.toFullyQualifiedType(),
+					"0signature",
+					"Ljava/lang/String;"))
+				.add(new LabelNode(label));
+		}
+		else
+		{
+			return new Result();
+		}
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)
