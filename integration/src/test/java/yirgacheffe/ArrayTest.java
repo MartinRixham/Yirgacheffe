@@ -6,9 +6,7 @@ import yirgacheffe.compiler.CompilationResult;
 import yirgacheffe.compiler.Compiler;
 import yirgacheffe.compiler.type.BytecodeClassLoader;
 import yirgacheffe.compiler.type.Classes;
-import yirgacheffe.lang.Array;
 import yirgacheffe.lang.Bootstrap;
-import yirgacheffe.lang.System;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

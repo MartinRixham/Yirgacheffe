@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -237,6 +238,7 @@ public class InvokeMethodTest
 	}
 
 	@Test
+	@Ignore
 	public void testCompilingInvocationWithGenericReturnType()
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>());

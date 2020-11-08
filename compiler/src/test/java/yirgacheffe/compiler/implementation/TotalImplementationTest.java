@@ -20,7 +20,7 @@ public class TotalImplementationTest
 
 		Implementation intersection = first.intersect(second);
 
-		for (Function method : interfaceType.reflect().getPublicMethods())
+		for (Function method: interfaceType.reflect().getPublicMethods())
 		{
 			assertTrue(intersection.implementsMethod(method, interfaceType));
 			assertTrue(first.implementsMethod(method, interfaceType));

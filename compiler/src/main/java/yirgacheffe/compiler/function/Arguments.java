@@ -265,6 +265,11 @@ public class Arguments
 			.add(new LdcInsnNode(arrayLength))
 			.concat(elementType.newArray());
 
+		if (elementType instanceof GenericType)
+		{
+			elementType = ((GenericType) elementType).unwrap();
+		}
+
 		for (int i = 0; i < arrayLength; i++)
 		{
 			result = result

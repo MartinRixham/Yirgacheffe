@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.expression;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -123,6 +124,7 @@ public class InvokeConstructorTest
 	}
 
 	@Test
+	@Ignore
 	public void testConstructArray()
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>());

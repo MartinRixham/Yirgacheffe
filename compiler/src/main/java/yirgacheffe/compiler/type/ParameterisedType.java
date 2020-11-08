@@ -181,13 +181,16 @@ public class ParameterisedType implements Type
 		{
 			Type parameterType = this.typeParameters.get(type.getName());
 
-			if (parameterType.isPrimitive())
+			if (parameterType != null)
 			{
-				typeNames.push("L" + parameterType.toFullyQualifiedType() + ";");
-			}
-			else
-			{
-				typeNames.push(parameterType.getSignature());
+				if (parameterType.isPrimitive())
+				{
+					typeNames.push("L" + parameterType.toFullyQualifiedType() + ";");
+				}
+				else
+				{
+					typeNames.push(parameterType.getSignature());
+				}
 			}
 		}
 
