@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.expression;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
@@ -124,7 +123,6 @@ public class InvokeConstructorTest
 	}
 
 	@Test
-	@Ignore
 	public void testConstructArray()
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>());
@@ -150,7 +148,7 @@ public class InvokeConstructorTest
 		assertEquals("yirgacheffe/lang/Array", type.toFullyQualifiedType());
 		assertFalse(invokeConstructor.isCondition(variables));
 		assertEquals(0, result.getErrors().length());
-		assertEquals(15, instructions.length());
+		assertEquals(22, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 
