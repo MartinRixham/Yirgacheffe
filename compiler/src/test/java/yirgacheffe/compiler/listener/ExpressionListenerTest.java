@@ -198,6 +198,26 @@ public class ExpressionListenerTest
 	}
 
 	@Test
+	public void testInvalidTypeParameter()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Void method()" +
+				"{\n" +
+					"Array<String> array = new Array<String();\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 4:38 Invalid use of symbol '('.\n", result.getErrors());
+	}
+
+	@Test
 	public void testObjectConstructedWithObject()
 	{
 		String source =

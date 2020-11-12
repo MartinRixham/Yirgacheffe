@@ -5,10 +5,11 @@ import yirgacheffe.compiler.expression.BinaryOperation;
 import yirgacheffe.compiler.expression.BooleanOperation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Negation;
-import yirgacheffe.compiler.operator.BooleanOperator;
-import yirgacheffe.compiler.operator.Operator;
+import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.StringConcatenation;
 import yirgacheffe.compiler.expression.UnaryOperation;
+import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.compiler.operator.Operator;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -30,7 +31,15 @@ public class NumericExpressionListener extends FunctionCallListener
 			context.attemptedExpression())
 		{
 			coordinates.push(new Coordinate(c));
-			expressions.push(this.expressions.pop());
+
+			if (this.expressions.length() == 0)
+			{
+				expressions.push(new Nothing());
+			}
+			else
+			{
+				expressions.push(this.expressions.pop());
+			}
 		}
 
 		for (int i = 0; i < context.attemptedExpression().size() - 1; i++)
