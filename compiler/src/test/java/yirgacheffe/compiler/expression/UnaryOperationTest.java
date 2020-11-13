@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.FunctionSignature;
@@ -116,5 +117,36 @@ public class UnaryOperationTest
 		assertEquals(Opcodes.IINC, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 		assertEquals(1, firstInstruction.incr);
+	}
+
+	@Test
+	public void testPostincrementLongInteger()
+	{
+		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+
+		variables.declare("variable", PrimitiveType.LONG);
+
+		Coordinate coordinate = new Coordinate(3, 6);
+		VariableRead variableRead = new VariableRead(coordinate, "variable");
+
+		UnaryOperation postincrement =
+			new UnaryOperation(coordinate, variableRead, false, true);
+
+		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
+
+		Type type = postincrement.getType(variables);
+
+		Result result = postincrement.compile(variables, caller);
+
+		assertEquals(1, variables.getStack().length());
+		assertEquals(PrimitiveType.LONG, type);
+		assertEquals(0, result.getErrors().length());
+
+		Array<AbstractInsnNode> instructions = result.getInstructions();
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.LLOAD, firstInstruction.getOpcode());
+		assertEquals(1, firstInstruction.var);
 	}
 }

@@ -12,6 +12,7 @@ import yirgacheffe.compiler.statement.Statement;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.step.FloatStep;
 import yirgacheffe.compiler.step.IntegerStep;
+import yirgacheffe.compiler.step.LongIntegerStep;
 import yirgacheffe.compiler.step.Stepable;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -45,7 +46,9 @@ public class UnaryOperation implements Expression, Statement
 
 	public Type getType(Variables variables)
 	{
-		return this.expression.getType(variables);
+		Type type = this.expression.getType(variables);
+
+		return this.getStepper(type).getType();
 	}
 
 	public Result compile(Variables variables)
@@ -158,6 +161,10 @@ public class UnaryOperation implements Expression, Statement
 		if (type.equals(PrimitiveType.INT))
 		{
 			return new IntegerStep();
+		}
+		else if (type.equals(PrimitiveType.LONG))
+		{
+			return new LongIntegerStep();
 		}
 		else
 		{

@@ -46,4 +46,9 @@ public class FloatStep implements Stepable
 	{
 		return new Result().add(new VarInsnNode(Opcodes.DSTORE, index));
 	}
+
+	public Type getType()
+	{
+		return PrimitiveType.DOUBLE;
+	}
 }
