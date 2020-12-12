@@ -73,11 +73,6 @@ public class GenericType implements Type
 		return this.type.getZero();
 	}
 
-	public String toString()
-	{
-		return this.type.toString();
-	}
-
 	public boolean isAssignableTo(Type other)
 	{
 		return this.type.isAssignableTo(other);
@@ -161,6 +156,12 @@ public class GenericType implements Type
 		{
 			return new NullType();
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return this.type.toString();
 	}
 
 	@Override

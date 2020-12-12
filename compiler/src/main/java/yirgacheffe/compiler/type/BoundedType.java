@@ -134,6 +134,6 @@ public class BoundedType implements Type
 	@Override
 	public String toString()
 	{
-		return this.typeBound.toString();
+		return this.name;
 	}
 }
