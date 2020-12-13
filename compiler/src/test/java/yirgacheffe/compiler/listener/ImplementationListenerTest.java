@@ -210,6 +210,35 @@ public class ImplementationListenerTest
 	}
 
 	@Test
+	public void testFailToImplementInterfaceWithTypeParameterReturnType()
+	{
+		String source =
+			"class MyClass<W> implements Comparable<W>\n" +
+			"{\n" +
+				"public W compareTo(W other)" +
+				"{" +
+					"return other;" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 1:0 Missing implementation of interface method " +
+				"Num compareTo(W).\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testImplementsComparable()
 	{
 		String source =

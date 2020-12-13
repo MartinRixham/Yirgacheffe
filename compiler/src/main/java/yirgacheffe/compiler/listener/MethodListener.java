@@ -147,9 +147,11 @@ public class MethodListener extends TypeListener
 	{
 		for (int i = this.interfaceMethods.length() - 1; i >= 0; i--)
 		{
-			Signature signature = this.interfaceMethods.get(i).getSignature();
+			Function interfaceMethod = this.interfaceMethods.get(i);
+			Signature signature = interfaceMethod.getSignature();
 
-			if (signature.isImplementedBy(this.signature))
+			if (signature.isImplementedBy(this.signature) &&
+				this.returnType.isAssignableTo(interfaceMethod.getReturnType()))
 			{
 				this.interfaceMethods.splice(i, 1);
 

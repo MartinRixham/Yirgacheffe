@@ -82,7 +82,7 @@ public class VariableType implements Type
 		}
 		else
 		{
-			return other.isAssignableTo(this);
+			return false;
 		}
 	}
 
