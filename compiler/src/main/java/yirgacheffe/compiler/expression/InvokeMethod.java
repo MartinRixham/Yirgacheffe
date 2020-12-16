@@ -7,11 +7,12 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.function.FailedMatchResult;
 import yirgacheffe.compiler.function.Function;
-import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.function.LengthMethods;
 import yirgacheffe.compiler.function.MatchResult;
+import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.statement.TailCall;
 import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.GenericType;
@@ -36,7 +37,7 @@ public class InvokeMethod implements Expression, Parameterisable
 
 	private String name;
 
-	private String caller;
+	private Caller caller;
 
 	private Expression owner;
 
@@ -47,7 +48,7 @@ public class InvokeMethod implements Expression, Parameterisable
 	public InvokeMethod(
 		Coordinate coordinate,
 		String name,
-		String caller,
+		Caller caller,
 		Expression owner,
 		Array<Expression> arguments)
 	{
@@ -74,7 +75,7 @@ public class InvokeMethod implements Expression, Parameterisable
 					return PrimitiveType.INT;
 				}
 
-				returnType = method.getReturnType();
+				returnType = this.caller.lookup(method.getReturnType());
 			}
 		}
 
@@ -133,7 +134,7 @@ public class InvokeMethod implements Expression, Parameterisable
 				String.class,
 				MethodType.class);
 
-		boolean isPrivate = owner.toFullyQualifiedType().equals(this.caller);
+		boolean isPrivate = this.caller.equals(owner);
 
 		Handle bootstrapMethod =
 			new Handle(
@@ -198,7 +199,7 @@ public class InvokeMethod implements Expression, Parameterisable
 		Interface methods = owner.reflect();
 		Set<Function> methodSet = methods.getPublicMethods();
 
-		if (owner.toFullyQualifiedType().equals(this.caller))
+		if (this.caller.equals(owner))
 		{
 			methodSet.addAll(methods.getMethods());
 		}

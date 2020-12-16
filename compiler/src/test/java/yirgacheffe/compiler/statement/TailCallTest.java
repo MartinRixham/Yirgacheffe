@@ -15,6 +15,7 @@ import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.type.NullType;
@@ -67,7 +68,7 @@ public class TailCallTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				new This(coordinate, new ReferenceType(this.getClass())),
 				arguments);
 

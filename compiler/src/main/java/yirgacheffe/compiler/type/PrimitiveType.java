@@ -195,7 +195,7 @@ public enum PrimitiveType implements Type
 					descriptor,
 					false));
 		}
-		if (type.equals(this))
+		else if (type.equals(this))
 		{
 			return new Result();
 		}

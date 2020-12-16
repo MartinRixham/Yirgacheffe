@@ -22,6 +22,7 @@ import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.Streeng;
 import yirgacheffe.compiler.expression.This;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
@@ -161,7 +162,7 @@ public class BlockTest
 			new InvokeMethod(
 				coordinate,
 				"toString",
-				"java/lang/Object",
+				new Caller("java/lang/Object", new HashMap<>()),
 				variableRead,
 				new Array<>());
 
@@ -231,7 +232,7 @@ public class BlockTest
 			new InvokeMethod(
 				coordinate,
 				"equals",
-				"java/lang/Object",
+				new Caller("java/lang/Object", new HashMap<>()),
 				variableRead,
 				new Array<>(notherVariableRead));
 
@@ -315,7 +316,7 @@ public class BlockTest
 			new InvokeMethod(
 				coordinate,
 				"toString",
-				"java/lang/Object",
+				new Caller("java/lang/Object", new HashMap<>()),
 				variableRead,
 				new Array<>());
 
@@ -408,7 +409,7 @@ public class BlockTest
 			new InvokeMethod(
 				coordinate,
 				"add",
-				"yirgacheffe/compiler/statement/BlockTest",
+				new Caller("yirgacheffe/compiler/statement/BlockTest", new HashMap<>()),
 				firstRead,
 				new Array<>(secondRead));
 

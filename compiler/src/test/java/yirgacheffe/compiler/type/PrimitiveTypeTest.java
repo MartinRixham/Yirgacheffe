@@ -142,6 +142,24 @@ public class PrimitiveTypeTest
 	}
 
 	@Test
+	public void testTypeConversionToGenericType()
+	{
+		PrimitiveType type = PrimitiveType.DOUBLE;
+
+		Result result = type.convertTo(new GenericType(new ReferenceType(Object.class)));
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(1, result.getInstructions().length());
+
+		MethodInsnNode instruction = (MethodInsnNode) result.getInstructions().get(0);
+
+		assertEquals(Opcodes.INVOKESTATIC, instruction.getOpcode());
+		assertEquals("java/lang/Double", instruction.owner);
+		assertEquals("valueOf", instruction.name);
+		assertEquals("(D)Ljava/lang/Double;", instruction.desc);
+	}
+
+	@Test
 	public void testSwapDoubleWithDouble()
 	{
 		PrimitiveType type = PrimitiveType.DOUBLE;

@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
@@ -65,7 +66,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"toString",
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				new Array<>());
 
@@ -115,7 +116,9 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				new Caller(
+					"yirgacheffe/compiler/expression/InvokeMethodTest",
+					new HashMap<>()),
 				expression,
 				new Array<>());
 
@@ -166,7 +169,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"concat",
-				"myClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				arguments);
 
@@ -218,7 +221,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"concat",
-				"myClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				arguments);
 
@@ -262,7 +265,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"get",
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				arguments);
 
@@ -376,7 +379,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"split",
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				arguments);
 
@@ -425,7 +428,9 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				new Caller(
+					"yirgacheffe/compiler/expression/InvokeMethodTest",
+					new HashMap<>()),
 				testClass,
 				arguments);
 
@@ -480,7 +485,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"run",
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				expression,
 				new Array<>());
 
@@ -526,7 +531,9 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				name,
-				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				new Caller(
+					"yirgacheffe/compiler/expression/InvokeMethodTest",
+					new HashMap<>()),
 				testClass,
 				arguments);
 
@@ -555,7 +562,7 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				name,
-				"MyClass",
+				new Caller("MyClass", new HashMap<>()),
 				testClass,
 				arguments);
 
@@ -584,7 +591,9 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				new Caller(
+					"yirgacheffe/compiler/expression/InvokeMethodTest",
+					new HashMap<>()),
 				expression,
 				arguments);
 
@@ -676,7 +685,9 @@ public class InvokeMethodTest
 			new InvokeMethod(
 				coordinate,
 				"method",
-				"yirgacheffe/compiler/expression/InvokeMethodTest",
+				new Caller(
+					"yirgacheffe/compiler/expression/InvokeMethodTest",
+					new HashMap<>()),
 				expression,
 				arguments);
 

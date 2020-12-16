@@ -188,6 +188,50 @@ public class MethodListenerTest
 	}
 
 	@Test
+	public void testMethodWithTypeParameter()
+	{
+		String source =
+			"class MyClass<W> implements Comparable<W>\n" +
+			"{\n" +
+				"public Num compareTo(W other)" +
+				"{" +
+					"return other.hashCode();" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		assertEquals(4, classNode.methods.size());
+
+		MethodNode bridgeMethod = classNode.methods.get(0);
+
+		assertEquals("(Ljava/lang/Object;)I", bridgeMethod.desc);
+		assertEquals("(TW;)I", bridgeMethod.signature);
+		assertEquals(Opcodes.ACC_PUBLIC | Opcodes.ACC_SYNTHETIC, bridgeMethod.access);
+		assertEquals("compareTo", bridgeMethod.name);
+
+		MethodNode method = classNode.methods.get(1);
+
+		assertEquals("(Ljava/lang/Object;)D", method.desc);
+		assertEquals("(TW;)D", method.signature);
+		assertEquals(Opcodes.ACC_PROTECTED, method.access);
+		assertEquals("compareTo", method.name);
+	}
+
+	@Test
 	public void testClassMethodWithMissingModifier()
 	{
 		String source =

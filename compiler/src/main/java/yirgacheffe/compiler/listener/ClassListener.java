@@ -10,7 +10,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.function.Function;
 import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.member.Interface;
-import yirgacheffe.compiler.function.Parameters;
+import yirgacheffe.compiler.function.TypeParameters;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
@@ -37,6 +37,7 @@ import yirgacheffe.parser.YirgacheffeParser;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class ClassListener extends PackageListener
@@ -53,7 +54,7 @@ public class ClassListener extends PackageListener
 
 	protected Array<Type> interfaces = new Array<>();
 
-	private Array<BoundedType> typeParameters = new Array<>();
+	protected Map<String, BoundedType> typeParameters = new HashMap<>();
 
 	protected Type thisType = new NullType();
 
@@ -99,7 +100,7 @@ public class ClassListener extends PackageListener
 			Interface members = thisType.reflect();
 			Array<TypeVariable<?>> parameters = members.getTypeParameters();
 
-			return new Parameters(parameters, thisType).getType();
+			return new TypeParameters(parameters, thisType).getType();
 		}
 		catch (ClassNotFoundException | NoClassDefFoundError e)
 		{
@@ -172,7 +173,7 @@ public class ClassListener extends PackageListener
 	@Override
 	public void exitGenericTypes(YirgacheffeParser.GenericTypesContext context)
 	{
-		Array<BoundedType> parameters = new Array<>();
+		Map<String, BoundedType> parameters = new HashMap<>();
 
 		if (context != null)
 		{
@@ -190,7 +191,7 @@ public class ClassListener extends PackageListener
 					typeBound = this.types.getType(type.type());
 				}
 
-				parameters.push(new BoundedType(name, typeBound));
+				parameters.put(name, new BoundedType(name, typeBound));
 			}
 		}
 
@@ -214,7 +215,7 @@ public class ClassListener extends PackageListener
 		}
 
 		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters);
+			new ClassSignature(this.interfaces, this.typeParameters.values());
 
 		this.classNode.visit(
 			Opcodes.V1_8,
@@ -274,7 +275,7 @@ public class ClassListener extends PackageListener
 		}
 
 		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters);
+			new ClassSignature(this.interfaces, this.typeParameters.values());
 
 		this.classNode.visit(
 			Opcodes.V1_8,

@@ -2,15 +2,17 @@ package yirgacheffe.compiler.type;
 
 import yirgacheffe.lang.Array;
 
+import java.util.Collection;
+
 public class ClassSignature
 {
 	private static final String OBJECT = "Ljava/lang/Object;";
 
 	private Array<Type> interfaces;
 
-	private Array<BoundedType> parameters;
+	private Collection<BoundedType> parameters;
 
-	public ClassSignature(Array<Type> interfaces, Array<BoundedType> parameters)
+	public ClassSignature(Array<Type> interfaces, Collection<BoundedType> parameters)
 	{
 		this.interfaces = interfaces;
 		this.parameters = parameters;
@@ -19,14 +21,14 @@ public class ClassSignature
 	@Override
 	public String toString()
 	{
-		if (this.interfaces.length() == 0 && this.parameters.length() == 0)
+		if (this.interfaces.length() == 0 && this.parameters.size() == 0)
 		{
 			return null;
 		}
 
 		StringBuilder signature = new StringBuilder();
 
-		if (this.parameters.length() > 0)
+		if (this.parameters.size() > 0)
 		{
 			signature.append("<");
 		}
@@ -36,7 +38,7 @@ public class ClassSignature
 			signature.append(parameter.getSignature());
 		}
 
-		if (this.parameters.length() > 0)
+		if (this.parameters.size() > 0)
 		{
 			signature.append(">");
 		}

@@ -8,6 +8,7 @@ import yirgacheffe.compiler.expression.InvokeConstructor;
 import yirgacheffe.compiler.expression.InvokeInterfaceConstructor;
 import yirgacheffe.compiler.expression.InvokeMethod;
 import yirgacheffe.compiler.expression.InvokeThis;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.compiler.type.Type;
@@ -117,7 +118,7 @@ public class FunctionCallListener extends ExpressionListener
 			new InvokeMethod(
 				coordinate,
 				methodName,
-				this.className,
+				new Caller(this.className, this.typeParameters),
 				expression,
 				this.arguments);
 
