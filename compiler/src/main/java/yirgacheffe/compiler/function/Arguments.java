@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Expression;
-import yirgacheffe.compiler.type.JVMArrayType;
+import yirgacheffe.compiler.type.ArrayType;
 import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.GenericType;
 import yirgacheffe.compiler.type.MismatchedTypes;
@@ -56,8 +56,8 @@ public class Arguments
 
 		if (this.hasVariableArguments(function.hasVariableArguments()))
 		{
-			JVMArrayType arrayType =
-				(JVMArrayType) parameters.get(parameters.length() - 1);
+			ArrayType arrayType =
+				(ArrayType) parameters.get(parameters.length() - 1);
 
 			Type elementType = arrayType.getElementType();
 			Type intersectionType = elementType;
@@ -104,7 +104,7 @@ public class Arguments
 			{
 				exactMatches += THOUSAND;
 			}
-			else if (parameterType.isPrimitive() || parameterType instanceof JVMArrayType)
+			else if (parameterType.isPrimitive() || parameterType instanceof ArrayType)
 			{
 				exactMatches++;
 			}
@@ -171,7 +171,7 @@ public class Arguments
 				else
 				{
 					argumentType =
-						((JVMArrayType) this.argumentTypes.get(i)).getElementType();
+						((ArrayType) this.argumentTypes.get(i)).getElementType();
 				}
 
 				GenericArrayType arrayType = (GenericArrayType) parameter;
@@ -256,7 +256,7 @@ public class Arguments
 		Array<Type> parameters,
 		Variables variables)
 	{
-		JVMArrayType arrayType = (JVMArrayType) parameters.get(parameters.length() - 1);
+		ArrayType arrayType = (ArrayType) parameters.get(parameters.length() - 1);
 		Type elementType = arrayType.getElementType();
 
 		int arrayLength = this.arguments.length() - parameters.length() + 1;
@@ -308,7 +308,7 @@ public class Arguments
 			Type lastArgumentType =
 				this.argumentTypes.get(this.argumentTypes.length() - 1);
 
-			return variableArguments && !(lastArgumentType instanceof JVMArrayType);
+			return variableArguments && !(lastArgumentType instanceof ArrayType);
 		}
 		else
 		{

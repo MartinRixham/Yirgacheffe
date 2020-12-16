@@ -43,17 +43,7 @@ public class Types
 				typeParameters.push(this.getType(typeParameter));
 			}
 
-			ParameterisedType parameterisedType =
-				new ParameterisedType((ReferenceType) type, typeParameters);
-
-			if (type.equals(new ReferenceType(Array.class)))
-			{
-				return new ArrayType(parameterisedType);
-			}
-			else
-			{
-				return parameterisedType;
-			}
+			return new ParameterisedType((ReferenceType) type, typeParameters);
 		}
 		else
 		{

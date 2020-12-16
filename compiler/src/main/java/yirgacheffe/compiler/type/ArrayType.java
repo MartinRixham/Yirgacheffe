@@ -1,43 +1,59 @@
 package yirgacheffe.compiler.type;
 
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.member.ClassInterface;
 import yirgacheffe.compiler.member.Interface;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
-import java.util.Collection;
-
 public class ArrayType implements Type
 {
-	private ParameterisedType type;
+	private String jvmType;
 
-	public ArrayType(ParameterisedType type)
+	private String fullyQualifiedType;
+
+	private Class<?> reflectionClass;
+
+	private Type type;
+
+	public ArrayType(String name, Type type)
 	{
+		this.jvmType = name.replace(".", "/");
+		this.fullyQualifiedType = name.substring(2).replace(";", "[]");
 		this.type = type;
+
+		try
+		{
+			this.reflectionClass = Class.forName(name);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Interface reflect()
 	{
-		return this.type.reflect();
+		return new ClassInterface(this, this.reflectionClass);
 	}
 
 	public Interface reflect(Type type)
 	{
-		return this.type.reflect(type);
+		return new ClassInterface(type, this.reflectionClass);
 	}
 
 	public String toJVMType()
 	{
-		return this.type.toJVMType();
+		return this.jvmType;
 	}
 
 	public String toFullyQualifiedType()
 	{
-		return this.type.toFullyQualifiedType();
+		return this.fullyQualifiedType;
 	}
 
 	public Result construct(Coordinate coordinate)
@@ -47,133 +63,131 @@ public class ArrayType implements Type
 
 	public int width()
 	{
-		return this.type.width();
+		return 1;
 	}
 
 	public int getReturnInstruction()
 	{
-		return this.type.getReturnInstruction();
+		return Opcodes.ARETURN;
 	}
 
 	public int getStoreInstruction()
 	{
-		return this.type.getStoreInstruction();
+		return Opcodes.ASTORE;
 	}
 
 	public int getArrayStoreInstruction()
 	{
-		return this.type.getArrayStoreInstruction();
+		return Opcodes.AASTORE;
 	}
 
 	public int getLoadInstruction()
 	{
-		return this.type.getLoadInstruction();
+		return Opcodes.ALOAD;
 	}
 
 	public int getZero()
 	{
-		return this.type.getZero();
+		return Opcodes.ACONST_NULL;
+	}
+
+	public String toString()
+	{
+		return this.fullyQualifiedType;
 	}
 
 	public boolean isAssignableTo(Type other)
 	{
-		Type parameter = this.type.getTypeParameter("T");
+		if (other instanceof ArrayType)
+		{
+			ArrayType otherType = (ArrayType) other;
 
-		Type collection =
-			new ParameterisedType(
-				new ReferenceType(Collection.class),
-				new Array<>(parameter));
+			return this.type.isAssignableTo(otherType.type);
+		}
+		else
+		{
+			ReferenceType arrayType = new ReferenceType(Array.class);
+			Type type = new ParameterisedType(arrayType, new Array<>(this.type));
 
-		return this.type.isAssignableTo(other) ||
-			collection.isAssignableTo(other);
+			return type.isAssignableTo(other);
+		}
 	}
 
 	public boolean hasParameter()
 	{
-		return this.type.hasParameter();
+		return false;
 	}
 
 	public String getSignature()
 	{
-		return this.type.getSignature();
+		return this.jvmType;
 	}
 
 	public boolean isPrimitive()
 	{
-		return this.type.isPrimitive();
+		return false;
 	}
 
 	public Result newArray()
 	{
-		return this.type.newArray();
+		return new Result();
 	}
 
 	public Result convertTo(Type type)
 	{
-		Type parameter = this.type.getTypeParameter("T");
+		Type arrayType =
+			new ParameterisedType(new ReferenceType(Array.class), new Array<>(this.type));
 
-		Type collection =
-			new ParameterisedType(
-				new ReferenceType(Collection.class),
-				new Array<>(parameter));
-
-		if (collection.equals(type))
+		if (arrayType.equals(type))
 		{
 			return new Result()
 				.add(new MethodInsnNode(
-					Opcodes.INVOKEVIRTUAL,
-					"yirgacheffe/lang/Array",
-					"toArray",
-					"()[Ljava/lang/Object;",
-					false))
-				.add(new MethodInsnNode(
 					Opcodes.INVOKESTATIC,
-					"java/util/Arrays",
-					"asList",
-					"([Ljava/lang/Object;)Ljava/util/List;",
+					"yirgacheffe/lang/Array",
+					"fromArray",
+					"([Ljava/lang/Object;)Lyirgacheffe/lang/Array;",
 					false));
 		}
 		else
 		{
-			return this.type.convertTo(type);
+			return new Result();
 		}
 	}
 
 	public Result swapWith(Type type)
 	{
-		return this.type.swapWith(type);
+		return new Result();
 	}
 
 	public Type intersect(Type type)
 	{
-		return this.type.intersect(type);
+		return new ReferenceType(Object.class);
 	}
 
 	public Result compare(BooleanOperator operator, Label label)
 	{
-		return this.type.compare(operator, label);
+		return new Result();
 	}
 
 	public Type getTypeParameter(String typeName)
 	{
-		return this.type.getTypeParameter(typeName);
+		return new NullType();
 	}
 
-	@Override
-	public String toString()
+	public Type getElementType()
 	{
-		return this.type.toString();
+		return this.type;
 	}
 
 	@Override
 	public boolean equals(Object other)
 	{
-		return this.type.equals(other);
+		return other.equals(this.reflectionClass);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.type.hashCode();
+		return this.reflectionClass.hashCode();
 	}
 }
