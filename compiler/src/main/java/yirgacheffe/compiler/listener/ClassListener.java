@@ -215,7 +215,8 @@ public class ClassListener extends PackageListener
 		}
 
 		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters.values());
+			new ClassSignature(
+				this.interfaces, new Array<>(this.typeParameters.values()));
 
 		this.classNode.visit(
 			Opcodes.V1_8,
@@ -275,7 +276,8 @@ public class ClassListener extends PackageListener
 		}
 
 		ClassSignature signature =
-			new ClassSignature(this.interfaces, this.typeParameters.values());
+			new ClassSignature(
+				this.interfaces, new Array<>(this.typeParameters.values()));
 
 		this.classNode.visit(
 			Opcodes.V1_8,

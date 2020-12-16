@@ -1,6 +1,7 @@
 package yirgacheffe.lang;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 public class Array<T> implements Iterable<T>
@@ -41,6 +42,12 @@ public class Array<T> implements Iterable<T>
 	{
 		this.array = Arrays.copyOf(array.array, array.array.length);
 		this.length = array.length;
+	}
+
+	public Array(Collection<T> collection)
+	{
+		this.array = collection.toArray();
+		this.length = collection.size();
 	}
 
 	public int length()
