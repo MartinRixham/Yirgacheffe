@@ -11,6 +11,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,14 +19,15 @@ import static org.junit.Assert.assertTrue;
 public class AttemptedTypeTest
 {
 	@Test
-	public void testNullType()
+	public void testAttemptedType()
 	{
 		Type type = new AttemptedType(PrimitiveType.DOUBLE);
 
 		assertEquals("Ljava/lang/Object;", type.toJVMType());
 		assertTrue(type.reflect().doesImplement(Object.class));
 		assertTrue(type.reflect(type).doesImplement(Object.class));
-		assertEquals(null, type.getSignature());
+		assertEquals("D", type.getSignature());
+		assertArrayEquals(new String[0], type.getSignatureTypes());
 		assertEquals("java/lang/Object", type.toFullyQualifiedType());
 		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());

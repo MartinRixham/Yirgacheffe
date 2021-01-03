@@ -84,7 +84,12 @@ public class AttemptedType implements Type
 
 	public String getSignature()
 	{
-		return null;
+		return this.type.getSignature();
+	}
+
+	public String[] getSignatureTypes()
+	{
+		return this.type.getSignatureTypes();
 	}
 
 	public boolean isPrimitive()

@@ -96,6 +96,11 @@ public class VariableType implements Type
 		return "T" + this.name + ";";
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return new String[0];
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;

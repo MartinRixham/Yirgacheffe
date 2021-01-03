@@ -123,6 +123,11 @@ public class ArrayType implements Type
 		return this.jvmType;
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return this.type.getSignatureTypes();
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;

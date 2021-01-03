@@ -3,7 +3,10 @@ package yirgacheffe.compiler.expression;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.function.Arguments;
@@ -160,12 +163,33 @@ public class InvokeMethod implements Expression, Parameterisable
 				matchResult.getName(),
 				descriptor,
 				bootstrapMethod))
+			.concat(this.cacheSignature(returnType))
 			.concat(returnType.convertTo(this.getType(variables)));
 
 		variables.stackPop();
 		variables.stackPush(returnType);
 
 		return result;
+	}
+
+	private Result cacheSignature(Type returnType)
+	{
+		if (returnType.hasParameter())
+		{
+			return new Result()
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new LdcInsnNode(String.join(",", returnType.getSignatureTypes())))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Bootstrap",
+					"cacheObjectSignature",
+					"(Ljava/lang/Object;Ljava/lang/String;)V",
+					false));
+		}
+		else
+		{
+			return new Result();
+		}
 	}
 
 	public Result compileArguments(Variables variables)

@@ -13,9 +13,10 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PrimitiveTypeTest
 {
@@ -28,6 +29,7 @@ public class PrimitiveTypeTest
 		assertEquals("java/lang/Void", type.toFullyQualifiedType());
 		assertEquals("V", type.toJVMType());
 		assertEquals("V", type.getSignature());
+		assertArrayEquals(new String[0], type.getSignatureTypes());
 		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(0, type.width());
 		assertEquals(Opcodes.RETURN, type.getReturnInstruction());

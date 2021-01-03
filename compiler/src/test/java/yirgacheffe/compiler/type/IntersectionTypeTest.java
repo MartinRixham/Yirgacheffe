@@ -10,6 +10,7 @@ import yirgacheffe.compiler.operator.BooleanOperator;
 
 import java.util.Random;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -32,6 +33,7 @@ public class IntersectionTypeTest
 		assertEquals("java/util/ArrayList", type.toFullyQualifiedType());
 		assertEquals("Ljava/util/ArrayList;", type.toJVMType());
 		assertEquals("Ljava/util/ArrayList;", type.getSignature());
+		assertArrayEquals(new String[0], type.getSignatureTypes());
 		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());

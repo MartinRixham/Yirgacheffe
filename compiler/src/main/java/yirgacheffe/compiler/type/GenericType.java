@@ -88,6 +88,11 @@ public class GenericType implements Type
 		return this.type.getSignature();
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return this.type.getSignatureTypes();
+	}
+
 	public boolean isPrimitive()
 	{
 		return this.type.isPrimitive();

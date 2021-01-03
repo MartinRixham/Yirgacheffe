@@ -168,6 +168,11 @@ public enum PrimitiveType implements Type
 		return this.jvmType;
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return new String[0];
+	}
+
 	public boolean isPrimitive()
 	{
 		return true;

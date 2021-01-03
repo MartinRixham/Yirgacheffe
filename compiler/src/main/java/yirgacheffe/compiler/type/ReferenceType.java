@@ -97,6 +97,11 @@ public class ReferenceType implements Type
 		return this.toJVMType();
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return new String[0];
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;

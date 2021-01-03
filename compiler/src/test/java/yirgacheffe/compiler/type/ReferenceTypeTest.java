@@ -8,9 +8,10 @@ import yirgacheffe.compiler.error.Coordinate;
 
 import java.util.Random;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ReferenceTypeTest
 {
@@ -27,6 +28,7 @@ public class ReferenceTypeTest
 		assertEquals("java/lang/String", type.toFullyQualifiedType());
 		assertEquals("Ljava/lang/String;", type.toJVMType());
 		assertEquals("Ljava/lang/String;", type.getSignature());
+		assertArrayEquals(new String[0], type.getSignatureTypes());
 		assertEquals(0, type.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, type.width());
 		assertEquals(Opcodes.ARETURN, type.getReturnInstruction());

@@ -832,8 +832,6 @@ public class ImplementationListenerTest
 
 		InsnList instructions = method.instructions;
 
-		assertEquals(54, instructions.size());
-
 		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());

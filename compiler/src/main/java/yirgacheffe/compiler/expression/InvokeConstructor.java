@@ -2,10 +2,7 @@ package yirgacheffe.compiler.expression;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -79,31 +76,26 @@ public class InvokeConstructor implements Expression
 				"<init>",
 				descriptor,
 				false))
-			.concat(this.assignSignature());
+			.concat(this.cacheSignature());
 
 		variables.stackPush(this.owner);
 
 		return result;
 	}
 
-	private Result assignSignature()
+	private Result cacheSignature()
 	{
 		if (this.owner.hasParameter())
 		{
-			Label label = new Label();
-
 			return new Result()
 				.add(new InsnNode(Opcodes.DUP))
-				.add(new TypeInsnNode(Opcodes.INSTANCEOF, "yirgacheffe/lang/Typeable"))
-				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(label)))
-				.add(new InsnNode(Opcodes.DUP))
-				.add(new LdcInsnNode(this.owner.getSignature()))
-				.add(new FieldInsnNode(
-					Opcodes.PUTFIELD,
-					this.owner.toFullyQualifiedType(),
-					"0signature",
-					"Ljava/lang/String;"))
-				.add(new LabelNode(label));
+				.add(new LdcInsnNode(String.join(",", this.owner.getSignatureTypes())))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Bootstrap",
+					"cacheObjectSignature",
+					"(Ljava/lang/Object;Ljava/lang/String;)V",
+					false));
 		}
 		else
 		{

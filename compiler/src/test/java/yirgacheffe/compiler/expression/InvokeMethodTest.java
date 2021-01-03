@@ -4,16 +4,13 @@ import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
@@ -273,7 +270,7 @@ public class InvokeMethodTest
 		Result result = invokeMethod.compile(variables);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
-		assertEquals(18, instructions.length());
+		assertEquals(14, instructions.length());
 		assertEquals("java/lang/Double", type.toFullyQualifiedType());
 
 		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
@@ -296,75 +293,57 @@ public class InvokeMethodTest
 
 		assertEquals(Opcodes.DUP, sixthInstruction.getOpcode());
 
-		TypeInsnNode seventhInstruction = (TypeInsnNode) instructions.get(6);
+		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.INSTANCEOF, seventhInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Typeable", seventhInstruction.desc);
+		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
 
-		JumpInsnNode eighthInstruction = (JumpInsnNode) instructions.get(7);
-		Label typeLabel = eighthInstruction.label.getLabel();
+		assertEquals(
+			"java.lang.Double,java.lang.Double",
+			seventhInstruction.cst);
 
-		assertEquals(Opcodes.IFEQ, eighthInstruction.getOpcode());
+		MethodInsnNode eighthInstruction = (MethodInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.INVOKESTATIC, eighthInstruction.getOpcode());
+		assertEquals("(Ljava/lang/Object;Ljava/lang/String;)V", eighthInstruction.desc);
+		assertEquals("cacheObjectSignature", eighthInstruction.name);
+		assertEquals("yirgacheffe/lang/Bootstrap", eighthInstruction.owner);
 
 		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
 
-		assertEquals(Opcodes.DUP, ninthInstruction.getOpcode());
+		assertEquals(Opcodes.DCONST_1, ninthInstruction.getOpcode());
 
-		LdcInsnNode tenthInstruction = (LdcInsnNode) instructions.get(9);
+		MethodInsnNode tenthInstruction = (MethodInsnNode) instructions.get(9);
 
-		assertEquals(Opcodes.LDC, tenthInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKESTATIC, tenthInstruction.getOpcode());
+		assertEquals("java/lang/Double", tenthInstruction.owner);
+		assertEquals("(D)Ljava/lang/Double;", tenthInstruction.desc);
+		assertEquals("valueOf", tenthInstruction.name);
+		assertFalse(tenthInstruction.itf);
 
+		LabelNode eleventhInstruction = (LabelNode) instructions.get(10);
+		Label notherLabel = eleventhInstruction.getLabel();
+
+		LineNumberNode twelfthInstruction = (LineNumberNode) instructions.get(11);
+
+		assertEquals(notherLabel, twelfthInstruction.start.getLabel());
+		assertEquals(0, twelfthInstruction.line);
+
+		InvokeDynamicInsnNode thirteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(12);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, thirteenthInstruction.getOpcode());
+		assertEquals("get", thirteenthInstruction.name);
 		assertEquals(
-			"Ljava/util/HashMap<Ljava/lang/Double;Ljava/lang/Double;>;",
-			tenthInstruction.cst);
-
-		FieldInsnNode eleventhInstruction = (FieldInsnNode) instructions.get(10);
-
-		assertEquals(Opcodes.PUTFIELD, eleventhInstruction.getOpcode());
-		assertEquals("Ljava/lang/String;", eleventhInstruction.desc);
-		assertEquals("0signature", eleventhInstruction.name);
-		assertEquals("java/util/HashMap", eleventhInstruction.owner);
-
-		LabelNode twelfthInstruction = (LabelNode) instructions.get(11);
-
-		assertEquals(typeLabel, twelfthInstruction.getLabel());
-
-		InsnNode thirteenthInstruction = (InsnNode) instructions.get(12);
-
-		assertEquals(Opcodes.DCONST_1, thirteenthInstruction.getOpcode());
+			"(Ljava/util/HashMap;Ljava/lang/Object;)Ljava/lang/Object;",
+			thirteenthInstruction.desc);
 
 		MethodInsnNode fourteenthInstruction = (MethodInsnNode) instructions.get(13);
 
 		assertEquals(Opcodes.INVOKESTATIC, fourteenthInstruction.getOpcode());
-		assertEquals("java/lang/Double", fourteenthInstruction.owner);
-		assertEquals("(D)Ljava/lang/Double;", fourteenthInstruction.desc);
-		assertEquals("valueOf", fourteenthInstruction.name);
+		assertEquals("yirgacheffe/lang/Boxer", fourteenthInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)D", fourteenthInstruction.desc);
+		assertEquals("toDouble", fourteenthInstruction.name);
 		assertFalse(fourteenthInstruction.itf);
-
-		LabelNode fifteenthInstruction = (LabelNode) instructions.get(14);
-		Label notherLabel = fifteenthInstruction.getLabel();
-
-		LineNumberNode sixteenthInstruction = (LineNumberNode) instructions.get(15);
-
-		assertEquals(notherLabel, sixteenthInstruction.start.getLabel());
-		assertEquals(0, sixteenthInstruction.line);
-
-		InvokeDynamicInsnNode seventeenthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(16);
-
-		assertEquals(Opcodes.INVOKEDYNAMIC, seventeenthInstruction.getOpcode());
-		assertEquals("get", seventeenthInstruction.name);
-		assertEquals(
-			"(Ljava/util/HashMap;Ljava/lang/Object;)Ljava/lang/Object;",
-				seventeenthInstruction.desc);
-
-		MethodInsnNode eighteenthInstruction = (MethodInsnNode) instructions.get(17);
-
-		assertEquals(Opcodes.INVOKESTATIC, eighteenthInstruction.getOpcode());
-		assertEquals("yirgacheffe/lang/Boxer", eighteenthInstruction.owner);
-		assertEquals("(Ljava/lang/Object;)D", eighteenthInstruction.desc);
-		assertEquals("toDouble", eighteenthInstruction.name);
-		assertFalse(eighteenthInstruction.itf);
 	}
 
 	@Test

@@ -6,8 +6,13 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,8 +69,20 @@ public final class Bootstrap
 		numberTypes.add(double.class);
 	}
 
+	private static Map<Object, String[]> objectSignature = new IdentityHashMap<>();
+
 	private Bootstrap()
 	{
+	}
+
+	public static void cacheObjectSignature(Object object, String signature)
+	{
+		if (!objectSignature.containsKey(object))
+		{
+			String[] parameterTypes = signature.split(",");
+
+			objectSignature.put(object, parameterTypes);
+		}
 	}
 
 	public static CallSite bootstrapPublic(
@@ -160,7 +177,7 @@ public final class Bootstrap
 		for (int i = 0; i < methods.length; i++)
 		{
 			Method method = methods[i];
-			Class<?>[] parameterTypes = method.getParameterTypes();
+			Type[] parameterTypes = method.getGenericParameterTypes();
 
 			if (method.getName().equals(methodName) &&
 				arguments.length == parameterTypes.length)
@@ -198,18 +215,54 @@ public final class Bootstrap
 		return methodHandle;
 	}
 
-	private static int evaluateMatching(Class<?>[] parameters, Object[] arguments)
+	private static int evaluateMatching(Type[] parameters, Object[] arguments)
 	{
 		int matching = 0;
 
 		for (int i = 0; i < arguments.length; i++)
 		{
-			Class<?> parameter = parameters[i];
-			Class<?> argument = arguments[i].getClass();
+			Type parameter = parameters[i];
+			Object argumentReference = arguments[i];
+			Class<?> argument = argumentReference.getClass();
 
-			if (parameter.isAssignableFrom(argument))
+			if (parameter instanceof ParameterizedType)
 			{
-				if (parameter.getName().equals(argument.getName()))
+				ParameterizedType parameterizedType = (ParameterizedType) parameter;
+				Type[] typeArguments = parameterizedType.getActualTypeArguments();
+
+				String[] typeNames = new String[typeArguments.length];
+				boolean variableType = false;
+
+				for (int j = 0; j < typeArguments.length; j++)
+				{
+					if (typeArguments[j] instanceof TypeVariable)
+					{
+						variableType = true;
+					}
+
+					typeNames[j] = typeArguments[j].getTypeName();
+				}
+
+				if (variableType ||
+					parameterizedType.getRawType().getTypeName()
+						.equals(argument.getName()) &&
+					Arrays.equals(typeNames, objectSignature.get(argumentReference)))
+				{
+					matching += THOUSAND;
+				}
+				else
+				{
+					return -1;
+				}
+			}
+			else if (parameter instanceof TypeVariable)
+			{
+				matching += THOUSAND;
+			}
+			else if (parameter instanceof Class &&
+				((Class<?>) parameter).isAssignableFrom(argument))
+			{
+				if (parameter.getTypeName().equals(argument.getName()))
 				{
 					matching += THOUSAND;
 				}

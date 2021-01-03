@@ -40,6 +40,8 @@ public interface Type
 
 	String getSignature();
 
+	String[] getSignatureTypes();
+
 	boolean isPrimitive();
 
 	Result newArray();

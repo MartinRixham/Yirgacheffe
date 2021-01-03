@@ -155,8 +155,7 @@ public class DynamicDispatchTest
 	}
 
 	@Test
-	@Ignore
-	public void testMultipleDispatchOnParameterisedType() throws Exception
+	public void testMultipleDispatchOnNonMatchingParameterisedType() throws Exception
 	{
 		String source =
 			"import java.util.HashMap;\n" +
@@ -214,6 +213,69 @@ public class DynamicDispatchTest
 		hello.invoke(null, (Object) args);
 
 		assertEquals("false\n", spyOut.toString());
+
+		java.lang.System.setOut(originalOut);
+	}
+
+	@Test
+	public void testMultipleDispatchOnMatchingParameterisedType() throws Exception
+	{
+		String source =
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"main hello(Array<String> args)\n" +
+				"{\n" +
+					"Object map = this.getMap();\n" +
+					"Bool equal = this.equals(map);\n" +
+					"new System().getOut().println(equal);\n" +
+				"}\n" +
+
+				"private Object getMap()\n" +
+				"{\n" +
+					"HashMap<String, String> map = new HashMap<String, String>();\n" +
+					"map.put(\"equal\", \"true\");\n" +
+					"return map;\n" +
+				"}\n" +
+
+				"private Bool equals(HashMap<String, String> other)\n" +
+				"{\n" +
+					"return other.get(\"equal\").equals(\"true\");\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		BytecodeClassLoader classLoader = new BytecodeClassLoader();
+
+		classLoader.add("MyClass", result.getBytecode());
+
+		PrintStream originalOut = java.lang.System.out;
+		ByteArrayOutputStream spyOut = new ByteArrayOutputStream();
+		PrintStream out = new PrintStream(spyOut);
+
+		java.lang.System.setOut(out);
+
+		Class<?> myClass = classLoader.loadClass("MyClass");
+		Method hello = myClass.getMethod("main", String[].class);
+		String[] args = {};
+
+		hello.invoke(null, (Object) args);
+
+		assertEquals("true\n", spyOut.toString());
 
 		java.lang.System.setOut(originalOut);
 	}

@@ -148,7 +148,7 @@ public class InvokeConstructorTest
 		assertEquals("yirgacheffe/lang/Array", type.toFullyQualifiedType());
 		assertFalse(invokeConstructor.isCondition(variables));
 		assertEquals(0, result.getErrors().length());
-		assertEquals(22, instructions.length());
+		assertEquals(18, instructions.length());
 
 		TypeInsnNode firstInstruction = (TypeInsnNode) instructions.get(0);
 

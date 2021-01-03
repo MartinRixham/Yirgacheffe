@@ -95,6 +95,11 @@ public class IntersectionType implements Type
 		return this.firstType.getSignature();
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return this.firstType.getSignatureTypes();
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;

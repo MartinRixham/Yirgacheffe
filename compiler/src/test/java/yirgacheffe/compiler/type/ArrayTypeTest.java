@@ -9,9 +9,10 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.lang.Array;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ArrayTypeTest
 {
@@ -26,6 +27,7 @@ public class ArrayTypeTest
 		assertEquals("String[]", stringArray.reflect(stringArray).getSimpleName());
 		assertEquals("[Ljava/lang/String;", stringArray.toJVMType());
 		assertEquals("[Ljava/lang/String;", stringArray.getSignature());
+		assertArrayEquals(new String[0], stringArray.getSignatureTypes());
 		assertEquals("java.lang.String[]", stringArray.toFullyQualifiedType());
 		assertEquals(0, stringArray.construct(new Coordinate(0, 0)).getErrors().length());
 		assertEquals(1, stringArray.width());

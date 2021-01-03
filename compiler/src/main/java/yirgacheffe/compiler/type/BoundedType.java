@@ -89,6 +89,11 @@ public class BoundedType implements Type
 		return this.name + ":" + this.typeBound.getSignature();
 	}
 
+	public String[] getSignatureTypes()
+	{
+		return this.typeBound.getSignatureTypes();
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;

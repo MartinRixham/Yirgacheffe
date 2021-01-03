@@ -200,6 +200,26 @@ public class ParameterisedType implements Type
 			"<" + String.join("", typeNames) + ">;";
 	}
 
+	public String[] getSignatureTypes()
+	{
+		String[] typeNames = new String[this.typeParameters.size()];
+
+		Array<TypeVariable<?>> typeVariables =
+			this.primaryType.reflect().getTypeParameters();
+
+		for (int i = 0; i < typeVariables.length(); i++)
+		{
+			Type parameterType = this.typeParameters.get(typeVariables.get(i).getName());
+
+			if (parameterType != null)
+			{
+				typeNames[i] = parameterType.toFullyQualifiedType().replace("/", ".");
+			}
+		}
+
+		return typeNames;
+	}
+
 	public boolean isPrimitive()
 	{
 		return false;
