@@ -244,11 +244,19 @@ public final class Bootstrap
 				}
 
 				if (variableType ||
-					parameterizedType.getRawType().getTypeName()
-						.equals(argument.getName()) &&
 					Arrays.equals(typeNames, objectSignature.get(argumentReference)))
 				{
-					matching += THOUSAND;
+					Type rawType = parameterizedType.getRawType();
+
+					if (rawType instanceof Class &&
+						!((Class<?>) rawType).isAssignableFrom(argument))
+					{
+						return -1;
+					}
+					else if (rawType.getTypeName().equals(argument.getName()))
+					{
+						matching += THOUSAND;
+					}
 				}
 				else
 				{
