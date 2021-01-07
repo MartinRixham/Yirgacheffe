@@ -1,5 +1,9 @@
 package yirgacheffe.compiler.statement;
 
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.assignment.BlockFieldAssignment;
 import yirgacheffe.compiler.assignment.FieldAssignment;
@@ -13,6 +17,7 @@ import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
+import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
@@ -47,6 +52,22 @@ public class ParameterDeclaration implements Statement
 			String message = "Cannot declare parameter of type Void.";
 
 			return new Result().add(new Error(this.coordinate, message));
+		}
+		else if (this.type.hasParameter())
+		{
+			Variable variable = variables.getVariable(this.name);
+
+			return new Result()
+				.add(new VarInsnNode(
+					variable.getType().getLoadInstruction(),
+					variable.getIndex()))
+				.add(new LdcInsnNode(String.join(",", this.type.getSignatureTypes())))
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Bootstrap",
+					"cacheObjectSignature",
+					"(Ljava/lang/Object;Ljava/lang/String;)V",
+					false));
 		}
 
 		return new Result();

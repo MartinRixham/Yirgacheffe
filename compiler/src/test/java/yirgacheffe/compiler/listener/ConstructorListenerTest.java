@@ -1458,12 +1458,12 @@ public class ConstructorListenerTest
 
 		InsnList instructions = constructor.instructions;
 
-		assertEquals(5, instructions.size());
+		assertEquals(8, instructions.size());
 
-		assertTrue(instructions.get(0) instanceof LabelNode);
-		assertTrue(instructions.get(1) instanceof LineNumberNode);
+		assertTrue(instructions.get(3) instanceof LabelNode);
+		assertTrue(instructions.get(4) instanceof LineNumberNode);
 
-		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(5);
 
 		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
 		assertEquals("MyInterface", thirdInstruction.owner);

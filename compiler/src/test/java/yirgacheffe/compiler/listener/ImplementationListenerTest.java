@@ -452,14 +452,14 @@ public class ImplementationListenerTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		assertTrue(instructions.get(1) instanceof LabelNode);
-		assertTrue(instructions.get(2) instanceof LineNumberNode);
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
 
-		InvokeDynamicInsnNode fourthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(3);
+		InvokeDynamicInsnNode seventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, fourthInstruction.getOpcode());
-		assertEquals("(Ljava/lang/Object;)I", fourthInstruction.desc);
+		assertEquals(Opcodes.INVOKEDYNAMIC, seventhInstruction.getOpcode());
+		assertEquals("(Ljava/lang/Object;)I", seventhInstruction.desc);
 	}
 
 	@Test

@@ -48,7 +48,7 @@ public class MainMethodListenerTest
 		assertEquals(Opcodes.ACC_PUBLIC, method.access);
 		assertEquals("myMainMethod", method.name);
 		assertEquals(2, method.maxLocals);
-		assertEquals(0, method.maxStack);
+		assertEquals(2, method.maxStack);
 
 		MethodNode mainMethod = classNode.methods.get(3);
 

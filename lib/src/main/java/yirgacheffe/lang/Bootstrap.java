@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -69,7 +68,7 @@ public final class Bootstrap
 		numberTypes.add(double.class);
 	}
 
-	private static Map<Object, String[]> objectSignature = new IdentityHashMap<>();
+	private static Map<Object, Class<?>[]> objectSignature = new IdentityHashMap<>();
 
 	private Bootstrap()
 	{
@@ -79,9 +78,22 @@ public final class Bootstrap
 	{
 		if (!objectSignature.containsKey(object))
 		{
+			ClassLoader classLoader = Bootstrap.class.getClassLoader();
 			String[] parameterTypes = signature.split(",");
+			Class<?>[] parameterClasses = new Class<?>[parameterTypes.length];
 
-			objectSignature.put(object, parameterTypes);
+			try
+			{
+				for (int i = 0; i < parameterClasses.length; i++)
+				{
+					parameterClasses[i] = classLoader.loadClass(parameterTypes[i]);
+				}
+			}
+			catch (ClassNotFoundException ignore)
+			{
+			}
+
+			objectSignature.put(object, parameterClasses);
 		}
 	}
 
@@ -230,21 +242,9 @@ public final class Bootstrap
 				ParameterizedType parameterizedType = (ParameterizedType) parameter;
 				Type[] typeArguments = parameterizedType.getActualTypeArguments();
 
-				String[] typeNames = new String[typeArguments.length];
-				boolean variableType = false;
-
-				for (int j = 0; j < typeArguments.length; j++)
-				{
-					if (typeArguments[j] instanceof TypeVariable)
-					{
-						variableType = true;
-					}
-
-					typeNames[j] = typeArguments[j].getTypeName();
-				}
-
-				if (variableType ||
-					Arrays.equals(typeNames, objectSignature.get(argumentReference)))
+				if (argumentsAreAssignable(
+					objectSignature.get(argumentReference),
+					typeArguments))
 				{
 					Type rawType = parameterizedType.getRawType();
 
@@ -300,6 +300,20 @@ public final class Bootstrap
 		}
 
 		return matching;
+	}
+
+	private static boolean argumentsAreAssignable(Class<?>[] arguments, Type[] parameters)
+	{
+		for (int i = 0; i < arguments.length; i++)
+		{
+			if (parameters[i] instanceof Class &&
+				!((Class<?>) parameters[i]).isAssignableFrom(arguments[i]))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static String stringify(

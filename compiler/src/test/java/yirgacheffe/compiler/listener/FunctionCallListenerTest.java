@@ -1335,13 +1335,30 @@ public class FunctionCallListenerTest
 		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
 		assertEquals(1, firstInstruction.var);
 
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+		LdcInsnNode secondInstruction = (LdcInsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.DCONST_0, secondInstruction.getOpcode());
+		assertEquals(Opcodes.LDC, secondInstruction.getOpcode());
+		assertEquals("java.lang.String", secondInstruction.cst);
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		MethodInsnNode thirdInstruction = (MethodInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.D2I, thirdInstruction.getOpcode());
+		assertEquals(Opcodes.INVOKESTATIC, thirdInstruction.getOpcode());
+		assertEquals("cacheObjectSignature", thirdInstruction.name);
+		assertEquals("yirgacheffe/lang/Bootstrap", thirdInstruction.owner);
+		assertEquals("(Ljava/lang/Object;Ljava/lang/String;)V", thirdInstruction.desc);
+
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
+		assertEquals(1, fourthInstruction.var);
+
+		InsnNode fifthInstruction = (InsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DCONST_0, fifthInstruction.getOpcode());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.D2I, sixthInstruction.getOpcode());
 	}
 
 	@Test
@@ -1377,10 +1394,10 @@ public class FunctionCallListenerTest
 		MethodNode firstMethod = classNode.methods.get(0);
 		InsnList instructions = firstMethod.instructions;
 
-		InvokeDynamicInsnNode sixthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(5);
+		InvokeDynamicInsnNode ninthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(8);
 
-		assertEquals("(LMyClass;D)V", sixthInstruction.desc);
+		assertEquals("(LMyClass;D)V", ninthInstruction.desc);
 	}
 
 	@Test
