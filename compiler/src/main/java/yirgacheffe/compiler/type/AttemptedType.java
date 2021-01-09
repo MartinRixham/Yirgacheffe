@@ -141,4 +141,10 @@ public class AttemptedType implements Type
 	{
 		return this.type.getTypeParameter(typeName);
 	}
+
+	@Override
+	public String toString()
+	{
+		return this.type.toString();
+	}
 }

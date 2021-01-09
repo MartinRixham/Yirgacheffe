@@ -39,6 +39,7 @@ public class AttemptedTypeTest
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
 		assertTrue(type.getTypeParameter("") instanceof NullType);
+		assertEquals(type.toString(), "Num");
 	}
 
 	@Test
