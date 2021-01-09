@@ -428,6 +428,33 @@ public class MethodListenerTest
 	}
 
 	@Test
+	public void testMethodsWithSameErasure()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"private MyClass() {}\n" +
+				"private Void method(Array<String> objs) {}\n" +
+				"private Void method(Array<Object> objs) {}\n" +
+			"}\n";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:13 Methods method(yirgacheffe.lang.Array<java.lang.String>) and " +
+			"method(yirgacheffe.lang.Array<java.lang.Object>) have the same erasure.\n",
+			result.getErrors());
+	}
+
+	@Test
 	public void testCallingBooleanMethod()
 	{
 		String source =

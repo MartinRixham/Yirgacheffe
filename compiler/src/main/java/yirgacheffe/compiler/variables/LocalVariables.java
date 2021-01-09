@@ -140,7 +140,7 @@ public class LocalVariables implements Variables
 
 	public boolean canOptimise(Expression variableRead)
 	{
-		return this.optimisedVariables.keySet().contains(variableRead);
+		return this.optimisedVariables.containsKey(variableRead);
 	}
 
 	public Expression getOptimisedExpression(Expression variableRead)

@@ -118,11 +118,11 @@ public class TailCall implements Statement
 
 	public boolean equals(String name, Array<Expression> arguments)
 	{
-		Array<Type> parameters = new Array<>();
+		Array<String> parameters = new Array<>();
 
 		for (Expression argument: arguments)
 		{
-			parameters.push(argument.getType(this.variables));
+			parameters.push(argument.getType(this.variables).toJVMType());
 		}
 
 		return this.caller.equals(new Array<>(name, parameters));

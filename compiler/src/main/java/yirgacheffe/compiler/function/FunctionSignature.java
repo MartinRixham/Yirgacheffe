@@ -109,7 +109,14 @@ public class FunctionSignature implements Signature
 	@Override
 	public boolean equals(Object other)
 	{
-		return other.equals(new Array<>(this.name, this.parameters));
+		Array<String> parameterTypes = new Array<>();
+
+		for (Type type: this.parameters)
+		{
+			parameterTypes.push(type.toJVMType());
+		}
+
+		return other.equals(new Array<>(this.name, parameterTypes));
 	}
 
 	@Override

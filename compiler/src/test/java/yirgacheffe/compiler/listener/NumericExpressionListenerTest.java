@@ -1346,6 +1346,7 @@ public class NumericExpressionListenerTest
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
+		assertEquals(method.name, "method");
 		assertEquals(5, instructions.size());
 
 		LabelNode firstInstruction = (LabelNode) instructions.get(0);

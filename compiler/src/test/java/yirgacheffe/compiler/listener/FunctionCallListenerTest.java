@@ -1026,7 +1026,7 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
-	public void testRecursiveMethodCall() throws Exception
+	public void testRecursiveMethodCall()
 	{
 		String source =
 			"class MyClass\n" +

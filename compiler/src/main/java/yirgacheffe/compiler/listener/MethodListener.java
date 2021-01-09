@@ -54,7 +54,7 @@ public class MethodListener extends TypeListener
 
 	protected MethodNode methodNode;
 
-	private Set<Signature> methods = new HashSet<>();
+	private Map<Signature, Signature> methods = new HashMap<>();
 
 	private Array<Type> parameters = new Array<>();
 
@@ -380,25 +380,38 @@ public class MethodListener extends TypeListener
 	@Override
 	public void exitSignature(YirgacheffeParser.SignatureContext context)
 	{
-		this.signature =
+		Signature signature =
 			new FunctionSignature(
 				this.returnType,
 				context.Identifier().getSymbol().getText(),
 				this.parameters);
 
-		if (this.methods.contains(this.signature))
+		if (this.methods.containsKey(signature))
 		{
-			String message =
-				"Duplicate declaration of method " + this.signature.toString() + ".";
+			String message;
+
+			if (signature.getParameters().equals(
+				this.methods.get(signature).getParameters()))
+			{
+				message =
+					"Duplicate declaration of method " + signature.toString() + ".";
+			}
+			else
+			{
+				message =
+					"Methods " + this.methods.get(signature) + " and " +
+						signature + " have the same erasure.";
+			}
 
 			this.errors.push(new Error(context, message));
 			this.isValid = false;
 		}
 		else
 		{
-			this.methods.add(this.signature);
+			this.methods.put(signature, signature);
 		}
 
 		this.parameters = new Array<>();
+		this.signature = signature;
 	}
 }
