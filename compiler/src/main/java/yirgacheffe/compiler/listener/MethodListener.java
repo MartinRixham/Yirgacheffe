@@ -56,6 +56,8 @@ public class MethodListener extends TypeListener
 
 	private Map<Signature, Signature> methods = new HashMap<>();
 
+	private Map<String, Signature> methodReturns = new HashMap<>();
+
 	private Array<Type> parameters = new Array<>();
 
 	protected Signature signature;
@@ -409,6 +411,23 @@ public class MethodListener extends TypeListener
 		else
 		{
 			this.methods.put(signature, signature);
+		}
+
+		if (this.methodReturns.containsKey(signature.getName()))
+		{
+			if (!signature.getReturnType().equals(
+				this.methodReturns.get(signature.getName()).getReturnType()))
+			{
+				String message =
+					"Overloaded method " + signature.getName() +
+					" does not have constant return type.";
+
+				this.errors.push(new Error(context, message));
+			}
+		}
+		else
+		{
+			this.methodReturns.put(signature.getName(), signature);
 		}
 
 		this.parameters = new Array<>();

@@ -242,7 +242,8 @@ public final class Bootstrap
 				ParameterizedType parameterizedType = (ParameterizedType) parameter;
 				Type[] typeArguments = parameterizedType.getActualTypeArguments();
 
-				if (argumentsAreAssignable(
+				if (objectSignature.containsKey(argumentReference) &&
+					argumentsAreAssignable(
 					objectSignature.get(argumentReference),
 					typeArguments))
 				{

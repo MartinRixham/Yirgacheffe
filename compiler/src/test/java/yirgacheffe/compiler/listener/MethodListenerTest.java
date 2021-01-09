@@ -415,7 +415,7 @@ public class MethodListenerTest
 			"interface MyInterface\n" +
 			"{\n" +
 				"Char myMethod(String string);\n" +
-				"Void myMethod(String string);\n" +
+				"Char myMethod(String string);\n" +
 			"}";
 
 		Compiler compiler = new Compiler("thingy/MyInterface.yg", source);
@@ -462,9 +462,9 @@ public class MethodListenerTest
 			"{\n" +
 				"main method(Array<String> args)\n" +
 				"{\n" +
-					"this.method();\n" +
+					"this.isTrue();\n" +
 				"}\n\n" +
-				"public Bool method()" +
+				"public Bool isTrue()" +
 				"{\n" +
 					"return true;\n" +
 				"}\n" +
@@ -509,5 +509,41 @@ public class MethodListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals("line 3:0 Missing return statement.\n", result.getErrors());
+	}
+
+	@Test
+	public void testNonConstantReturnType() throws Exception
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.method(\"\");\n" +
+				"}\n" +
+				"private String method(String string)\n" +
+				"{\n" +
+					"return string;\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+
+		assertEquals(
+			"line 7:15 Overloaded method method does not have constant return type.\n",
+			result.getErrors());
 	}
 }
