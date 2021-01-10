@@ -26,6 +26,7 @@ public class NullInterfaceTest
 		assertTrue(members.getMethods().iterator().next() instanceof NullFunction);
 		assertTrue(members.getPublicMethods().iterator().next() instanceof NullFunction);
 		assertTrue(members.getConstructors().iterator().next() instanceof NullFunction);
+		assertEquals(0, members.getGenericInterfaces().size());
 
 		assertTrue(
 			members.getPublicConstructors().iterator().next() instanceof NullFunction);

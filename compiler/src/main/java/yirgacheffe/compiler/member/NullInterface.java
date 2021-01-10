@@ -34,7 +34,7 @@ public class NullInterface implements Interface
 
 	public Set<Property> getFields()
 	{
-		return new HashSet<>();
+		return Collections.emptySet();
 	}
 
 	public Property getField(String name)
@@ -44,7 +44,7 @@ public class NullInterface implements Interface
 
 	public Set<Type> getGenericInterfaces()
 	{
-		return new HashSet<>();
+		return Collections.emptySet();
 	}
 
 	public Array<TypeVariable<?>> getTypeParameters()
