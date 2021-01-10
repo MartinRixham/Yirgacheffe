@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
@@ -386,7 +387,7 @@ public class ExceptionTest
 				"}\n" +
 				"public Num getNumber()" +
 				"{\n" +
-				"return new Exception();\n" +
+					"return new Exception();\n" +
 				"}\n" +
 				"public Void handle(Num number) {}\n" +
 				"public Void handle(Exception e) {}\n" +
@@ -558,5 +559,102 @@ public class ExceptionTest
 
 		assertEquals(success, tenthInstruction.getLabel());
 		assertTrue(instructions.get(10) instanceof FrameNode);
+	}
+
+	@Test
+	public void testTryInExpression()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"String str = try(\"\") || \"\";\n" +
+					"this.handle(str);\n" +
+				"}\n" +
+				"private Void handle(String str)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		assertEquals(1, firstMethod.tryCatchBlocks.size());
+
+		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
+		Label startLabel = tryCatch.start.getLabel();
+		Label endLabel = tryCatch.end.getLabel();
+		Label handlerLabel = tryCatch.handler.getLabel();
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(20, instructions.size());
+	}
+
+	@Test
+	@Ignore
+	public void testTryInAnotherExpression()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"String str = \"\" || try(\"\");\n" +
+					"this.handle(str);\n" +
+				"}\n" +
+				"private Void handle(String str)\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
+
+		assertEquals("method", firstMethod.name);
+
+		assertEquals(1, firstMethod.tryCatchBlocks.size());
+
+		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
+		Label startLabel = tryCatch.start.getLabel();
+		Label endLabel = tryCatch.end.getLabel();
+		Label handlerLabel = tryCatch.handler.getLabel();
+
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(20, instructions.size());
 	}
 }
