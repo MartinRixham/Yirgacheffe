@@ -95,7 +95,7 @@ public class AttemptedTypeTest
 		Result result = type.swapWith(new ReferenceType(Object.class));
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(0, result.getInstructions().length());
+		assertEquals(2, result.getInstructions().length());
 	}
 
 	@Test
@@ -116,6 +116,6 @@ public class AttemptedTypeTest
 		Result result = type.compare(BooleanOperator.AND, new Label());
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(0, result.getInstructions().length());
+		assertEquals(5, result.getInstructions().length());
 	}
 }

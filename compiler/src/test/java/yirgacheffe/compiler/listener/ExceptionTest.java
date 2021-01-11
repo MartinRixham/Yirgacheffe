@@ -606,7 +606,7 @@ public class ExceptionTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(20, instructions.size());
+		assertEquals(30, instructions.size());
 	}
 
 	@Test

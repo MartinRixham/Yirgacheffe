@@ -124,7 +124,7 @@ public class AttemptedType implements Type
 
 	public Result swapWith(Type type)
 	{
-		return new Result();
+		return this.type.swapWith(type);
 	}
 
 	public Type intersect(Type type)
@@ -134,7 +134,7 @@ public class AttemptedType implements Type
 
 	public Result compare(BooleanOperator operator, Label label)
 	{
-		return new Result();
+		return this.type.compare(operator, label);
 	}
 
 	public Type getTypeParameter(String typeName)
