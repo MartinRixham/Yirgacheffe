@@ -61,7 +61,7 @@ public class AttemptedTypeTest
 		Result result = type.convertTo(new ReferenceType(Object.class));
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(0, result.getInstructions().length());
+		assertEquals(9, result.getInstructions().length());
 	}
 
 	@Test

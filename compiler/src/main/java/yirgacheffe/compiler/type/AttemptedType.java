@@ -2,7 +2,11 @@ package yirgacheffe.compiler.type;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.member.Interface;
@@ -117,6 +121,22 @@ public class AttemptedType implements Type
 						this.type.getSignature(),
 					false))
 				.concat(this.type.convertTo(type));
+		}
+		else
+		{
+			Label instanceLabel = new Label();
+			Label jumpLabel = new Label();
+
+			result = result
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new TypeInsnNode(Opcodes.INSTANCEOF, type.toFullyQualifiedType()))
+				.add(new JumpInsnNode(Opcodes.IFNE, new LabelNode(instanceLabel)))
+				.add(new TypeInsnNode(Opcodes.CHECKCAST, type.toFullyQualifiedType()))
+				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(jumpLabel)))
+				.add(new LabelNode(instanceLabel))
+				.add(new TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
+				.add(new InsnNode(Opcodes.ATHROW))
+				.add(new LabelNode(jumpLabel));
 		}
 
 		return result;
