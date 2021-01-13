@@ -154,7 +154,9 @@ public class AttemptedType implements Type
 
 	public Result compare(BooleanOperator operator, Label label)
 	{
-		return this.type.compare(operator, label);
+		return this
+			.convertTo(this.type)
+			.concat(this.type.compare(operator, label));
 	}
 
 	public Type getTypeParameter(String typeName)

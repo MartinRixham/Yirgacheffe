@@ -56,11 +56,11 @@ public class BooleanOperation implements Expression
 			result = result.add(new InsnNode(Opcodes.DUP));
 		}
 
-		result = result.concat(firstType.convertTo(type));
-
 		if (!type.equals(firstType))
 		{
-			result = result.concat(firstType.swapWith(type));
+			result = result
+				.concat(firstType.convertTo(type))
+				.concat(firstType.swapWith(type));
 		}
 
 		result = result.concat(firstType.compare(this.operator, label));
@@ -98,6 +98,8 @@ public class BooleanOperation implements Expression
 			.concat(firstType.compare(
 				this.operator,
 				label));
+
+		variables.stackPop();
 
 		if (this.secondOperand.isCondition(variables))
 		{

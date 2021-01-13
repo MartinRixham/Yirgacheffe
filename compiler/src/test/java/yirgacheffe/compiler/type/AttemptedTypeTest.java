@@ -116,6 +116,6 @@ public class AttemptedTypeTest
 		Result result = type.compare(BooleanOperator.AND, new Label());
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(5, result.getInstructions().length());
+		assertEquals(6, result.getInstructions().length());
 	}
 }
