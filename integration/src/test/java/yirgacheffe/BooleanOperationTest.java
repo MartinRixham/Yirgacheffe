@@ -44,7 +44,7 @@ public class BooleanOperationTest
 				"}\n" +
 				"public String getString()\n" +
 				"{\n" +
-					"return new Exception();\n" +
+					"return new Exception(\"Catch me.\");\n" +
 				"}\n" +
 				"public Void printer(Array<Object> objs)\n" +
 				"{\n" +
@@ -81,9 +81,19 @@ public class BooleanOperationTest
 		Method hello = myClass.getMethod("main", String[].class);
 		String[] args = {"Eh up, planet."};
 
-		hello.invoke(null, (Object) args);
+		Exception exception = null;
 
-		assertEquals("Eh up, planet.\n", spyOut.toString());
+		try
+		{
+			hello.invoke(null, (Object) args);
+		}
+		catch (Exception e)
+		{
+			exception = e;
+		}
+
+		assertEquals("Catch me.", exception.getCause().getMessage());
+		assertEquals("", spyOut.toString());
 
 		System.setOut(originalOut);
 	}

@@ -130,7 +130,7 @@ public class AttemptedType implements Type
 			result = result
 				.add(new InsnNode(Opcodes.DUP))
 				.add(new TypeInsnNode(Opcodes.INSTANCEOF, type.toFullyQualifiedType()))
-				.add(new JumpInsnNode(Opcodes.IFNE, new LabelNode(instanceLabel)))
+				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(instanceLabel)))
 				.add(new TypeInsnNode(Opcodes.CHECKCAST, type.toFullyQualifiedType()))
 				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(jumpLabel)))
 				.add(new LabelNode(instanceLabel))
