@@ -158,10 +158,19 @@ public class StatementListener extends FieldListener
 	public void exitConditionalStatement(
 		YirgacheffeParser.ConditionalStatementContext context)
 	{
-		ConditionalStatement conditional = (ConditionalStatement) this.statements.pop();
-		Branch branch = new Branch(conditional);
+		Statement statement = this.statements.pop();
 
-		this.statements.push(branch);
+		if (statement instanceof ConditionalStatement)
+		{
+			ConditionalStatement conditional = (ConditionalStatement) statement;
+			Branch branch = new Branch(conditional);
+
+			this.statements.push(branch);
+		}
+		else
+		{
+			this.statements.push(new DoNothing());
+		}
 	}
 
 	@Override

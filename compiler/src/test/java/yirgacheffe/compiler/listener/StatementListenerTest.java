@@ -483,6 +483,27 @@ public class StatementListenerTest
 	}
 
 	@Test
+	public void testMalformedIfStatement()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main hello(Array<String> args)" +
+				"{\n" +
+					"if (\"\"))\n" +
+					"{\n" +
+					"}\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertFalse(result.isSuccessful());
+		assertEquals("line 4:7 Invalid use of symbol ')'.\n", result.getErrors());
+	}
+
+	@Test
 	public void testMismatchedTypeAssignment()
 	{
 		String source =
