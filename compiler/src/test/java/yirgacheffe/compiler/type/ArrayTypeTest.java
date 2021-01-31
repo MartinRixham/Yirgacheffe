@@ -157,6 +157,18 @@ public class ArrayTypeTest
 	}
 
 	@Test
+	public void testAttempt()
+	{
+		Type type =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		Result result = type.attempt();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
 	public void testEqualArrays() throws Exception
 	{
 		String descriptor = "[Ljava.lang.String;";

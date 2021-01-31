@@ -345,4 +345,15 @@ public class PrimitiveTypeTest
 		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
 		assertEquals(label, fifthInstruction.label.getLabel());
 	}
+
+	@Test
+	public void testAttempt()
+	{
+		Type type = PrimitiveType.INT;
+
+		Result result = type.attempt();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
 }

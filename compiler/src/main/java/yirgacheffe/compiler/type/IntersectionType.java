@@ -130,6 +130,11 @@ public class IntersectionType implements Type
 		return this.firstType.compare(operator, label);
 	}
 
+	public Result attempt()
+	{
+		return this.firstType.attempt();
+	}
+
 	public Type getTypeParameter(String typeName)
 	{
 		return new NullType();

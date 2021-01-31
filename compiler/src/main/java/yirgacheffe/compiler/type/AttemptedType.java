@@ -108,38 +108,7 @@ public class AttemptedType implements Type
 
 	public Result convertTo(Type type)
 	{
-		Result result = new Result();
-
-		if (type.isPrimitive())
-		{
-			result = result
-				.add(new MethodInsnNode(
-					Opcodes.INVOKESTATIC,
-					"yirgacheffe/lang/Boxer",
-					"to" + this.type.reflect().getSimpleName(),
-					"(Ljava/lang/Object;)" +
-						this.type.getSignature(),
-					false))
-				.concat(this.type.convertTo(type));
-		}
-		else
-		{
-			Label instanceLabel = new Label();
-			Label jumpLabel = new Label();
-
-			result = result
-				.add(new InsnNode(Opcodes.DUP))
-				.add(new TypeInsnNode(Opcodes.INSTANCEOF, type.toFullyQualifiedType()))
-				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(instanceLabel)))
-				.add(new TypeInsnNode(Opcodes.CHECKCAST, type.toFullyQualifiedType()))
-				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(jumpLabel)))
-				.add(new LabelNode(instanceLabel))
-				.add(new TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
-				.add(new InsnNode(Opcodes.ATHROW))
-				.add(new LabelNode(jumpLabel));
-		}
-
-		return result;
+		return new Result();
 	}
 
 	public Result swapWith(Type type)
@@ -154,9 +123,41 @@ public class AttemptedType implements Type
 
 	public Result compare(BooleanOperator operator, Label label)
 	{
-		return this
-			.convertTo(this.type)
-			.concat(this.type.compare(operator, label));
+		return this.type.compare(operator, label);
+	}
+
+	public Result attempt()
+	{
+		if (type.isPrimitive())
+		{
+			return new Result()
+				.add(new MethodInsnNode(
+					Opcodes.INVOKESTATIC,
+					"yirgacheffe/lang/Boxer",
+					"to" + this.type.reflect().getSimpleName(),
+					"(Ljava/lang/Object;)" +
+						this.type.getSignature(),
+					false))
+				.concat(this.type.convertTo(type));
+		}
+		else
+		{
+			Label instanceLabel = new Label();
+			Label jumpLabel = new Label();
+
+			return new Result()
+				.add(new InsnNode(Opcodes.DUP))
+				.add(new TypeInsnNode(
+					Opcodes.INSTANCEOF, this.type.toFullyQualifiedType()))
+				.add(new JumpInsnNode(Opcodes.IFEQ, new LabelNode(instanceLabel)))
+				.add(new TypeInsnNode(
+					Opcodes.CHECKCAST, this.type.toFullyQualifiedType()))
+				.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(jumpLabel)))
+				.add(new LabelNode(instanceLabel))
+				.add(new TypeInsnNode(Opcodes.CHECKCAST, "java/lang/Throwable"))
+				.add(new InsnNode(Opcodes.ATHROW))
+				.add(new LabelNode(jumpLabel));
+		}
 	}
 
 	public Type getTypeParameter(String typeName)

@@ -54,6 +54,8 @@ public interface Type
 
 	Result compare(BooleanOperator operator, Label label);
 
+	Result attempt();
+
 	Type getTypeParameter(String typeName);
 
 	static Type getType(java.lang.reflect.Type type, Type owner)

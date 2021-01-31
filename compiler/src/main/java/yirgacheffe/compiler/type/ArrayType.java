@@ -174,6 +174,11 @@ public class ArrayType implements Type
 		return new Result();
 	}
 
+	public Result attempt()
+	{
+		return this.type.attempt();
+	}
+
 	public Type getTypeParameter(String typeName)
 	{
 		return new NullType();

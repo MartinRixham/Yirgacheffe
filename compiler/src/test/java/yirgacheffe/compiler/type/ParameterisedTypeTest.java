@@ -172,6 +172,19 @@ public class ParameterisedTypeTest
 	}
 
 	@Test
+	public void testAttempt()
+	{
+		ReferenceType referenceType = new ReferenceType(Random.class);
+		Type type = new ParameterisedType(referenceType, new Array<>());
+		Label label = new Label();
+
+		Result result = type.attempt();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
+
+	@Test
 	public void typesDifferByTypeParameter() throws Exception
 	{
 		Class<?> testClass = this.getClass();

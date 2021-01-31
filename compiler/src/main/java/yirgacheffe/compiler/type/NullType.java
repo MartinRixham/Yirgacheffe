@@ -127,6 +127,11 @@ public class NullType implements Type
 		return new Result();
 	}
 
+	public Result attempt()
+	{
+		return new Result();
+	}
+
 	public Type getTypeParameter(String typeName)
 	{
 		return new NullType();

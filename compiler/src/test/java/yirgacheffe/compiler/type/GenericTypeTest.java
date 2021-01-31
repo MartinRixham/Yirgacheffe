@@ -149,4 +149,16 @@ public class GenericTypeTest
 		assertEquals(Opcodes.IFNULL, firstInstruction.getOpcode());
 		assertEquals(label, firstInstruction.label.getLabel());
 	}
+
+	@Test
+	public void testAttempt()
+	{
+		Type concreteType = new ReferenceType(Random.class);
+		Type type = new GenericType(concreteType);
+
+		Result result = type.attempt();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
 }

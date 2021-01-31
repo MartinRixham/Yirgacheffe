@@ -124,6 +124,11 @@ public class BoundedType implements Type
 		return new Result();
 	}
 
+	public Result attempt()
+	{
+		return this.typeBound.attempt();
+	}
+
 	public Type getTypeParameter(String typeName)
 	{
 		Type parameter = this.typeBound.getTypeParameter(typeName);

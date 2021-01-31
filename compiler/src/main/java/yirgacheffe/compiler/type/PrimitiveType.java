@@ -316,6 +316,11 @@ public enum PrimitiveType implements Type
 		}
 	}
 
+	public Result attempt()
+	{
+		return new Result();
+	}
+
 	public Type getTypeParameter(String typeName)
 	{
 		return new NullType();

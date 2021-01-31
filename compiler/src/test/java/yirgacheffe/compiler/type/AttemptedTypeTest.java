@@ -3,13 +3,9 @@ package yirgacheffe.compiler.type;
 import org.junit.Test;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
-import yirgacheffe.lang.Array;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -61,7 +57,7 @@ public class AttemptedTypeTest
 		Result result = type.convertTo(new ReferenceType(Object.class));
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(9, result.getInstructions().length());
+		assertEquals(0, result.getInstructions().length());
 	}
 
 	@Test
@@ -72,19 +68,7 @@ public class AttemptedTypeTest
 		Result result = type.convertTo(PrimitiveType.DOUBLE);
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(2, result.getInstructions().length());
-
-		Array<AbstractInsnNode> instructions = result.getInstructions();
-
-		MethodInsnNode firstInstruction = (MethodInsnNode) instructions.get(0);
-
-		assertEquals(Opcodes.INVOKESTATIC, firstInstruction.getOpcode());
-		assertEquals("toInteger", firstInstruction.name);
-		assertEquals("(Ljava/lang/Object;)I", firstInstruction.desc);
-
-		InsnNode secondInstruction = (InsnNode) instructions.get(1);
-
-		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+		assertEquals(0, result.getInstructions().length());
 	}
 
 	@Test
@@ -116,6 +100,6 @@ public class AttemptedTypeTest
 		Result result = type.compare(BooleanOperator.AND, new Label());
 
 		assertEquals(0, result.getErrors().length());
-		assertEquals(6, result.getInstructions().length());
+		assertEquals(5, result.getInstructions().length());
 	}
 }

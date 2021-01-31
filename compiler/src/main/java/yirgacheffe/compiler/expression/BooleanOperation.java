@@ -63,7 +63,9 @@ public class BooleanOperation implements Expression
 				.concat(firstType.swapWith(type));
 		}
 
-		result = result.concat(firstType.compare(this.operator, label));
+		result = result
+			.concat(firstType.attempt())
+			.concat(firstType.compare(this.operator, label));
 
 		if (type.width() == 2)
 		{
@@ -95,6 +97,7 @@ public class BooleanOperation implements Expression
 
 		result = result
 			.concat(this.firstOperand.compile(variables))
+			.concat(firstType.attempt())
 			.concat(firstType.compare(
 				this.operator,
 				label));
@@ -113,6 +116,7 @@ public class BooleanOperation implements Expression
 		{
 			result = result
 				.concat(this.secondOperand.compile(variables))
+				.concat(secondType.attempt())
 				.concat(secondType.compare(
 					BooleanOperator.AND,
 					falseLabel));

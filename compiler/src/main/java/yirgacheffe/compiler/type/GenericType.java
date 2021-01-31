@@ -146,6 +146,11 @@ public class GenericType implements Type
 		return this.type.compare(operator, label);
 	}
 
+	public Result attempt()
+	{
+		return this.type.attempt();
+	}
+
 	public Type unwrap()
 	{
 		return this.type;

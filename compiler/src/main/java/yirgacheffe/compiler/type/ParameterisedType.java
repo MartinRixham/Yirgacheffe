@@ -250,6 +250,11 @@ public class ParameterisedType implements Type
 		return this.primaryType.compare(operator, label);
 	}
 
+	public Result attempt()
+	{
+		return this.primaryType.attempt();
+	}
+
 	public boolean hasTypeParameter(String typeName, Type genericParameterType)
 	{
 		Type type = this.typeParameters.get(typeName);

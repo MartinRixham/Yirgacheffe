@@ -87,8 +87,10 @@ public class BinaryOperation implements Expression
 		result = result
 			.concat(this.firstOperand.compile(variables))
 			.concat(firstType.convertTo(type))
+			.concat(firstType.attempt())
 			.concat(this.secondOperand.compile(variables))
-			.concat(secondType.convertTo(type));
+			.concat(secondType.convertTo(type))
+			.concat(secondType.attempt());
 
 		if (type.equals(PrimitiveType.INT))
 		{

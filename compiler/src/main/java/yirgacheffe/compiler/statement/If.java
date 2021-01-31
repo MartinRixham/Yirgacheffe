@@ -55,6 +55,7 @@ public class If implements ConditionalStatement
 		{
 			result = result
 				.concat(this.condition.compile(variables))
+				.concat(type.attempt())
 				.concat(type.compare(BooleanOperator.AND, this.falseLabel));
 		}
 

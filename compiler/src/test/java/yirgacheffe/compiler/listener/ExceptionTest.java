@@ -12,6 +12,7 @@ import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -567,7 +568,7 @@ public class ExceptionTest
 		String source =
 			"class MyClass\n" +
 			"{\n" +
-				"main method(Array<String> args)\n" +
+				"public Void method()\n" +
 				"{\n" +
 					"String str = try(\"\") || \"\";\n" +
 					"this.handle(str);\n" +
@@ -575,6 +576,7 @@ public class ExceptionTest
 				"private Void handle(String str)\n" +
 				"{\n" +
 				"}\n" +
+				"public MyClass() {}\n" +
 			"}";
 
 		Compiler compiler = new Compiler("", source);
@@ -606,7 +608,34 @@ public class ExceptionTest
 
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(52, instructions.size());
+		assertEquals(38, instructions.size());
+
+		VarInsnNode firstInstruction = (VarInsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ALOAD, firstInstruction.getOpcode());
+		assertEquals(0, firstInstruction.var);
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ASTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
+
+		assertEquals(startLabel, thirdInstruction.getLabel());
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals("", fourthInstruction.cst);
+
+		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+
+		assertEquals(endLabel, fifthInstruction.getLabel());
+
+		InsnNode sixthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.SWAP, sixthInstruction.getOpcode());
 	}
 
 	@Test

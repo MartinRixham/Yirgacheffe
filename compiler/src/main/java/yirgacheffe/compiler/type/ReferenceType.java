@@ -173,6 +173,11 @@ public class ReferenceType implements Type
 		}
 	}
 
+	public Result attempt()
+	{
+		return new Result();
+	}
+
 	@Override
 	public boolean equals(Object other)
 	{

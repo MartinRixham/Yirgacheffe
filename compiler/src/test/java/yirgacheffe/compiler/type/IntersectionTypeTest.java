@@ -147,4 +147,18 @@ public class IntersectionTypeTest
 		assertEquals(Opcodes.IFNULL, firstInstruction.getOpcode());
 		assertEquals(label, firstInstruction.label.getLabel());
 	}
+
+	@Test
+	public void testAttempt()
+	{
+		Type arrayList = new ReferenceType(java.util.ArrayList.class);
+		Type linkedList = new ReferenceType(java.util.LinkedList.class);
+
+		Type type = new IntersectionType(arrayList, linkedList);
+
+		Result result = type.attempt();
+
+		assertEquals(0, result.getErrors().length());
+		assertEquals(0, result.getInstructions().length());
+	}
 }
