@@ -45,7 +45,9 @@ public class BooleanOperation implements Expression
 		Type secondType = this.secondOperand.getType(variables);
 		Type type = this.getType(variables);
 
-		result = result.concat(this.firstOperand.compile(variables));
+		result = result
+			.concat(this.firstOperand.compile(variables))
+			.concat(firstType.attempt());
 
 		if (firstType.width() == 2)
 		{
@@ -64,7 +66,6 @@ public class BooleanOperation implements Expression
 		}
 
 		result = result
-			.concat(firstType.attempt())
 			.concat(firstType.compare(this.operator, label));
 
 		if (type.width() == 2)
