@@ -43,6 +43,7 @@ public class GenericTypeTest
 		assertEquals(Opcodes.ALOAD, type.getLoadInstruction());
 		assertEquals(Opcodes.ACONST_NULL, type.getZero());
 		assertTrue(type.isAssignableTo(new ReferenceType(java.lang.String.class)));
+		assertFalse(type.isAssignableTo(PrimitiveType.INT));
 		assertFalse(type.hasParameter());
 		assertFalse(type.isPrimitive());
 		assertEquals(type, referenceType);
@@ -65,6 +66,14 @@ public class GenericTypeTest
 
 		assertEquals(Opcodes.ANEWARRAY, instruction.getOpcode());
 		assertEquals(concreteType.toFullyQualifiedType(), instruction.desc);
+	}
+
+	@Test
+	public void testGenericPrimitive()
+	{
+		Type type = new GenericType(PrimitiveType.INT);
+
+		assertTrue(type.isPrimitive());
 	}
 
 	@Test

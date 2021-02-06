@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.lang.Array;
 
 import java.util.Random;
 
@@ -62,6 +63,19 @@ public class IntersectionTypeTest
 
 		assertEquals(0, result.getErrors().length());
 		assertEquals(1, result.getInstructions().length());
+	}
+
+	@Test
+	public void testIntersectionOfParameterisedTypes()
+	{
+		Type type =
+			new ParameterisedType(
+				new ReferenceType(String.class),
+				new Array<>(PrimitiveType.INT));
+
+		Type intersection = new IntersectionType(type, type);
+
+		assertTrue(intersection.hasParameter());
 	}
 
 	@Test

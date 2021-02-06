@@ -96,7 +96,7 @@ public final class Repl
 		}
 		catch (StringIndexOutOfBoundsException e)
 		{
-			return null;
+			return "";
 		}
 	}
 

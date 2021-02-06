@@ -143,4 +143,14 @@ public class FunctionCallTest
 
 		assertTrue(implementation instanceof NullImplementation);
 	}
+
+	@Test
+	public void testEqualsVariableRead()
+	{
+		Coordinate coordinate = new Coordinate(1, 4);
+		VariableRead variableRead = new VariableRead(coordinate, "it");
+		FunctionCall functionCall = new FunctionCall(variableRead);
+
+		assertEquals(functionCall, variableRead);
+	}
 }

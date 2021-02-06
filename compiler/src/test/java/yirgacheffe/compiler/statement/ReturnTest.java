@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ReturnTest
@@ -193,5 +194,18 @@ public class ReturnTest
 
 		assertEquals(returnStatement, expression);
 		assertEquals(returnStatement.hashCode(), expression.hashCode());
+	}
+
+	@Test
+	public void testReturnNotEqualToExpression()
+	{
+		Coordinate coordinate = new Coordinate(2, 3);
+		Expression expression = new Num(coordinate, "1.0");
+
+		Return returnStatement =
+			new Return(coordinate, PrimitiveType.DOUBLE, new Num(coordinate, "2"));
+
+		assertNotEquals(returnStatement, expression);
+		assertNotEquals(returnStatement.hashCode(), expression.hashCode());
 	}
 }

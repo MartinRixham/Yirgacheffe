@@ -45,12 +45,24 @@ public class ArrayTypeTest
 	public void testArrayIsAssignableToArray()
 	{
 		Type first =
-			new ArrayType("[Ljava.lang.Object;", new ReferenceType(String.class));
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
 
 		Type second =
-			new ArrayType("[Ljava.lang.String;", new ReferenceType(Object.class));
+			new ArrayType("[Ljava.lang.Object;", new ReferenceType(Object.class));
 
 		assertTrue(first.isAssignableTo(second));
+	}
+
+	@Test
+	public void testArrayIsNotAssignableToArray()
+	{
+		Type first =
+			new ArrayType("[Ljava.lang.System;", new ReferenceType(System.class));
+
+		Type second =
+			new ArrayType("[Ljava.lang.String;", new ReferenceType(String.class));
+
+		assertFalse(first.isAssignableTo(second));
 	}
 
 	@Test
