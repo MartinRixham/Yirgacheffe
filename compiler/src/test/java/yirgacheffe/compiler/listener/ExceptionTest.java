@@ -1,6 +1,5 @@
 package yirgacheffe.compiler.listener;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
@@ -639,7 +638,6 @@ public class ExceptionTest
 	}
 
 	@Test
-	@Ignore
 	public void testTryInAnotherExpression()
 	{
 		String source =
@@ -677,13 +675,35 @@ public class ExceptionTest
 
 		assertEquals(1, firstMethod.tryCatchBlocks.size());
 
-		TryCatchBlockNode tryCatch = firstMethod.tryCatchBlocks.get(0);
-		Label startLabel = tryCatch.start.getLabel();
-		Label endLabel = tryCatch.end.getLabel();
-		Label handlerLabel = tryCatch.handler.getLabel();
-
 		InsnList instructions = firstMethod.instructions;
 
 		assertEquals(20, instructions.size());
+	}
+
+	@Test
+	public void testAnotherTryExpression()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"String attempt = try(\"\");\n" +
+					"String str = attempt + \"\";\n" +
+					"return this.handle(str);\n" +
+				"}\n" +
+				"private Void handle(String str){}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
 	}
 }
