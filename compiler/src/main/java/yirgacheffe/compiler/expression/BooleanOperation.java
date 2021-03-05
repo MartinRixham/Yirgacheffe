@@ -77,12 +77,13 @@ public class BooleanOperation implements Expression
 			result = result.add(new InsnNode(Opcodes.POP));
 		}
 
+		variables.stackPop();
+
 		result = result
 			.concat(this.secondOperand.compile(variables))
 			.concat(secondType.convertTo(type))
 			.add(new LabelNode(label));
 
-		variables.stackPop();
 		variables.stackPop();
 		variables.stackPush(type);
 
