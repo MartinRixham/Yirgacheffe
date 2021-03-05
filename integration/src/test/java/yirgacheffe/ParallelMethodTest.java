@@ -98,7 +98,7 @@ public class ParallelMethodTest
 				"}\n" +
 				"parallel public Comparable<String> getString()\n" +
 				"{\n" +
-					"return new MutableReference<String>().get().toString();\n" +
+					"return new Exception();\n" +
 				"}\n" +
 			"}";
 

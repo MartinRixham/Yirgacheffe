@@ -86,8 +86,7 @@ If you really want to write subtype specific code you can use a method overload 
 
 ### Null Literals
 
-We all know not to pass null values between functions and in Yirgacheffe this is especially important since passing `null` as an argument will result in a null pointer exception.
-But really there's not much reason to refer to `null` at all and since I'm trying to encourage myself to use better ways of handling exceptional cases there isn't a null literal in Yirgacheffe.
+We all know not to pass null values between functions, but really there's not much reason to refer to `null` at all and since I'm trying to encourage myself to use better ways of handling exceptional cases there isn't a null literal in Yirgacheffe.
 We can't outlaw null values completely though or pretend they don't exist so you might need to check for nulls to avoid a null pointer exception.
 
     class MyClass

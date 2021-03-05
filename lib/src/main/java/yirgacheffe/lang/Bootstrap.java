@@ -118,7 +118,6 @@ public final class Bootstrap
 		String name,
 		MethodType type,
 		boolean isPrivate)
-
 	{
 		MethodHandle dispatcher =
 			MethodHandles.insertArguments(DISPATCHER, 0, lookup, name, isPrivate)
@@ -148,18 +147,17 @@ public final class Bootstrap
 	{
 		if (receiver == null)
 		{
-			NullPointerException exception = new NullPointerException();
+			return lookup.unreflect(
+				Bootstrap.class.getMethod("giveNothing", Object[].class));
+		}
 
-			// Remove top line of stack trace.
-			StackTraceElement[] stackTrace =
-				new StackTraceElement[exception.getStackTrace().length - 1];
-
-			java.lang.System.arraycopy(
-				exception.getStackTrace(), 1, stackTrace, 0, stackTrace.length);
-
-			exception.setStackTrace(stackTrace);
-
-			throw exception;
+		for (Object argument: arguments)
+		{
+			if (argument == null)
+			{
+				return lookup.unreflect(
+					Bootstrap.class.getMethod("giveNothing", Object[].class));
+			}
 		}
 
 		String methodString = stringify(methodName, isPrivate, receiver, arguments);
@@ -333,6 +331,11 @@ public final class Bootstrap
 		}
 
 		return stringBuilder.toString();
+	}
+
+	public static Object giveNothing(Object... args)
+	{
+		return null;
 	}
 
 	public static void clearCache()
