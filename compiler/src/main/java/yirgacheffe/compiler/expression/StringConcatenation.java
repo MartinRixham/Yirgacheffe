@@ -35,7 +35,9 @@ public class StringConcatenation implements Expression
 			String secondOperandType =
 				this.binaryOperation.getSecondOperandType(variables);
 
-			return new Result()
+			variables.stackPush(new ReferenceType(StringBuilder.class));
+
+			Result result = new Result()
 				.add(new TypeInsnNode(Opcodes.NEW, "java/lang/StringBuilder"))
 				.add(new InsnNode(Opcodes.DUP))
 				.add(new MethodInsnNode(
@@ -57,6 +59,10 @@ public class StringConcatenation implements Expression
 					"toString",
 					"()Ljava/lang/String;",
 					false));
+
+			variables.stackPop();
+
+			return result;
 		}
 		else
 		{
