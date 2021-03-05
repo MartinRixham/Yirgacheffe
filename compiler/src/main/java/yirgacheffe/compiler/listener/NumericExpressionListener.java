@@ -27,8 +27,7 @@ public class NumericExpressionListener extends FunctionCallListener
 		Array<Coordinate> coordinates = new Array<>();
 		Array<Expression> expressions = new Array<>();
 
-		for (YirgacheffeParser.AttemptedExpressionContext c:
-			context.attemptedExpression())
+		for (YirgacheffeParser.NotContext c: context.not())
 		{
 			coordinates.push(new Coordinate(c));
 
@@ -42,7 +41,7 @@ public class NumericExpressionListener extends FunctionCallListener
 			}
 		}
 
-		for (int i = 0; i < context.attemptedExpression().size() - 1; i++)
+		for (int i = 0; i < context.not().size() - 1; i++)
 		{
 			Expression firstOperand = expressions.pop();
 			Expression secondOperand = expressions.pop();

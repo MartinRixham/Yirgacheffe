@@ -11,6 +11,7 @@ import yirgacheffe.compiler.error.Coordinate;
 import yirgacheffe.compiler.expression.Equation;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.MultiEquation;
+import yirgacheffe.compiler.expression.Not;
 import yirgacheffe.compiler.type.Classes;
 import yirgacheffe.lang.Array;
 import yirgacheffe.parser.YirgacheffeParser;
@@ -86,6 +87,20 @@ public class BooleanExpressionListener extends NumericExpressionListener
 		else
 		{
 			return new GreaterThanOrEqual();
+		}
+	}
+
+	@Override
+	public void exitNot(YirgacheffeParser.NotContext context)
+	{
+		Coordinate coordinate = new Coordinate(context);
+		long multiplicity = context.Not().size();
+
+		if (multiplicity > 0)
+		{
+			Not not = new Not(coordinate, this.expressions.pop(), multiplicity);
+
+			this.expressions.push(not);
 		}
 	}
 }

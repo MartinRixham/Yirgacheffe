@@ -157,9 +157,11 @@ add: multiply (additive multiply)*;
 
 additive: Subtract | Add;
 
-multiply: attemptedExpression (multiplicative attemptedExpression)*;
+multiply: not (multiplicative not)*;
 
 multiplicative: Remainder | Divide | Multiply;
+
+not: attemptedExpression | (Not)+ attemptedExpression;
 
 attemptedExpression: unaryOperation | (Try unaryOperation);
 
@@ -242,6 +244,7 @@ Add: '+';
 Subtract: '-';
 PlusPlus: '++';
 MinusMinus: '--';
+Not: '!';
 Equal: '==';
 NotEqual: '!=';
 LessThan: '<';
