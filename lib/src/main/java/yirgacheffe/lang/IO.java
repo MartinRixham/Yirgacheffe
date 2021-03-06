@@ -3,7 +3,7 @@ package yirgacheffe.lang;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-public class System
+public class IO
 {
 	public PrintStream getOut()
 	{

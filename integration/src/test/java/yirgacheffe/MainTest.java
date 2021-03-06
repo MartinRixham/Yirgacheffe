@@ -31,7 +31,7 @@ public class MainTest
 			"{\n" +
 				"main hello(Array<String> args)" +
 				"{\n" +
-					"new System().getOut().println(args.get(0));" +
+					"new IO().getOut().println(args.get(0));" +
 				"}\n" +
 			"}";
 

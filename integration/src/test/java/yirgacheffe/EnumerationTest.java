@@ -48,7 +48,7 @@ public class EnumerationTest
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"MyNumeration myEnum = MyNumeration:true;\n" +
-					"new System().getOut().println(myEnum.getMessage());\n" +
+					"new IO().getOut().println(myEnum.getMessage());\n" +
 				"}\n" +
 			"}";
 
@@ -123,7 +123,7 @@ public class EnumerationTest
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"MyNumeration myEnum = MyNumeration:(0 == 0);\n" +
-					"new System().getOut().println(myEnum.getMessage());\n" +
+					"new IO().getOut().println(myEnum.getMessage());\n" +
 				"}\n" +
 			"}";
 
@@ -204,7 +204,7 @@ public class EnumerationTest
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"MyInterface myEnum = MyInterface:true;\n" +
-					"new System().getOut().println(myEnum.getMessage());\n" +
+					"new IO().getOut().println(myEnum.getMessage());\n" +
 				"}\n" +
 			"}";
 
@@ -296,7 +296,7 @@ public class EnumerationTest
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"MyInterface myEnum = MyInterface:(0 == 0);\n" +
-					"new System().getOut().println(myEnum.getMessage());\n" +
+					"new IO().getOut().println(myEnum.getMessage());\n" +
 				"}\n" +
 			"}";
 

@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SystemTest
+public class IOTest
 {
 	@Before
 	public void clearMethodCache()
@@ -34,7 +34,7 @@ public class SystemTest
 				"}\n" +
 				"public Void hello()" +
 				"{\n" +
-					"new System().getOut().println(\"Eh up, planet.\");" +
+					"new IO().getOut().println(\"Eh up, planet.\");" +
 				"}\n" +
 			"}";
 

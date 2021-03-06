@@ -57,7 +57,7 @@ public class InterfaceConstructorTest
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"Amenable amenable = new Amenable();\n" +
-					"new System().getOut().println(amenable);\n" +
+					"new IO().getOut().println(amenable);\n" +
 				"}\n" +
 			"}";
 

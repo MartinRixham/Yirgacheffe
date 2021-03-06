@@ -37,9 +37,9 @@ public class MutableReferenceTest
 				"}\n" +
 				"public Void hello()" +
 				"{\n" +
-					"new System().getOut().println(this.myString.get());\n" +
+					"new IO().getOut().println(this.myString.get());\n" +
 					"this.myString.set(\"Eh up, planet.\");\n" +
-					"new System().getOut().println(this.myString.get());\n" +
+					"new IO().getOut().println(this.myString.get());\n" +
 				"}\n" +
 			"}";
 

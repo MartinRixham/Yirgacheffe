@@ -439,7 +439,7 @@ public class FunctionCallListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 5:7 Argument of type java.lang.String cannot be assigned to " +
-			"generic parameter of type yirgacheffe.lang.System.\n",
+			"generic parameter of type java.lang.System.\n",
 			result.getErrors());
 	}
 
@@ -940,7 +940,7 @@ public class FunctionCallListenerTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"public Void method()\n" +
 				"{\n" +
 					"this.out.println(1.1.intValue());\n" +

@@ -45,7 +45,7 @@ public class ImplementationTest
 				"main hello(Array<String> args)" +
 				"{\n" +
 					"Objectifier objectifier = new Stringifier();\n" +
-					"new System().getOut().println(objectifier.objectify(args.get(0)));" +
+					"new IO().getOut().println(objectifier.objectify(args.get(0)));" +
 				"}\n" +
 			"}";
 
@@ -112,7 +112,7 @@ public class ImplementationTest
 				"main hello(Array<String> args)" +
 				"{\n" +
 					"Comparable<String> comparable = new Numberfier();" +
-					"new System().getOut().println(comparable.compareTo(args.get(0)));" +
+					"new IO().getOut().println(comparable.compareTo(args.get(0)));" +
 				"}\n" +
 			"}";
 
@@ -175,7 +175,7 @@ public class ImplementationTest
 				"main hello(Array<String> args)" +
 				"{\n" +
 					"Comparable<String> comparable = new Thingifier<String>();\n" +
-					"new System().getOut().println(comparable.compareTo(args.get(0)));" +
+					"new IO().getOut().println(comparable.compareTo(args.get(0)));" +
 				"}\n" +
 			"}";
 

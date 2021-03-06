@@ -189,7 +189,7 @@ In Yirgacheffe enumerations are just a little different than in Java.
         {
             MyNumeration myEnum = MyNumeration:true;
     
-            new System().getOut().println(myEnum.getMessage());
+            new IO().getOut().println(myEnum.getMessage());
         }
     }
 

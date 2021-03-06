@@ -30,7 +30,7 @@ public class LoopTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"public MyClass()\n" +
 				"{\n" +
 				"}\n" +

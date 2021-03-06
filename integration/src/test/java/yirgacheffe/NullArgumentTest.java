@@ -30,7 +30,7 @@ public class NullArgumentTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"public MyClass() {}\n" +
 				"public Void hello()\n" +
 				"{\n" +
@@ -86,7 +86,7 @@ public class NullArgumentTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"public MyClass() {}\n" +
 				"public Void hello()\n" +
 				"{\n" +

@@ -307,8 +307,8 @@ public class ExpressionListenerTest
 		assertFalse(result.isSuccessful());
 		assertEquals("line 6:0 Cannot assign expression of type " +
 			"java.lang.String to variable of " +
-			"type yirgacheffe.lang.System.\n" +
-			"line 7:4 Invoked method MyClass.print(yirgacheffe.lang.System) not found.\n",
+			"type java.lang.System.\n" +
+			"line 7:4 Invoked method MyClass.print(java.lang.System) not found.\n",
 			result.getErrors());
 	}
 

@@ -63,7 +63,7 @@ public class FoldTest
 					"Array<Werd> sentence =" +
 						"new Array<Werd>(new Werd(\"it\"), new Werd(\"worked\"));\n" +
 					"String werds = new Fold<Werd, String>(sentence).with(\"yes\");\n" +
-					"new System().getOut().println(werds);\n" +
+					"new IO().getOut().println(werds);\n" +
 				"}\n" +
 			"}";
 

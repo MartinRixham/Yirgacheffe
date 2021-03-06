@@ -48,7 +48,7 @@ public class BooleanOperationTest
 				"}\n" +
 				"public Void printer(Array<Object> objs)\n" +
 				"{\n" +
-					"new System().getOut().println(objs.get(0));\n" +
+					"new IO().getOut().println(objs.get(0));\n" +
 				"}\n" +
 			"}";
 

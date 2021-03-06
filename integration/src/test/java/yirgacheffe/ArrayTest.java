@@ -36,7 +36,7 @@ public class ArrayTest
 				"{\n" +
 					"Array<String> numbers = " +
 						"new Array<String>(\"1,2,3,4,5\".split(\",\"));" +
-					"new System().getOut().println(numbers);" +
+					"new IO().getOut().println(numbers);" +
 				"}\n" +
 			"}";
 
@@ -78,7 +78,7 @@ public class ArrayTest
 				"public Void hello()\n" +
 				"{\n" +
 					"Array<String> numbers = \"1,2,3,4,5\".split(\",\");" +
-					"new System().getOut().println(numbers);" +
+					"new IO().getOut().println(numbers);" +
 				"}\n" +
 			"}";
 

@@ -38,7 +38,7 @@ public class DynamicDispatchTest
 					"MyClass my = this;\n" +
 					"Object string = this.getString();\n" +
 					"Bool equal = my.equals(string);\n" +
-					"new System().getOut().println(equal);\n" +
+					"new IO().getOut().println(equal);\n" +
 				"}\n" +
 
 				"private Object getString()\n" +
@@ -99,7 +99,7 @@ public class DynamicDispatchTest
 					"MyClass my = this;\n" +
 					"Object string = this.getString();\n" +
 					"Bool equal = my.getTruth(string, string);\n" +
-					"new System().getOut().println(equal);\n" +
+					"new IO().getOut().println(equal);\n" +
 				"}\n" +
 
 				"public Object getString()\n" +
@@ -165,7 +165,7 @@ public class DynamicDispatchTest
 				"{\n" +
 					"Object map = this.getMap();\n" +
 					"Bool equal = this.equals(map);\n" +
-					"new System().getOut().println(equal);\n" +
+					"new IO().getOut().println(equal);\n" +
 				"}\n" +
 
 				"private Object getMap()\n" +
@@ -228,7 +228,7 @@ public class DynamicDispatchTest
 				"{\n" +
 					"Object map = this.getMap();\n" +
 					"Bool equal = this.equals(map);\n" +
-					"new System().getOut().println(equal);\n" +
+					"new IO().getOut().println(equal);\n" +
 				"}\n" +
 
 				"private Object getMap()\n" +
@@ -287,7 +287,7 @@ public class DynamicDispatchTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"Object obj = 1 || true;\n" +
@@ -351,7 +351,7 @@ public class DynamicDispatchTest
 			"import java.io.PrintStream;\n" +
 			"class MyClass\n" +
 			"{\n" +
-				"PrintStream out = new System().getOut();\n" +
+				"PrintStream out = new IO().getOut();\n" +
 				"main method(Array<String> args)\n" +
 				"{\n" +
 					"Object obj = 1;\n" +

@@ -41,11 +41,11 @@ public class BranchTest
 				"{\n" +
 					"if (bool)" +
 					"{" +
-						"new System().getOut().println(\"yes\");" +
+						"new IO().getOut().println(\"yes\");" +
 					"}" +
 					"else" +
 					"{" +
-						"new System().getOut().println(\"no\");" +
+						"new IO().getOut().println(\"no\");" +
 					"}" +
 				"}\n" +
 			"}";

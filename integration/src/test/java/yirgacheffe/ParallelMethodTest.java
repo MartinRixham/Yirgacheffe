@@ -35,7 +35,7 @@ public class ParallelMethodTest
 				"{\n" +
 					"Comparable<String> string = this.getString();\n" +
 					"Num comparison = string.compareTo(\"sumpt\");\n" +
-					"new System().getOut().println(comparison);\n" +
+					"new IO().getOut().println(comparison);\n" +
 				"}\n" +
 				"parallel public Comparable<String> getString()\n" +
 				"{\n" +
@@ -94,7 +94,7 @@ public class ParallelMethodTest
 				"{\n" +
 					"Comparable<String> string = this.getString();\n" +
 					"Num comparison = string.compareTo(\"sumpt\");\n" +
-					"new System().getOut().println(comparison);\n" +
+					"new IO().getOut().println(comparison);\n" +
 				"}\n" +
 				"parallel public Comparable<String> getString()\n" +
 				"{\n" +
@@ -156,7 +156,7 @@ public class ParallelMethodTest
 				"{\n" +
 					"Comparable<String> string = this.getString();\n" +
 					"Num comparison = string.compareTo(\"sumpt\");\n" +
-					"new System().getOut().println(comparison);\n" +
+					"new IO().getOut().println(comparison);\n" +
 				"}\n" +
 				"parallel public Comparable<String> getString()\n" +
 				"{\n" +
