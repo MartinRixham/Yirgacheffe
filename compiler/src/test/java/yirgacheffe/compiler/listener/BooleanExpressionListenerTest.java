@@ -488,4 +488,67 @@ public class BooleanExpressionListenerTest
 		assertEquals(Opcodes.INVOKEVIRTUAL, fourthInstruction.getOpcode());
 		assertEquals("equals", fourthInstruction.name);
 	}
+
+	@Test
+	public void testNotBooleanExpressionInIf()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public String method()\n" +
+				"{\n" +
+					"if (!(true || false))\n" +
+					"{\n" +
+						"return \"\";\n" +
+					"}" +
+					"return \"\";\n" +
+				"}" +
+				"public MyClass() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(13, instructions.size());
+	}
+
+	@Test
+	public void testAssignNotBooleanExpression()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public Bool method()\n" +
+				"{\n" +
+					"Bool is = !(true || false);\n" +
+					"return is;\n" +
+				"}\n" +
+				"public MyClass() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(13, instructions.size());
+	}
 }
