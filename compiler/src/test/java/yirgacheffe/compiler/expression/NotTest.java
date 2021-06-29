@@ -9,12 +9,16 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.function.Caller;
 import yirgacheffe.compiler.operator.BooleanOperator;
+import yirgacheffe.compiler.type.ReferenceType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
+import yirgacheffe.lang.IO;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -174,5 +178,27 @@ public class NotTest
 
 		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 		assertEquals(falseLabel, fourthInstruction.label.getLabel());
+	}
+
+	@Test
+	public void testCompilingNotVoid()
+	{
+		Coordinate coordinate = new Coordinate(8, 30);
+		Variables variables = new LocalVariables(1, new HashMap<>());
+		Caller caller = new Caller("yirgacheffe/lang/IO", new HashMap<>());
+		Expression io = new This(coordinate, new ReferenceType(IO.class));
+		Expression printStream =
+			new This(coordinate, new ReferenceType(PrintStream.class));
+
+		InvokeMethod nothing =
+			new InvokeMethod(coordinate, "setOut", caller, io, new Array<>(printStream));
+		Not not = new Not(coordinate, nothing, 1);
+
+		Result result = not.compile(variables);
+
+		assertEquals(0, not.getVariableReads().length());
+		assertEquals(1, result.getErrors().length());
+		assertEquals("line 8:30 Not is not defined on Void.",
+			result.getErrors().get(0).toString());
 	}
 }

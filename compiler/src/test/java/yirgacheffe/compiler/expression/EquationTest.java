@@ -516,8 +516,8 @@ public class EquationTest
 		assertEquals(PrimitiveType.BOOLEAN, type);
 		assertEquals(1, result.getErrors().length());
 
-		assertEquals(result.getErrors().get(0).toString(),
-			"line 3:6 Cannot compare Bool and Bool.");
+		assertEquals("line 3:6 Cannot compare Bool and Bool.",
+			result.getErrors().get(0).toString());
 	}
 
 	@Test

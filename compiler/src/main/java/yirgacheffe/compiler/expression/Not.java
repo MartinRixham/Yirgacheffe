@@ -7,6 +7,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.LabelNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.operator.BooleanOperator;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
@@ -54,10 +55,18 @@ public class Not implements Expression
 		Type type = this.expression.getType(variables);
 		boolean flip = this.flip;
 
+		Result result = new Result();
+
+		if (this.expression.getType(variables).equals(PrimitiveType.VOID))
+		{
+			result = result.add(
+				new Error(this.coordinate, "Not is not defined on Void."));
+		}
+
 		if (this.expression.isCondition(variables))
 		{
 
-			return new Result()
+			result = result
 				.concat(this.expression.compileCondition(
 					variables,
 					flip ? falseLabel : trueLabel,
@@ -68,11 +77,13 @@ public class Not implements Expression
 			BooleanOperator booleanOperator =
 				flip ? BooleanOperator.OR : BooleanOperator.AND;
 
-			return new Result()
+			result = result
 				.concat(this.expression.compile(variables))
 				.concat(type.attempt())
 				.concat(type.compare(booleanOperator, falseLabel));
 		}
+
+		return result;
 	}
 
 	public boolean isCondition(Variables variables)
