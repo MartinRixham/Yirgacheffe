@@ -43,15 +43,15 @@ public class MultiEquation implements Expression
 	{
 		Label falseLabel = new Label();
 		Label trueLabel = new Label();
-		Label truLabel = new Label();
+		Label doneLabel = new Label();
 
 		return this.compileCondition(variables, trueLabel, falseLabel)
 			.add(new LabelNode(trueLabel))
 			.add(new InsnNode(Opcodes.ICONST_1))
-			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(truLabel)))
+			.add(new JumpInsnNode(Opcodes.GOTO, new LabelNode(doneLabel)))
 			.add(new LabelNode(falseLabel))
 			.add(new InsnNode(Opcodes.ICONST_0))
-			.add(new LabelNode(truLabel));
+			.add(new LabelNode(doneLabel));
 	}
 
 	public Result compileCondition(Variables variables, Label trueLabel, Label falseLabel)

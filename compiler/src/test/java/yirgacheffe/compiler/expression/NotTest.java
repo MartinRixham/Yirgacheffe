@@ -40,7 +40,7 @@ public class NotTest
 		assertTrue(not.isCondition(variables));
 		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
 		assertEquals(coordinate, not.getCoordinate());
-		assertEquals(7, instructions.length());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -52,27 +52,31 @@ public class NotTest
 
 		Label falseLabel = secondInstruction.label.getLabel();
 
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
+		LabelNode thirdInstruction = (LabelNode) instructions.get(2);
 
-		assertEquals(Opcodes.ICONST_1, thirdInstruction.getOpcode());
+		Label trueLabel  = thirdInstruction.getLabel();
 
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
 
-		assertEquals(Opcodes.GOTO, fourthInstruction.getOpcode());
+		assertEquals(Opcodes.ICONST_0, fourthInstruction.getOpcode());
 
-		Label trueLabel = fourthInstruction.label.getLabel();
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
 
-		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
+		assertEquals(Opcodes.GOTO, fifthInstruction.getOpcode());
 
-		assertEquals(falseLabel, fifthInstruction.getLabel());
+		Label doneLabel = fifthInstruction.label.getLabel();
 
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
 
-		assertEquals(Opcodes.ICONST_0, sixthInstruction.getOpcode());
+		//assertEquals(falseLabel, sixthInstruction.getLabel());
 
-		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
 
-		assertEquals(trueLabel, seventhInstruction.getLabel());
+		assertEquals(Opcodes.ICONST_1, seventhInstruction.getOpcode());
+
+		LabelNode eighthInstruction = (LabelNode) instructions.get(7);
+
+		assertEquals(doneLabel, eighthInstruction.getLabel());
 	}
 
 	@Test
@@ -93,7 +97,7 @@ public class NotTest
 		assertTrue(not.isCondition(variables));
 		assertEquals("java/lang/Boolean", type.toFullyQualifiedType());
 		assertEquals(coordinate, not.getCoordinate());
-		assertEquals(7, instructions.length());
+		assertEquals(8, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -104,28 +108,6 @@ public class NotTest
 		assertEquals(Opcodes.IFEQ, secondInstruction.getOpcode());
 
 		Label falseLabel = secondInstruction.label.getLabel();
-
-		InsnNode thirdInstruction = (InsnNode) instructions.get(2);
-
-		assertEquals(Opcodes.ICONST_1, thirdInstruction.getOpcode());
-
-		JumpInsnNode fourthInstruction = (JumpInsnNode) instructions.get(3);
-
-		assertEquals(Opcodes.GOTO, fourthInstruction.getOpcode());
-
-		Label trueLabel = fourthInstruction.label.getLabel();
-
-		LabelNode fifthInstruction = (LabelNode) instructions.get(4);
-
-		assertEquals(falseLabel, fifthInstruction.getLabel());
-
-		InsnNode sixthInstruction = (InsnNode) instructions.get(5);
-
-		assertEquals(Opcodes.ICONST_0, sixthInstruction.getOpcode());
-
-		LabelNode seventhInstruction = (LabelNode) instructions.get(6);
-
-		assertEquals(trueLabel, seventhInstruction.getLabel());
 	}
 
 	@Test
@@ -173,7 +155,7 @@ public class NotTest
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 
 		assertEquals(1, variables.getStack().length());
-		assertEquals(5, instructions.length());
+		assertEquals(4, instructions.length());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
@@ -192,10 +174,5 @@ public class NotTest
 
 		assertEquals(Opcodes.IFEQ, fourthInstruction.getOpcode());
 		assertEquals(falseLabel, fourthInstruction.label.getLabel());
-
-		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
-
-		assertEquals(Opcodes.IFEQ, fifthInstruction.getOpcode());
-		assertEquals(falseLabel, fifthInstruction.label.getLabel());
 	}
 }
