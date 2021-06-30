@@ -418,6 +418,41 @@ public class FunctionCallListenerTest
 	}
 
 	@Test
+	public void testMethodCallWithPrimitiveTypeParameter()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"Map<Num, Num> map = new HashMap<Num, Num>();\n" +
+				"public Num method()\n" +
+				"{\n" +
+					"this.map.put(1, 2);\n" +
+					"return this.map.get(1);\n" +
+				"}\n" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+	}
+
+	@Test
 	public void testConstructorCallWithMismatchedTypeParameter()
 	{
 		String source =

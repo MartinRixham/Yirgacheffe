@@ -104,6 +104,12 @@ public class ClassInterface implements Interface
 
 	public boolean isImplementedBy(Class<?> other)
 	{
+		if (Double.class.isAssignableFrom(this.clazz) &&
+			Number.class.isAssignableFrom(other))
+		{
+			return true;
+		}
+
 		return this.clazz.isAssignableFrom(other);
 	}
 

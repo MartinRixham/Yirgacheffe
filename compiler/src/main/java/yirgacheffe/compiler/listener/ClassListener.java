@@ -1,5 +1,6 @@
 package yirgacheffe.compiler.listener;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -163,9 +164,14 @@ public class ClassListener extends PackageListener
 		{
 			for (YirgacheffeParser.GenericTypeContext type: context.genericType())
 			{
-				String name = type.Identifier().getText();
+				TerminalNode identifier = type.Identifier();
 
-				this.types.put(name, new VariableType(name));
+				if (identifier != null)
+				{
+					String name = identifier.getText();
+
+					this.types.put(name, new VariableType(name));
+				}
 			}
 		}
 	}
@@ -179,19 +185,24 @@ public class ClassListener extends PackageListener
 		{
 			for (YirgacheffeParser.GenericTypeContext type: context.genericType())
 			{
-				String name = type.Identifier().getText();
-				Type typeBound;
+				TerminalNode identifier = type.Identifier();
 
-				if (type.type() == null)
+				if (identifier != null)
 				{
-					typeBound = new ReferenceType(Object.class);
-				}
-				else
-				{
-					typeBound = this.types.getType(type.type());
-				}
+					String name = identifier.getText();
+					Type typeBound;
 
-				parameters.put(name, new BoundedType(name, typeBound));
+					if (type.type() == null)
+					{
+						typeBound = new ReferenceType(Object.class);
+					}
+					else
+					{
+						typeBound = this.types.getType(type.type());
+					}
+
+					parameters.put(name, new BoundedType(name, typeBound));
+				}
 			}
 		}
 

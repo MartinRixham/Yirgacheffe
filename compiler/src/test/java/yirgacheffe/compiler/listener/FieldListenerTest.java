@@ -1391,4 +1391,34 @@ public class FieldListenerTest
 			"line 4:19 Cannot read unconstructed field 'thingy'.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testFieldWithMisplacedTypeParameters()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"Map map<Num, Num> = new HashMap<Num, Num>();" +
+				"public MyClass()\n" +
+				"{\n" +
+				"}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+	}
 }
