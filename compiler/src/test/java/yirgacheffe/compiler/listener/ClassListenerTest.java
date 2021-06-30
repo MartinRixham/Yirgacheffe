@@ -404,12 +404,23 @@ public class ClassListenerTest
 			"}";
 
 		Compiler compiler = new Compiler("", source);
-		CompilationResult result = compiler.compile(new Classes());
+		Classes classes = new Classes();
+
+		compiler.compileClassDeclaration(classes);
+
+		classes.clearCache();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());
 		assertEquals(
 			"line 1:8 Package name yirgacheffe does not correspond to the file path .\n" +
-			"line 5:7 Unrecognised type: MyClass is not a type.\n",
+			"line 5:7 Unrecognised type: MyClass is not a type.\n" +
+			"line 7:20 Invoked method java.lang.Object.method() not found.\n",
 			result.getErrors());
 	}
 

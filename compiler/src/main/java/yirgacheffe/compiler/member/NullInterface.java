@@ -64,7 +64,7 @@ public class NullInterface implements Interface
 
 	public boolean doesImplement(Class<?> other)
 	{
-		return true;
+		return false;
 	}
 
 	public boolean isImplementedBy(Class<?> reflectionClass)

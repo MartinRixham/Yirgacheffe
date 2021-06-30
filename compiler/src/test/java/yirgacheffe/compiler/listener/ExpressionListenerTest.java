@@ -5,10 +5,12 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -215,6 +217,97 @@ public class ExpressionListenerTest
 
 		assertFalse(result.isSuccessful());
 		assertEquals("line 4:38 Invalid use of symbol '('.\n", result.getErrors());
+	}
+
+	@Test
+	public void testAssignValueFromMap()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"Map<String, Num> values = new HashMap<String, Num>();\n" +
+				"private Void method()\n" +
+				"{\n" +
+					"Num value = 0;\n" +
+					"value = this.values.get(\"\");\n" +
+				"}\n" +
+				"private MyClass(){\n}\n" +
+			"}";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(1);
+		InsnList instructions = firstMethod.instructions;
+
+		assertEquals(13, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ISTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
+		assertEquals(0, thirdInstruction.var);
+
+		assertTrue(instructions.get(3) instanceof LabelNode);
+		assertTrue(instructions.get(4) instanceof LineNumberNode);
+
+		FieldInsnNode sixthInstruction = (FieldInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.GETFIELD, sixthInstruction.getOpcode());
+		assertEquals("values", sixthInstruction.name);
+		assertEquals("Ljava/util/Map;", sixthInstruction.desc);
+
+		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
+		assertEquals("", seventhInstruction.cst);
+
+		assertTrue(instructions.get(7) instanceof LabelNode);
+		assertTrue(instructions.get(8) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode tenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, tenthInstruction.getOpcode());
+		assertEquals("get", tenthInstruction.name);
+		assertEquals(
+			"(Ljava/util/Map;Ljava/lang/Object;)Ljava/lang/Object;",
+			tenthInstruction.desc);
+
+		MethodInsnNode eleventhInstruction = (MethodInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.INVOKESTATIC, eleventhInstruction.getOpcode());
+		assertEquals("toDouble", eleventhInstruction.name);
+		assertEquals("yirgacheffe/lang/Boxer", eleventhInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)D", eleventhInstruction.desc);
+
+		VarInsnNode twelfthInstruction = (VarInsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.DSTORE, twelfthInstruction.getOpcode());
+		assertEquals(1, twelfthInstruction.var);
 	}
 
 	@Test

@@ -16,7 +16,7 @@ public class NullInterfaceTest
 
 		assertEquals("", members.getSimpleName());
 		assertFalse(members.isInterface());
-		assertTrue(members.doesImplement(String.class));
+		assertFalse(members.doesImplement(String.class));
 		assertTrue(members.isImplementedBy(String.class));
 		assertTrue(members.getField("") instanceof NullProperty);
 		assertEquals(0, members.getFields().size());

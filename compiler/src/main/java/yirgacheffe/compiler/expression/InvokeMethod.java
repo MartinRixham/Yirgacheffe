@@ -83,7 +83,8 @@ public class InvokeMethod implements Expression, Parameterisable
 
 		if (returnType.equals(PrimitiveType.INT) ||
 			returnType.equals(PrimitiveType.LONG) ||
-			returnType.equals(PrimitiveType.FLOAT))
+			returnType.equals(PrimitiveType.FLOAT) ||
+			returnType.reflect().doesImplement(Number.class))
 		{
 			return PrimitiveType.DOUBLE;
 		}
