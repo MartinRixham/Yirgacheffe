@@ -43,6 +43,11 @@ public class OptimisedVariables implements Variables
 		this.variables.put(name, variable);
 	}
 
+	public Variable redeclare(String name)
+	{
+		return this.variables.get(name);
+	}
+
 	public void read(VariableRead variableRead)
 	{
 	}

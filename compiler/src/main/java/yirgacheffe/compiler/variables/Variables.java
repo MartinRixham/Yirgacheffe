@@ -20,6 +20,8 @@ public interface Variables
 
 	void declare(String name, Type type);
 
+	Variable redeclare(String name);
+
 	void read(VariableRead variableRead);
 
 	void write(VariableWrite variableWrite);

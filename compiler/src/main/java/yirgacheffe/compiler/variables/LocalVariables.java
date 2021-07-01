@@ -68,6 +68,22 @@ public class LocalVariables implements Variables
 		this.nextVariableIndex += type.width();
 	}
 
+	public Variable redeclare(String name)
+	{
+		Variable variable = this.variables.get(name);
+
+		if (variable.getIndex() < 0)
+		{
+			Type type = variable.getType();
+			variable = new Variable(this.nextVariableIndex, type);
+
+			this.nextVariableIndex += type.width();
+			this.variables.put(name, variable);
+		}
+
+		return variable;
+	}
+
 	public void read(VariableRead variableRead)
 	{
 		String name = variableRead.getName();

@@ -656,4 +656,117 @@ public class BooleanExpressionListenerTest
 
 		assertEquals(Opcodes.IRETURN, fourteenthInstruction.getOpcode());
 	}
+
+	@Test
+	public void testAnotherLessThan()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"private Void method()\n" +
+				"{\n" +
+					"Num previous = 0;\n" +
+					"Num value = 0;\n" +
+					"if (value < previous)\n" +
+					"{\n" +
+					"}\n" +
+					"previous = value;\n" +
+				"}\n" +
+				"private MyClass() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(10, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.ISTORE, secondInstruction.getOpcode());
+		assertEquals(1, secondInstruction.var);
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.ILOAD, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ICONST_0, fourthInstruction.getOpcode());
+
+		JumpInsnNode fifthInstruction = (JumpInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.IF_ICMPGE, fifthInstruction.getOpcode());
+
+		Label ifLabel = fifthInstruction.label.getLabel();
+
+		LabelNode sixthInstruction = (LabelNode) instructions.get(5);
+
+		assertEquals(ifLabel, sixthInstruction.getLabel());
+
+		assertTrue(instructions.get(6) instanceof FrameNode);
+
+		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.ILOAD, eighthInstruction.getOpcode());
+		assertEquals(1, eighthInstruction.var);
+
+		VarInsnNode ninthInstruction = (VarInsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.ISTORE, ninthInstruction.getOpcode());
+		assertEquals(3, ninthInstruction.var);
+	}
+
+	@Test
+	public void testLessThanIntegers()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"private Num method()\n" +
+				"{\n" +
+					"Num total = 0;\n" +
+					"Num value = 3.3;\n" +
+					"if (value < 0)\n" +
+					"{\n" +
+						"total = total - value;\n" +
+					"}\n" +
+					"return total;\n" +
+				"}\n" +
+				"private MyClass() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		CompilationResult result = compiler.compile(new Classes());
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode method = classNode.methods.get(0);
+		InsnList instructions = method.instructions;
+
+		assertEquals(19, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+	}
 }

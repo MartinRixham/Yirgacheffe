@@ -66,6 +66,11 @@ public class VariableWrite implements Statement
 		Variable variable = variables.getVariable(this.name);
 		Type variableType = variable.getType();
 
+		if (variable.getIndex() < 0)
+		{
+			variable = variables.redeclare(this.name);
+		}
+
 		result = result
 			.concat(this.expression.compile(variables))
 			.add(new VarInsnNode(
