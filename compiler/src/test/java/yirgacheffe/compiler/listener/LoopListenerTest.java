@@ -103,7 +103,7 @@ public class LoopListenerTest
 		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
 
 		assertEquals(Opcodes.ISTORE, eleventhInstruction.getOpcode());
-		assertEquals(3, eleventhInstruction.var);
+		assertEquals(2, eleventhInstruction.var);
 
 		IincInsnNode twelfthInstruction = (IincInsnNode) instructions.get(11);
 
@@ -265,7 +265,7 @@ public class LoopListenerTest
 		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
 
 		assertEquals(Opcodes.ISTORE, eighthInstruction.getOpcode());
-		assertEquals(4, eighthInstruction.var);
+		assertEquals(3, eighthInstruction.var);
 
 		IincInsnNode ninthInstruction = (IincInsnNode) instructions.get(8);
 
@@ -489,5 +489,53 @@ public class LoopListenerTest
 		CompilationResult result = compiler.compile(classes);
 
 		assertTrue(result.isSuccessful());
+	}
+
+	@Test
+	public void testUpdateValueInLoop()
+	{
+		String source =
+			"import java.util.Map;\n" +
+			"import java.util.HashMap;\n" +
+			"class MyClass\n" +
+			"{\n" +
+				"Map<String, Num> numeralValues = new HashMap<String, Num>();\n" +
+				"private MyClass()\n" +
+				"{\n" +
+					"this.numeralValues.put(\"I\", 1);\n" +
+				"}\n" +
+				"main method(Array<String> args)\n" +
+				"{\n" +
+					"this.toIndianNumeral(\"I\");\n" +
+				"}\n" +
+				"private Num toIndianNumeral(String string)\n" +
+				"{\n" +
+					"Num total = 0;\n" +
+					"for (Num i = 0; i < 1; i++)\n" +
+					"{\n" +
+						"Num value = this.numeralValues.get(\"I\");\n" +
+						"total = total - value;\n" +
+					"}\n" +
+					"return total;\n" +
+				"}\n" +
+			"}";
+
+		Classes classes = new Classes();
+		Compiler compiler = new Compiler("", source);
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertTrue(result.isSuccessful());
+
+		ClassReader reader = new ClassReader(result.getBytecode());
+		ClassNode classNode = new ClassNode();
+
+		reader.accept(classNode, 0);
+
+		MethodNode firstMethod = classNode.methods.get(0);
 	}
 }

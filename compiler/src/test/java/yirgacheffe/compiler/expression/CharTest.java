@@ -22,7 +22,7 @@ public class CharTest
 	public void testCompilingCharacter()
 	{
 		Coordinate coordinate = new Coordinate(6, 7);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Char literal = new Char(coordinate, "'r'");
 
@@ -50,7 +50,7 @@ public class CharTest
 	public void testCompilingWhitespace()
 	{
 		Coordinate coordinate = new Coordinate(3, 75);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Char literal = new Char(coordinate, "'\n'");
 

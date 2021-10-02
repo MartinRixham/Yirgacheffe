@@ -52,7 +52,9 @@ public class FunctionCallTest
 
 		FunctionCall functionCall = new FunctionCall(invoke);
 
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = functionCall.compile(variables, caller);
 		Array<AbstractInsnNode> instructions = result.getInstructions();
 

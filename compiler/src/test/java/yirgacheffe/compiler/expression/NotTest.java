@@ -30,7 +30,7 @@ public class NotTest
 	public void testCompilingNotFalse()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Bool bool = new Bool(coordinate, "false");
 		Not not = new Not(coordinate, bool, 1);
@@ -87,7 +87,7 @@ public class NotTest
 	public void testCompilingNotNotFalse()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Bool bool = new Bool(coordinate, "false");
 		Not not = new Not(coordinate, bool, 2);
@@ -118,7 +118,7 @@ public class NotTest
 	public void testCompilingNotCondition()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Bool bool = new Bool(coordinate, "false");
 		Not not = new Not(coordinate, bool, 1);
@@ -145,7 +145,7 @@ public class NotTest
 	public void testCompilingNotWithCondition()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Bool bool = new Bool(coordinate, "false");
 		BooleanOperation booleanOperation =
@@ -184,7 +184,7 @@ public class NotTest
 	public void testCompilingNotVoid()
 	{
 		Coordinate coordinate = new Coordinate(8, 30);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Caller caller = new Caller("yirgacheffe/lang/IO", new HashMap<>());
 		Expression io = new This(coordinate, new ReferenceType(IO.class));
 		Expression printStream =

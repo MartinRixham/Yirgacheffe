@@ -7,6 +7,7 @@ import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.NullType;
+import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
 import yirgacheffe.lang.Array;
@@ -14,13 +15,15 @@ import yirgacheffe.lang.Array;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OptimisedVariables implements Variables
+public class PrerunVariables implements Variables
 {
-	private Map<String, Variable> variables;
+	private Variables localVariables;
 
-	public OptimisedVariables(Variables variables)
+	private Map<String, Variable> variables = new HashMap<>();
+
+	public PrerunVariables(Variables variables)
 	{
-		this.variables = variables.getVariables();
+		this.localVariables = variables;
 	}
 
 	public Map<String, Variable> getVariables()
@@ -56,14 +59,19 @@ public class OptimisedVariables implements Variables
 	{
 		String name = variableWrite.getName();
 
-		if (this.variables.containsKey(name))
+		if (variables.containsKey(name))
 		{
-			Variable variable = this.variables.get(name);
+			Variable variable = variables.get(name);
 			Type type = variableWrite.getExpression().getType(this);
 
 			if (type.isPrimitive() || type instanceof AttemptedType)
 			{
-				this.variables.put(name, new Variable(variable.getIndex(), type));
+				variables.put(name, new Variable(variable.getIndex(), type));
+
+				if (type.isAssignableTo(PrimitiveType.DOUBLE))
+				{
+					this.localVariables.setNumberType(name, type);
+				}
 			}
 		}
 	}

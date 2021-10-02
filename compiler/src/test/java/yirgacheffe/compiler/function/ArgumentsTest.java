@@ -41,7 +41,7 @@ public class ArgumentsTest
 	public void testGettingStringPrintlnMethod()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Expression string = new Streeng(coordinate, "\"\"");
 		Array<Expression> args = new Array<>(string);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
@@ -72,7 +72,7 @@ public class ArgumentsTest
 	public void testGettingBooleanPrintlnMethod()
 	{
 		Coordinate coordinate = new Coordinate(4, 56);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Expression bool = new Bool(coordinate, "true");
 		Array<Expression> args = new Array<>(bool);
 		Arguments arguments = new Arguments(coordinate, "method", args, variables);
@@ -103,7 +103,7 @@ public class ArgumentsTest
 	public void testFailedToMatchFunction()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Set<Function> methods = string.reflect().getPublicMethods();
 
@@ -138,7 +138,7 @@ public class ArgumentsTest
 	public void testAmbiguousMatching()
 	{
 		Coordinate coordinate = new Coordinate(3, 65);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		ReferenceType hashMap = new ReferenceType(HashMap.class);
 		Type string = new ReferenceType(String.class);
 		Array<Type> strings = new Array<>(string, string);
@@ -179,7 +179,7 @@ public class ArgumentsTest
 	public void testMismatchedParameters()
 	{
 		Coordinate coordinate = new Coordinate(3, 65);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Set<Function> methods = string.reflect().getPublicMethods();
 		Array<Expression> args = new Array<>(new Bool(coordinate, "true"));
@@ -214,7 +214,7 @@ public class ArgumentsTest
 	public void testConstructorCallWithWrongArgument()
 	{
 		Coordinate coordinate = new Coordinate(3, 34);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Set<Function> constructors = string.reflect().getPublicConstructors();
 		Array<Expression> args = new Array<>(new Num(coordinate, "1"));
@@ -247,7 +247,7 @@ public class ArgumentsTest
 	public void testMethodCallWithMismatchedTypeParameter()
 	{
 		Coordinate coordinate = new Coordinate(3, 4);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		ReferenceType mutableReference = new ReferenceType(MutableReference.class);
 		Type string = new ReferenceType(String.class);
 		Type object = new ReferenceType(Object.class);
@@ -280,7 +280,7 @@ public class ArgumentsTest
 	public void testArrayConstructor()
 	{
 		Coordinate coordinate = new Coordinate(3, 45);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type string = new ReferenceType(String.class);
 		Array<Type> typeParams = new Array<>(string);
 		Type array = new ParameterisedType(new ReferenceType(Array.class), typeParams);

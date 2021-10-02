@@ -20,7 +20,7 @@ public class AmbiguousMatchResultTest
 	public void testAmbiguousMatchResult()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		MatchResult matchResult = new AmbiguousMatchResult(coordinate, "method", 1);
 
 		assertEquals("", matchResult.getName());

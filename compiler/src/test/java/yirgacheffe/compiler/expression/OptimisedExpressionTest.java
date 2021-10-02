@@ -18,7 +18,7 @@ public class OptimisedExpressionTest
 	@Test
 	public void testGettingVariableReads()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Nothing nothing = new Nothing();
 
 		Expression optimisedExpression = new OptimisedExpression(nothing);

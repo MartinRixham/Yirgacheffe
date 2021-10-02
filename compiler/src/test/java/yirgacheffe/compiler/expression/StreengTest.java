@@ -23,7 +23,7 @@ public class StreengTest
 	{
 		Coordinate coordinate = new Coordinate(3, 65);
 		Streeng literal = new Streeng(coordinate, "\"thingy\"");
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Type type = literal.getType(variables);
 		Result result = literal.compile(variables);
@@ -46,7 +46,7 @@ public class StreengTest
 	public void testCompilingStringWithQuotes()
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Streeng literal = new Streeng(coordinate, "\"thi\"ngy\"");
 

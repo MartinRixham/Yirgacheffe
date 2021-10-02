@@ -50,7 +50,9 @@ public class IfTest
 		Expression condition = new Bool(coordinate, "true");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -81,7 +83,8 @@ public class IfTest
 	public void testInvalidCondition()
 	{
 		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		If ifStatement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -96,7 +99,8 @@ public class IfTest
 	public void testInvalidStatement()
 	{
 		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		If statement =
 			new If(new InvalidExpression(PrimitiveType.BOOLEAN), new DoNothing());
@@ -114,7 +118,9 @@ public class IfTest
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
-		VariableWrite write = new VariableWrite(coordinate, "var", read);
+		VariableWrite write =
+			new VariableWrite(coordinate, "var", read);
+
 		Statement ifStatement = new If(read, write);
 
 		Array<VariableRead> reads = ifStatement.getVariableReads();
@@ -136,7 +142,9 @@ public class IfTest
 		Expression condition = new This(coordinate, new ReferenceType(Object.class));
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -171,7 +179,9 @@ public class IfTest
 		Expression condition = new Streeng(coordinate, "\"thingy\"");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());
@@ -244,7 +254,9 @@ public class IfTest
 		Expression condition = new Num(coordinate, "1.1");
 		Statement statement = new Return(coordinate, PrimitiveType.VOID);
 		If ifStatement = new If(condition, statement);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = ifStatement.compile(variables, caller);
 
 		assertEquals(0, result.getErrors().length());

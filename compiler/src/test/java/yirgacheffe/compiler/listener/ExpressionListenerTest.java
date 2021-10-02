@@ -255,59 +255,63 @@ public class ExpressionListenerTest
 		MethodNode firstMethod = classNode.methods.get(1);
 		InsnList instructions = firstMethod.instructions;
 
-		assertEquals(13, instructions.size());
+		assertEquals(14, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
 
-		VarInsnNode secondInstruction = (VarInsnNode) instructions.get(1);
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
 
-		assertEquals(Opcodes.ISTORE, secondInstruction.getOpcode());
-		assertEquals(1, secondInstruction.var);
+		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
 
 		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
 
-		assertEquals(Opcodes.ALOAD, thirdInstruction.getOpcode());
-		assertEquals(0, thirdInstruction.var);
+		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
 
-		assertTrue(instructions.get(3) instanceof LabelNode);
-		assertTrue(instructions.get(4) instanceof LineNumberNode);
+		VarInsnNode fourthInstruction = (VarInsnNode) instructions.get(3);
 
-		FieldInsnNode sixthInstruction = (FieldInsnNode) instructions.get(5);
+		assertEquals(Opcodes.ALOAD, fourthInstruction.getOpcode());
+		assertEquals(0, fourthInstruction.var);
 
-		assertEquals(Opcodes.GETFIELD, sixthInstruction.getOpcode());
-		assertEquals("values", sixthInstruction.name);
-		assertEquals("Ljava/util/Map;", sixthInstruction.desc);
+		assertTrue(instructions.get(4) instanceof LabelNode);
+		assertTrue(instructions.get(5) instanceof LineNumberNode);
 
-		LdcInsnNode seventhInstruction = (LdcInsnNode) instructions.get(6);
+		FieldInsnNode seventhInstruction = (FieldInsnNode) instructions.get(6);
 
-		assertEquals(Opcodes.LDC, seventhInstruction.getOpcode());
-		assertEquals("", seventhInstruction.cst);
+		assertEquals(Opcodes.GETFIELD, seventhInstruction.getOpcode());
+		assertEquals("values", seventhInstruction.name);
+		assertEquals("Ljava/util/Map;", seventhInstruction.desc);
 
-		assertTrue(instructions.get(7) instanceof LabelNode);
-		assertTrue(instructions.get(8) instanceof LineNumberNode);
+		LdcInsnNode eighthInstruction = (LdcInsnNode) instructions.get(7);
 
-		InvokeDynamicInsnNode tenthInstruction =
-			(InvokeDynamicInsnNode) instructions.get(9);
+		assertEquals(Opcodes.LDC, eighthInstruction.getOpcode());
+		assertEquals("", eighthInstruction.cst);
 
-		assertEquals(Opcodes.INVOKEDYNAMIC, tenthInstruction.getOpcode());
-		assertEquals("get", tenthInstruction.name);
+		assertTrue(instructions.get(8) instanceof LabelNode);
+		assertTrue(instructions.get(9) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode eleventhInstruction =
+			(InvokeDynamicInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, eleventhInstruction.getOpcode());
+		assertEquals("get", eleventhInstruction.name);
 		assertEquals(
 			"(Ljava/util/Map;Ljava/lang/Object;)Ljava/lang/Object;",
-			tenthInstruction.desc);
+			eleventhInstruction.desc);
 
-		MethodInsnNode eleventhInstruction = (MethodInsnNode) instructions.get(10);
+		MethodInsnNode twelfthInstruction = (MethodInsnNode) instructions.get(11);
 
-		assertEquals(Opcodes.INVOKESTATIC, eleventhInstruction.getOpcode());
-		assertEquals("toDouble", eleventhInstruction.name);
-		assertEquals("yirgacheffe/lang/Boxer", eleventhInstruction.owner);
-		assertEquals("(Ljava/lang/Object;)D", eleventhInstruction.desc);
+		assertEquals(Opcodes.INVOKESTATIC, twelfthInstruction.getOpcode());
+		assertEquals("toDouble", twelfthInstruction.name);
+		assertEquals("yirgacheffe/lang/Boxer", twelfthInstruction.owner);
+		assertEquals("(Ljava/lang/Object;)D", twelfthInstruction.desc);
 
-		VarInsnNode twelfthInstruction = (VarInsnNode) instructions.get(11);
+		VarInsnNode thirteenthInstruction = (VarInsnNode) instructions.get(12);
 
-		assertEquals(Opcodes.DSTORE, twelfthInstruction.getOpcode());
-		assertEquals(1, twelfthInstruction.var);
+		assertEquals(Opcodes.DSTORE, thirteenthInstruction.getOpcode());
+		assertEquals(1, thirteenthInstruction.var);
 	}
 
 	@Test

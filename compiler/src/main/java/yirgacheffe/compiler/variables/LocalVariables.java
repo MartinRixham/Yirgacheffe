@@ -6,7 +6,6 @@ import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.OptimisedExpression;
 import yirgacheffe.compiler.expression.VariableRead;
 import yirgacheffe.compiler.statement.VariableWrite;
-import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -34,10 +33,16 @@ public class LocalVariables implements Variables
 
 	private Map<Delegate, Type> delegateTypes = new HashMap<>();
 
-	public LocalVariables(int initialVariableIndex, Map<String, Object> constants)
+	private Map<String, Type> numberTypes;
+
+	public LocalVariables(
+			int initialVariableIndex,
+			Map<String, Object> constants,
+			Map<String, Type> numberTypes)
 	{
 		this.nextVariableIndex = initialVariableIndex;
 		this.constants = constants;
+		this.numberTypes = numberTypes;
 	}
 
 	public Map<String, Variable> getVariables()
@@ -62,6 +67,11 @@ public class LocalVariables implements Variables
 
 	public void declare(String name, Type type)
 	{
+		if (this.numberTypes.containsKey(name))
+		{
+			type = this.numberTypes.get(name);
+		}
+
 		Variable variable = new Variable(this.nextVariableIndex, type);
 
 		this.variables.put(name, variable);
@@ -97,21 +107,23 @@ public class LocalVariables implements Variables
 
 	public void write(VariableWrite variableWrite)
 	{
-		String name = variableWrite.getName();
-
-		if (this.variables.containsKey(name))
+		if (!this.variables.containsKey(variableWrite.getName()))
 		{
-			Variable variable = this.variables.get(name);
-			Type type = variableWrite.getExpression().getType(this);
+			this.variableWrites.push(variableWrite);
+		}
+	}
 
-			if (type.isPrimitive() || type instanceof AttemptedType)
-			{
-				this.variables.put(name, new Variable(variable.getIndex(), type));
-			}
+	public void setNumberType(String name, Type type)
+	{
+		Map<String, Type> numbers = this.numberTypes;
+
+		if (numbers.containsKey(name))
+		{
+			numbers.put(name, numbers.get(name).intersect(type));
 		}
 		else
 		{
-			this.variableWrites.push(variableWrite);
+			numbers.put(name, type);
 		}
 	}
 

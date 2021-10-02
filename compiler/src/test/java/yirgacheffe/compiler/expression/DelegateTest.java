@@ -19,7 +19,7 @@ public class DelegateTest
 	public void testDelegate()
 	{
 		Coordinate coordinate = new Coordinate(2, 9);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\"\""));
 
 		Delegate delegate = new Delegate(coordinate, "MyClass", arguments);

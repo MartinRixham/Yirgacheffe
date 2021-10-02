@@ -26,6 +26,8 @@ public interface Variables
 
 	void write(VariableWrite variableWrite);
 
+	void setNumberType(String name, Type type);
+
 	Variable getVariable(String name);
 
 	void optimise(Expression variableRead, Expression writtenExpression);

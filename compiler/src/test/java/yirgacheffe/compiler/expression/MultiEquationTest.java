@@ -40,7 +40,7 @@ public class MultiEquationTest
 				new Num(coordinate, "1"),
 				new Num(coordinate, "0"));
 
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
 
@@ -118,7 +118,7 @@ public class MultiEquationTest
 		Array<Expression> expressions =
 			new Array<>(new Num(coordinate, "1"), new Num(coordinate, "1.0"));
 
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
 
@@ -163,7 +163,7 @@ public class MultiEquationTest
 				new Num(coordinate, "1"),
 				new This(coordinate, new ReferenceType(Object.class)));
 
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
 
@@ -194,7 +194,7 @@ public class MultiEquationTest
 		Array<Expression> expressions =
 			new Array<>(new Streeng(coordinate, "\"\""), new Streeng(coordinate, "\"\""));
 
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
 
@@ -216,7 +216,7 @@ public class MultiEquationTest
 		Array<Expression> expressions =
 			new Array<>(new Num(coordinate, "1"), new Bool(coordinate, "true"));
 
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		MultiEquation equation = new MultiEquation(coordinate, comparators, expressions);
 

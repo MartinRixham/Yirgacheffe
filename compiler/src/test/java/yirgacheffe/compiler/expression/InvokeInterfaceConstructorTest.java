@@ -32,7 +32,7 @@ public class InvokeInterfaceConstructorTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType() throws Exception
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
 		Expression one = new Num(coordinate, "1.0");
@@ -78,7 +78,7 @@ public class InvokeInterfaceConstructorTest
 	@Test
 	public void testGettingFirstOperand() throws Exception
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
 		Expression one = new Num(coordinate, "1.0");
@@ -99,7 +99,7 @@ public class InvokeInterfaceConstructorTest
 	@Test
 	public void testGettingNoFirstOperand() throws Exception
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(this.getInterfaceClass());
 

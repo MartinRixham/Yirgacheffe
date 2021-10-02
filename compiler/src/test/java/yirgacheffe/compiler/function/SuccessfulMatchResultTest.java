@@ -18,7 +18,7 @@ public class SuccessfulMatchResultTest
 	public void testGettingBetterMatchResult() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Function function =
 			new ClassFunction(
@@ -53,7 +53,7 @@ public class SuccessfulMatchResultTest
 	public void testGettingEqualMatchResult() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Function function =
 			new ClassFunction(
@@ -87,7 +87,7 @@ public class SuccessfulMatchResultTest
 	public void testNotBetterThanAmbiguousMatchResult() throws Exception
 	{
 		Coordinate coordinate = new Coordinate(3, 5);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Function function =
 			new ClassFunction(

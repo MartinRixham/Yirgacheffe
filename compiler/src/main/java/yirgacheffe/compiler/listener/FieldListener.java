@@ -51,7 +51,7 @@ public class FieldListener extends ConstructorListener
 	{
 		YirgacheffeParser.FieldDeclarationContext declaration =
 			context.fieldDeclaration();
-		Variables variables = new LocalVariables(1, this.constants);
+		Variables variables = new LocalVariables(1, this.constants, this.numberTypes);
 		Expression expression = this.expressions.pop();
 		Type expressionType = expression.getType(variables);
 		Type fieldType = this.types.getType(declaration.type());

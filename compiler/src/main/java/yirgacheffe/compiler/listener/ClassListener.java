@@ -325,8 +325,9 @@ public class ClassListener extends PackageListener
 		MethodNode method = new EnumerationInitialiser(this.thisType).generate();
 
 		Result result = new Result();
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Signature signature = new FunctionSignature(new NullType(), "", new Array<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		for (Statement statement: this.staticStatements)
 		{

@@ -26,7 +26,8 @@ public class OpenBlockTest
 	{
 		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		OpenBlock openBlock = new OpenBlock();
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Result result = openBlock.compile(variables, caller);
 

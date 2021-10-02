@@ -43,7 +43,7 @@ public class TailCallTest
 	{
 		Statement invocation = new DoNothing();
 		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 
@@ -76,7 +76,9 @@ public class TailCallTest
 		Type stringType = new ReferenceType(String.class);
 		Array<Type> parameters = new Array<>(PrimitiveType.DOUBLE, stringType);
 		Signature caller = new FunctionSignature(new NullType(), "method", parameters);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		TailCall tailCall = new TailCall(invocation, caller, variables);
 		Result result = tailCall.compile(variables, caller);
 

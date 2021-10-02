@@ -728,7 +728,7 @@ public class BooleanExpressionListenerTest
 		VarInsnNode ninthInstruction = (VarInsnNode) instructions.get(8);
 
 		assertEquals(Opcodes.ISTORE, ninthInstruction.getOpcode());
-		assertEquals(3, ninthInstruction.var);
+		assertEquals(2, ninthInstruction.var);
 	}
 
 	@Test
@@ -763,10 +763,82 @@ public class BooleanExpressionListenerTest
 		MethodNode method = classNode.methods.get(0);
 		InsnList instructions = method.instructions;
 
-		assertEquals(19, instructions.size());
+		assertEquals(18, instructions.size());
 
 		InsnNode firstInstruction = (InsnNode) instructions.get(0);
 
 		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
+		assertEquals(1, thirdInstruction.var);
+
+		LdcInsnNode fourthInstruction = (LdcInsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.LDC, fourthInstruction.getOpcode());
+		assertEquals(3.3, fourthInstruction.cst);
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.DSTORE, fifthInstruction.getOpcode());
+		assertEquals(3, fifthInstruction.var);
+
+		VarInsnNode sixthInstruction = (VarInsnNode) instructions.get(5);
+
+		assertEquals(Opcodes.DLOAD, sixthInstruction.getOpcode());
+		assertEquals(3, sixthInstruction.var);
+
+		InsnNode seventhInstruction = (InsnNode) instructions.get(6);
+
+		assertEquals(Opcodes.ICONST_0, seventhInstruction.getOpcode());
+
+		InsnNode eighthInstruction = (InsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.I2D, eighthInstruction.getOpcode());
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.DCMPG, ninthInstruction.getOpcode());
+
+		JumpInsnNode tenthInstruction = (JumpInsnNode) instructions.get(9);
+
+		assertEquals(Opcodes.IFGE, tenthInstruction.getOpcode());
+
+		Label ifLabel = tenthInstruction.label.getLabel();
+
+		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DLOAD, eleventhInstruction.getOpcode());
+		assertEquals(1, eleventhInstruction.var);
+
+		VarInsnNode twelfthInstruction = (VarInsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.DLOAD, twelfthInstruction.getOpcode());
+		assertEquals(3, twelfthInstruction.var);
+
+		InsnNode thirteenthInstruction = (InsnNode) instructions.get(12);
+
+		assertEquals(Opcodes.DSUB, thirteenthInstruction.getOpcode());
+
+		VarInsnNode fourteenthInstruction = (VarInsnNode) instructions.get(13);
+
+		assertEquals(Opcodes.DSTORE, fourteenthInstruction.getOpcode());
+		assertEquals(1, fourteenthInstruction.var);
+
+		LabelNode fifteenthInstruction = (LabelNode) instructions.get(14);
+
+		assertEquals(ifLabel, fifteenthInstruction.getLabel());
+
+		assertTrue(instructions.get(15) instanceof FrameNode);
+
+		VarInsnNode seventeenthInstruction = (VarInsnNode) instructions.get(16);
+
+		assertEquals(Opcodes.DLOAD, seventeenthInstruction.getOpcode());
+		assertEquals(1, seventeenthInstruction.var);
 	}
 }

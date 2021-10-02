@@ -73,8 +73,9 @@ public class VariableWrite implements Statement
 
 		result = result
 			.concat(this.expression.compile(variables))
+			.concat(type.convertTo(variableType))
 			.add(new VarInsnNode(
-				type.getStoreInstruction(),
+				variableType.getStoreInstruction(),
 				variable.getIndex()));
 
 		if (!type.isAssignableTo(variableType))

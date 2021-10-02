@@ -48,6 +48,8 @@ public class MethodListener extends TypeListener
 
 	protected Map<String, Object> constants = new HashMap<>();
 
+	protected Map<String, Type> numberTypes = new HashMap<>();
+
 	protected Array<Expression> expressions = new Array<>();
 
 	protected Array<Statement> statements = new Array<>();
@@ -255,8 +257,9 @@ public class MethodListener extends TypeListener
 		Coordinate coordinate = new Coordinate(context.stop.getLine(), 0);
 		Block block = new Block(coordinate, this.statements);
 		int initialIndex = this.inInterface ? 0 : 1;
-		LocalVariables variables = new LocalVariables(initialIndex, this.constants);
 		boolean returns = block.returns();
+		LocalVariables variables =
+			new LocalVariables(initialIndex, this.constants, this.numberTypes);
 
 		Result result = block.compile(variables, this.signature);
 

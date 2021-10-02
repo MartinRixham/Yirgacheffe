@@ -18,6 +18,7 @@ import yirgacheffe.compiler.implementation.NullImplementation;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
+import yirgacheffe.compiler.variables.PrerunVariables;
 import yirgacheffe.compiler.variables.Variables;
 import yirgacheffe.lang.Array;
 
@@ -59,10 +60,12 @@ public class Block implements Statement
 		Array<Statement> statements = this.statements;
 		Map<String, Variable> declaredVariables = new HashMap<>(variables.getVariables());
 		boolean unreachableCode = false;
-		Result result = new Result();
 
+		this.optimiseIntegers(caller, variables);
 		this.optimiseVariables(variables);
 		this.optimiseTailCall(caller, variables);
+
+		Result result = new Result();
 
 		for (int i = 0; i < statements.length(); i++)
 		{
@@ -180,6 +183,22 @@ public class Block implements Statement
 			new TailCall(lastStatement, caller, variables);
 
 		this.statements.push(tailCall);
+	}
+
+	private void optimiseIntegers(Signature caller, Variables variables)
+	{
+		Result result = new Result();
+		PrerunVariables prerunVariables = new PrerunVariables(variables);
+
+		for (int i = 0; i < statements.length(); i++)
+		{
+			Signature call =
+				i == statements.length() - 1 ?
+					caller :
+					new FunctionSignature(new NullType(), "", new Array<>());
+
+			result = result.concat(statements.get(i).compile(prerunVariables, call));
+		}
 	}
 
 	public Array<VariableRead> getVariableReads()

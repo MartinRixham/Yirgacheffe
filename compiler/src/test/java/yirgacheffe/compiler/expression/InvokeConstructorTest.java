@@ -30,7 +30,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testCompilingInvocationWithGenericReturnType()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num(coordinate, "1.0");
@@ -85,7 +85,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testGettingFirstOperand()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(Double.class);
 		Expression one = new Num(coordinate, "1.0");
@@ -105,7 +105,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testGettingNoFirstOperand()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		Type owner = new ReferenceType(String.class);
 		Array<Expression> arguments = new Array<>();
@@ -125,7 +125,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testConstructArray()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));
@@ -219,7 +219,7 @@ public class InvokeConstructorTest
 	@Test
 	public void testConstructArrayWithInvalidArgument()
 	{
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		ReferenceType array = new ReferenceType(Array.class);
 		Array<Type> typeParameters = new Array<>(new ReferenceType(String.class));

@@ -26,7 +26,8 @@ public class DoNothingTest
 	{
 		Signature caller = new FunctionSignature(new NullType(), "method", new Array<>());
 		DoNothing doNothing = new DoNothing();
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Result result = doNothing.compile(variables, caller);
 

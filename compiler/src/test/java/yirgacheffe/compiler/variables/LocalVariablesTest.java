@@ -18,9 +18,10 @@ public class LocalVariablesTest
 	@Test
 	public void testReadDeclaredVariable()
 	{
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 		variables.read(read);
@@ -31,9 +32,10 @@ public class LocalVariablesTest
 	@Test
 	public void testReadUndeclaredVariable()
 	{
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Coordinate coordinate = new Coordinate(1, 0);
 		VariableRead read = new VariableRead(coordinate, "myVariable");
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		variables.read(read);
 
@@ -48,9 +50,10 @@ public class LocalVariablesTest
 	public void testWriteDeclaredVariable()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Expression expression = new Num(coordinate, "123");
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		variables.declare("myVariable", PrimitiveType.DOUBLE);
 		variables.write(write);
@@ -62,9 +65,10 @@ public class LocalVariablesTest
 	public void testWriteUndeclaredVariable()
 	{
 		Coordinate coordinate = new Coordinate(1, 0);
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
 		Expression expression = new Num(coordinate, "123");
 		VariableWrite write = new VariableWrite(coordinate, "myVariable", expression);
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		variables.write(write);
 

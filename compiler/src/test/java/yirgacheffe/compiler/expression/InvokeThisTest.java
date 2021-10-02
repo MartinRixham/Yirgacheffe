@@ -31,7 +31,7 @@ public class InvokeThisTest
 		Type string = new ReferenceType(String.class);
 		Array<Expression> arguments = new Array<>(new Streeng(coordinate, "\"thingy\""));
 		InvokeThis invokeThis = new InvokeThis(coordinate, string, arguments);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
 		Result result = invokeThis.compileCondition(variables, null, null);
 

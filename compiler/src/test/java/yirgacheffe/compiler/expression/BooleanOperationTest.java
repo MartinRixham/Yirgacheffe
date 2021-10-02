@@ -32,7 +32,7 @@ public class BooleanOperationTest
 	public void testCompilingAndDoubles()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "3.0");
 		Num secondOperand = new Num(coordinate, "2.0");
 
@@ -102,7 +102,7 @@ public class BooleanOperationTest
 	public void testCompilingAndIntegers()
 	{
 		Coordinate coordinate = new Coordinate(8, 3);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "0");
 		Num secondOperand = new Num(coordinate, "0");
 
@@ -152,7 +152,7 @@ public class BooleanOperationTest
 	public void testCompilingAndBooleans()
 	{
 		Coordinate coordinate = new Coordinate(6, 7);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Bool firstOperand = new Bool(coordinate, "true");
 		Bool secondOperand = new Bool(coordinate, "false");
 
@@ -202,7 +202,7 @@ public class BooleanOperationTest
 	public void testCompilingAndObjects()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Expression firstOperand = new This(coordinate, new ReferenceType(Object.class));
 		Expression secondOperand = new This(coordinate, new ReferenceType(Object.class));
 
@@ -254,7 +254,7 @@ public class BooleanOperationTest
 	public void testCompilingAndStrings()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Streeng firstOperand = new Streeng(coordinate, "\"mystring\"");
 		Streeng secondOperand = new Streeng(coordinate, "\"notherstring\"");
 
@@ -343,7 +343,7 @@ public class BooleanOperationTest
 	public void testCompilingDoubleAndString()
 	{
 		Coordinate coordinate = new Coordinate(3, 7);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "0.0");
 		Streeng secondOperand = new Streeng(coordinate, "\"thingy\"");
 
@@ -415,7 +415,7 @@ public class BooleanOperationTest
 	public void testCompileIntegerAndString()
 	{
 		Coordinate coordinate = new Coordinate(5, 7);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "0");
 		Streeng secondOperand = new Streeng(coordinate, "\"thingy\"");
 
@@ -477,7 +477,7 @@ public class BooleanOperationTest
 	public void testCompilingIntegerAndDouble()
 	{
 		Coordinate coordinate = new Coordinate(3, 6);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "1");
 		Num secondOperand = new Num(coordinate, "0.0");
 
@@ -539,7 +539,7 @@ public class BooleanOperationTest
 	public void testCompilingIntegerAndBoolean()
 	{
 		Coordinate coordinate = new Coordinate(7, 8);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "1");
 		Bool secondOperand = new Bool(coordinate, "false");
 
@@ -607,7 +607,7 @@ public class BooleanOperationTest
 	public void testCompilingDoubleAndInteger()
 	{
 		Coordinate coordinate = new Coordinate(7, 8);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Num firstOperand = new Num(coordinate, "1.0");
 		Num secondOperand = new Num(coordinate, "0");
 
@@ -677,7 +677,7 @@ public class BooleanOperationTest
 	public void testCompilingBooleanAndDouble()
 	{
 		Coordinate coordinate = new Coordinate(6, 7);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Bool firstOperand = new Bool(coordinate, "true");
 		Num secondOperand = new Num(coordinate, "0.0");
 
@@ -745,7 +745,7 @@ public class BooleanOperationTest
 	public void testOrDifferentTypesAreAssignableToCommonSupertype()
 	{
 		Coordinate coordinate = new Coordinate(6, 34);
-		Variables variables = new LocalVariables(1, new HashMap<>());
+		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type arrayList = new ReferenceType(java.util.ArrayList.class);
 		Type linkedList = new ReferenceType(java.util.LinkedList.class);
 		Type list = new ReferenceType(java.util.List.class);

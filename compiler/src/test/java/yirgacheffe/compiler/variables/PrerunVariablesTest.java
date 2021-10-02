@@ -10,7 +10,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class OptimisedVariablesTest
+public class PrerunVariablesTest
 {
 	@Test
 	public void testReadDeclaredVariable()
@@ -18,7 +18,7 @@ public class OptimisedVariablesTest
 		Variables localVariables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		Variables variables = new OptimisedVariables(localVariables);
+		Variables variables = new PrerunVariables(localVariables);
 
 		assertEquals(0, variables.getVariables().keySet().size());
 		assertEquals(0, variables.getVariable("").getIndex());

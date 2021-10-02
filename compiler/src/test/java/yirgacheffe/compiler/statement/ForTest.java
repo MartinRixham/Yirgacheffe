@@ -54,7 +54,9 @@ public class ForTest
 
 		For forStatement = new For(new DoNothing(), tru, new DoNothing(), block);
 
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = forStatement.compile(variables, null);
 
 		assertEquals(0, variables.getStack().length());
@@ -83,7 +85,9 @@ public class ForTest
 
 		For forStatement = new For(new DoNothing(), fals, new DoNothing(), block);
 
-		LocalVariables variables = new LocalVariables(1, new HashMap<>());
+		LocalVariables variables =
+			new LocalVariables(1, new HashMap<>(), new HashMap<>());
+
 		Result result = forStatement.compile(variables, null);
 
 		assertEquals(0, variables.getStack().length());
