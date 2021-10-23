@@ -61,10 +61,9 @@ public class Block implements Statement
 		Map<String, Variable> declaredVariables = new HashMap<>(variables.getVariables());
 		boolean unreachableCode = false;
 
-		this.optimiseIntegers(variables);
-
 		if (!(variables instanceof PrerunVariables))
 		{
+			this.optimiseIntegers(variables);
 			this.optimiseVariables(variables);
 			this.optimiseTailCall(caller, variables);
 		}
