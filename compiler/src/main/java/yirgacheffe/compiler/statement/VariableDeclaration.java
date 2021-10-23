@@ -19,7 +19,7 @@ import yirgacheffe.lang.Array;
 
 import java.util.Map;
 
-public class VariableDeclaration implements Statement
+public class VariableDeclaration implements Statement, Declaration
 {
 	private Coordinate coordinate;
 
@@ -41,7 +41,7 @@ public class VariableDeclaration implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		variables.declare(this.name, this.type);
+		variables.declare(this);
 
 		if (this.type.equals(PrimitiveType.VOID))
 		{
@@ -88,6 +88,16 @@ public class VariableDeclaration implements Statement
 	public String getName()
 	{
 		return this.name;
+	}
+
+	public Type getType()
+	{
+		return this.type;
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 
 	@Override

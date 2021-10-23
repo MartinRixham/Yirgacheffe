@@ -983,4 +983,33 @@ public class StatementListenerTest
 			"line 5:0 Cannot declare variable of type Void.\n",
 			result.getErrors());
 	}
+
+	@Test
+	public void testCantDeclareSame()
+	{
+		String source =
+			"class MyClass\n" +
+			"{\n" +
+				"public MyClass()\n" +
+				"{\n" +
+					"Num num = 1;" +
+					"Num num = 0;" +
+				"}\n" +
+				"private Void method() {}\n" +
+			"}\n";
+
+		Compiler compiler = new Compiler("", source);
+		Classes classes = new Classes();
+
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
+		CompilationResult result = compiler.compile(classes);
+
+		assertFalse(result.isSuccessful());
+		assertEquals(
+			"line 5:12 Duplicate declaration of variable 'num'.\n",
+			result.getErrors());
+	}
 }

@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import yirgacheffe.compiler.Result;
 import yirgacheffe.compiler.error.Coordinate;
+import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.PrimitiveType;
@@ -27,10 +28,10 @@ public class VariableReadTest
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type owner = new ReferenceType(String.class);
-
-		variables.declare("myVariable", owner);
-
 		Coordinate coordinate = new Coordinate(1, 0);
+
+		variables.declare(new VariableDeclaration(coordinate, "myVariable", owner));
+
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
@@ -54,10 +55,10 @@ public class VariableReadTest
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type owner = PrimitiveType.DOUBLE;
-
-		variables.declare("myVariable", owner);
-
 		Coordinate coordinate = new Coordinate(1, 0);
+
+		variables.declare(new VariableDeclaration(coordinate, "myVariable", owner));
+
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);
@@ -79,10 +80,10 @@ public class VariableReadTest
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type owner = PrimitiveType.INT;
-
-		variables.declare("myVariable", owner);
-
 		Coordinate coordinate = new Coordinate(1, 0);
+
+		variables.declare(new VariableDeclaration(coordinate, "myVariable", owner));
+
 		Expression expression = new VariableRead(coordinate, "myVariable");
 
 		Type type = expression.getType(variables);

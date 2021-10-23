@@ -19,6 +19,7 @@ import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.statement.FunctionCall;
 import yirgacheffe.compiler.statement.TailCall;
+import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.variables.LocalVariables;
 import yirgacheffe.compiler.type.ParameterisedType;
@@ -454,10 +455,10 @@ public class InvokeMethodTest
 	{
 		Variables variables = new LocalVariables(1, new HashMap<>(), new HashMap<>());
 		Type owner = new ReferenceType(Runnable.class);
-
-		variables.declare("myVariable", owner);
-
 		Coordinate coordinate = new Coordinate(0, 1);
+
+		variables.declare(new VariableDeclaration(coordinate, "myVariable", owner));
+
 		VariableRead expression = new VariableRead(coordinate, "myVariable");
 
 		InvokeMethod invokeMethod =

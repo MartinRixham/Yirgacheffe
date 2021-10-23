@@ -6,6 +6,7 @@ import yirgacheffe.compiler.error.Error;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Num;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.PrimitiveType;
 
@@ -23,7 +24,9 @@ public class LocalVariablesTest
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("myVariable", PrimitiveType.DOUBLE);
+		variables.declare(
+			new VariableDeclaration(coordinate, "myVariable", PrimitiveType.DOUBLE));
+
 		variables.read(read);
 
 		assertEquals(0, variables.getErrors().length());
@@ -55,7 +58,9 @@ public class LocalVariablesTest
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("myVariable", PrimitiveType.DOUBLE);
+		variables.declare(
+			new VariableDeclaration(coordinate, "myVariable", PrimitiveType.DOUBLE));
+
 		variables.write(write);
 
 		assertEquals(0, variables.getErrors().length());

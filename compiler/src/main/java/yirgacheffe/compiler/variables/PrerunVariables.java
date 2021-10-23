@@ -4,6 +4,7 @@ import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.Nothing;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.statement.Declaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.AttemptedType;
 import yirgacheffe.compiler.type.NullType;
@@ -48,11 +49,11 @@ public class PrerunVariables implements Variables
 	{
 	}
 
-	public void declare(String name, Type type)
+	public void declare(Declaration declaration)
 	{
-		Variable variable = new Variable(-1, type);
+		Variable variable = new Variable(-1, declaration.getType());
 
-		this.variables.put(name, variable);
+		this.variables.put(declaration.getName(), variable);
 	}
 
 	public Variable redeclare(String name)

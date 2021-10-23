@@ -11,6 +11,7 @@ import yirgacheffe.compiler.function.FunctionSignature;
 import yirgacheffe.compiler.function.Signature;
 import yirgacheffe.compiler.implementation.Implementation;
 import yirgacheffe.compiler.implementation.NullImplementation;
+import yirgacheffe.compiler.statement.VariableDeclaration;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.PrimitiveType;
 import yirgacheffe.compiler.type.ReferenceType;
@@ -92,12 +93,13 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementInteger()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("variable", PrimitiveType.INT);
+		variables.declare(
+			new VariableDeclaration(coordinate,  "variable", PrimitiveType.INT));
 
-		Coordinate coordinate = new Coordinate(3, 6);
 		VariableRead variableRead = new VariableRead(coordinate, "variable");
 
 		UnaryOperation postincrement =
@@ -125,12 +127,13 @@ public class UnaryOperationTest
 	@Test
 	public void testPostincrementLongInteger()
 	{
+		Coordinate coordinate = new Coordinate(3, 6);
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("variable", PrimitiveType.LONG);
+		variables.declare(
+			new VariableDeclaration(coordinate, "variable", PrimitiveType.LONG));
 
-		Coordinate coordinate = new Coordinate(3, 6);
 		VariableRead variableRead = new VariableRead(coordinate, "variable");
 
 		UnaryOperation postincrement =

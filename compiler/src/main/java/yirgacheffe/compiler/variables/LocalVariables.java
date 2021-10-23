@@ -5,6 +5,7 @@ import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.OptimisedExpression;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.statement.Declaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.NullType;
 import yirgacheffe.compiler.type.Type;
@@ -21,9 +22,11 @@ public class LocalVariables implements Variables
 
 	private Map<String, Variable> variables = new HashMap<>();
 
-	private Array<VariableRead> variableReads = new Array<>();
+	private Array<VariableRead> undeclaredVariableReads = new Array<>();
 
-	private Array<VariableWrite> variableWrites = new Array<>();
+	private Array<VariableWrite> undeclaredVariableWrites = new Array<>();
+
+	private Array<Declaration> duplicateDeclarations = new Array<>();
 
 	private Map<Expression, Expression> optimisedVariables = new IdentityHashMap<>();
 
@@ -36,9 +39,9 @@ public class LocalVariables implements Variables
 	private Map<String, Type> numberTypes;
 
 	public LocalVariables(
-			int initialVariableIndex,
-			Map<String, Object> constants,
-			Map<String, Type> numberTypes)
+		int initialVariableIndex,
+		Map<String, Object> constants,
+		Map<String, Type> numberTypes)
 	{
 		this.nextVariableIndex = initialVariableIndex;
 		this.constants = constants;
@@ -65,8 +68,16 @@ public class LocalVariables implements Variables
 		return new HashMap<>(this.delegateTypes);
 	}
 
-	public void declare(String name, Type type)
+	public void declare(Declaration declaration)
 	{
+		Type type = declaration.getType();
+		String name = declaration.getName();
+
+		if (this.variables.containsKey(name))
+		{
+			this.duplicateDeclarations.push(declaration);
+		}
+
 		if (this.numberTypes.containsKey(name))
 		{
 			type = this.numberTypes.get(name);
@@ -81,15 +92,10 @@ public class LocalVariables implements Variables
 	public Variable redeclare(String name)
 	{
 		Variable variable = this.variables.get(name);
+		Type type = variable.getType();
+		variable = new Variable(this.nextVariableIndex, type);
 
-		if (variable.getIndex() < 0)
-		{
-			Type type = variable.getType();
-			variable = new Variable(this.nextVariableIndex, type);
-
-			this.nextVariableIndex += type.width();
-			this.variables.put(name, variable);
-		}
+		this.variables.put(name, variable);
 
 		return variable;
 	}
@@ -101,7 +107,7 @@ public class LocalVariables implements Variables
 		if (!this.variables.containsKey(name) &&
 			!this.constants.containsKey(name))
 		{
-			this.variableReads.push(variableRead);
+			this.undeclaredVariableReads.push(variableRead);
 		}
 	}
 
@@ -109,7 +115,7 @@ public class LocalVariables implements Variables
 	{
 		if (!this.variables.containsKey(variableWrite.getName()))
 		{
-			this.variableWrites.push(variableWrite);
+			this.undeclaredVariableWrites.push(variableWrite);
 		}
 	}
 
@@ -143,19 +149,27 @@ public class LocalVariables implements Variables
 	{
 		Array<Error> errors = new Array<>();
 
-		for (VariableRead read: this.variableReads)
+		for (VariableRead read: this.undeclaredVariableReads)
 		{
 			String message = "Unknown local variable '" + read.getName() + "'.";
 
 			errors.push(new Error(read.getCoordinate(), message));
 		}
 
-		for (VariableWrite write: this.variableWrites)
+		for (VariableWrite write: this.undeclaredVariableWrites)
 		{
 			String message =
 				"Assignment to uninitialised variable '" + write.getName() + "'.";
 
 			errors.push(new Error(write.getCoordinate(), message));
+		}
+
+		for (Declaration declaration: this.duplicateDeclarations)
+		{
+			String message =
+				"Duplicate declaration of variable '" + declaration.getName() + "'.";
+
+			errors.push(new Error(declaration.getCoordinate(), message));
 		}
 
 		return errors;

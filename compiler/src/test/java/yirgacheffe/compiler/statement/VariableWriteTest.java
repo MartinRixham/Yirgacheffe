@@ -43,7 +43,9 @@ public class VariableWriteTest
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("myVariable", new ReferenceType(String.class));
+		variables.declare(
+			new VariableDeclaration(
+				coordinate, "myVariable", new ReferenceType(String.class)));
 
 		Result result = variableWrite.compile(variables, caller);
 
@@ -78,7 +80,7 @@ public class VariableWriteTest
 		LocalVariables variables =
 			new LocalVariables(1, new HashMap<>(), new HashMap<>());
 
-		variables.declare("myVariable", string);
+		variables.declare(new VariableDeclaration(coordinate, "myVariable", string));
 
 		Result result = variableWrite.compile(variables, caller);
 

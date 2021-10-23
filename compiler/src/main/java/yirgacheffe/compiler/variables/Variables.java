@@ -3,6 +3,7 @@ package yirgacheffe.compiler.variables;
 import yirgacheffe.compiler.expression.Delegate;
 import yirgacheffe.compiler.expression.Expression;
 import yirgacheffe.compiler.expression.VariableRead;
+import yirgacheffe.compiler.statement.Declaration;
 import yirgacheffe.compiler.statement.VariableWrite;
 import yirgacheffe.compiler.type.Type;
 import yirgacheffe.compiler.type.Variable;
@@ -18,7 +19,7 @@ public interface Variables
 
 	void delegate(Delegate delegate, Type type);
 
-	void declare(String name, Type type);
+	void declare(Declaration declaration);
 
 	Variable redeclare(String name);
 

@@ -23,7 +23,7 @@ import yirgacheffe.lang.Array;
 
 import java.util.Map;
 
-public class ParameterDeclaration implements Statement
+public class ParameterDeclaration implements Statement, Declaration
 {
 	private Coordinate coordinate;
 
@@ -45,7 +45,7 @@ public class ParameterDeclaration implements Statement
 
 	public Result compile(Variables variables, Signature caller)
 	{
-		variables.declare(this.name, this.type);
+		variables.declare(this);
 
 		if (this.type.equals(PrimitiveType.VOID))
 		{
@@ -98,6 +98,21 @@ public class ParameterDeclaration implements Statement
 	public Expression getExpression()
 	{
 		return new VariableRead(this.coordinate, this.name);
+	}
+
+	public String getName()
+	{
+		return this.name;
+	}
+
+	public Type getType()
+	{
+		return this.type;
+	}
+
+	public Coordinate getCoordinate()
+	{
+		return this.coordinate;
 	}
 
 	public boolean isEmpty()
