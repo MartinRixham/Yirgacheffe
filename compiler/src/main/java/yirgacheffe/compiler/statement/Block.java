@@ -61,7 +61,7 @@ public class Block implements Statement
 		Map<String, Variable> declaredVariables = new HashMap<>(variables.getVariables());
 		boolean unreachableCode = false;
 
-		this.optimiseIntegers(caller, variables);
+		this.optimiseIntegers(variables);
 
 		if (!(variables instanceof PrerunVariables))
 		{
@@ -188,7 +188,7 @@ public class Block implements Statement
 		this.statements.push(tailCall);
 	}
 
-	private void optimiseIntegers(Signature caller, Variables variables)
+	private void optimiseIntegers(Variables variables)
 	{
 		PrerunVariables prerunVariables = new PrerunVariables(variables);
 

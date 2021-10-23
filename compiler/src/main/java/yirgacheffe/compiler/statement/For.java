@@ -115,6 +115,7 @@ public class For implements Statement
 		return this.initialiser.getVariableReads()
 			.concat(this.exitCondition.getVariableReads())
 			.concat(this.incrementer.getVariableReads())
+			.concat(this.statement.getVariableReads())
 			.concat(this.statement.getVariableReads());
 	}
 
@@ -122,6 +123,7 @@ public class For implements Statement
 	{
 		return this.initialiser.getVariableWrites()
 			.concat(this.incrementer.getVariableWrites())
+			.concat(this.statement.getVariableWrites())
 			.concat(this.statement.getVariableWrites());
 	}
 
