@@ -180,6 +180,10 @@ public class FieldListenerTest
 
 		classes.clearCache();
 
+		compiler.compileInterface(classes);
+
+		classes.clearCache();
+
 		CompilationResult result = compiler.compile(classes);
 
 		assertFalse(result.isSuccessful());

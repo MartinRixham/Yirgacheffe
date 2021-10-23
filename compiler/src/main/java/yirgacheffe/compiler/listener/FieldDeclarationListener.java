@@ -66,22 +66,24 @@ public class FieldDeclarationListener extends MethodListener
 	{
 		String identifier = context.Identifier().getText();
 
-		if (this.fields.contains(identifier))
-		{
-			String message = "Duplicate field '" + identifier + "'.";
-
-			this.errors.push(new Error(context, message));
-		}
-		else
-		{
-			this.fields.add(identifier);
-		}
-
 		if (context.type() == null)
 		{
 			String message = "Field declaration should start with type.";
 
 			this.errors.push(new Error(context, message));
+		}
+
+		if (this.fields.contains(identifier))
+		{
+			String message = "Duplicate field '" + identifier + "'.";
+
+			this.errors.push(new Error(context, message));
+
+			return;
+		}
+		else
+		{
+			this.fields.add(identifier);
 		}
 
 		if (context.Const() == null)
