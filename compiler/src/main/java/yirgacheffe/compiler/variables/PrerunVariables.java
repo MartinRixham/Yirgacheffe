@@ -19,11 +19,20 @@ public class PrerunVariables implements Variables
 {
 	private Variables localVariables;
 
-	private Map<String, Variable> variables = new HashMap<>();
+	private Map<String, Variable> variables;
 
 	public PrerunVariables(Variables variables)
 	{
-		this.localVariables = variables;
+		if (variables instanceof PrerunVariables)
+		{
+			this.localVariables = ((PrerunVariables) variables).localVariables;
+			this.variables = ((PrerunVariables) variables).variables;
+		}
+		else
+		{
+			this.localVariables = variables;
+			this.variables = new HashMap<>();
+		}
 	}
 
 	public Map<String, Variable> getVariables()
@@ -59,14 +68,14 @@ public class PrerunVariables implements Variables
 	{
 		String name = variableWrite.getName();
 
-		if (variables.containsKey(name))
+		if (this.variables.containsKey(name))
 		{
-			Variable variable = variables.get(name);
+			Variable variable = this.variables.get(name);
 			Type type = variableWrite.getExpression().getType(this);
 
 			if (type.isPrimitive() || type instanceof AttemptedType)
 			{
-				variables.put(name, new Variable(variable.getIndex(), type));
+				this.variables.put(name, new Variable(variable.getIndex(), type));
 
 				if (type.isAssignableTo(PrimitiveType.DOUBLE))
 				{

@@ -62,8 +62,12 @@ public class Block implements Statement
 		boolean unreachableCode = false;
 
 		this.optimiseIntegers(caller, variables);
-		this.optimiseVariables(variables);
-		this.optimiseTailCall(caller, variables);
+
+		if (!(variables instanceof PrerunVariables))
+		{
+			this.optimiseVariables(variables);
+			this.optimiseTailCall(caller, variables);
+		}
 
 		Result result = new Result();
 
@@ -102,7 +106,6 @@ public class Block implements Statement
 		for (int i = this.statements.length() - 1; i >= 0; i--)
 		{
 			Statement statement = this.statements.get(i);
-
 			boolean optimised = false;
 
 			for (VariableRead variableRead: variableReads)
@@ -187,17 +190,13 @@ public class Block implements Statement
 
 	private void optimiseIntegers(Signature caller, Variables variables)
 	{
-		Result result = new Result();
 		PrerunVariables prerunVariables = new PrerunVariables(variables);
 
-		for (int i = 0; i < statements.length(); i++)
+		for (int i = 0; i < this.statements.length(); i++)
 		{
-			Signature call =
-				i == statements.length() - 1 ?
-					caller :
-					new FunctionSignature(new NullType(), "", new Array<>());
+			Signature call = new FunctionSignature(new NullType(), "", new Array<>());
 
-			result = result.concat(statements.get(i).compile(prerunVariables, call));
+			this.statements.get(i).compile(prerunVariables, call);
 		}
 	}
 

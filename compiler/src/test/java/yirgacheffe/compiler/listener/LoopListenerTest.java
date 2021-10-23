@@ -5,10 +5,12 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -506,9 +508,9 @@ public class LoopListenerTest
 				"}\n" +
 				"main method(Array<String> args)\n" +
 				"{\n" +
-					"this.toIndianNumeral(\"I\");\n" +
+					"this.toNumber(\"I\");\n" +
 				"}\n" +
-				"private Num toIndianNumeral(String string)\n" +
+				"private Num toNumber(String string)\n" +
 				"{\n" +
 					"Num total = 0;\n" +
 					"for (Num i = 0; i < 1; i++)\n" +
@@ -516,7 +518,7 @@ public class LoopListenerTest
 						"Num value = this.numeralValues.get(\"I\");\n" +
 						"total = total - value;\n" +
 					"}\n" +
-					"return total;\n" +
+					"return total;" +
 				"}\n" +
 			"}";
 
@@ -536,6 +538,83 @@ public class LoopListenerTest
 
 		reader.accept(classNode, 0);
 
-		MethodNode firstMethod = classNode.methods.get(0);
+		MethodNode fifthMethod = classNode.methods.get(4);
+
+		assertEquals("toNumber", fifthMethod.name);
+
+		InsnList instructions = fifthMethod.instructions;
+
+		assertEquals(28, instructions.size());
+
+		InsnNode firstInstruction = (InsnNode) instructions.get(0);
+
+		assertEquals(Opcodes.ICONST_0, firstInstruction.getOpcode());
+
+		InsnNode secondInstruction = (InsnNode) instructions.get(1);
+
+		assertEquals(Opcodes.I2D, secondInstruction.getOpcode());
+
+		VarInsnNode thirdInstruction = (VarInsnNode) instructions.get(2);
+
+		assertEquals(Opcodes.DSTORE, thirdInstruction.getOpcode());
+		assertEquals(2, thirdInstruction.var);
+
+		InsnNode fourthInstruction = (InsnNode) instructions.get(3);
+
+		assertEquals(Opcodes.ICONST_0, fourthInstruction.getOpcode());
+
+		VarInsnNode fifthInstruction = (VarInsnNode) instructions.get(4);
+
+		assertEquals(Opcodes.ISTORE, fifthInstruction.getOpcode());
+		assertEquals(4, fifthInstruction.var);
+
+		assertTrue(instructions.get(5) instanceof LabelNode);
+		assertTrue(instructions.get(6) instanceof FrameNode);
+
+		VarInsnNode eighthInstruction = (VarInsnNode) instructions.get(7);
+
+		assertEquals(Opcodes.ILOAD, eighthInstruction.getOpcode());
+		assertEquals(4, eighthInstruction.var);
+
+		InsnNode ninthInstruction = (InsnNode) instructions.get(8);
+
+		assertEquals(Opcodes.ICONST_1, ninthInstruction.getOpcode());
+
+		JumpInsnNode tenthInstruction = (JumpInsnNode) instructions.get(9);
+		Label forLabel = tenthInstruction.label.getLabel();
+
+		assertEquals(Opcodes.IF_ICMPGE, tenthInstruction.getOpcode());
+
+		VarInsnNode eleventhInstruction = (VarInsnNode) instructions.get(10);
+
+		assertEquals(Opcodes.DLOAD, eleventhInstruction.getOpcode());
+		assertEquals(2, eleventhInstruction.var);
+
+		VarInsnNode twelfthInstruction = (VarInsnNode) instructions.get(11);
+
+		assertEquals(Opcodes.ALOAD, twelfthInstruction.getOpcode());
+		assertEquals(0, twelfthInstruction.var);
+
+		assertTrue(instructions.get(12) instanceof LabelNode);
+		assertTrue(instructions.get(13) instanceof LineNumberNode);
+
+		FieldInsnNode fifteenthInstruction = (FieldInsnNode) instructions.get(14);
+
+		assertEquals(Opcodes.GETFIELD, fifteenthInstruction.getOpcode());
+		assertEquals("numeralValues", fifteenthInstruction.name);
+
+		LdcInsnNode sixteenthInstruction = (LdcInsnNode) instructions.get(15);
+
+		assertEquals(Opcodes.LDC, sixteenthInstruction.getOpcode());
+		assertEquals("I", sixteenthInstruction.cst);
+
+		assertTrue(instructions.get(16) instanceof LabelNode);
+		assertTrue(instructions.get(17) instanceof LineNumberNode);
+
+		InvokeDynamicInsnNode nineteenthInstruction =
+			(InvokeDynamicInsnNode) instructions.get(18);
+
+		assertEquals(Opcodes.INVOKEDYNAMIC, nineteenthInstruction.getOpcode());
+		assertEquals("get", nineteenthInstruction.name);
 	}
 }
