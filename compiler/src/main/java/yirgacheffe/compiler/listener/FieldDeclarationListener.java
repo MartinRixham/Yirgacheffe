@@ -36,19 +36,36 @@ public class FieldDeclarationListener extends MethodListener
 		{
 			Coordinate coordinate = new Coordinate(context);
 			String field = declarationContext.Identifier().getSymbol().getText();
+			String initialiser = "0init_field_" + field;
 
 			this.methodNode =
 				new MethodNode(
 					Opcodes.ACC_PRIVATE,
-					"0init_field_" + field,
+					initialiser,
 					"()V",
 					null,
 					null);
 
-			this.classNode.methods.add(this.methodNode);
+			if (!this.hasMethod(initialiser))
+			{
+				this.classNode.methods.add(this.methodNode);
+			}
 
 			this.expressions.push(new This(coordinate, this.thisType));
 		}
+	}
+
+	private boolean hasMethod(String name)
+	{
+		for (MethodNode method: this.classNode.methods)
+		{
+			if (method.name.equals(name))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
